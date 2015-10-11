@@ -1,0 +1,11 @@
+まず、
+cp vimrc_file ~/.vimrc
+で、
+git clone git://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
+でneobundleを入れて、
+cat vimrc_neobundle >> ~/.vimrc
+で、.vimrcを閉じて開いて、
+cat vimrc_neocomp>> ~/.vimrc
+でNeoBudleInstall
+だったかな
+

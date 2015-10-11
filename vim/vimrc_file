@@ -1,0 +1,46 @@
+"左端に数字を表示
+set number
+"常にステータスラインを表示
+set laststatus=2
+"カーソルの位置を表示
+set ruler
+"コマンドラインの画面上の行数
+set cmdheight=2
+"文の折り返し
+set wrap
+"タイトルを表示
+set title
+"viとの互換性をとらない
+set nocompatible
+"タブの幅
+set tabstop=4
+"自動でインデントを挿入
+set autoindent
+"オートインデントの幅
+set shiftwidth=4
+"文字の色づけ
+syntax on
+"検索したときにハイライト
+set hlsearch
+"バックスペースのノーマルモード、(改行、)オートインデントへの有効化
+set backspace=start,indent
+"set backspace=start,eol,indent
+"挿入モードでのマウスの有効化
+set mouse=i
+"全モードでのマウスの有効化
+"set mouse=a
+"タブをスペースに変換
+set expandtab
+"日本語OKに
+set fileencoding=utf-8
+"カラーの変更
+colorscheme desert
+
+
+" Execute python script Ctrl-P 
+function! s:ExecPy()
+    exe "!" . &ft . " %"
+    :endfunction
+    command! Exec call <SID>ExecPy()
+    autocmd FileType python map <silent> <C-P> :call <SID>ExecPy()<CR>
+
