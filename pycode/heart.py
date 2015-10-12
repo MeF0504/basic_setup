@@ -6,8 +6,9 @@ import time
 
 def get_data(max_y,max_x):
     import numpy as np
-    m_size = np.max([max_x,max_y])
+    m_size = np.min([max_x,max_y])
     size = int(m_size*0.4)
+    #(x^2+y^2-1) = x^2y^3
     x = np.arange(0.0,1.2,0.01)
     yp = (x**(2.0/3)+np.sqrt(x**(4.0/3)-4*x**2+4))/2.0
     #x = np.arange(1.2,0,-0.01)
