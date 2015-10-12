@@ -14,9 +14,9 @@ def getsize():
     curses.endwin()
     return max_y,max_x,min_y,min_x
 
-clear()
-put(33,22,'a')
-put(42,22,'a')
+#clear()
+#put(33,22,'a')
+#put(42,22,'a')
 
 #clear()
 #print getsize()
