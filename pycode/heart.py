@@ -9,18 +9,23 @@ def get_data(max_y,max_x):
     m_size = np.min([max_x,max_y])
     size = int(m_size*0.4)
     #(x^2+y^2-1) = x^2y^3
-    x = np.arange(0.0,1.2,0.01)
+    x = np.arange(0.0,1.14,0.01)
     yp = (x**(2.0/3)+np.sqrt(x**(4.0/3)-4*x**2+4))/2.0
     #x = np.arange(1.2,0,-0.01)
     x2 = x[::-1]
     ym = (x2**(2.0/3)-np.sqrt(x2**(4.0/3)-4*x2**2+4))/2.0
     y = np.r_[yp,ym]
     x = np.r_[x,x2]
+    x = x[y==y]
+    y = y[y==y]
+    #print x,y
     x = (x*size).astype(int)
     y = (y*size).astype(int)
     x[0] -= 1
+    return x,y
 
 ay,ax,iy,ix = getsize()
+
 try:
     x,y = get_data(ay,ax)
 except:
@@ -34,11 +39,10 @@ zero_y = (ay+iy)/2
 #print zero_x,zero_y
 #put(zero_x,zero_y,'*')
 for i in range(len(x)):
-#for i in range(10):
     #print zero_x+x[i],zero_y+y[i]
     put(zero_x-x[i],zero_y-y[i]/2,'*')
     put(zero_x+x[i],zero_y-y[i]/2,'*')
-    time.sleep(0.05)
+    time.sleep(0.03)
 
 """
 xlist = range(10)
