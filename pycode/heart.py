@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+##reference http://itchyny.hatenablog.com/entry/20130214/1360847516
+
 import curses
 from mycurses import *
 import time
