@@ -20,6 +20,9 @@ def get_data(max_y,max_x):
     x = np.r_[x,x2]
     x = x[y==y]
     y = y[y==y]
+    del yp
+    del ym
+    del x2
     #print x,y
     x = (x*size).astype(int)
     y = (y*size).astype(int)
