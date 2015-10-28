@@ -16,7 +16,7 @@ binpath = os.path.join(args.prefix,'bin')
 #print fpath
 
 pydir = os.path.join(fpath,'pycode')
-print '@ '+pydir
+print '\n@ '+pydir+'\n'
 pyfiles = commands.getoutput('ls -l %s/*' % pydir).split('\n')
 
 for p in pyfiles:
@@ -24,7 +24,7 @@ for p in pyfiles:
         p = p.split(' ')
         fname = os.path.basename(p[-1])
         if os.path.exists(os.path.join(binpath,fname)):
-            print fname+'is already exist, cannot link!'
+            print fname+' is already exist, cannot link!'
             continue
         #print p[-1],binpath
         os.system('ln -s %s %s' % (p[-1],binpath))
