@@ -138,11 +138,11 @@ alias du="du -h"
 alias df="df -h"
 
 alias su="su -l"
+alias ssh="ssh-host-color.sh"
 
 alias zshhistory="vi -R $HOME/.zsh_history"
-alias version="cat /etc/issue"
-
-alias kekcc="ssh -Y -t kekcc_acsess ssh -Y kekcc"
+#alias version="cat /etc/issue"
+alias grep="grep --color"
 
 ## terminal configuration
 #
