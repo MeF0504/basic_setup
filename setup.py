@@ -17,7 +17,7 @@ binpath = os.path.join(args.prefix,'bin')
 
 pydir = os.path.join(fpath,'pycode')
 print '@ '+pydir
-pyfiles = commands.getoutput('ls -l %s/*.py' % pydir).split('\n')
+pyfiles = commands.getoutput('ls -l %s/' % pydir).split('\n')
 
 for p in pyfiles:
     if p[3] == 'x':
