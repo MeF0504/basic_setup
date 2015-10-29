@@ -34,7 +34,7 @@ elif [[ "$@" =~ kekcc ]]; then
 elif [[ "$@" =~ nersc ]]; then
   set_term_bgcolor 0 20 15
 elif [[ "$@" =~ gt ]]; then
-  set_term_bgcolor 20 10 0
+  set_term_bgcolor 13 5 10
 fi
 
 ssh $@
