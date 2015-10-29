@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+# thanks to https://gist.github.com/956095.git
+
 # (1) copy to: ~/bin/ssh-host-color 
 # (2) set:     alias ssh=~/bin/ssh-host-color
 #
@@ -27,8 +29,12 @@ trap 'set_term_bgcolor 0 0 0' 2
 
 if [[ "$@" =~ coma ]]; then
   set_term_bgcolor 0 0 20
-elif [[ "$@" =~ kekcc  ]]; then
+elif [[ "$@" =~ kekcc ]]; then
   set_term_bgcolor 0 20 15
+elif [[ "$@" =~ nersc ]]; then
+  set_term_bgcolor 0 20 15
+elif [[ "$@" =~ gt ]]; then
+  set_term_bgcolor 20 10 0
 fi
 
 ssh $@
