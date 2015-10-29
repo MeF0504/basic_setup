@@ -28,7 +28,7 @@ trap 'set_term_bgcolor 0 0 0' 2
 #return background color if ssh canceled by Ctr-C
 
 if [[ "$@" =~ coma ]]; then
-  set_term_bgcolor 0 0 20
+  set_term_bgcolor 10 10 18
 elif [[ "$@" =~ kekcc ]]; then
   set_term_bgcolor 0 20 15
 elif [[ "$@" =~ nersc ]]; then
