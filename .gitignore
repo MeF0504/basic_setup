@@ -1,3 +1,4 @@
 *.pyc
 ssh_config
+legacy/*
 
