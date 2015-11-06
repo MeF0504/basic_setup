@@ -1,4 +1,5 @@
 *.pyc
 ssh_config
 legacy/*
+.DS_Store
 
