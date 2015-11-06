@@ -1,0 +1,45 @@
+[global_config]
+  enabled_plugins = CustomCommandsMenu, TestPlugin, ActivityWatch, LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
+  window_state = maximise
+[keybindings]
+  next_tab = <Primary>Right
+  split_horiz = <Primary><Shift>h
+  go_prev = <Primary><Shift>p
+  prev_tab = <Primary>Left
+  move_tab_right = None
+  move_tab_left = None
+  split_vert = <Primary><Shift>d
+  new_terminator = <Primary>n
+  go_next = <Primary><Shift>n
+[profiles]
+  [[default]]
+    scrollbar_position = hidden
+    use_system_font = False
+    background_darkness = 0.74
+    background_type = transparent
+    background_image = None
+    foreground_color = "#c1cac5"
+    font = Monospace 12
+    background_color = "#0a0000"
+  [[simple]]
+    use_system_font = False
+    font = Monospace 12
+    background_image = None
+    scroll_background = False
+  [[solarized]]
+    use_system_font = False
+    background_type = transparent
+    background_image = None
+    foreground_color = "#839496"
+    font = Monospace 12
+    background_color = "#002b36"
+[layouts]
+  [[default]]
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+      profile = default
+    [[[window0]]]
+      type = Window
+      parent = ""
+[plugins]
