@@ -27,12 +27,14 @@ def mac():
     os.system('open -a Preview '+f2)
 
 
-try:
+if len(sys.argv) != 1:
     files = sys.argv[1:]
-except:
-    files = glob.glob("./*").sort()
+else:
+    files = glob.glob("./*")
+    files.sort()
 
 #print files
 
 if os.uname()[0] == 'Linux': linux()
 if os.uname()[0] == 'Darwin': mac()
+
