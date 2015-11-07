@@ -4,6 +4,13 @@
 
 import curses
 import time
+import sys
+
+try:
+    sec = float(sys.argv[1])
+except IndexError or ValueError:
+    sec = 3
+#print sec
 
 def get_data(max_y,max_x):
     try:
@@ -57,6 +64,6 @@ def curses_main(stdscr):
         stdscr.refresh()
         time.sleep(0.03)
 
-    time.sleep(3)
+    time.sleep(sec)
 
 curses.wrapper(curses_main)
