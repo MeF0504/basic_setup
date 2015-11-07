@@ -24,17 +24,6 @@ print '\n@ '+pydir+'\n'
 pyfiles = commands.getoutput('zsh -c "ls %s/*(.x)"' % pydir).split('\n')
 
 for p in pyfiles:
-    """
-    if p[3] == 'x':
-        p = p.split(' ')
-        fname = os.path.basename(p[-1])
-        if os.path.exists(os.path.join(binpath,fname)):
-            print fname+' is already exist, cannot link!'
-            continue
-        #print p[-1],binpath
-        os.system('ln -s %s %s' % (p[-1],binpath))
-        print 'linked '+fname
-    """
     #print p
     fname = os.path.basename(p)
     if os.path.exists(os.path.join(binpath,fname)):
