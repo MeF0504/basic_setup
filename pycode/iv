@@ -1,0 +1,68 @@
+#! /usr/bin/env python
+
+import curses
+import time
+
+def curses_main(stdscr):
+    curses.noecho()
+    iv = '''
+ ___ ___         ___   ------ 
+ | | * *         * *    ------- 
+ | |  * *       * *    ------ 
+ | |   * *     * *      ------- 
+ | |    * *   * *      ------ 
+ | |     * * * *        ------- 
+ | |      *   *        ------ 
+ | |       * *          ------- 
+ | |        *          ------ 
+ ~~~                    ------- 
+    '''
+    iv = iv.split('\n')
+    iv2 = '''
+                ___ ___         ___  ------ 
+                | | * *         * *   ------- 
+                | |  * *       * *   ------ 
+                | |   * *     * *     ------- 
+                | |    * *   * *     ------ 
+                | |     * * * *       ------- 
+                | |      *   *       ------ 
+                | |       * *         ------- 
+                | |        *         ------ 
+                ~~~                   ------- 
+     '''
+    iv2 = iv2.split('\n')
+    iv3 = '''
+                                ___ ___         ___  ------ 
+                                | | * *         * *   ------- 
+                                | |  * *       * *   ------ 
+                                | |   * *     * *     ------- 
+                                | |    * *   * *     ------ 
+                                | |     * * * *       ------- 
+                                | |      *   *       ------ 
+                                | |       * *         ------- 
+                                | |        *         ------ 
+                                ~~~                   ------- 
+     '''
+    iv3 = iv3.split('\n')
+    ay,ax = stdscr.getmaxyx()
+    iy,ix = stdscr.getbegyx()
+    zero_y = (ay+iy)/2
+    zero_x = (ax+ix)/2
+    lx = len(iv[0])
+    ly = len(iv)
+    for x in range(ax-1,ix-1,-1):
+        stdscr.addstr(zero_y-ly*3/2,zero_x,'4! ')
+        for i in range(ly):
+            s = iv[i]
+            s2 = iv2[i]
+            s3 = iv3[i]
+            stdscr.addstr(zero_y-ly*3/2+1+i,x+lx,s)
+            stdscr.addstr(zero_y-ly/2+i,x-lx,s2)
+            stdscr.addstr(zero_y+ly/2+i,x-lx,s3)
+            stdscr.refresh()
+        time.sleep(0.1)
+    #stdscr.addstr(str(zero_x)+'\n')
+    #stdscr.addstr(str(zero_y))
+    #time.sleep(3)
+
+curses.wrapper(curses_main)
