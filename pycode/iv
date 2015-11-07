@@ -60,7 +60,7 @@ def curses_main(stdscr):
             stdscr.addstr(zero_y-ly/2+i,x-lx,s2)
             stdscr.addstr(zero_y+ly/2+i,x-lx,s3)
             stdscr.refresh()
-        time.sleep(0.1)
+        time.sleep(0.05)
     #stdscr.addstr(str(zero_x)+'\n')
     #stdscr.addstr(str(zero_y))
     #time.sleep(3)
