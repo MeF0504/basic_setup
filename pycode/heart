@@ -35,23 +35,28 @@ def get_data(max_y,max_x):
 
 def curses_main(stdscr):
     #stdscr = curses.initscr()
-    #curses.init_pair(1,(curses.COLOR_BLUE+curses.COLOR_WHITE)/2,curses.COLOR_BLACK)
-    curses.init_pair(1,curses.COLOR_MAGENTA,curses.COLOR_BLACK)
+    curses.noecho()
+    curses.init_pair(1,curses.COLOR_RED,curses.COLOR_WHITE)
+    #curses.init_pair(1,curses.COLOR_MAGENTA,curses.COLOR_WHITE)
+    curses.init_pair(2,curses.COLOR_WHITE,curses.COLOR_WHITE)
     ay,ax = stdscr.getmaxyx()
     iy,ix = stdscr.getbegyx()
     x,y = get_data(ay,ax)
-    curses.noecho()
+    for i in range(ay):
+        stdscr.addstr(i,0,' '*(ax-1),curses.color_pair(2))
 
     zero_x = (ax+ix)/2
     zero_y = (ay+iy)/2
     #print zero_x,zero_y
     #put(zero_x,zero_y,'*')
+    #time.sleep(3)
     for i in range(len(x)):
         #print zero_x+x[i],zero_y+y[i]
         stdscr.addstr(zero_y-y[i]/2,zero_x-x[i],'*',curses.color_pair(1))
         stdscr.addstr(zero_y-y[i]/2,zero_x+x[i],'*',curses.color_pair(1))
         stdscr.refresh()
-
         time.sleep(0.03)
+
+    time.sleep(3)
 
 curses.wrapper(curses_main)
