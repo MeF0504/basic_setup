@@ -13,6 +13,8 @@ if not os.path.exists(args.prefix):
 
 fpath = os.path.dirname(os.path.abspath(__file__))
 binpath = os.path.join(args.prefix,'bin')
+if not os.path.exists(binpath):
+    os.mkdir(binpath)
 #print fpath
 os.chdir(fpath)
 
