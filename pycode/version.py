@@ -30,4 +30,5 @@ if uname == 'Darwin':
 elif uname == 'Linux':
     linux()
 
-print "can't find version file. please add version file place in version.py!"
+else:
+    print "can't find version file. please add version file place in version.py!"
