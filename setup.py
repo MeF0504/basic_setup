@@ -4,7 +4,7 @@ import argparse
 import commands
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--prefix',help='install directory',default='$HOME/opt')
+parser.add_argument('--prefix',help='install directory',default=os.path.expanduser('~/opt'))
 args = parser.parse_args()
 
 if not os.path.exists(args.prefix):
@@ -31,3 +31,30 @@ for p in pyfiles:
         continue
     os.system('ln -s %s %s' % (p,binpath))
     print 'linked '+fname
+
+setdir = os.path.join(fpath,'setup')
+print '\n@ '+setdir+'\n'
+setfiles = ('zshrc_file','256colors.pl','ssh-host-color.sh','terminator_config')
+for fy in setfiles:
+    fpath = os.path.join(setdir,fy)
+    if os.path.exists(fpath):
+        if 'zshrc_file' in fpath:
+            print 'copy '+fpath
+            os.system('cp -i %s ~/.zshrc' % fpath)
+            with open(os.path.expanduser('~/.zshrc.mine'),'a') as f:
+                print >> f,'## PC dependent zshrc'
+                print >> f,'#'
+                print >> f,'\n'
+
+        if '256colors.pl' in fpath:
+            print 'copy '+fpath
+            os.system('cp -i %s %s' % (fpath,binpath))
+
+        if ('ssh-host-color.sh' in fpath) and (os.uname()[0]=='Darwin'):
+            print 'copy '+fpath
+            os.system('cp -i %s %s' % (fpath,binpath))
+
+        if ('terminator_config' in fpath) and (os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser('~/.config/terminator')):
+            print 'copy '+fpath
+            os.system('cp -i %s ~/.config/terminator/config' % fpath)
+
