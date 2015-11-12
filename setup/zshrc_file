@@ -1,5 +1,3 @@
-alias vi="vim"
-
 # users generic .zshrc file for zsh(1)
 
 ## Environment variable configuration
@@ -126,24 +124,29 @@ freebsd*|darwin*)
     alias ls="ls -G -w"
     ;;
 linux*)
-    alias ls="ls --color"
+    alias ls="ls --color -F"
     ;;
 esac
 
+alias -g H='| head'
+alias -g T='| tail'
+alias -g W='| wc'
+alias -g G='| grep'
+alias -g L='| less'
+
 alias la="ls -a"
 alias lf="ls -F"
-alias ll="ls -l"
+alias ll="ls -lT"
+
+alias cp="cp -i"
+alias mv="mv -i"
 
 alias du="du -h"
 alias df="df -h"
 
 alias su="su -l"
-alias ssh="ssh-host-color.sh"
-
-alias zshhistory="vi -R $HOME/.zsh_history"
-#alias version="cat /etc/issue"
 alias grep="grep --color"
-
+#
 ## terminal configuration
 #
 case "${TERM}" in
