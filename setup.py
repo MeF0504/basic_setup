@@ -41,10 +41,11 @@ for fy in setfiles:
         if 'zshrc_file' in fpath:
             print 'copy '+fpath
             os.system('cp -i %s ~/.zshrc' % fpath)
-            with open(os.path.expanduser('~/.zshrc.mine'),'a') as f:
-                print >> f,'## PC dependent zshrc'
-                print >> f,'#'
-                print >> f,'\n'
+            if not os.path.exists(os.path.expanduser('~/.zshrc.mine')):
+                with open(os.path.expanduser('~/.zshrc.mine'),'a') as f:
+                    print >> f,'## PC dependent zshrc'
+                    print >> f,'#'
+                    print >> f,'\n'
 
         if '256colors.pl' in fpath:
             print 'copy '+fpath
