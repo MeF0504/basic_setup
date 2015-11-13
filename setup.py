@@ -39,7 +39,7 @@ for fy in setfiles:
     fpath = os.path.join(setdir,fy)
     if os.path.exists(fpath):
         if 'zshrc_file' in fpath:
-            print 'copy '+os.path.basename(fpath)
+            print 'copy %s --> ~/.zshrc' % os.path.basename(fpath)
             os.system('cp -i %s ~/.zshrc' % fpath)
             if not os.path.exists(os.path.expanduser('~/.zshrc.mine')):
                 with open(os.path.expanduser('~/.zshrc.mine'),'a') as f:
@@ -48,14 +48,14 @@ for fy in setfiles:
                     print >> f,'\n'
 
         if '256colors.pl' in fpath:
-            print 'copy '+os.path.basename(fpath)
+            print 'copy %s --> %s' % (os.path.basename(fpath),binpath)
             os.system('cp -i %s %s' % (fpath,binpath))
 
         if ('ssh-host-color.sh' in fpath) and (os.uname()[0]=='Darwin'):
-            print 'copy '+os.path.basename(fpath)
+            print 'copy %s --> %s' % (os.path.basename(fpath),binpath)
             os.system('cp -i %s %s' % (fpath,binpath))
 
         if ('terminator_config' in fpath) and (os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser('~/.config/terminator')):
-            print 'copy '+os.path.basename(fpath)
+            print 'copy %s --> ~/.config/terminator/config' % os.path.basename(fpath)
             os.system('cp -i %s ~/.config/terminator/config' % fpath)
 
