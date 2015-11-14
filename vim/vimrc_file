@@ -66,7 +66,6 @@ if isdirectory(expand("~/.vim/plugin"))
 endif
 if isdirectory(expand("~/.vim/bundle"))
     source ~/.vim/rcdir/.vimrc.neobundle
-    source ~/.vim/rcdir/.vimrc.neocomplcache
 endif
 source ~/.vim/rcdir/.vimrc.mine
 
