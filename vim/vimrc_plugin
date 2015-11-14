@@ -1,0 +1,6 @@
+""vim plugin setting
+"
+
+"vimの背景を透過
+let g:seiya_auto_enable=1
+

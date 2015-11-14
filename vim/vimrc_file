@@ -33,14 +33,40 @@ set mouse=i
 set expandtab
 "日本語OKに
 set fileencoding=utf-8
+"大文字、小文字を区別しない
+set ignorecase
+"検索文字に大文字があると区別する
+set smartcase
+"タブとかを可視化?
+"set listchars=tab:»-,trail:-,extends:»,precedes:«,nbsp:%,eol:↲
 "カラーの変更
 colorscheme desert
+if filereadable(expand("~/.vim/colors/inkpot.vim"))
+    colorscheme inkpot
+    source ~/.vim/rcdir/.vimrc.color
+endif
+"let g:hybrid_use_Xresources = 1
+"colorscheme hybrid
+"全角スペース表示
+hi ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
+match ZenkakuSpace /　/
 
+"カーソルの下に下線を表示
+"set cursorline
 
-" Execute python script Ctrl-P 
+"Execute python script Ctrl-P
 function! s:ExecPy()
     exe "!" . &ft . " %"
     :endfunction
     command! Exec call <SID>ExecPy()
     autocmd FileType python map <silent> <C-P> :call <SID>ExecPy()<CR>
+
+if isdirectory(expand("~/.vim/plugin"))
+    source ~/.vim/rcdir/.vimrc.plugin
+endif
+if isdirectory(expand("~/.vim/bundle"))
+    source ~/.vim/rcdir/.vimrc.neobundle
+    source ~/.vim/rcdir/.vimrc.neocomplcache
+endif
+source ~/.vim/rcdir/.vimrc.mine
 

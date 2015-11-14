@@ -1,0 +1,13 @@
+"" vim color setting
+"
+
+""(候補とかの)色の設定
+hi Pmenu ctermbg=4
+hi PmenuSel ctermbg=1
+hi PMenuSbar ctermbg=4
+hi Identifier ctermfg=110
+hi Number ctermfg=9
+hi Type ctermfg=149
+hi String ctermbg=None ctermfg=222
+hi Comment ctermfg=60
+"hi Comment ctermfg=212

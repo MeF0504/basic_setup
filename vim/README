@@ -9,3 +9,5 @@ cat vimrc_neocomp>> ~/.vimrc
 でNeoBudleInstall
 だったかな
 
+使っているcolorschemeはinkpot(https://github.com/ciaranm/inkpot.git)、他にはubuntuで透過させるためにseiya.vim(https://github.com/miyakogi/seiya.vim.git)をpluginで入れている。
+

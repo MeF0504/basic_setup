@@ -1,3 +1,5 @@
+""vim neobundle setting
+"
 
 "--------------------------------------------------------------------------
 " neobundle
@@ -21,5 +23,6 @@ if neobundle#exists_not_installed_bundles()
   echomsg 'Please execute ":NeoBundleInstall" command.'
   "finish
 endif
+
 
 
