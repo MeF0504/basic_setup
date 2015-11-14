@@ -72,7 +72,7 @@ for fy in files:
 vimdir = os.path.join(fpath,'vim')
 print '\n@ '+vimdir+'\n'
 
-files = ('vimrc_file','vimrc_color','vimrc_plugin','vimrc_neobundle','vimrc_neocomp')
+files = ('vimrc_file','vimrc_color','vimrc_plugin','vimrc_neobundle')
 mkdir('~/.vim')
 mkdir('~/.vim/rcdir')
 
@@ -107,9 +107,6 @@ for fy in files:
         if 'vimrc_neobundle' in vpath:
             print 'copy %s --> ~/.vim/rcdir' % os.path.basename(vpath)
             os.system('cp -i %s ~/.vim/rcdir/.vimrc.neobundle' % vpath)
-        if 'vimrc_neocomp' in vpath:
-            print 'copy %s --> ~/.vim/rcdir' % os.path.basename(vpath)
-            os.system('cp -i %s ~/.vim/rcdir/.vimrc.neocomplcache' % vpath)
 
 vim_mine = os.path.expanduser('~/.vim/rcdir/.vimrc.mine')
 if not os.path.exists(vim_mine):
