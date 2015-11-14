@@ -111,3 +111,10 @@ for fy in files:
             print 'copy %s --> ~/.vim/rcdir' % os.path.basename(vpath)
             os.system('cp -i %s ~/.vim/rcdir/.vimrc.neocomplcache' % vpath)
 
+vim_mine = os.path.expanduser('~/.vim/rcdir/.vimrc.mine')
+if not os.path.exists(vim_mine):
+    with open(vim_mine,'a') as f:
+        print >> f,'"" PC dependent vimrc'
+        print >> f,'"'
+        print >> f,'\n'
+
