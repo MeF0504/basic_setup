@@ -1,5 +1,7 @@
 *.pyc
+*.swp
 ssh_config
 legacy/*
 .DS_Store
+tmp/*
 
