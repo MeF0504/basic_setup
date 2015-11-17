@@ -136,7 +136,7 @@ alias -g L='| less'
 
 alias la="ls -a"
 alias lf="ls -F"
-alias ll="ls -lT"
+alias ll="ls -l"
 
 alias cp="cp -i"
 alias mv="mv -i"
