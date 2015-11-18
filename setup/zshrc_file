@@ -25,7 +25,10 @@ case ${UID} in
     SPROMPT="%B%{${fg[red]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
     ;;
 *)
-    PROMPT="%{${fg[red]}%}%~%%%{${reset_color}%} "
+    local short="%{${fg[red]}%}%/%%%{${reset_color}%} "
+    local long="%F{red}%(5~,%-1~/.../%2~,%~)%%%f "
+    PROMPT="%4(~|$long|$short)"
+    #PROMPT="%{${fg[red]}%}%~%%%{${reset_color}%} "
     PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
     SPROMPT="%{${fg[red]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
     [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && 
@@ -148,6 +151,11 @@ alias su="su -l"
 alias grep="grep --color -n"
 
 alias zshhistory="vi -R ~/.zsh_history"
+cdpwd ()
+{
+    \cd "$@" && pwd
+}
+alias cd="cdpwd"
 
 if [[ ${OSTYPE} = darwin* && -z ${SSH_CLIENT} ]]; then
     alias ssh="ssh-host-color.sh"
