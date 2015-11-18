@@ -149,6 +149,10 @@ alias grep="grep --color -n"
 
 alias zshhistory="vi -R ~/.zsh_history"
 
+if [[ ${OSTYPE} = darwin* && ${SSH_CLIENT} = "" ]]; then
+    alias ssh="ssh-host-color.sh"
+fi
+
 #
 ## terminal configuration
 #
