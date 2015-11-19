@@ -26,7 +26,8 @@ case ${UID} in
     ;;
 *)
     local short="%{${fg[red]}%}%/%%%{${reset_color}%} "
-    local long="%F{red}%(5~,%-1~/.../%2~,%~)%%%f "
+    #local long="%F{red}%(5~,%-1~/.../%2~,%~)%%%f "
+    local long="%{${fg[red]}%}%(5~,%-1~/.../%2~,%~)%{${reset_color}%} "
     PROMPT="%4(~|$long|$short)"
     ## from http://0xcc.net/blog/archives/000032.html
     #PROMPT="%{${fg[red]}%}%~%%%{${reset_color}%} "
