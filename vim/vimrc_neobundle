@@ -61,3 +61,8 @@ inoremap <expr><C-e>  neocomplcache#cancel_popup()
 
 call neobundle#end()
 
+""(候補とかの)色の設定
+hi Pmenu ctermbg=4
+hi PmenuSel ctermbg=1
+hi PMenuSbar ctermbg=4
+

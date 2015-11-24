@@ -1,10 +1,7 @@
 "" vim color setting
 "
 
-""(候補とかの)色の設定
-hi Pmenu ctermbg=4
-hi PmenuSel ctermbg=1
-hi PMenuSbar ctermbg=4
+""optimized in inkpot
 hi Identifier ctermfg=110
 hi Number ctermfg=9
 hi Type ctermfg=149
