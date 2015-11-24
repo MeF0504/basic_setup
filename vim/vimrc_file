@@ -54,6 +54,9 @@ match ZenkakuSpace /　/
 "カーソルの下に下線を表示
 "set cursorline
 
+"Ctrl-c波なのでescをCtrl-cにマッピング
+inoremap <C-c> <Esc>
+
 "Execute python script Ctrl-P
 function! s:ExecPy()
     exe "!" . &ft . " %"
