@@ -1,30 +1,22 @@
 #! /usr/bin/env python
 
 import os
-import commands
+import subprocess
 
 def linux():
-    if os.path.exists('/etc/redhat-release'):
-        print commands.getoutput('cat /etc/redhat-release')
-        exit()
-
-    elif os.path.exists('/etc/lsb-release'):
-        print commands.getoutput('cat /etc/lsb-release')
-        exit()
-
-    elif os.path.exists('/etc/issue'):
-        print commands.getoutput('cat /etc/issue')
-        exit()
-
-    else:
-        #version =  "can't find version file. please add version file place in version.py!"
-        return
+    release_files = ['/etc/redhat-release','/etc/lsb-release','/etc/issue']
+    for rf in release_files:
+        if os.path.exists(rf):
+            #print subprocess.check_output('cat '+rf,shell=True)
+            subprocess.call('cat '+rf,shell=True)
+            exit()
 
 def mac():
-    print commands.getoutput('sw_vers')
+    #print subprocess.check_call('sw_vers',shell=True)
+    subprocess.call('sw_vers',shell=True)
     exit()
 
-uname = commands.getoutput('uname')
+uname = os.uname()[0]
 if uname == 'Darwin':
     mac()
 elif uname == 'Linux':
