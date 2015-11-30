@@ -62,6 +62,11 @@ for fy in files:
         if ('ssh-host-color.sh' in spath) and (os.uname()[0]=='Darwin'):
             print 'copy %s --> %s' % (os.path.basename(spath),binpath)
             subprocess.call('cp -i %s %s' % (spath,binpath),shell=True)
+            if not os.path.exists(os.path.expanduser('~/.ssh/ssh-host-color-set')):
+                with open(os.path.expanduser('~/.ssh/ssh-host-color-set'),'a') as f:
+                    print >> f,'hoge 10 10 25'
+                    print >> f,'fuga 18 5 10'
+                    print >> f,'bar 10 25 10'
 
         if ('terminator_config' in spath) and (os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser('~/.config/terminator')):
             print 'copy %s --> ~/.config/terminator/config' % os.path.basename(spath)

@@ -9,6 +9,8 @@
 # Fork from https://gist.github.com/773849
 #
 
+set -eu
+
 set_term_bgcolor(){
   local R=$1
   local G=$2
@@ -27,11 +29,15 @@ EOF
 trap 'set_term_bgcolor 0 0 0' 2
 #return background color if ssh canceled by Ctr-C
 
-if [[ "$@" =~ hoge ]]; then
-  set_term_bgcolor 10 10 25
-elif [[ "$@" =~ fuga ]]; then
-  set_term_bgcolor 18 5 10
-fi
+while read i; do
+    arr=(`echo $i`)
+    if [ ${#arr[@]} -eq 4 ]; then
+        if [[ "$@" =~ ${arr[0]} ]]; then
+            set_term_bgcolor ${arr[1]} ${arr[2]} ${arr[3]}
+        fi
+    fi
+done < ~/.ssh/ssh-host-color-set
+# read self setting file like "hostname R G B"
 
 ssh $@
 
