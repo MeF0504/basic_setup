@@ -1,7 +1,11 @@
 
 import os
+import sys
 import argparse
 import subprocess
+if float(sys.version[:3]) < 2.7:
+    import commands
+
 
 def mkdir(path):
     path = os.path.expanduser(path)
@@ -28,7 +32,10 @@ os.chdir(fpath)
 ############### python script directory ###############
 pydir = os.path.join(fpath,'pycode')
 print '\n@ '+pydir+'\n'
-pyfiles = subprocess.check_output('zsh -c "ls %s/*(.x)"' % pydir,shell=True).split('\n')
+try:
+    pyfiles = subprocess.check_output('zsh -c "ls %s/*(.x)"' % pydir,shell=True).split('\n')
+except AttributeError:
+    pyfiles = commands.getoutput('zsh -c "ls %s/*(.x)"' % pydir).split('\n')
 
 for p in pyfiles:
     #print p
