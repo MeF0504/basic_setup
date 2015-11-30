@@ -12,7 +12,7 @@ else:
 try:
     files = int(subprocess.check_output('ls -l %s | wc -l' % wd,shell=True))
 except AttributeError:
-    files = int(commands.getoutput('ls -l %s | wc -l' % wd,shell=True))
+    files = int(commands.getoutput('ls -l %s | wc -l' % wd))
 
 if len(sys.argv) > 2:
     files = len(sys.argv)
