@@ -8,8 +8,8 @@ set ruler
 set cmdheight=2
 "文の折り返し
 set wrap
-"タイトルを表示
-set title
+"タイトルを非表示
+set notitle
 "viとの互換性をとらない
 set nocompatible
 "タブの幅
