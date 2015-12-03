@@ -154,11 +154,14 @@ alias su="su -l"
 alias grep="grep --color -n"
 
 alias zshhistory="vi -R ~/.zsh_history"
-cdpwd ()
-{
-    \cd "$@" && pwd
-}
-alias cd="cdpwd"
+#cdpwd ()
+#{
+    #\cd "$@" && pwd
+#}
+#alias cd="cdpwd"
+#chpwd関数を定義しておくとzshがcd後に勝手に実行してくれる。
+function chpwd() {pwd; echo -ne "\033]0;${USER}@${HOST}\007"}
+#from http://qiita.com/dai___chi/items/135d063444d152e63e1c
 
 if [[ ${OSTYPE} = darwin* && -z ${SSH_CLIENT} ]]; then
     alias ssh="ssh-host-color.sh"
