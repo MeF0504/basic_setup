@@ -7,4 +7,5 @@ hi Number ctermfg=9
 hi Type ctermfg=149
 hi String ctermbg=None ctermfg=222
 hi Comment ctermfg=60
+hi LineNr ctermfg=239
 "hi Comment ctermfg=212
