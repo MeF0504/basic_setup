@@ -39,6 +39,8 @@ while read i; do
 done < ~/.ssh/ssh-host-color-set
 # read self setting file like "hostname R G B"
 
-ssh $@
+if [[ ! "$@" =~ local ]]; then
+    ssh $@
+fi
 
 set_term_bgcolor 0 0 0
