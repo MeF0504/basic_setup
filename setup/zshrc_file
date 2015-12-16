@@ -22,20 +22,23 @@ case ${UID} in
 0)
     PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') %B%{${fg[red]}%}%/#%{${reset_color}%}%b "
     PROMPT2="%B%{${fg[red]}%}%_#%{${reset_color}%}%b "
-    SPROMPT="%B%{${fg[red]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
+    SPROMPT="%B%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
     ;;
 *)
-    local short="%{${fg[red]}%}%/%%%{${reset_color}%} "
+    local short="%{${fg[red]}%}%/ S%{${reset_color}%} "
     #local long="%F{red}%(5~,%-1~/.../%2~,%~)%%%f "
-    local long="%{${fg[red]}%}%(5~,%-1~/.../%2~,%~)%%%{${reset_color}%} "
-    PROMPT="%4(~|$long|$short)"
+    local long="%{${fg[red]}%}%(3~,%-1~/.../%2~,%~) L%{${reset_color}%} "
+    PROMPT="%3(~|$long|$short)"
     ## from http://0xcc.net/blog/archives/000032.html
     #PROMPT="%{${fg[red]}%}%~%%%{${reset_color}%} "
     PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
-    SPROMPT="%{${fg[red]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
-    [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && 
+    SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
+    if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
         PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') ${PROMPT}"
         #PROMPT="%F{cyan}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%f ${PROMPT}"
+    else
+        PROMPT="%{${fg[green]}%}%T%{${reset_color}%} ${PROMPT}"
+    fi
     ;;
 esac
 
