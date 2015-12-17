@@ -38,10 +38,11 @@ except AttributeError:
     pyfiles = commands.getoutput('zsh -c "ls %s/*(.x)"' % pydir).split('\n')
 
 for p in pyfiles:
-    #print p
+    #print 'p',p,'p'
     fname = os.path.basename(p)
-    if os.path.exists(os.path.join(binpath,fname)):
-        print fname+' is already exist, cannot link!'
+    if p=="": continue
+    elif os.path.exists(os.path.join(binpath,fname)):
+        print fname+'\t is already exist, cannot link!'
         continue
     subprocess.call('ln -s %s %s' % (p,binpath),shell=True)
     print 'linked '+fname
@@ -54,8 +55,12 @@ for fy in files:
     spath = os.path.join(setdir,fy)
     if os.path.exists(spath):
         if 'zshrc_file' in spath:
-            print 'copy %s --> ~/.zshrc' % os.path.basename(spath)
-            subprocess.call('cp -i %s ~/.zshrc' % spath,shell=True)
+            if os.path.exists(os.path.expanduser('~/.zshrc')):
+                print '~/.zshrc\t is already exist, cannot link!'
+            else:
+                print 'linked %s --> ~/.zshrc' % os.path.basename(spath)
+                #subprocess.call('cp -i %s ~/.zshrc' % spath,shell=True)
+                subprocess.call('ln -s %s ~/.zshrc' % spath,shell=True)
             if not os.path.exists(os.path.expanduser('~/.zshrc.mine')):
                 with open(os.path.expanduser('~/.zshrc.mine'),'a') as f:
                     print >> f,'## PC dependent zshrc'
@@ -63,11 +68,11 @@ for fy in files:
                     print >> f,'\n'
 
         if '256colors.pl' in spath:
-            print 'copy %s --> %s' % (os.path.basename(spath),binpath)
+            print '\ncopy %s --> %s' % (os.path.basename(spath),binpath)
             subprocess.call('cp -i %s %s' % (spath,binpath),shell=True)
 
         if ('ssh-host-color.sh' in spath) and (os.uname()[0]=='Darwin'):
-            print 'copy %s --> %s' % (os.path.basename(spath),binpath)
+            print '\ncopy %s --> %s' % (os.path.basename(spath),binpath)
             subprocess.call('cp -i %s %s' % (spath,binpath),shell=True)
             if not os.path.exists(os.path.expanduser('~/.ssh/ssh-host-color-set')):
                 with open(os.path.expanduser('~/.ssh/ssh-host-color-set'),'a') as f:
@@ -76,7 +81,7 @@ for fy in files:
                     print >> f,'bar 10 25 10'
 
         if ('terminator_config' in spath) and (os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser('~/.config/terminator')):
-            print 'copy %s --> ~/.config/terminator/config' % os.path.basename(spath)
+            print '\ncopy %s --> ~/.config/terminator/config' % os.path.basename(spath)
             subprocess.call('cp -i %s ~/.config/terminator/config' % spath,shell=True)
 
 ############### vim setup directory ###############
@@ -90,7 +95,7 @@ mkdir('~/.vim/rcdir')
 if args.download:
     mkdir('tmp')
     os.chdir(os.path.join(fpath,'tmp'))
-    print 'clone neobundle'
+    print '\nclone neobundle'
     mkdir('~/.vim/bundle/')
     subprocess.call('git clone git://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim',shell=True)
     print '\nclone inkpot'
@@ -106,18 +111,38 @@ if args.download:
 for fy in files:
     vpath = os.path.join(vimdir,fy)
     if os.path.exists(vpath):
+
         if 'vimrc_file' in vpath:
-            print 'copy %s --> ~/.vimrc' % os.path.basename(vpath)
-            subprocess.call('cp -i %s ~/.vimrc' % vpath,shell=True)
+            if os.path.exists(os.path.expanduser('~/.vimrc')):
+                print '~/.vimrc\t is already exist, cannot link!'
+            else:
+                print 'linked %s --> ~/.vimrc' % os.path.basename(vpath)
+                #subprocess.call('cp -i %s ~/.vimrc' % vpath,shell=True)
+                subprocess.call('ln -s %s ~/.vimrc' % vpath,shell=True)
+
         if 'vimrc_color' in vpath:
-            print 'copy %s --> ~/.vim/rcdir' % os.path.basename(vpath)
-            subprocess.call('cp -i %s ~/.vim/rcdir/.vimrc.color' % vpath,shell=True)
+            if os.path.exists(os.path.expanduser('~/.vim/rcdir/.vimrc.color')):
+                print '.vimrc.color\t is already exist, cannot link!'
+            else:
+                print 'linked %s --> ~/.vim/rcdir' % os.path.basename(vpath)
+                #subprocess.call('cp -i %s ~/.vim/rcdir/.vimrc.color' % vpath,shell=True)
+                subprocess.call('ln -s %s ~/.vim/rcdir/.vimrc.color' % vpath,shell=True)
+
         if 'vimrc_plugin' in vpath:
-            print 'copy %s --> ~/.vim/rcdir' % os.path.basename(vpath)
-            subprocess.call('cp -i %s ~/.vim/rcdir/.vimrc.plugin' % vpath,shell=True)
+            if os.path.exists(os.path.expanduser('~/.vim/rcdir/.vimrc.plugin')):
+                print '.vimrc.plugin\t is already exist, cannot link!'
+            else:
+                print 'linked %s --> ~/.vim/rcdir' % os.path.basename(vpath)
+                #subprocess.call('cp -i %s ~/.vim/rcdir/.vimrc.plugin' % vpath,shell=True)
+                subprocess.call('ln -s %s ~/.vim/rcdir/.vimrc.plugin' % vpath,shell=True)
+
         if 'vimrc_neobundle' in vpath:
-            print 'copy %s --> ~/.vim/rcdir' % os.path.basename(vpath)
-            subprocess.call('cp -i %s ~/.vim/rcdir/.vimrc.neobundle' % vpath,shell=True)
+            if os.path.exists(os.path.expanduser('~/.vim/rcdir/.vimrc.neobundle')):
+                print '.vimrc.neobundle\t is already exist, cannot link!'
+            else:
+                print 'linked %s --> ~/.vim/rcdir' % os.path.basename(vpath)
+                #subprocess.call('cp -i %s ~/.vim/rcdir/.vimrc.neobundle' % vpath,shell=True)
+                subprocess.call('ln -s %s ~/.vim/rcdir/.vimrc.neobundle' % vpath,shell=True)
 
 vim_mine = os.path.expanduser('~/.vim/rcdir/.vimrc.mine')
 if not os.path.exists(vim_mine):
