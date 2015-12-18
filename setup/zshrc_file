@@ -51,8 +51,8 @@ zstyle ':vcs_info:*' max-exports 6 # formatに入る変数の最大数
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' stagedstr "%{${fg[yellow]}%}need commit%{${reset_color}%}"
 zstyle ':vcs_info:git:*' unstagedstr "%{${fg[red]}%}need add%{${reset_color}%}"
-zstyle ':vcs_info:git:*' formats '%c%u'
-zstyle ':vcs_info:git:*' actionformats '! %a' '%c' '%u'
+zstyle ':vcs_info:git:*' formats '%c %u'
+zstyle ':vcs_info:git:*' actionformats '! %a %c %u'
 setopt prompt_subst
 
 function rprom() {
