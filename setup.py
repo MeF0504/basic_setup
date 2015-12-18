@@ -122,6 +122,9 @@ if args.download:
     print '\nclone seiya'
     subprocess.call('git clone https://github.com/miyakogi/seiya.vim',shell=True)
     subprocess.call('cp -ri ./seiya.vim/plugin ~/.vim',shell=True)
+    print '\nclone quickrun'
+    subprocess.call('git clone https://github.com/thinca/vim-quickrun.git',shell=True)
+    subprocess.call('cp -ri ./vim-quickrun/plugin/quickrun.vim ~/.vim/plugin/',shell=True)
     print '\nremove download tmp files'
     subprocess.call('rm -rf %s' % os.path.join(fpath,'tmp','*'),shell=True)
     os.chdir(fpath)
