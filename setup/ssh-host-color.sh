@@ -27,7 +27,7 @@ EOF
 }
 
 trap 'set_term_bgcolor 0 0 0' 2
-#return background color if ssh canceled by Ctr-C
+#return background color if ssh canceled by Ctrl-C
 
 while read i; do
     arr=(`echo $i`)
