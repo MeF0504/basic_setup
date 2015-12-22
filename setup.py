@@ -30,12 +30,12 @@ def fcopy(file1,file2,link=False,**kwargs):
             print name2+'\t is already exist, cannot link!'
     else:
         if (not os.path.exists(file2)) and condition:
-            print 'copy %s --> %s\n' % (file1,file2)
+            print 'copy %s --> %s\n' % (name1,file2)
             subprocess.call('cp %s %s' % (file1,file2),shell=True)
         elif condition:
             yn = raw_input(name2+'\t is already exist, are you realy overwite? [y,n]')
             if (yn == 'y') or (yn == 'yes'):
-                print 'copy %s --> %s\n' % (file1,file2)
+                print 'copy %s --> %s\n' % (name1,file2)
                 subprocess.call('cp %s %s' % (file1,file2),shell=True)
             else:
                 print 'Do not copy '+name2+'\n'
