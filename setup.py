@@ -60,10 +60,6 @@ if __name__ == "__main__":
     ############### python script directory ###############
     pydir = os.path.join(fpath,'pycode')
     print '\n@ '+pydir+'\n'
-    #try:
-        #pyfiles = subprocess.check_output('zsh -c "ls %s/*(.x)"' % pydir,shell=True).split('\n')
-    #except AttributeError:
-        #pyfiles = commands.getoutput('zsh -c "ls %s/*(.x)"' % pydir).split('\n')
     pyfiles = []
     for pfy in glob.glob(os.path.join(pydir,'*')):
         if os.access(pfy,os.X_OK):
