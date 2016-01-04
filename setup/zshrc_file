@@ -203,7 +203,7 @@ screen)
     ;;
 esac
 
-export TERM=xterm-256color
+#export TERM=xterm-256color
 
 case "${TERM}" in
 xterm|xterm-color|xterm-256color)
@@ -236,17 +236,14 @@ esac
 # set terminal title including current directory
 #
 case "${TERM}" in
-xterm|xterm-color|kterm|kterm-color)
+xterm|xterm-color|kterm|kterm-color|xterm-256color)
     precmd() {
-        echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
+        #echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
+        echo -ne "\033]0;${USER}@${HOST}\007"
     }
     ;;
 esac
 
-
-## load user .zshrc configuration file
-#
-[ -f ${HOME}/.zshrc.mine ] && source ${HOME}/.zshrc.mine
 
 function 256colortest() {
     local code
@@ -255,4 +252,8 @@ function 256colortest() {
     done
 }
 echo -ne "\033]0;${USER}@${HOST}\007"
+
+## load user .zshrc configuration file
+#
+[ -f ${HOME}/.zshrc.mine ] && source ${HOME}/.zshrc.mine
 
