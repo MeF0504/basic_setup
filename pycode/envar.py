@@ -19,5 +19,5 @@ try:
     print envar
 
 except KeyError:
-    print 'please input enviromental variable'
+    print 'please input environmental variable'
 
