@@ -44,7 +44,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--prefix',help='install directory',default=os.path.expanduser('~/opt'))
     parser.add_argument('--download',help='download some files (from git)',action='store_true')
-    parser.add_argument('--copy',help="only copy files instead of link",action='store_true')
+    #parser.add_argument('--copy',help="only copy files instead of link",action='store_true')
+    parser.add_argument('--link',help="link files instead of copy",action='store_true')
     args = parser.parse_args()
 
     if not os.path.exists(args.prefix):
@@ -68,17 +69,17 @@ if __name__ == "__main__":
     for p in pyfiles:
         #print 'p',p,'p'
         fname = os.path.basename(p)
-        fcopy(p,os.path.join(binpath,fname),link=True)
+        fcopy(p,os.path.join(binpath,fname),link=args.link)
 
     ############### basic setup directory ###############
     setdir = os.path.join(fpath,'setup')
     print '\n@ '+setdir+'\n'
-    files = {'zshrc_file':'~/.zshrc','256colors.pl':'256colors.pl','ssh-host-color.sh':'ssh-host-color.sh','terminator_config':'terminator_config'}
+    files = {'zshrc_file':'~/.zshrc','256colors.pl':'256colors.pl','ssh-host-color.sh':'ssh-host-color.sh','terminator_config':'~/.config/terminator/config'}
     for fy in files:
         spath = os.path.join(setdir,fy)
         if os.path.exists(spath):
             if 'zshrc_file' in spath:
-                fcopy(spath,os.path.expanduser(files[fy]),link=bool(1-args.copy))
+                fcopy(spath,os.path.expanduser(files[fy]),link=bool(args.link))
                 if not os.path.exists(os.path.expanduser('~/.zshrc.mine')):
                     with open(os.path.expanduser('~/.zshrc.mine'),'a') as f:
                         print >> f,'## PC dependent zshrc'
@@ -97,7 +98,7 @@ if __name__ == "__main__":
                         print >> f,'bar 10 25 10'
 
             if ('terminator_config' in spath):
-                fcopy(spath,os.path.expanduser(files[fy]),link=False,condition=((os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser('~/.config/terminator'))))
+                fcopy(spath,os.path.expanduser(files[fy]),link=False,condition=(os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser(files[fy])))
 
     ############### vim setup directory ###############
     vimdir = os.path.join(fpath,'vim')
@@ -132,10 +133,10 @@ if __name__ == "__main__":
         if os.path.exists(vpath):
 
             if 'vimrc_file' in vpath:
-                fcopy(vpath,os.path.expanduser(files[fy]),link=bool(1-True))
+                fcopy(vpath,os.path.expanduser(files[fy]),link=bool(args.link))
 
             else:
-                fcopy(vpath,os.path.join(rcdir,files[fy]),link=bool(1-True))
+                fcopy(vpath,os.path.join(rcdir,files[fy]),link=bool(args.link))
 
     vim_mine = os.path.expanduser('~/.vim/rcdir/.vimrc.mine')
     if not os.path.exists(vim_mine):
