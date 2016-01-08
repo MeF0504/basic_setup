@@ -187,7 +187,8 @@ alias zshhistory="vi -R ~/.zsh_history"
 #alias cd="cdpwd"
 
 #chpwd関数を定義しておくとzshがcd後に勝手に実行してくれる。
-function chpwd() {pwd; echo -ne "\033]0;${USER}@${HOST}\007"}
+#function chpwd() {pwd; echo -ne "\033]0;${USER}@${HOST}\007"}
+function chpwd() {pwd}
 #from http://qiita.com/dai___chi/items/135d063444d152e63e1c
 
 if [[ ${OSTYPE} = darwin* && -z ${SSH_CLIENT} ]]; then
@@ -235,23 +236,29 @@ esac
 
 # set terminal title including current directory
 #
+
+if [[ ${SSH_CLIENT} == "" ]]; then
+    HOSTNAME="local"
+else
+    HOSTNAME=${HOST%%.*}
+fi
+
 case "${TERM}" in
 xterm|xterm-color|kterm|kterm-color|xterm-256color)
     precmd() {
         #echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
-        echo -ne "\033]0;${USER}@${HOST}\007"
+        echo -ne "\033]0;${USER}@${HOSTNAME}\007"
     }
     ;;
 esac
 
-
+#check the terminal can display 256colors
 function 256colortest() {
     local code
     for code in {0..255}; do
         echo -e "\e[38;05;${code}m $code: Test"
     done
 }
-echo -ne "\033]0;${USER}@${HOST}\007"
 
 ## load user .zshrc configuration file
 #
