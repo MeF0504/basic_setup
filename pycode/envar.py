@@ -1,19 +1,23 @@
 #! /usr/bin/env python
 
-import subprocess
-import sys
-if float(sys.version[:3]) < 2.7:
-    import commands
+import os
+import argparse
 
-if len(sys.argv) != 2 or not sys.argv[-1].startswith('/'):
-    print 'please input enviromental variable'
+parser = argparse.ArgumentParser()
+parser.add_argument('environ',help='environment value')
+args = parser.parse_args()
 
-else:
-    try: envar = subprocess.check_output('echo %s' % sys.argv[1],shell=True)
-    except AttributeError:
-        envar = commands.getoutput('echo %s' % sys.argv[1])
+if ':' in args.environ:
+    envar = args.environ
     envar = envar.replace(':',':\n')
+    print envar
+    exit()
 
+try:
+    envar = os.environ[args.environ]
+    envar = envar.replace(':',':\n')
     print envar
 
+except KeyError:
+    print 'please input environmental variable'
 
