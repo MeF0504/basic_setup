@@ -188,7 +188,13 @@ alias zshhistory="vi -R ~/.zsh_history"
 
 #chpwd関数を定義しておくとzshがcd後に勝手に実行してくれる。
 #function chpwd() {pwd; echo -ne "\033]0;${USER}@${HOST}\007"}
-function chpwd() {pwd}
+function chpwd() {
+    pwd
+    if [[ -e .git ]]; then
+        #echo "%{${fg[yellow]}%}check git repo is up-to-date%{${reset_color}%}"
+        echo "\033[33mcheck git repo is up-to-date\033[0m"
+    fi
+}
 #from http://qiita.com/dai___chi/items/135d063444d152e63e1c
 
 if [[ ${OSTYPE} = darwin* && -z ${SSH_CLIENT} ]]; then
