@@ -192,7 +192,7 @@ function chpwd() {
     pwd
     if [[ -e .git ]]; then
         #echo "%{${fg[yellow]}%}check git repo is up-to-date%{${reset_color}%}"
-        echo "\033[33mcheck git repo is up-to-date\033[0m"
+        echo "\033[33mcheck git repo is up-to-date  (---> git fetch) \033[0m"
     fi
 }
 #from http://qiita.com/dai___chi/items/135d063444d152e63e1c

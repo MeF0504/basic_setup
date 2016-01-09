@@ -15,7 +15,7 @@ def mkdir(path):
         os.mkdir(path)
         os.chmod(path,0755)
 
-def fcopy(file1,file2,link=False,**kwargs):
+def fcopy(file1,file2,link=False,force=False,**kwargs):
     name1 = os.path.basename(file1)
     name2 = os.path.basename(file2)
     if kwargs.has_key('condition'):
@@ -27,13 +27,16 @@ def fcopy(file1,file2,link=False,**kwargs):
             subprocess.call('ln -s %s %s' % (file1,file2),shell=True)
             print 'linked '+name1
         elif condition:
-            print name2+'\t is already exist, cannot link!'
+            print '[  %s  ] is already exist, cannot link!' % name2
     else:
-        if (not os.path.exists(file2)) and condition:
+        if force and condition:
+            print 'copy %s --> %s\n' % (name1,file2)
+            subprocess.call('cp %s %s' % (file1,file2),shell=True)
+        elif (not os.path.exists(file2)) and condition:
             print 'copy %s --> %s\n' % (name1,file2)
             subprocess.call('cp %s %s' % (file1,file2),shell=True)
         elif condition:
-            yn = raw_input(name2+'\t is already exist, are you realy overwite? [y,n]')
+            yn = raw_input('[  %s  ] is already exist, are you realy overwite? [y,n]' % name2)
             if (yn == 'y') or (yn == 'yes'):
                 print 'copy %s --> %s\n' % (name1,file2)
                 subprocess.call('cp %s %s' % (file1,file2),shell=True)
@@ -46,6 +49,7 @@ if __name__ == "__main__":
     parser.add_argument('--download',help='download some files (from git)',action='store_true')
     #parser.add_argument('--copy',help="only copy files instead of link",action='store_true')
     parser.add_argument('--link',help="link files instead of copy",action='store_true')
+    parser.add_argument('-f','--force',help="Do not prompt for confirmation before overwriting the destination path",action='store_true')
     args = parser.parse_args()
 
     if not os.path.exists(args.prefix):
@@ -91,7 +95,7 @@ if __name__ == "__main__":
 
             if 'ssh-host-color.sh' in spath:
                 fcopy(spath,os.path.join(binpath,files[fy]),link=False,condition=os.uname()[0]=='Darwin')
-                if not os.path.exists(os.path.expanduser('~/.ssh/ssh-host-color-set')):
+                if os.uname()[0]=='Darwin' and (not os.path.exists(os.path.expanduser('~/.ssh/ssh-host-color-set'))):
                     with open(os.path.expanduser('~/.ssh/ssh-host-color-set'),'a') as f:
                         print >> f,'hoge 10 10 25'
                         print >> f,'fuga 18 5 10'
