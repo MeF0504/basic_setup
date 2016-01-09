@@ -52,6 +52,8 @@ if __name__ == "__main__":
     parser.add_argument('-f','--force',help="Do not prompt for confirmation before overwriting the destination path",action='store_true')
     args = parser.parse_args()
 
+    #print dir(args)
+    #exit()
     if not os.path.exists(args.prefix):
         print "install path %s does not exit" % args.prefix
         exit()
@@ -73,7 +75,7 @@ if __name__ == "__main__":
     for p in pyfiles:
         #print 'p',p,'p'
         fname = os.path.basename(p)
-        fcopy(p,os.path.join(binpath,fname),link=args.link,force=args.f)
+        fcopy(p,os.path.join(binpath,fname),link=args.link,force=args.force)
 
     ############### basic setup directory ###############
     setdir = os.path.join(fpath,'setup')
@@ -83,7 +85,7 @@ if __name__ == "__main__":
         spath = os.path.join(setdir,fy)
         if os.path.exists(spath):
             if 'zshrc_file' in spath:
-                fcopy(spath,os.path.expanduser(files[fy]),link=bool(args.link),force=args.f)
+                fcopy(spath,os.path.expanduser(files[fy]),link=bool(args.link),force=args.force)
                 if not os.path.exists(os.path.expanduser('~/.zshrc.mine')):
                     with open(os.path.expanduser('~/.zshrc.mine'),'a') as f:
                         print >> f,'## PC dependent zshrc'
@@ -91,10 +93,10 @@ if __name__ == "__main__":
                         print >> f,'\n'
 
             if '256colors.pl' in spath:
-                fcopy(spath,os.path.join(binpath,files[fy]),force=args.f)
+                fcopy(spath,os.path.join(binpath,files[fy]),force=args.force)
 
             if 'ssh-host-color.sh' in spath:
-                fcopy(spath,os.path.join(binpath,files[fy]),link=False,force=args.f,condition=os.uname()[0]=='Darwin')
+                fcopy(spath,os.path.join(binpath,files[fy]),link=False,force=args.force,condition=os.uname()[0]=='Darwin')
                 if os.uname()[0]=='Darwin' and (not os.path.exists(os.path.expanduser('~/.ssh/ssh-host-color-set'))):
                     with open(os.path.expanduser('~/.ssh/ssh-host-color-set'),'a') as f:
                         print >> f,'hoge 10 10 25'
@@ -102,7 +104,7 @@ if __name__ == "__main__":
                         print >> f,'bar 10 25 10'
 
             if ('terminator_config' in spath):
-                fcopy(spath,os.path.expanduser(files[fy]),link=False,force=args.f,condition=(os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser(files[fy])))
+                fcopy(spath,os.path.expanduser(files[fy]),link=False,force=args.force,condition=(os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser(files[fy])))
 
     ############### vim setup directory ###############
     vimdir = os.path.join(fpath,'vim')
@@ -137,10 +139,10 @@ if __name__ == "__main__":
         if os.path.exists(vpath):
 
             if 'vimrc_file' in vpath:
-                fcopy(vpath,os.path.expanduser(files[fy]),link=bool(args.link),force=args.f)
+                fcopy(vpath,os.path.expanduser(files[fy]),link=bool(args.link),force=args.force)
 
             else:
-                fcopy(vpath,os.path.join(rcdir,files[fy]),link=bool(args.link),force=args.f)
+                fcopy(vpath,os.path.join(rcdir,files[fy]),link=bool(args.link),force=args.force)
 
     vim_mine = os.path.expanduser('~/.vim/rcdir/.vimrc.mine')
     if not os.path.exists(vim_mine):
