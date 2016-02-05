@@ -2,26 +2,33 @@
 
 import os
 import subprocess
-import sys
 import glob
+import argparse
 
-def linux():
+def linux(files,force=False):
     for f in files:
-        #judge = os.system("display %s" % f)
-        if f.endswith('.png') or f.endswith('.jpg') or f.endswith('.PNG') or f.endswith('.JPG') or f.endswith('.MIFF'):
-            judge = subprocess.call('display %s' % f,shell=True)
-        elif f.endswith('.pdf') or f.endswith('.PDF'):
-            judge = subprocess.call('evince %s' % f,shell=True)
+        if f[f.rfind('.'):] in ('.png','.jpg','.PNG','.JPG','.MIFF','pdf','.PDF'):
+            if not force:
+                yn = raw_input('file ls %s. OK? {y n}' % f)
+                if yn=='y': ok = True
+                else: ok = False
+            else:
+                ok = True
+
+        if (f[f.rfind('.'):] in ('.png','.jpg','.PNG','.JPG','.MIFF')) and ok:
+            judge = subprocess.call('display %s &' % f,shell=True)
+        elif (f.endswith('.pdf') or f.endswith('.PDF')) and ok:
+            judge = subprocess.call('evince %s &' % f,shell=True)
         else:
             continue
 
         if judge != 0:
             break
 
-def mac():
+def mac(files):
     f2 = ''
     for f in files:
-        if f.endswith('.png') or f.endswith('.jpg') or f.endswith('.PNG') or f.endswith('.JPG') or f.endswith('.MIFF') or f.endswith('.pdf') or f.endswith('.PDF'):
+        if f[f.rfind('.'):] in ('.png','.jpg','.PNG','.JPG','.MIFF','pdf','.PDF'):
             f = f.replace(' ','\ ')
             f2 += ' '+f
 
@@ -29,14 +36,19 @@ def mac():
     subprocess.call('open -a Preview '+f2,shell=True)
 
 
-if len(sys.argv) != 1:
-    files = sys.argv[1:]
-else:
-    files = glob.glob("./*")
-    files.sort()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('figs',help="figures: file type=('.png','.jpg','.PNG','.JPG','.MIFF','pdf','.PDF')",nargs='*')
+    parser.add_argument('-f','--force',help='show images w/o no check',action='store_true')
+    args = parser.parse_args()
+    files = args.figs
+    if len(args.figs)==0:
+        files = glob.glob('./*')
+    elif os.path.isdir(args.figs[0]):
+        files = glob.glob(os.path.join(args.figs[0],'*'))
+    #print files,'\n'
+    #exit()
 
-#print files,'\n'
-
-if os.uname()[0] == 'Linux': linux()
-if os.uname()[0] == 'Darwin': mac()
+    if os.uname()[0] == 'Linux': linux(files,args.force)
+    if os.uname()[0] == 'Darwin': mac()
 
