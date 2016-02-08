@@ -26,9 +26,9 @@ set hlsearch
 set backspace=start,indent
 "set backspace=start,eol,indent
 "挿入モードでのマウスの有効化
-set mouse=i
+"set mouse=i
 "全モードでのマウスの有効化
-"set mouse=a
+set mouse=a
 "タブをスペースに変換
 set expandtab
 "日本語OKに
@@ -39,6 +39,9 @@ set ignorecase
 set smartcase
 "タブとかを可視化?
 "set listchars=tab:»-,trail:-,extends:»,precedes:«,nbsp:%,eol:↲
+"clipboardとyankを共有 (+clipboardが条件)
+set clipboard+=unnamed
+
 "カラーの変更
 colorscheme desert
 if filereadable(expand("~/.vim/colors/inkpot.vim"))
