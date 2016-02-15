@@ -46,9 +46,10 @@ if __name__ == '__main__':
         files = glob.glob('./*')
     elif os.path.isdir(args.figs[0]):
         files = glob.glob(os.path.join(args.figs[0],'*'))
+    print 'file number:',len(files)
     #print files,'\n'
     #exit()
 
     if os.uname()[0] == 'Linux': linux(files,args.force)
-    if os.uname()[0] == 'Darwin': mac()
+    if os.uname()[0] == 'Darwin': mac(files)
 
