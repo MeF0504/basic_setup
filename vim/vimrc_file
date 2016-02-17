@@ -58,7 +58,7 @@ match ZenkakuSpace /　/
 "set cursorline
 
 "Ctrl-c波なのでescをCtrl-cにマッピング
-inoremap <C-c> <Esc>
+"inoremap <C-c> <Esc>
 
 "Execute python script Ctrl-P
 function! s:ExecPy()
