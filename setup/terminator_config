@@ -4,13 +4,13 @@
 [keybindings]
   next_tab = <Primary>Right
   split_horiz = <Primary><Shift>h
-  go_prev = <Primary><Shift>p
+  go_prev = <Primary><Alt>p
   prev_tab = <Primary>Left
   move_tab_right = None
   move_tab_left = None
   split_vert = <Primary><Shift>d
-  new_terminator = <Primary>n
-  go_next = <Primary><Shift>n
+  new_terminator = <Primary><Shift>n
+  go_next = <Primary><Alt>n
 [profiles]
   [[default]]
     scrollbar_position = hidden
@@ -33,6 +33,10 @@
     foreground_color = "#839496"
     font = Monospace 12
     background_color = "#002b36"
+  [[light]]
+    background_image = None
+    background_color = "#ffffdd"
+    foreground_color = "#000000"
 [layouts]
   [[default]]
     [[[child1]]]
