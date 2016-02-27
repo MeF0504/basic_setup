@@ -10,6 +10,7 @@ def linux(files,force=False):
         yn = raw_input('open files: %d\tOK? {y n}' % len(files))
         if yn == 'y': ok=True
         else: return 0
+    else: ok = True
     for f in files:
         """
         if f[f.rfind('.'):] in ('.png','.jpg','.PNG','.JPG','.MIFF','pdf','.PDF'):
