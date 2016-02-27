@@ -6,7 +6,12 @@ import glob
 import argparse
 
 def linux(files,force=False):
+    if not force:
+        yn = raw_input('open files: %d\tOK? {y n}' % len(files))
+        if yn == 'y': ok=True
+        else: return 0
     for f in files:
+        """
         if f[f.rfind('.'):] in ('.png','.jpg','.PNG','.JPG','.MIFF','pdf','.PDF'):
             if not force:
                 yn = raw_input('file ls %s. OK? {y n}' % f)
@@ -14,6 +19,7 @@ def linux(files,force=False):
                 else: ok = False
             else:
                 ok = True
+        """
 
         if (f[f.rfind('.'):] in ('.png','.jpg','.PNG','.JPG','.MIFF')) and ok:
             judge = subprocess.call('display %s &' % f,shell=True)
@@ -46,7 +52,7 @@ if __name__ == '__main__':
         files = glob.glob('./*')
     elif os.path.isdir(args.figs[0]):
         files = glob.glob(os.path.join(args.figs[0],'*'))
-    print 'file number:',len(files)
+    print 'all files:',len(files)
     #print files,'\n'
     #exit()
 
