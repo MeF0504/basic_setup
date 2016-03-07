@@ -197,9 +197,9 @@ function chpwd() {
 }
 #from http://qiita.com/dai___chi/items/135d063444d152e63e1c
 
-if [[ ${OSTYPE} = darwin* && -z ${SSH_CLIENT} ]]; then
-    alias ssh="ssh-host-color.sh"
-fi
+#if [[ ${OSTYPE} = darwin* && -z ${SSH_CLIENT} ]]; then
+    #alias ssh="ssh-host-color.sh"
+#fi
 
 #
 ## terminal configuration
