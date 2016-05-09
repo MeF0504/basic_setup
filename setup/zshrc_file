@@ -87,7 +87,6 @@ setopt noautoremoveslash
 #
 setopt nolistbeep
 
-
 ## Keybind configuration
 #
 # emacs like keybind (e.x. Ctrl-a gets to line head and Ctrl-e gets
@@ -240,7 +239,7 @@ jfbterm-color)
     ;;
 esac
 
-# set terminal title including current directory
+# set terminal title as username+HOSTNAME
 #
 
 if [[ ${SSH_CLIENT} == "" ]]; then
