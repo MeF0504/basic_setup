@@ -75,3 +75,25 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[]):
     #print vs.shape
     return vs
 
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    dt = 0.001
+    t = np.arange(0.,2,dt)
+    # d^2y/dt^2 + 4*dy/dt + 3y = 5,
+    #y0 = 2, y'0 = 1
+    def func1(i,t,y,z):
+        #dy/dt = z
+        return z
+    def func2(i,t,y,z):
+        #dz/dt = -4*z-3*y+5
+        return -4*z-3*y+5
+    y0 = 2
+    z0 = 1
+    y = -2./3*np.exp(-3*t)+np.exp(-1*t)+5./3
+    res = runge_kutta(t,dt,[func1,func2],[y0,z0])
+    print res.shape
+    plt.plot(t,res[0],alpha=0.5)
+    plt.plot(t,y,alpha=0.5)
+    plt.show()
+
+
