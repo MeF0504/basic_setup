@@ -81,10 +81,10 @@ if __name__ == '__main__':
     t = np.arange(0.,2,dt)
     # d^2y/dt^2 + 4*dy/dt + 3y = 5,
     #y0 = 2, y'0 = 1
-    def func1(i,t,y,z):
+    def y_dot(i,t,y,z):
         #dy/dt = z
         return z
-    def func2(i,t,y,z):
+    def z_dot(i,t,y,z):
         #dz/dt = -4*z-3*y+5
         return -4*z-3*y+5
     y0 = 2
