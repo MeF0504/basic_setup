@@ -90,7 +90,7 @@ if __name__ == '__main__':
     y0 = 2
     z0 = 1
     y = -2./3*np.exp(-3*t)+np.exp(-1*t)+5./3
-    res = runge_kutta(t,dt,[func1,func2],[y0,z0])
+    res = runge_kutta(t,dt,[y_dot,z_dot],[y0,z0])
     print res.shape
     plt.plot(t,res[0],alpha=0.5)
     plt.plot(t,y,alpha=0.5)
