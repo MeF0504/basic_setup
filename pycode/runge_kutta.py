@@ -14,25 +14,23 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
     
         def k_one(i,t,dt,func,variables,other_values,k0s):
             variables = np.array(variables)
-            other_values = np.array(other_values)
-            #for l,v in enumerate(variables):
-                #variables[l] += k0[l]/2.0
+            other_values = list(other_values)
             variables += k0s/2.0
-            values = np.r_[variables,other_values]
+            values = list(variables)+other_values
             return dt*func(i,t,*values)
     
         def k_two(i,t,dt,func,variables,other_values,k1s):
             variables = np.array(variables)
-            other_values = np.array(other_values)
+            other_values = list(other_values)
             variables += k1s/2.0
-            values = np.r_[variables,other_values]
+            values = list(variables)+other_values
             return dt*func(i,t,*values)
     
         def k_three(i,t,dt,func,variables,other_values,k2s):
             variables = np.array(variables)
-            other_values = np.array(other_values)
+            other_values = list(other_values)
             variables += k2s 
-            values = np.r_[variables,other_values]
+            values = list(variables)+other_values
             return dt*func(i,t,*values)
     
         if callable(funcs):
@@ -48,7 +46,6 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
             variables = []
             for l in range(L):
                 variables.append(vs[l][-1])
-            #variables = np.array(variables)
             k0 = []
             for l in range(L):
                 k0.append(k_zero(i,ti,dt,funcs[l],variables,other_values))
@@ -72,7 +69,6 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
                 vs[l].append(vi+dvs[l])
     
         vs = np.array(vs)
-        #print vs.shape
         return vs
     else:
         def k_zero(i,t,dt,func,variables,other_values):
@@ -133,34 +129,52 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
         return vs
 
 if __name__ == '__main__':
-    import numpy as np
-    import matplotlib.pyplot as plt
-    dt = 0.001
-    t = np.arange(0,2,dt)
-    """
-    t = []
-    t0 = range(2000)
-    for i in t0:
-        t.append(i*dt)
-    """
-    # d^2y/dt^2 + 4*dy/dt + 3y = 5,
-    #y0 = 2, y'0 = 1
-    def y_dot(i,t,y,z):
-        #dy/dt = z
-        return z
-    def z_dot(i,t,y,z):
-        #dz/dt = -4*z-3*y+5
-        return -4*z-3*y+5
-    y0 = 2
-    z0 = 1
-    res = runge_kutta(t,dt,[y_dot,z_dot],[y0,z0])#,without_numpy=True)
-    #import numpy as np
-    t = np.arange(0,2,dt)
-    y = -2./3*np.exp(-3*t)+np.exp(-1*t)+5./3
-    #print res.shape
-    print len(res[0])
-    plt.plot(t,res[0],alpha=0.5)
-    plt.plot(t,y,alpha=0.5)
-    plt.show()
+    dt = 0.00001
 
+    try:
+        import numpy as np
+        import matplotlib.pyplot as plt
+        t = np.arange(0,2,dt)
+
+        # d^2y/dt^2 + 4*dy/dt + 3y = 5,
+        #y0 = 2, y'0 = 1
+        def y_dot(i,t,y,z):
+            #dy/dt = z
+            return z
+        def z_dot(i,t,y,z):
+            #dz/dt = -4*z-3*y+5
+            return -4*z-3*y+5
+        y0 = 2
+        z0 = 1
+
+        res = runge_kutta(t,dt,[y_dot,z_dot],[y0,z0])
+        y = -2./3*np.exp(-3*t)+np.exp(-1*t)+5./3
+        print len(res[0])
+        plt.plot(t,res[0],alpha=0.5)
+        plt.plot(t,y,alpha=0.5)
+        plt.show()
+
+    except ImportError:
+        e = 2.71828
+        t = []
+        t0 = range(2000)
+        for i in t0:
+            t.append(i*dt)
+
+        # d^2y/dt^2 + 4*dy/dt + 3y = 5,
+        #y0 = 2, y'0 = 1
+        def y_dot(i,t,y,z):
+            #dy/dt = z
+            return z
+        def z_dot(i,t,y,z):
+            #dz/dt = -4*z-3*y+5
+            return -4*z-3*y+5
+        y0 = 2
+        z0 = 1
+
+        diff = 0
+        res = runge_kutta(t,dt,[y_dot,z_dot],[y0,z0],without_numpy=True)
+        for i in t0:
+            diff += abs(res[0][i]-(-2./3*e**(-3*t[i])+e**(-1*t[i])+5./3))
+        print diff
 
