@@ -129,7 +129,7 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
         return vs
 
 if __name__ == '__main__':
-    dt = 0.00001
+    dt = 0.0001
 
     try:
         import numpy as np
@@ -147,11 +147,11 @@ if __name__ == '__main__':
         y0 = 2
         z0 = 1
 
-        res = runge_kutta(t,dt,[y_dot,z_dot],[y0,z0])
-        y = -2./3*np.exp(-3*t)+np.exp(-1*t)+5./3
-        print len(res[0])
-        plt.plot(t,res[0],alpha=0.5)
+        y,z = runge_kutta(t,dt,[y_dot,z_dot],[y0,z0])
+        y_cal = -2./3*np.exp(-3*t)+np.exp(-1*t)+5./3
+        print np.sqrt(np.sum((y-y_cal)**2)/len(y))
         plt.plot(t,y,alpha=0.5)
+        plt.plot(t,y_cal,alpha=0.5)
         plt.show()
 
     except ImportError:
@@ -172,9 +172,9 @@ if __name__ == '__main__':
         y0 = 2
         z0 = 1
 
-        diff = 0
-        res = runge_kutta(t,dt,[y_dot,z_dot],[y0,z0],without_numpy=True)
+        std = 0
+        y,z = runge_kutta(t,dt,[y_dot,z_dot],[y0,z0],without_numpy=True)
         for i in t0:
-            diff += abs(res[0][i]-(-2./3*e**(-3*t[i])+e**(-1*t[i])+5./3))
-        print diff
+            std += (y[i]-(-2./3*e**(-3*t[i])+e**(-1*t[i])+5./3))**2
+        print (std/(len(t0)))**0.5
 
