@@ -69,7 +69,10 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
                 vs[l].append(vi+dvs[l])
     
         vs = np.array(vs)
+        if L == 1:
+            vs = vs[0]
         return vs
+
     else:
         def k_zero(i,t,dt,func,variables,other_values):
             variables = list(variables)
@@ -126,26 +129,27 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
                 vi = vs[l][-1]
                 vs[l].append(vi+dvs)
     
+        if L == 1:
+            vs = vs[0]
         return vs
 
 if __name__ == '__main__':
     dt = 0.0001
+    # d^2y/dt^2 + 4*dy/dt + 3y = 5,
+    #y0 = 2, y'0 = 1
+    def y_dot(i,t,y,z):
+        #dy/dt = z
+        return z
+    def z_dot(i,t,y,z):
+        #dz/dt = -4*z-3*y+5
+        return -4*z-3*y+5
+    y0 = 2
+    z0 = 1
 
     try:
         import numpy as np
         import matplotlib.pyplot as plt
         t = np.arange(0,2,dt)
-
-        # d^2y/dt^2 + 4*dy/dt + 3y = 5,
-        #y0 = 2, y'0 = 1
-        def y_dot(i,t,y,z):
-            #dy/dt = z
-            return z
-        def z_dot(i,t,y,z):
-            #dz/dt = -4*z-3*y+5
-            return -4*z-3*y+5
-        y0 = 2
-        z0 = 1
 
         y,z = runge_kutta(t,dt,[y_dot,z_dot],[y0,z0])
         y_cal = -2./3*np.exp(-3*t)+np.exp(-1*t)+5./3
@@ -160,17 +164,6 @@ if __name__ == '__main__':
         t0 = range(2000)
         for i in t0:
             t.append(i*dt)
-
-        # d^2y/dt^2 + 4*dy/dt + 3y = 5,
-        #y0 = 2, y'0 = 1
-        def y_dot(i,t,y,z):
-            #dy/dt = z
-            return z
-        def z_dot(i,t,y,z):
-            #dz/dt = -4*z-3*y+5
-            return -4*z-3*y+5
-        y0 = 2
-        z0 = 1
 
         std = 0
         y,z = runge_kutta(t,dt,[y_dot,z_dot],[y0,z0],without_numpy=True)
