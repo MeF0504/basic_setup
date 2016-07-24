@@ -38,9 +38,13 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
             L = 1 
         else:
             L = len(funcs)
-        vs = []
         if not 'index' in dir(defaults):
             defaults = [defaults]
+
+        if L != len(defaults):
+            raise IndexError('# of equations and that of defaults are not same')
+
+        vs = []
         for l in range(L):
             vs.append([defaults[l]])
     
@@ -105,9 +109,13 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
             L = 1 
         else:
             L = len(funcs)
-        vs = []
         if not 'index' in dir(defaults):
             defaults = [defaults]
+
+        if L != len(defaults):
+            raise IndexError('# of equations and that of defaults are not same')
+
+        vs = []
         for l in range(L):
             vs.append([defaults[l]])
     
