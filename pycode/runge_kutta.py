@@ -17,21 +17,21 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
             other_values = list(other_values)
             variables += k0s/2.0
             values = list(variables)+other_values
-            return dt*func(i,t,*values)
+            return dt*func(i,t+dt/2.,*values)
     
         def k_two(i,t,dt,func,variables,other_values,k1s):
             variables = np.array(variables)
             other_values = list(other_values)
             variables += k1s/2.0
             values = list(variables)+other_values
-            return dt*func(i,t,*values)
+            return dt*func(i,t+dt/2.,*values)
     
         def k_three(i,t,dt,func,variables,other_values,k2s):
             variables = np.array(variables)
             other_values = list(other_values)
             variables += k2s 
             values = list(variables)+other_values
-            return dt*func(i,t,*values)
+            return dt*func(i,t+dt,*values)
     
         if callable(funcs):
             funcs = [funcs]
@@ -84,19 +84,19 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
             for i in range(len(variables)):
                 variables[i] += k0s[i]/2.0
             values = variables+other_values
-            return dt*func(i,t,*values)
+            return dt*func(i,t+dt/2.0,*values)
 
         def k_two(i,t,dt,func,variables,other_values,k1s):
             for i in range(len(variables)):
                 variables[i] += k1s[i]/2.0
             values = variables+other_values
-            return dt*func(i,t,*values)
+            return dt*func(i,t+dt/2.0,*values)
 
         def k_three(i,t,dt,func,variables,other_values,k2s):
             for i in range(len(variables)):
                 variables[i] += k2s[i]/2.0
             values = variables+other_values
-            return dt*func(i,t,*values)
+            return dt*func(i,t+dt,*values)
     
         if callable(funcs):
             funcs = [funcs]
