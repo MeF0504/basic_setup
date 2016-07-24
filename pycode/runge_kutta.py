@@ -39,6 +39,8 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
         else:
             L = len(funcs)
         vs = []
+        if not 'index' in dir(defaults):
+            defaults = [defaults]
         for l in range(L):
             vs.append([defaults[l]])
     
@@ -104,6 +106,8 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
         else:
             L = len(funcs)
         vs = []
+        if not 'index' in dir(defaults):
+            defaults = [defaults]
         for l in range(L):
             vs.append([defaults[l]])
     
