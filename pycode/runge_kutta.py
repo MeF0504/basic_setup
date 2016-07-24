@@ -38,7 +38,7 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
             L = 1 
         else:
             L = len(funcs)
-        if not 'index' in dir(defaults):
+        if not hasattr(defaults,'__iter__'):
             defaults = [defaults]
 
         if L != len(defaults):
@@ -109,7 +109,7 @@ def runge_kutta(t,dt,funcs,defaults,other_values=[],without_numpy=False):
             L = 1 
         else:
             L = len(funcs)
-        if not 'index' in dir(defaults):
+        if not hasattr(defaults,'__iter__'):
             defaults = [defaults]
 
         if L != len(defaults):
