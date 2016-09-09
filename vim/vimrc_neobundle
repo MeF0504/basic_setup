@@ -3,25 +3,26 @@
 
 "--------------------------------------------------------------------------
 " neobundle
-set nocompatible               " Be iMproved
-filetype off                   " Required!
+" Note: Skip initialization for vim-tiny or vim-small.
+if 0 | endif
 
-if has('vim_starting')
-  set runtimepath+=~/.vim/bundle/neobundle.vim/
+if &compatible
+  set nocompatible               " Be iMproved
 endif
 
+" Required:
+set runtimepath+=~/.vim/bundle/neobundle.vim/
+
+" Required:
 call neobundle#begin(expand('~/.vim/bundle/'))
+
+" Let NeoBundle manage NeoBundle
+" Required:
 NeoBundleFetch 'Shougo/neobundle.vim'
 
-filetype plugin indent on     " Required!
-
-" Installation check.
-if neobundle#exists_not_installed_bundles()
-  echomsg 'Not installed bundles : ' .
-        \ string(neobundle#get_not_installed_bundle_names())
-  echomsg 'Please execute ":NeoBundleInstall" command.'
-  "finish
-endif
+" My Bundles here:
+" Refer to |:NeoBundle-examples|.
+" Note: You don't set neobundle setting in .gvimrc!
 
 "--------------------------------------------------------------------------
 "neocomplete
@@ -104,6 +105,13 @@ let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
 NeoBundle 'thinca/vim-quickrun'
 call neobundle#end()
+
+" Required:
+filetype plugin indent on
+
+" If there are uninstalled bundles found on startup,
+" this will conveniently prompt you to install them.
+NeoBundleCheck
 
 ""(候補とかの)色の設定
 hi Pmenu ctermbg=4
