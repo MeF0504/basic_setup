@@ -47,6 +47,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('figs',help="figures: file type=('.png','.jpg','.PNG','.JPG','.MIFF','pdf','.PDF')",nargs='*')
     parser.add_argument('-f','--force',help='show images w/o no check',action='store_true')
+    parser.add_argument('-n',dest='num',help='number of showing figures',type=int)
     args = parser.parse_args()
     files = args.figs
     if len(args.figs)==0:
@@ -54,6 +55,8 @@ if __name__ == '__main__':
     elif os.path.isdir(args.figs[0]):
         files = glob.glob(os.path.join(args.figs[0],'*'))
     print 'all files:',len(files)
+    if hasattr(args,'num'):
+        files = files[:args.num]
     #print files,'\n'
     #exit()
 
