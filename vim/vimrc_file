@@ -55,7 +55,7 @@ hi ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
 match ZenkakuSpace /　/
 
 "カーソルの下に下線を表示
-"set cursorline
+set cursorline
 
 "Ctrl-c波なのでescをCtrl-cにマッピング
 "inoremap <C-c> <Esc>
