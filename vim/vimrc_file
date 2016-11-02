@@ -1,3 +1,6 @@
+"vimrcを再読込する際にautocmdが重複しないようにautocmdをすべて解除
+autocmd!
+
 "左端に数字を表示
 set number
 "常にステータスラインを表示
@@ -43,10 +46,11 @@ set smartcase
 "set clipboard+=unnamed
 
 "カラーの変更
-colorscheme desert
 if filereadable(expand("~/.vim/colors/inkpot.vim"))
     colorscheme inkpot
     source ~/.vim/rcdir/.vimrc.color
+elseif 
+    colorscheme desert
 endif
 "let g:hybrid_use_Xresources = 1
 "colorscheme hybrid
