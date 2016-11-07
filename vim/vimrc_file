@@ -48,7 +48,7 @@ set smartcase
 "カラーの変更
 if filereadable(expand("~/.vim/colors/inkpot.vim"))
     colorscheme inkpot
-    source ~/.vim/rcdir/.vimrc.color
+    source ~/.vim/rcdir/vimrc.color
 elseif 
     colorscheme desert
 endif
@@ -72,10 +72,10 @@ function! s:ExecPy()
     autocmd FileType python map <silent> <C-P> :call <SID>ExecPy()<CR>
 
 if isdirectory(expand("~/.vim/plugin"))
-    source ~/.vim/rcdir/.vimrc.plugin
+    source ~/.vim/rcdir/vimrc.plugin
 endif
 if isdirectory(expand("~/.vim/bundle"))
-    source ~/.vim/rcdir/.vimrc.neobundle
+    source ~/.vim/rcdir/vimrc.neobundle
 endif
-source ~/.vim/rcdir/.vimrc.mine
+source ~/.vim/rcdir/vimrc.mine
 

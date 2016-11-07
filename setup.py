@@ -110,7 +110,7 @@ if __name__ == "__main__":
     vimdir = os.path.join(fpath,'vim')
     print '\n@ '+vimdir+'\n'
 
-    files = {'vimrc_file':'~/.vimrc','vimrc_color':'.vimrc.color','vimrc_plugin':'.vimrc.plugin','vimrc_neobundle':'.vimrc.neobundle'}
+    files = {'vimrc_file':'~/.vimrc','vimrc_color':'vimrc.color','vimrc_plugin':'vimrc.plugin','vimrc_neobundle':'vimrc.neobundle'}
     mkdir('~/.vim')
     mkdir('~/.vim/rcdir')
     rcdir = os.path.expanduser('~/.vim/rcdir')
@@ -144,7 +144,7 @@ if __name__ == "__main__":
             else:
                 fcopy(vpath,os.path.join(rcdir,files[fy]),link=bool(args.link),force=args.force)
 
-    vim_mine = os.path.expanduser('~/.vim/rcdir/.vimrc.mine')
+    vim_mine = os.path.expanduser('~/.vim/rcdir/vimrc.mine')
     if not os.path.exists(vim_mine):
         with open(vim_mine,'a') as f:
             print >> f,'"" PC dependent vimrc'
