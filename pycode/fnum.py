@@ -1,8 +1,9 @@
 #! /usr/bin/env python
+# fileencoding=utf-8
 
-import sys
+#import sys
 import os
-import glob
+#import glob
 import argparse
 
 def len1(wd):
@@ -17,8 +18,66 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('files',help='target files and directories',nargs='*')
     parser.add_argument('-a','--all',help='Include directory entries whose names begin with a dot',action='store_true')
+    parser.add_argument('-r',dest='recursive',help='count files recursively',action='store_true')
+    parser.add_argument('-e',dest='extension',help='count only specified extension',default=[''],nargs='*')
     args = parser.parse_args()
 
+    if len(args.files) == 0:
+    #引数がない場合、カレントディレクトリを指定
+        wd = '.'
+    elif len(args.files)==1 and os.path.isdir(args.files[0]):
+    #引数がディレクトリの場合。複数指定するとディレクトリの数を数えてしまう。
+        wd = args.files[0]
+    else:
+    #複数ファイルを指定するとその数を数える。shellの正規表現が楽。
+        lenfile = len(args.files)
+
+    if 'wd' in dir():
+        walk = os.walk(wd)
+        lenfile = 0
+        if not args.recursive:  #再帰的でない場合。
+            cd,ds,fs = walk.next()
+            for f in fs:
+                #print f
+                if (not args.all) and f.startswith('.'):
+                #隠しファイルはスキップ
+                    continue
+                bool_e = False
+                for e in args.extension:
+                #各ファイルに対して拡張子の確認。
+                    bool_e += f.endswith(e)
+                if bool(bool_e): lenfile += 1
+            for d in ds:
+            #再帰的でない場合はディレクトリも数に入れる。
+                if (not args.all) and d.startswith('.'):
+                #隠しディレクトリもスキップ
+                    continue
+                lenfile += 1
+        else:
+            for w in walk:  #再帰的な場合
+                if not args.all:
+                    cd = w[0]
+                    cd_dot = cd.rfind('.')
+                    if cd_dot!=0 and cd[cd_dot-1]=='/':
+                        hid_dir = cd[cd_dot:]
+                        #print hid_dir
+                        #隠しディレクトリがある場合は名前を保存
+                    if ('hid_dir' in dir()) and (hid_dir in cd):
+                    #隠しディレクトリがあり、かつそれより下層にあるファイルは無視。
+                        continue
+                fs = w[2]
+                for f in fs:
+                    #print cd,f
+                    if (not args.all) and f.startswith('.'):
+                    #隠しファイルはスキップ
+                        continue
+                    bool_e = False
+                    for e in args.extension:
+                    #各ファイルに対して拡張子の確認。
+                        bool_e += f.endswith(e)
+                    if bool(bool_e): lenfile += 1
+
+    """
     if len(args.files) == 0:
         wd = '.'
         lenfile = len1(wd)
@@ -31,6 +90,7 @@ if __name__ == '__main__':
             lenfile += len2(wd)
     else:
         lenfile = len(args.files)
+    """
 
     print lenfile
 
