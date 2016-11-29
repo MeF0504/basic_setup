@@ -52,7 +52,11 @@ if __name__ == '__main__':
                 if (not args.all) and d.startswith('.'):
                 #隠しディレクトリもスキップ
                     continue
-                lenfile += 1
+                bool_e = False
+                for e in args.extension:
+                #各ディレクトリに対しても拡張子の確認。
+                    bool_e += d.endswith(e)
+                if bool(bool_e): lenfile += 1
         else:
             for w in walk:  #再帰的な場合
                 if not args.all:
