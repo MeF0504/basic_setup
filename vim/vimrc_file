@@ -35,7 +35,7 @@ set mouse=i
 "タブをスペースに変換
 set expandtab
 "連続した空白でtabやback spaceが動く幅
-set softtabstop
+set softtabstop=4
 "日本語OKに
 set fileencoding=utf-8
 "大文字、小文字を区別しない
