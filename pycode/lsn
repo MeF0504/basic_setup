@@ -1,0 +1,5 @@
+#! /bin/zsh
+
+echo "number of files --> $(/usr/bin/env fnum $@)"
+
+/bin/ls -Gw $@
