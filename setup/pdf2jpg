@@ -2,7 +2,7 @@
 # http://hajimemasita.blogspot.jp/2009/08/pdfjpeg.htmlを一部改変
 
 if [ $# -ne 2 ] && [ $# -ne 1 ];then
-echo "Usage: $0 target.pdf outfile"
+echo "Usage: $0 target.pdf [outfile]"
 exit
 fi
 
