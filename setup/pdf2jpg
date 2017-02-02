@@ -1,0 +1,30 @@
+#! /bin/zsh
+# http://hajimemasita.blogspot.jp/2009/08/pdfjpeg.htmlを一部改変
+
+if [ $# -ne 2 ] && [ $# -ne 1 ];then
+echo "Usage: $0 target.pdf outfile"
+exit
+fi
+
+TARGET=$1
+OUTFILE=$2
+
+if [[ $2 == "" ]]; then
+    OUTFILE=${1%.*}
+fi
+
+#echo $TARGET
+#echo $OUTFILE
+
+gs \
+-dSAFER \
+-dBATCH \
+-dNOPAUSE \
+-sDEVICE=jpeg \
+-r150 \
+-dTextAlphaBits=4 \
+-dGraphicsAlphaBits=4 \
+-dMaxStripSize=8192 \
+-sOutputFile=${OUTFILE}_%d.jpg \
+${TARGET}
+
