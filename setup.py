@@ -80,7 +80,7 @@ if __name__ == "__main__":
     ############### basic setup directory ###############
     setdir = os.path.join(fpath,'setup')
     print '\n@ '+setdir+'\n'
-    files = {'zshrc_file':'~/.zshrc','256colors.pl':'256colors.pl','ssh-host-color.sh':'ssh-host-color.sh','terminator_config':'~/.config/terminator/config'}
+    files = {'zshrc_file':'~/.zshrc','256colors.pl':'256colors.pl','ssh-host-color.sh':'ssh-host-color.sh','terminator_config':'~/.config/terminator/config','pdf2jpg':'pdf2jpg'}
     for fy in files:
         spath = os.path.join(setdir,fy)
         if os.path.exists(spath):
@@ -92,9 +92,6 @@ if __name__ == "__main__":
                         print >> f,'#'
                         print >> f,'\n'
 
-            if '256colors.pl' in spath:
-                fcopy(spath,os.path.join(binpath,files[fy]),force=args.force)
-
             if 'ssh-host-color.sh' in spath:
                 fcopy(spath,os.path.join(binpath,files[fy]),link=False,force=args.force,condition=os.uname()[0]=='Darwin')
                 if os.uname()[0]=='Darwin' and (not os.path.exists(os.path.expanduser('~/.ssh/ssh-host-color-set'))):
@@ -105,6 +102,9 @@ if __name__ == "__main__":
 
             if ('terminator_config' in spath):
                 fcopy(spath,os.path.expanduser(files[fy]),link=False,force=args.force,condition=(os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser(files[fy])))
+
+            else:
+                fcopy(spath,os.path.join(binpath,files[fy]),force=args.force)
 
     ############### vim setup directory ###############
     vimdir = os.path.join(fpath,'vim')
