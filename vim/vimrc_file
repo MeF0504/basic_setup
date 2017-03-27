@@ -51,7 +51,7 @@ set smartcase
 if filereadable(expand("~/.vim/colors/inkpot.vim"))
     colorscheme inkpot
     source ~/.vim/rcdir/vimrc.color
-elseif 
+else
     colorscheme desert
 endif
 "let g:hybrid_use_Xresources = 1
