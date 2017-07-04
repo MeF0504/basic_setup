@@ -56,8 +56,14 @@ match ZenkakuSpace /　/
 "カーソルの下に下線を表示
 set cursorline
 
-"Ctrl-c波なのでescをCtrl-cにマッピング
-"inoremap <C-c> <Esc>
+"ls in vim
+command! LS split .
+
+"tag設定
+set tags=tags;,./tags;
+let Tlist_Exit_OnlyWindow = 1
+let Tlist_WinWidth = 45
+set splitbelow
 
 "Execute python script Ctrl-P
 function! s:ExecPy()

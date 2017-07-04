@@ -1,8 +1,9 @@
 using plugins, colors, etc..:
 
-1. NeoBundle https://github.com/Shougo/neobundle.vim
+1. dein https://github.com/Shougo/dein.vim
 2. neocomplete
 3. inkpot https://github.com/ciaranm/inkpot
 4. seiya.vim https://github.com/miyakogi/seiya.vim
 5. vim-quickrun https://github.com/thinca/vim-quickrun
+6. taglist https://github.com/vim-scripts/taglist.vim
 
