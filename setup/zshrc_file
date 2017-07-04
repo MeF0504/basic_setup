@@ -264,6 +264,7 @@ function 256colortest() {
         echo -e "\e[38;05;${code}m $code: Test"
     done
 }
+alias 256colortest="256colortest | less -R"
 
 #use python on shell
 function p(){
