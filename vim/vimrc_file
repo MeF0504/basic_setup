@@ -47,13 +47,6 @@ set smartcase
 "clipboardとyankを共有 (+clipboardが条件)
 "set clipboard+=unnamed
 
-"カラーの変更
-if filereadable(expand("~/.vim/colors/inkpot.vim"))
-    colorscheme inkpot
-    source ~/.vim/rcdir/vimrc.color
-else
-    colorscheme desert
-endif
 "let g:hybrid_use_Xresources = 1
 "colorscheme hybrid
 "全角スペース表示
@@ -73,11 +66,23 @@ function! s:ExecPy()
     command! Exec call <SID>ExecPy()
     autocmd FileType python map <silent> <C-P> :call <SID>ExecPy()<CR>
 
+"pluginの設定読み込み
 if isdirectory(expand("~/.vim/plugin"))
     source ~/.vim/rcdir/vimrc.plugin
 endif
-if isdirectory(expand("~/.vim/bundle"))
-    source ~/.vim/rcdir/vimrc.neobundle
+
+"dein directoryがあれば読み込み
+if isdirectory(expand("~/.vim/dein"))
+    source ~/.vim/rcdir/vimrc.dein
 endif
+
+"local設定ファイル
 source ~/.vim/rcdir/vimrc.mine
 
+"カラーの変更
+if filereadable(expand("~/.vim/colors/inkpot.vim"))
+    colorscheme inkpot
+    source ~/.vim/rcdir/vimrc.color
+else
+    colorscheme desert
+endif
