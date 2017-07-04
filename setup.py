@@ -93,6 +93,7 @@ if __name__ == "__main__":
                         print >> f,'#'
                         print >> f,'\n'
 
+            """
             #if 'ssh-host-color.sh' in spath:
             if 'ssh-host-color.sh' == fy:
                 fcopy(spath,os.path.join(binpath,files[fy]),link=False,force=args.force,condition=os.uname()[0]=='Darwin')
@@ -101,6 +102,7 @@ if __name__ == "__main__":
                         print >> f,'hoge 10 10 25'
                         print >> f,'fuga 18 5 10'
                         print >> f,'bar 10 25 10'
+            """
 
             #if ('terminator_config' in spath):
             if 'terminator_config' == fy:
@@ -113,7 +115,7 @@ if __name__ == "__main__":
     vimdir = os.path.join(fpath,'vim')
     print '\n@ '+vimdir+'\n'
 
-    files = {'vimrc_file':'~/.vimrc','vimrc_color':'vimrc.color','vimrc_plugin':'vimrc.plugin','vimrc_neobundle':'vimrc.neobundle'}
+    files = {'vimrc_file':'~/.vimrc','vimrc_color':'vimrc.color','vimrc_plugin':'vimrc.plugin','vimrc_dein':'vimrc.dein'}
     mkdir('~/.vim')
     mkdir('~/.vim/rcdir')
     rcdir = os.path.expanduser('~/.vim/rcdir')
@@ -121,9 +123,12 @@ if __name__ == "__main__":
     if args.download:
         mkdir('tmp')
         os.chdir(os.path.join(fpath,'tmp'))
-        print '\nclone neobundle'
-        mkdir('~/.vim/bundle/')
-        subprocess.call('git clone git://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim',shell=True)
+        #print '\nclone neobundle'
+        #mkdir('~/.vim/bundle/')
+        #subprocess.call('git clone git://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim',shell=True)
+        print '\nclone dein'
+        mkdir('~/.vim/dein')
+        subprocess.call('curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && chmod u+x installer.sh && ./installer.sh ~/.vim/dein')
         print '\nclone inkpot'
         subprocess.call('git clone https://github.com/ciaranm/inkpot',shell=True)
         subprocess.call('cp -ri ./inkpot/colors ~/.vim',shell=True)
