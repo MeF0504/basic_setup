@@ -1,0 +1,24 @@
+"colorscheme darkblue
+"clipboard共有
+set guioptions+=a
+
+colorscheme inkpot
+hi Identifier guifg=LightBlue
+hi Number guifg=Red
+hi Type guifg=Green
+hi Comment guifg=DarkSlateblue
+hi LineNr guifg=dimgray guibg=NONE
+hi Normal guifg=LightGray
+hi string guibg=NONE guifg=NavajoWhite
+
+set cursorline
+hi CursorLine gui=underline guifg=NONE guibg=NONE
+hi CursorLineNr guibg=White guifg=DarkBlue
+
+"hi Pmenu guibg=LightBlue
+"hi PmenuSel guibg=red
+"hi PmenuSbar guibg=LightBlue
+
+"ビープ音を消す
+set visualbell t_vb=
+

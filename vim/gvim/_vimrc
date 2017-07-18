@@ -1,0 +1,71 @@
+"左端に数字を表示
+set number
+"常にステータスラインを表示
+set laststatus=2
+"カーソルの位置を表示
+set ruler
+"コマンドラインの画面上の行数
+set cmdheight=2
+"文の折り返し
+set wrap
+"タイトルを非表示
+set notitle
+"viとの互換性をとらない
+"set nocompatible
+"タブの幅
+set tabstop=4
+"自動でインデントを挿入
+set autoindent
+"オートインデントの幅
+set shiftwidth=4
+"文字の色づけ
+syntax on
+"検索したときにハイライト
+set hlsearch
+"バックスペースのノーマルモード、(改行、)オートインデントへの有効化
+set backspace=start,indent
+"set backspace=start,eol,indent
+"挿入モードでのマウスの有効化
+set mouse=i
+"全モードでのマウスの有効化
+set mouse=a
+"タブをスペースに変換
+set expandtab
+"連続した空白でtabやback spaceが動く幅
+set softtabstop=4
+"日本語OKに
+set fileencoding=utf-8
+"大文字、小文字を区別しない
+set ignorecase
+"検索文字に大文字があると区別する
+set smartcase
+"タブとかを可視化?
+"set listchars=tab:≫-,trail:-,extends:≫,precedes:≪,nbsp:%,eol:?
+"色変更
+"colorscheme desert
+"検索のときに移動しない
+set noincsearch
+
+"swp fileあり
+set swapfile
+"swp fileの場所変更
+set directory=~/vimfiles/swp
+"backup fileなし
+set nobackup
+"backp fileの場所変更
+set backupdir=~/vimfiles/swp
+"undo fileなし
+set noundofile
+"undo fileの場所変更
+set undodir=~/vimfiles/swp
+
+set tags=tags;,./tags;
+let Tlist_Exit_OnlyWindow = 1
+let Tlist_WinWidth = 45
+set splitbelow
+command! LS split .
+
+if isdirectory(expand("~/vimfiles/dein"))
+    source ~/vimfiles/_vimrc.dein
+endif
+
