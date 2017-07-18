@@ -9,4 +9,4 @@ hi String ctermbg=None ctermfg=222
 hi Comment ctermfg=60
 hi LineNr ctermfg=239
 "hi Comment ctermfg=212
-hi CursorLineNr ctermfg=60 ctermbg=15
+hi CursorLineNr ctermfg=17 ctermbg=15

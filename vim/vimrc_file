@@ -65,6 +65,19 @@ let Tlist_Exit_OnlyWindow = 1
 let Tlist_WinWidth = 45
 set splitbelow
 
+"vimgrepした際に新規windowで開くようにする
+autocmd QuickFixCmdPost *grep* cwindow
+
+"誤って使うとまずいkeymapを削除
+nnoremap ZZ <Nop>
+nnoremap ZQ <Nop>
+nnoremap Q <Nop>
+
+"使いやすいようにmapping
+nnoremap s <c-w>
+nnoremap T :tabnew
+nnoremap t gt
+
 "Execute python script Ctrl-P
 function! s:ExecPy()
     exe "!" . &ft . " %"
