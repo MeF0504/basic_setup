@@ -22,3 +22,5 @@ hi CursorLineNr guibg=White guifg=DarkBlue
 "ƒr[ƒv‰¹‚ğÁ‚·
 set visualbell t_vb=
 
+"“§‰ß
+autocmd GUIEnter * set transparency=230 "0~255?

@@ -1,62 +1,62 @@
-"¶’[‚É”š‚ğ•\¦
+"å·¦ç«¯ã«æ•°å­—ã‚’è¡¨ç¤º
 set number
-"í‚ÉƒXƒe[ƒ^ƒXƒ‰ƒCƒ“‚ğ•\¦
+"å¸¸ã«ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ©ã‚¤ãƒ³ã‚’è¡¨ç¤º
 set laststatus=2
-"ƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚ğ•\¦
+"ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½®ã‚’è¡¨ç¤º
 set ruler
-"ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“‚Ì‰æ–Êã‚Ìs”
+"ã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³ã®ç”»é¢ä¸Šã®è¡Œæ•°
 set cmdheight=2
-"•¶‚ÌÜ‚è•Ô‚µ
+"æ–‡ã®æŠ˜ã‚Šè¿”ã—
 set wrap
-"ƒ^ƒCƒgƒ‹‚ğ”ñ•\¦
+"ã‚¿ã‚¤ãƒˆãƒ«ã‚’éè¡¨ç¤º
 set notitle
-"vi‚Æ‚ÌŒİŠ·«‚ğ‚Æ‚ç‚È‚¢
+"viã¨ã®äº’æ›æ€§ã‚’ã¨ã‚‰ãªã„
 "set nocompatible
-"ƒ^ƒu‚Ì•
+"ã‚¿ãƒ–ã®å¹…
 set tabstop=4
-"©“®‚ÅƒCƒ“ƒfƒ“ƒg‚ğ‘}“ü
+"è‡ªå‹•ã§ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆã‚’æŒ¿å…¥
 set autoindent
-"ƒI[ƒgƒCƒ“ƒfƒ“ƒg‚Ì•
+"ã‚ªãƒ¼ãƒˆã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆã®å¹…
 set shiftwidth=4
-"•¶š‚ÌF‚Ã‚¯
+"æ–‡å­—ã®è‰²ã¥ã‘
 syntax on
-"ŒŸõ‚µ‚½‚Æ‚«‚ÉƒnƒCƒ‰ƒCƒg
+"æ¤œç´¢ã—ãŸã¨ãã«ãƒã‚¤ãƒ©ã‚¤ãƒˆ
 set hlsearch
-"ƒoƒbƒNƒXƒy[ƒX‚Ìƒm[ƒ}ƒ‹ƒ‚[ƒhA(‰üsA)ƒI[ƒgƒCƒ“ƒfƒ“ƒg‚Ö‚Ì—LŒø‰»
+"ãƒãƒƒã‚¯ã‚¹ãƒšãƒ¼ã‚¹ã®ãƒãƒ¼ãƒãƒ«ãƒ¢ãƒ¼ãƒ‰ã€(æ”¹è¡Œã€)ã‚ªãƒ¼ãƒˆã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆã¸ã®æœ‰åŠ¹åŒ–
 set backspace=start,indent
 "set backspace=start,eol,indent
-"‘}“üƒ‚[ƒh‚Å‚Ìƒ}ƒEƒX‚Ì—LŒø‰»
+"æŒ¿å…¥ãƒ¢ãƒ¼ãƒ‰ã§ã®ãƒã‚¦ã‚¹ã®æœ‰åŠ¹åŒ–
 set mouse=i
-"‘Sƒ‚[ƒh‚Å‚Ìƒ}ƒEƒX‚Ì—LŒø‰»
+"å…¨ãƒ¢ãƒ¼ãƒ‰ã§ã®ãƒã‚¦ã‚¹ã®æœ‰åŠ¹åŒ–
 set mouse=a
-"ƒ^ƒu‚ğƒXƒy[ƒX‚É•ÏŠ·
+"ã‚¿ãƒ–ã‚’ã‚¹ãƒšãƒ¼ã‚¹ã«å¤‰æ›
 set expandtab
-"˜A‘±‚µ‚½‹ó”’‚Åtab‚âback space‚ª“®‚­•
+"é€£ç¶šã—ãŸç©ºç™½ã§tabã‚„back spaceãŒå‹•ãå¹…
 set softtabstop=4
-"“ú–{ŒêOK‚É
+"æ—¥æœ¬èªOKã«
 set fileencoding=utf-8
-"‘å•¶šA¬•¶š‚ğ‹æ•Ê‚µ‚È‚¢
+"å¤§æ–‡å­—ã€å°æ–‡å­—ã‚’åŒºåˆ¥ã—ãªã„
 set ignorecase
-"ŒŸõ•¶š‚É‘å•¶š‚ª‚ ‚é‚Æ‹æ•Ê‚·‚é
+"æ¤œç´¢æ–‡å­—ã«å¤§æ–‡å­—ãŒã‚ã‚‹ã¨åŒºåˆ¥ã™ã‚‹
 set smartcase
-"ƒ^ƒu‚Æ‚©‚ğ‰Â‹‰»?
-"set listchars=tab:â-,trail:-,extends:â,precedes:á,nbsp:%,eol:?
-"F•ÏX
+"ã‚¿ãƒ–ã¨ã‹ã‚’å¯è¦–åŒ–?
+"set listchars=tab:â‰«-,trail:-,extends:â‰«,precedes:â‰ª,nbsp:%,eol:?
+"è‰²å¤‰æ›´
 "colorscheme desert
-"ŒŸõ‚Ì‚Æ‚«‚ÉˆÚ“®‚µ‚È‚¢
+"æ¤œç´¢ã®ã¨ãã«ç§»å‹•ã—ãªã„
 set noincsearch
 
-"swp file‚ ‚è
+"swp fileã‚ã‚Š
 set swapfile
-"swp file‚ÌêŠ•ÏX
+"swp fileã®å ´æ‰€å¤‰æ›´
 set directory=~/vimfiles/swp
-"backup file‚È‚µ
+"backup fileãªã—
 set nobackup
-"backp file‚ÌêŠ•ÏX
+"backp fileã®å ´æ‰€å¤‰æ›´
 set backupdir=~/vimfiles/swp
-"undo file‚È‚µ
+"undo fileãªã—
 set noundofile
-"undo file‚ÌêŠ•ÏX
+"undo fileã®å ´æ‰€å¤‰æ›´
 set undodir=~/vimfiles/swp
 
 set tags=tags;,./tags;
@@ -64,6 +64,19 @@ let Tlist_Exit_OnlyWindow = 1
 let Tlist_WinWidth = 45
 set splitbelow
 command! LS split .
+
+"vimgrepã—ãŸéš›ã«æ–°è¦windowã§é–‹ãã‚ˆã†ã«ã™ã‚‹
+autocmd QuickFixCmdPost *grep* cwindow
+
+"èª¤ã£ã¦ä½¿ã†ã¨ã¾ãšã„keymapã‚’å‰Šé™¤
+nnoremap ZZ <Nop>
+nnoremap ZQ <Nop>
+nnoremap Q <Nop>
+
+"ä½¿ã„ã‚„ã™ã„ã‚ˆã†ã«mapping
+nnoremap s <c-w>
+nnoremap T :tabnew
+nnoremap t gt
 
 if isdirectory(expand("~/vimfiles/dein"))
     source ~/vimfiles/_vimrc.dein
