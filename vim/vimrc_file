@@ -46,6 +46,8 @@ set smartcase
 "set listchars=tab:»-,trail:-,extends:»,precedes:«,nbsp:%,eol:↲
 "clipboardとyankを共有 (+clipboardが条件)
 "set clipboard+=unnamed
+"カーソルが上下５行に行ったらスクロール
+set scrolloff=5
 
 "let g:hybrid_use_Xresources = 1
 "colorscheme hybrid
