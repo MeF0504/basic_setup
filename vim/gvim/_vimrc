@@ -59,10 +59,16 @@ set noundofile
 "undo fileの場所変更
 set undodir=~/vimfiles/swp
 
+"tag設定
 set tags=tags;,./tags;
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_WinWidth = 45
 set splitbelow
+"escでtag listから抜けられるようにする
+autocmd Filetype taglist nnoremap <Esc> <c-w>l
+
+
+"新しいwindowでcurrent directoryを開く
 command! LS split .
 
 "vimgrepした際に新規windowで開くようにする
@@ -77,6 +83,12 @@ nnoremap Q <Nop>
 nnoremap s <c-w>
 nnoremap T :tabnew
 nnoremap t gt
+
+"ヘッダーファイルをタブで開く
+nnoremap gf <c-w>gf
+
+"ファイルを探すpathを追加
+set path+=../include
 
 if isdirectory(expand("~/vimfiles/dein"))
     source ~/vimfiles/_vimrc.dein
