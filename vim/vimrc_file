@@ -66,6 +66,8 @@ set tags=tags;,./tags;
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_WinWidth = 45
 set splitbelow
+"escでtag listから抜ける
+"autocmd FileType taglist nnoremap <Esc> <c-w>l     "terminal上だと矢印キーでの挙動がおかしくなる
 
 "vimgrepした際に新規windowで開くようにする
 autocmd QuickFixCmdPost *grep* cwindow
@@ -79,6 +81,12 @@ nnoremap Q <Nop>
 nnoremap s <c-w>
 nnoremap T :tabnew
 nnoremap t gt
+
+"ヘッダーファイルをタブで開く
+nnoremap gf <c-w>gf
+
+"検索pathを追加
+set path+=../include
 
 "Execute python script Ctrl-P
 function! s:ExecPy()
