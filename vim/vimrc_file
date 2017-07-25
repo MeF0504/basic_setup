@@ -67,7 +67,13 @@ let Tlist_Exit_OnlyWindow = 1
 let Tlist_WinWidth = 45
 set splitbelow
 "escでtag listから抜ける
-"autocmd FileType taglist nnoremap <Esc> <c-w>l     "terminal上だと矢印キーでの挙動がおかしくなる
+autocmd FileType taglist nnoremap <Esc> <c-w>l
+"terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
+"入力方法はc-vから矢印
+nnoremap OA k
+nnoremap OB j
+nnoremap OD h
+nnoremap OC l
 
 "vimgrepした際に新規windowで開くようにする
 autocmd QuickFixCmdPost *grep* cwindow
