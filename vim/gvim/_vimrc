@@ -64,8 +64,14 @@ set tags=tags;,./tags;
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_WinWidth = 45
 set splitbelow
+nnoremap <c-]> g<c-]>
 "escでtag listから抜けられるようにする
 autocmd Filetype taglist nnoremap <Esc> <c-w>l
+
+function! Tlist_Hrozin()
+    let g:Tlist_Use_Horiz_Window=1
+    autocmd! Filetype taglist nnoremap <Esc> <c-w>k
+endfunction
 
 
 "新しいwindowでcurrent directoryを開く
@@ -89,6 +95,12 @@ nnoremap gf <c-w>gf
 
 "ファイルを探すpathを追加
 set path+=../include
+if exists("$PYTHONPATH")
+    set path+=$PYTHONPATH
+endif
+if exists("$LD_LIBRARY_PATH")
+    set path+=$LD_LIBRARY_PATH
+endif
 
 if isdirectory(expand("~/vimfiles/dein"))
     source ~/vimfiles/_vimrc.dein

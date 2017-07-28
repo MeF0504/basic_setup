@@ -3,7 +3,7 @@
 set guioptions+=a
 
 colorscheme inkpot
-hi Identifier guifg=LightBlue
+hi Identifier guifg=DeepSkyBlue
 hi Number guifg=Red
 hi Type guifg=Green
 hi Comment guifg=DarkSlateblue
