@@ -68,7 +68,7 @@ nnoremap <c-]> g<c-]>
 "escでtag listから抜けられるようにする
 autocmd Filetype taglist nnoremap <Esc> <c-w>l
 
-function! Tlist_Hrozin()
+function! Tlist_Horizon()
     let g:Tlist_Use_Horiz_Window=1
     autocmd! Filetype taglist nnoremap <Esc> <c-w>k
 endfunction
