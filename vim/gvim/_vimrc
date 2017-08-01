@@ -22,6 +22,8 @@ set shiftwidth=4
 syntax on
 "検索したときにハイライト
 set hlsearch
+"右下に入力コマンドを表示
+set showcmd
 "バックスペースのノーマルモード、(改行、)オートインデントへの有効化
 set backspace=start,indent
 "set backspace=start,eol,indent
