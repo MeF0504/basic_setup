@@ -67,6 +67,7 @@ let Tlist_Exit_OnlyWindow = 1
 let Tlist_WinWidth = 45
 set splitbelow
 nnoremap <c-]> g<c-]>
+nnoremap tt :Tlist<CR>
 "escでtag listから抜けられるようにする
 autocmd Filetype taglist nnoremap <Esc> <c-w>l
 
@@ -90,7 +91,6 @@ nnoremap Q <Nop>
 "使いやすいようにmapping
 nnoremap s <c-w>
 nnoremap T :tabnew
-nnoremap t gt
 
 "ヘッダーファイルをタブで開く
 nnoremap gf <c-w>gf
