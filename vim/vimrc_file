@@ -1,3 +1,4 @@
+""##########基本設定
 "vimrcを再読込する際にautocmdが重複しないようにautocmdをすべて解除
 augroup local
     autocmd!
@@ -62,32 +63,6 @@ match ZenkakuSpace /　/
 "カーソルの下に下線を表示
 set cursorline
 
-"ls in vim
-command! LS split .
-
-"tag設定
-set tags=tags;,./tags;
-let Tlist_Exit_OnlyWindow = 1
-let Tlist_WinWidth = 45
-set splitbelow
-nnoremap <c-]> g<c-]>
-nnoremap tt :Tlist<CR>
-"escでtag listから抜ける
-autocmd local FileType taglist nnoremap <Esc> <c-w>l
-"terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
-"入力方法はc-vから矢印
-nnoremap OA k
-nnoremap OB j
-nnoremap OD h
-nnoremap OC l
-
-"taglistを縦分割で使う際に横ではなく下にlistが出るように変更する関数
-function! Tlist_Horizon()
-    let g:Tlist_Use_Horiz_Window=1
-    autocmd local Filetype taglist nnoremap <Esc> <c-w>k
-endfunction
-
-
 "vimgrepした際に新規windowで開くようにする
 autocmd local QuickFixCmdPost *grep* cwindow
 
@@ -112,6 +87,10 @@ if exists("$LD_LIBRARY_PATH")
     set path+=$LD_LIBRARY_PATH
 endif
 
+""##########作成関数とか
+"ls in vim
+command! LS 0tabnew .
+
 "Execute python script Ctrl-P
 function! s:ExecPy()
     exe "!" . &ft . " %"
@@ -119,6 +98,7 @@ function! s:ExecPy()
     command! Exec call <SID>ExecPy()
     autocmd local FileType python map <silent> <C-P> :call <SID>ExecPy()<CR>
 
+""##########ファイル読み込み
 "pluginの設定読み込み
 if isdirectory(expand("~/.vim/plugin"))
     source ~/.vim/rcdir/vimrc.plugin

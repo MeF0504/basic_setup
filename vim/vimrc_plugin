@@ -1,6 +1,30 @@
 ""vim plugin setting
 "
 
+"seiya.vim
 "vimの背景を透過
 let g:seiya_auto_enable=1
+
+"taglist.vim
+"tag設定
+set tags=tags;,./tags;
+let Tlist_Exit_OnlyWindow = 1
+let Tlist_WinWidth = 45
+set splitbelow
+nnoremap <c-]> g<c-]>
+nnoremap tt :Tlist<CR>
+"escでtag listから抜ける
+autocmd local FileType taglist nnoremap <Esc> <c-w>p
+"terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
+"入力方法はc-vから矢印
+nnoremap OA k
+nnoremap OB j
+nnoremap OD h
+nnoremap OC l
+
+"taglistを縦分割で使う際に横ではなく下にlistが出るように変更する関数
+function! Tlist_Horizon()
+    let g:Tlist_Use_Horiz_Window=1
+endfunction
+
 
