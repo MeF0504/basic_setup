@@ -49,6 +49,7 @@ set expandtab
 "連続した空白でtabやback spaceが動く幅
 set softtabstop=4
 "日本語OKに
+set encoding=utf-8
 set fileencoding=utf-8
 "大文字、小文字を区別しない
 set ignorecase
