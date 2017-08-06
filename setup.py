@@ -16,30 +16,47 @@ def mkdir(path):
         os.chmod(path,0755)
 
 def fcopy(file1,file2,link=False,force=False,**kwargs):
+    def fcopy_main(cmd,comment,test):
+        if not test:
+            subprocess.call(cmd, shell=True)
+            print comment
+        else:
+            print 'cmd check:: '+cmd+'\n'
+
     name1 = os.path.basename(file1)
     name2 = os.path.basename(file2)
+
+    if kwargs.has_key('test'):
+        test = kwargs['test']
+    else:
+        test = False
+
     if kwargs.has_key('condition'):
         condition = kwargs['condition']
     else:
         condition = True
-    if link:
+
+    if link:    #link
+        cmd = 'ln -s %s %s' % (file1, file2)
+        comment = 'linked '+name1
+
         if (not os.path.exists(file2)) and condition:
-            subprocess.call('ln -s %s %s' % (file1,file2),shell=True)
-            print 'linked '+name1
+            fcopy_main(cmd,comment,test)
         elif condition:
             print '[  %s  ] is already exist, cannot link!' % name2
-    else:
+
+    else:       #copy
+        cmd = 'cp %s %s' % (file1, file2)
+        comment = 'copy %s --> %s\n' % (name1,file2)
+
         if force and condition:
-            print 'copy %s --> %s\n' % (name1,file2)
-            subprocess.call('cp %s %s' % (file1,file2),shell=True)
+            fcopy_main(cmd, comment, test)
         elif (not os.path.exists(file2)) and condition:
-            print 'copy %s --> %s\n' % (name1,file2)
-            subprocess.call('cp %s %s' % (file1,file2),shell=True)
+            fcopy_main(cmd, comment, test)
         elif condition:
             yn = raw_input('[  %s  ] is already exist, are you realy overwite? [y,n]' % name2)
             if (yn == 'y') or (yn == 'yes'):
-                print 'copy %s --> %s\n' % (name1,file2)
-                subprocess.call('cp %s %s' % (file1,file2),shell=True)
+                fcopy_main(cmd, comment, test)
             else:
                 print 'Do not copy '+name2+'\n'
 
@@ -49,6 +66,7 @@ if __name__ == "__main__":
     parser.add_argument('--download',help='download some files (from git)',action='store_true')
     #parser.add_argument('--copy',help="only copy files instead of link",action='store_true')
     parser.add_argument('--link',help="link files instead of copy",action='store_true')
+    parser.add_argument('--test',help="don't copy, just show command",action='store_true')
     parser.add_argument('-f','--force',help="Do not prompt for confirmation before overwriting the destination path",action='store_true')
     args = parser.parse_args()
 
@@ -75,47 +93,43 @@ if __name__ == "__main__":
     for p in pyfiles:
         #print 'p',p,'p'
         fname = os.path.basename(p)
-        fcopy(p,os.path.join(binpath,fname),link=args.link,force=args.force)
+        fcopy(p,os.path.join(binpath,fname),link=args.link,force=args.force,test=args.test)
 
     ############### basic setup directory ###############
     setdir = os.path.join(fpath,'setup')
     print '\n@ '+setdir+'\n'
-    files = {'zshrc_file':'~/.zshrc','256colors.pl':'256colors.pl','ssh-host-color.sh':'ssh-host-color.sh','terminator_config':'~/.config/terminator/config','pdf2jpg':'pdf2jpg'}
+    files = {\
+            'zshrc_file':'~/.zshrc', \
+            '256colors.pl':'256colors.pl', \
+            'ssh-host-color.sh':'ssh-host-color.sh', \
+            'terminator_config':'~/.config/terminator/config', \
+            'pdf2jpg':'pdf2jpg'}
     for fy in files:
         spath = os.path.join(setdir,fy)
         if os.path.exists(spath):
-            #if 'zshrc_file' in spath:
             if 'zshrc_file' == fy:
-                fcopy(spath,os.path.expanduser(files[fy]),link=bool(args.link),force=args.force)
+                fcopy(spath,os.path.expanduser(files[fy]),link=bool(args.link),force=args.force,test=args.test)
                 if not os.path.exists(os.path.expanduser('~/.zshrc.mine')):
                     with open(os.path.expanduser('~/.zshrc.mine'),'a') as f:
                         print >> f,'## PC dependent zshrc'
                         print >> f,'#'
                         print >> f,'\n'
 
-            """
-            #if 'ssh-host-color.sh' in spath:
-            if 'ssh-host-color.sh' == fy:
-                fcopy(spath,os.path.join(binpath,files[fy]),link=False,force=args.force,condition=os.uname()[0]=='Darwin')
-                if os.uname()[0]=='Darwin' and (not os.path.exists(os.path.expanduser('~/.ssh/ssh-host-color-set'))):
-                    with open(os.path.expanduser('~/.ssh/ssh-host-color-set'),'a') as f:
-                        print >> f,'hoge 10 10 25'
-                        print >> f,'fuga 18 5 10'
-                        print >> f,'bar 10 25 10'
-            """
-
-            #if ('terminator_config' in spath):
             if 'terminator_config' == fy:
-                fcopy(spath,os.path.expanduser(files[fy]),link=False,force=args.force,condition=(os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser(files[fy])))
+                fcopy(spath,os.path.expanduser(files[fy]),link=False,force=args.force,condition=(os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser(files[fy])),test=args.test)
 
-        else:
-                fcopy(spath,os.path.join(binpath,files[fy]),force=args.force)
+            else:
+                fcopy(spath,os.path.join(binpath,files[fy]),force=args.force,test=args.test)
 
     ############### vim setup directory ###############
     vimdir = os.path.join(fpath,'vim')
     print '\n@ '+vimdir+'\n'
 
-    files = {'vimrc_file':'~/.vimrc','vimrc_color':'vimrc.color','vimrc_plugin':'vimrc.plugin','vimrc_dein':'vimrc.dein'}
+    files = { \
+            'vimrc_file':'~/.vimrc', \
+            'vimrc_color':'vimrc.color', \
+            'vimrc_plugin':'vimrc.plugin', \
+            'vimrc_dein':'vimrc.dein'}
     mkdir('~/.vim')
     mkdir('~/.vim/rcdir')
     rcdir = os.path.expanduser('~/.vim/rcdir')
@@ -138,6 +152,9 @@ if __name__ == "__main__":
         print '\nclone quickrun'
         subprocess.call('git clone https://github.com/thinca/vim-quickrun.git',shell=True)
         subprocess.call('cp -ri ./vim-quickrun/plugin/quickrun.vim ~/.vim/plugin/',shell=True)
+        print '\nclone taglist'
+        subprocess.call('git clone https://github.com/vim-scripts/taglist.vim',shell=True)
+        subprocess.call('cp -ri ./taglist.vim/plugin/taglist.vim ~/.vim/plugin/',shell=True)
         print '\nremove download tmp files'
         subprocess.call('rm -rf %s' % os.path.join(fpath,'tmp','*'),shell=True)
         os.chdir(fpath)
@@ -147,10 +164,10 @@ if __name__ == "__main__":
         if os.path.exists(vpath):
 
             if 'vimrc_file' in vpath:
-                fcopy(vpath,os.path.expanduser(files[fy]),link=bool(args.link),force=args.force)
+                fcopy(vpath,os.path.expanduser(files[fy]),link=bool(args.link),force=args.force,test=args.test)
 
             else:
-                fcopy(vpath,os.path.join(rcdir,files[fy]),link=bool(args.link),force=args.force)
+                fcopy(vpath,os.path.join(rcdir,files[fy]),link=bool(args.link),force=args.force,test=args.test)
 
     vim_mine = os.path.expanduser('~/.vim/rcdir/vimrc.mine')
     if not os.path.exists(vim_mine):
