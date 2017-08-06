@@ -1,9 +1,16 @@
-""##########基本設定
 "vimrcを再読込する際にautocmdが重複しないようにautocmdをすべて解除
 augroup local
     autocmd!
 augroup END
 
+"windiws, unix系で分岐
+if has('win32')
+    let s:vimdir = expand('~/vimfiles/')
+else
+    let s:vimdir = expand('~/.vim/')
+endif
+
+""##########基本設定
 "左端に数字を表示
 set number
 "常にステータスラインを表示
@@ -51,6 +58,8 @@ set smartcase
 "set listchars=tab:»-,trail:-,extends:»,precedes:«,nbsp:%,eol:↲
 "clipboardとyankを共有 (+clipboardが条件)
 "set clipboard+=unnamed
+"検索のときに移動しない
+set noincsearch
 "カーソルが上下５行に行ったらスクロール
 set scrolloff=5
 
@@ -62,6 +71,12 @@ match ZenkakuSpace /　/
 
 "カーソルの下に下線を表示
 set cursorline
+
+"swp fileあり、backup, undoなし
+set swapfile
+execute "set directory=" . s:vimdir . "swp"
+set nobackup
+set noundofile
 
 "vimgrepした際に新規windowで開くようにする
 autocmd local QuickFixCmdPost *grep* cwindow
@@ -100,22 +115,25 @@ function! s:ExecPy()
 
 ""##########ファイル読み込み
 "pluginの設定読み込み
-if isdirectory(expand("~/.vim/plugin"))
-    source ~/.vim/rcdir/vimrc.plugin
+if isdirectory(s:vimdir . 'plugin')
+    execute "source " . s:vimdir . "rcdir/vimrc.plugin"
 endif
 
 "dein directoryがあれば読み込み
-if isdirectory(expand("~/.vim/dein"))
-    source ~/.vim/rcdir/vimrc.dein
+if isdirectory(s:vimdir . 'dein')
+    execute "source " . s:vimdir . "rcdir/vimrc.dein"
 endif
 
 "local設定ファイル
-source ~/.vim/rcdir/vimrc.mine
+let s:localrc = s:vimdir . 'rcdir/vimrc.mine'
+if filereadable(s:localrc)
+    execute "source " . s:localrc
+endif
 
 "カラーの変更
-if filereadable(expand("~/.vim/colors/inkpot.vim"))
+if filereadable(s:vimdir . "colors/inkpot.vim") && !has('gui_running')
     colorscheme inkpot
-    source ~/.vim/rcdir/vimrc.color
+    execute "source " . s:vimdir . "rcdir/vimrc.color"
 else
     colorscheme desert
 endif
