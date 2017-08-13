@@ -3,17 +3,17 @@
 set guioptions+=a
 
 colorscheme inkpot
-hi Identifier guifg=DeepSkyBlue
+hi Identifier guifg=LightSkyBlue3
 hi Number guifg=Red
-hi Type guifg=Green
-hi Comment guifg=DarkSlateblue
-hi LineNr guifg=dimgray guibg=NONE
+hi Type guifg=DarkOliveGreen3
+hi string guibg=NONE guifg=LightGoldenrod2
+hi Comment guifg=MediumPurple4
+hi LineNr guifg=Grey30 guibg=NONE
 hi Normal guifg=LightGray
-hi string guibg=NONE guifg=NavajoWhite
 
 set cursorline
 hi CursorLine gui=underline guifg=NONE guibg=NONE
-hi CursorLineNr guibg=White guifg=DarkBlue
+hi CursorLineNr guifg=NavyBlue guibg=White
 
 "hi Pmenu guibg=LightBlue
 "hi PmenuSel guibg=red
@@ -23,4 +23,4 @@ hi CursorLineNr guibg=White guifg=DarkBlue
 set visualbell t_vb=
 
 "“§‰ß
-autocmd GUIEnter * set transparency=230 "0~255?
+autocmd GUIEnter * set transparency=240 "0~255?
