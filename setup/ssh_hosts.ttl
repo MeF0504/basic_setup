@@ -51,3 +51,25 @@ endif
 ;;;;; connect host
 connect COMMAND
 
+;;;;; multi ssh
+;if HP = 0 then
+;    wait '$' '#'
+;    USER2nd = 'hoge2'
+;    HOST2nd = 'yyy.yy.yyy.yyy'
+;
+;    ID = USER2nd
+;    strconcat ID '-'
+;    strconcat ID HOST2nd
+;    getpassword PASSFILE ID PASSWORD
+;
+;    COMMAND = 'ssh -Y '
+;    strconcat COMMAND USER2nd
+;    strconcat COMMAND '@'
+;    strconcat COMMAND HOST2nd
+;    sendln COMMAND
+;
+;    wait 'password:'
+;    sendln PASSWORD
+;endif
+
+end
