@@ -1,0 +1,53 @@
+
+;;;;; settings
+PASSFILE = 'C:\Users\hoge\Documents\password.dat'
+KEYFILE = 'C:\Users\hoge\Documents\id_rsa'
+
+;;;;; select host
+
+inputbox 'host: hoge_pass hoge_key' 'select hoost'
+
+strcompare inputstr 'hoge_pass'
+HP = result
+strcompare inputstr 'hoge_key'
+HK = result
+
+;;;;; setting host
+if HP = 0 then
+    HOSTDDR = 'xxx.xx.xxx.xxx'
+    USERNAME = 'fuga'
+    ID = USERNAME
+    strconcat ID '-'
+    strconcat ID HOSTDDR
+    getpassword PASSFILE ID PASSWORD 
+
+    COMMAND = HOSTDDR
+    strconcat COMMAND ':22 /ssh /auth=password /user='
+    strconcat COMMAND USERNAME
+    strconcat COMMAND ' /passwd='
+    strconcat COMMAND PASSWORD
+
+elseif HK = 0 then
+    HOSTDDR = 'xxx.xx.xxx.xxx'
+    USERNAME = 'fuga'
+    ID = USERNAME
+    strconcat ID '-'
+    strconcat ID HOSTDDR
+    getpassword PASSFILE ID PASSWORD 
+
+    COMMAND = HOSTDDR
+    strconcat COMMAND ':22 /ssh /auth=publickey /user='
+    strconcat COMMAND USERNAME
+    strconcat COMMAND ' /passwd='
+    strconcat COMMAND PASSWORD
+    strconcat COMMAND ' /keyfie='
+    strconcat COMMAND KEY_FILE
+
+else then
+    messagebox 'no matching host. end' 'end message'
+    end
+endif
+
+;;;;; connect host
+connect COMMAND
+
