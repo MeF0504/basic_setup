@@ -1,6 +1,9 @@
 "colorscheme darkblue
 "clipboard‹¤—L
 set guioptions+=a
+"insert mode‚©‚ç—£‚ê‚é‚Æ‚«‚ÉIME off
+set noimdisable
+set iminsert=2
 
 colorscheme inkpot
 hi Identifier guifg=LightSkyBlue3
