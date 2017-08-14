@@ -87,6 +87,9 @@ nnoremap ZZ <Nop>
 nnoremap ZQ <Nop>
 nnoremap Q <Nop>
 
+"Insert modeを抜けるときにIME off ※ssh先ではhostのを変えるので意味なし
+inoremap <ESC> <ESC>:set iminsert=0<CR>
+
 "使いやすいようにmapping
 nnoremap s <c-w>
 nnoremap T :tabnew
