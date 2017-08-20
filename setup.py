@@ -142,7 +142,7 @@ if __name__ == "__main__":
         #subprocess.call('git clone git://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim',shell=True)
         print '\nclone dein'
         mkdir('~/.vim/dein')
-        subprocess.call('curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && chmod u+x installer.sh && ./installer.sh ~/.vim/dein')
+        subprocess.call('curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && chmod u+x installer.sh && ./installer.sh ~/.vim/dein',shell=True)
         print '\nclone inkpot'
         subprocess.call('git clone https://github.com/ciaranm/inkpot',shell=True)
         subprocess.call('cp -ri ./inkpot/colors ~/.vim',shell=True)
