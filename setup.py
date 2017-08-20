@@ -115,7 +115,7 @@ if __name__ == "__main__":
                         print >> f,'#'
                         print >> f,'\n'
 
-            if 'terminator_config' == fy:
+            elif 'terminator_config' == fy:
                 fcopy(spath,os.path.expanduser(files[fy]),link=False,force=args.force,condition=(os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser(files[fy])),test=args.test)
 
             else:
