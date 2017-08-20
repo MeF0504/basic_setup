@@ -1,7 +1,7 @@
 "colorscheme darkblue
-"clipboard‹¤—L
+"clipboardå…±æœ‰
 set guioptions+=a
-""insert mode‚©‚ç—£‚ê‚é‚Æ‚«‚ÉIME off
+""insert modeã‹ã‚‰é›¢ã‚Œã‚‹ã¨ãã«IME off
 "set noimdisable
 "set iminsert=2
 
@@ -22,8 +22,8 @@ hi CursorLineNr guifg=NavyBlue guibg=White
 "hi PmenuSel guibg=red
 "hi PmenuSbar guibg=LightBlue
 
-"ƒr[ƒv‰¹‚ğÁ‚·
+"ãƒ“ãƒ¼ãƒ—éŸ³ã‚’æ¶ˆã™
 set visualbell t_vb=
 
-"“§‰ß
+"é€é
 autocmd GUIEnter * set transparency=240 "0~255?
