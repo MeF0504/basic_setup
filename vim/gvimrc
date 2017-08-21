@@ -5,6 +5,7 @@ set guioptions+=a
 "set noimdisable
 "set iminsert=2
 
+"色設定
 colorscheme inkpot
 hi Identifier guifg=LightSkyBlue3
 hi Number guifg=Red
@@ -14,10 +15,12 @@ hi Comment guifg=MediumPurple4
 hi LineNr guifg=Grey30 guibg=NONE
 hi Normal guifg=LightGray
 
+"下線設定
 set cursorline
 hi CursorLine gui=underline guifg=NONE guibg=NONE
 hi CursorLineNr guifg=NavyBlue guibg=White
 
+"必要ならneocompleteの補完リストの色設定
 "hi Pmenu guibg=LightBlue
 "hi PmenuSel guibg=red
 "hi PmenuSbar guibg=LightBlue
