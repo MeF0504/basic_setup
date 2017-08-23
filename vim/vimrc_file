@@ -104,6 +104,13 @@ set ttimeoutlen=1
 nnoremap s <c-w>
 nnoremap T :tabnew
 
+"shiftは逆動作だと思ってるので、単語移動をremap
+noremap W b
+noremap gw W
+noremap gW B
+noremap E ge
+noremap ge E
+
 "ヘッダーファイルをタブで開く
 nnoremap gf <c-w>gf
 
