@@ -1,3 +1,5 @@
+I suppose using Vim from terminal in Mac/Linux machine and using Kaoriya-gVim in windows machine.
+
 using plugins, colors, etc..:
 
 1. dein https://github.com/Shougo/dein.vim
