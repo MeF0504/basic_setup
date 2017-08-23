@@ -92,6 +92,14 @@ if has("win32")
     inoremap <ESC> <ESC>:set iminsert=0<CR>
 endif
 
+"macでinsert modeから抜けるときにIME off
+"参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
+if has('mac')
+	let g:imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
+	autocmd local InsertLeave * :call system(g:imeoff)
+endif
+set ttimeoutlen=1
+
 "使いやすいようにmapping
 nnoremap s <c-w>
 nnoremap T :tabnew
@@ -118,14 +126,6 @@ function! s:ExecPy()
     :endfunction
     command! Exec call <SID>ExecPy()
     autocmd local FileType python map <silent> <C-P> :call <SID>ExecPy()<CR>
-
-"macでinsert modeから抜けるときにIME off
-"参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
-if has('mac')
-	let g:imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
-	autocmd local InsertLeave * :call system(g:imeoff)
-endif
-set ttimeoutlen=1
 
 ""##########ファイル読み込み
 "pluginの設定読み込み
