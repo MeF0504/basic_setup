@@ -132,6 +132,7 @@ if __name__ == "__main__":
             'vimrc_dein':'vimrc.dein'}
     mkdir('~/.vim')
     mkdir('~/.vim/rcdir')
+    mkdir('~/.vim/swp')
     rcdir = os.path.expanduser('~/.vim/rcdir')
 
     if args.download:
