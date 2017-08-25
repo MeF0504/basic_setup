@@ -30,3 +30,11 @@ set visualbell t_vb=
 
 "透過
 autocmd GUIEnter * set transparency=240 "0~255?
+
+function! Hide(...)
+    let l:tra = &transparency
+    let l:time = get(a:,1,5)
+    set transparency=1
+    execute "sleep " . l:time
+    execute "set transparency=" . l:tra
+endfunction
