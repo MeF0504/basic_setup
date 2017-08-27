@@ -1,4 +1,3 @@
-let g:pythonok=1
 
 "gfの検索にPYTHON PATHを追加
 if exists("$PYTHONPATH")
