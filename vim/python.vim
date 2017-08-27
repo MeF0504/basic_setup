@@ -5,9 +5,9 @@ if exists("$PYTHONPATH")
 endif
 
 "Execute python script Ctrl-P
-function! s:ExecPy()
+function! g:ExecPy()
     exe "!" . &ft . " %"
-    :endfunction
-    command! Exec call <SID>ExecPy()
-    autocmd local FileType python map <silent> <C-P> :call <SID>ExecPy()<CR>
+endfunction
+command! Exec call ExecPy()
+nnoremap <silent> <C-P> :call ExecPy()<CR>
 
