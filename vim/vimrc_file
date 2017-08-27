@@ -116,9 +116,6 @@ nnoremap gf <c-w>gf
 
 "検索pathを追加
 set path+=../include
-if exists("$PYTHONPATH")
-    set path+=$PYTHONPATH
-endif
 if exists("$LD_LIBRARY_PATH")
     set path+=$LD_LIBRARY_PATH
 endif
@@ -126,13 +123,6 @@ endif
 ""##########作成関数とか
 "ls in vim
 command! LS 0tabnew .
-
-"Execute python script Ctrl-P
-function! s:ExecPy()
-    exe "!" . &ft . " %"
-    :endfunction
-    command! Exec call <SID>ExecPy()
-    autocmd local FileType python map <silent> <C-P> :call <SID>ExecPy()<CR>
 
 "単語のハイライト情報をget
 "from http://cohama.hateblo.jp/entry/2013/08/11/020849
@@ -190,6 +180,9 @@ let s:localrc = s:vimdir . 'rcdir/vimrc.mine'
 if filereadable(s:localrc)
     execute "source " . s:localrc
 endif
+
+"言語毎の設定
+autocmd local FileType python execute "source " . s:vimdir . "rcdir/python.vim"
 
 "カラーの変更
 if filereadable(s:vimdir . "colors/inkpot.vim") && !has('gui_running')

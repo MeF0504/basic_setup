@@ -129,7 +129,8 @@ if __name__ == "__main__":
             'vimrc_file':'~/.vimrc', \
             'vimrc_color':'vimrc.color', \
             'vimrc_plugin':'vimrc.plugin', \
-            'vimrc_dein':'vimrc.dein'}
+            'vimrc_dein':'vimrc.dein', \
+            'python.vim':'python.vim'}
     mkdir('~/.vim')
     mkdir('~/.vim/rcdir')
     mkdir('~/.vim/swp')
