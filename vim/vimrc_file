@@ -165,14 +165,14 @@ endfunction
 command! SyntaxInfo call s:get_syn_info()
 
 ""##########ファイル読み込み
-"pluginの設定読み込み
-if isdirectory(s:vimdir . 'plugin')
-    execute "source " . s:vimdir . "rcdir/vimrc.plugin"
-endif
-
 "dein directoryがあれば読み込み
 if isdirectory(s:vimdir . 'dein')
     execute "source " . s:vimdir . "rcdir/vimrc.dein"
+endif
+
+"pluginの設定読み込み
+if isdirectory(s:vimdir . 'plugin') || isdirectory(s:vimdir . 'dein')
+    execute "source " . s:vimdir . "rcdir/vimrc.plugin"
 endif
 
 "local設定ファイル
