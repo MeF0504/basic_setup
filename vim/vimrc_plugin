@@ -10,7 +10,7 @@ let g:seiya_auto_enable=1
 set tags=tags;,./tags;
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_WinWidth = 45
-set splitbelow
+"set splitbelow
 nnoremap <c-]> g<c-]>
 nnoremap tt :Tlist<CR>
 "escでtag listから抜ける
