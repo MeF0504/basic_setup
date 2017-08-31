@@ -4,38 +4,45 @@ PASSFILE = 'C:\Users\hoge\Documents\password.dat'
 KEYFILE = 'C:\Users\hoge\Documents\id_rsa'
 
 ;;;;; select host
+HOSTN = result
 
-inputbox 'host: hoge_pass hoge_key' 'select hoost'
+strdim HOSTLIST 2 ;;host name declaration
 
-strcompare inputstr 'hoge_pass'
-HP = result
-strcompare inputstr 'hoge_key'
-HK = result
+HOSTLIST[0] = 'hoge_pass'
+HOSTLIST[1] = 'hoge_key'
+
+listbox 'please select host' 'select host' HOSTLIST
 
 ;;;;; setting host
-if HP = 0 then
-    HOSTDDR = 'xxx.xx.xxx.xxx'
+
+if result = -1 then
+    messagebox 'cancel ssh connect. exit' 'end message'
+    end
+elseif result = 0 then
+
+    HOSTADDR = 'xxx.xx.xxx.xxx'
     USERNAME = 'fuga'
     ID = USERNAME
     strconcat ID '-'
-    strconcat ID HOSTDDR
+    strconcat ID HOSTADDR
     getpassword PASSFILE ID PASSWORD 
 
-    COMMAND = HOSTDDR
+    COMMAND = HOSTADDR
     strconcat COMMAND ':22 /ssh /auth=password /user='
     strconcat COMMAND USERNAME
     strconcat COMMAND ' /passwd='
     strconcat COMMAND PASSWORD
 
-elseif HK = 0 then
-    HOSTDDR = 'xxx.xx.xxx.xxx'
+elseif result = 1 then
+
+    HOSTADDR = 'xxx.xx.xxx.xxx'
     USERNAME = 'fuga'
     ID = USERNAME
     strconcat ID '-'
-    strconcat ID HOSTDDR
+    strconcat ID HOSTADDR
     getpassword PASSFILE ID PASSWORD 
 
-    COMMAND = HOSTDDR
+    COMMAND = HOSTADDR
     strconcat COMMAND ':22 /ssh /auth=publickey /user='
     strconcat COMMAND USERNAME
     strconcat COMMAND ' /passwd='
@@ -43,16 +50,18 @@ elseif HK = 0 then
     strconcat COMMAND ' /keyfie='
     strconcat COMMAND KEY_FILE
 
-else then
-    messagebox 'no matching host. end' 'end message'
-    end
 endif
 
 ;;;;; connect host
 connect COMMAND
 
+if result != 2 then
+    messagebox 'connection failure. exit' 'end message'
+    end
+endif
+
 ;;;;; multi ssh
-;if HP = 0 then
+;if HOSTN = 0 then
 ;    wait '$' '#'
 ;    USER2nd = 'hoge2'
 ;    HOST2nd = 'yyy.yy.yyy.yyy'
