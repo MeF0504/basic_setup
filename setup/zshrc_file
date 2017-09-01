@@ -179,6 +179,11 @@ alias su="su -l"
 alias grep="grep --color -n"
 
 alias zshhistory="vi -R ~/.zsh_history"
+
+if [[ $TERMINOLOGY -eq 1 ]]; then
+    alias ls="tyls -m"
+fi
+
 #cdpwd ()
 #{
     #\cd "$@" && pwd
