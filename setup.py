@@ -1,6 +1,6 @@
 
 import os
-import sys
+#import sys
 import argparse
 import subprocess
 import glob
@@ -100,7 +100,6 @@ if __name__ == "__main__":
     print '\n@ '+setdir+'\n'
     files = {\
             'zshrc_file':'~/.zshrc', \
-            '256colors.pl':'256colors.pl', \
             'ssh-host-color.sh':'ssh-host-color.sh', \
             'terminator_config':'~/.config/terminator/config', \
             'pdf2jpg':'pdf2jpg'}
