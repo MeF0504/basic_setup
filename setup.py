@@ -98,11 +98,23 @@ if __name__ == "__main__":
     ############### basic setup directory ###############
     setdir = os.path.join(fpath,'setup')
     print '\n@ '+setdir+'\n'
-    files = {\
-            'zshrc_file':'~/.zshrc', \
-            'ssh-host-color.sh':'ssh-host-color.sh', \
-            'terminator_config':'~/.config/terminator/config', \
-            'pdf2jpg':'pdf2jpg'}
+    files_mac = {\
+                'zshrc_file':'~/.zshrc', \
+                'ssh-host-color.sh':'ssh-host-color.sh', \
+                'pdf2jpg':'pdf2jpg'\
+                }
+
+    files_linux = {\
+                  'zshrc_file':'~/.zshrc', \
+                  'terminator_config':'~/.config/terminator/config', \
+                }
+    if os.uname()[0] == 'Darwin':
+        files = files_mac
+    elif os.uname()[0] == 'Linux':
+        files = files_linux
+    else:
+        files = {}
+
     for fy in files:
         spath = os.path.join(setdir,fy)
         if os.path.exists(spath):
@@ -129,7 +141,8 @@ if __name__ == "__main__":
             'vimrc_color':'vimrc.color', \
             'vimrc_plugin':'vimrc.plugin', \
             'vimrc_dein':'vimrc.dein', \
-            'python.vim':'python.vim'}
+            'python.vim':'python.vim'\
+            }
     mkdir('~/.vim')
     mkdir('~/.vim/rcdir')
     mkdir('~/.vim/swp')
