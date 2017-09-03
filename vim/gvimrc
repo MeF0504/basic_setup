@@ -20,6 +20,9 @@ set cursorline
 hi CursorLine gui=underline guifg=NONE guibg=NONE
 hi CursorLineNr guifg=NavyBlue guibg=White
 
+"NERDTree color setting
+hi NERDTreeBookmarksLeader  guifg=DeepSkyBlue3
+
 "必要ならneocompleteの補完リストの色設定
 "hi Pmenu guibg=LightBlue
 "hi PmenuSel guibg=red
