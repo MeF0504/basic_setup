@@ -82,16 +82,22 @@ if __name__ == "__main__":
     #print fpath
     os.chdir(fpath)
 
-    ############### python script directory ###############
-    pydir = os.path.join(fpath,'pycode')
-    print '\n@ '+pydir+'\n'
-    pyfiles = []
-    for pfy in glob.glob(os.path.join(pydir,'*')):
-        if os.access(pfy,os.X_OK):
-            pyfiles.append(pfy)
+    ############### script directory ###############
+    codedir = os.path.join(fpath,'codes')
+    print '\n@ '+codedir+'\n'
+    codefiles = []
+    for cfy in glob.glob(os.path.join(codedir,'*')):
+        if os.access(cfy,os.X_OK):
+            if (os.path.basename(cfy) == 'ssh-host-color.ssh'):
+                if (os.uname()[0] =='Darwin'):
+                    codefiles.append(cfy)
+            elif (os.path.basename(cfy) == 'pdf2jpg'):
+                if (os.uname()[0] == 'Darwin'):
+                    codefiles.append(cfy)
+            else:
+                codefiles.append(cfy)
 
-    for p in pyfiles:
-        #print 'p',p,'p'
+    for p in codefiles:
         fname = os.path.basename(p)
         fcopy(p,os.path.join(binpath,fname),link=args.link,force=args.force,test=args.test)
 
@@ -100,13 +106,13 @@ if __name__ == "__main__":
     print '\n@ '+setdir+'\n'
     files_mac = {\
                 'zshrc_file':'~/.zshrc', \
-                'ssh-host-color.sh':'ssh-host-color.sh', \
-                'pdf2jpg':'pdf2jpg'\
+                'matplotlibrc':'~/.matplotlib/', \
                 }
 
     files_linux = {\
                   'zshrc_file':'~/.zshrc', \
                   'terminator_config':'~/.config/terminator/config', \
+                  'matplotlibrc':'~/.config/matplotlib', \
                 }
     if os.uname()[0] == 'Darwin':
         files = files_mac
@@ -126,8 +132,8 @@ if __name__ == "__main__":
                         print >> f,'#'
                         print >> f,'\n'
 
-            elif 'terminator_config' == fy:
-                fcopy(spath,os.path.expanduser(files[fy]),link=False,force=args.force,condition=(os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser(files[fy])),test=args.test)
+            #elif 'terminator_config' == fy:
+                #fcopy(spath,os.path.expanduser(files[fy]),link=False,force=args.force,condition=(os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser(files[fy])),test=args.test)
 
             else:
                 fcopy(spath,os.path.join(binpath,files[fy]),force=args.force,test=args.test)
