@@ -11,10 +11,11 @@ set tags=tags;,./tags;
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_WinWidth = 45
 "set splitbelow
+"候補が複数ある場合に留守とを表示
 nnoremap <c-]> g<c-]>
-nnoremap tt :Tlist<CR>
+nnoremap <silent> tt :Tlist<CR>
 "escでtag listから抜ける
-autocmd local FileType taglist nnoremap <Esc> <c-w>p
+autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
 "terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
 "入力方法はc-vから矢印
 nnoremap OA k

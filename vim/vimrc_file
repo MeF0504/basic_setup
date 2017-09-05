@@ -89,7 +89,7 @@ nnoremap Q <Nop>
 
 "Insert modeを抜けるときにIME off ※ssh先ではhostのを変えるので意味なし
 if has("win32")
-    inoremap <ESC> <ESC>:set iminsert=0<CR>
+    inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 endif
 
 "macでinsert modeから抜けるときにIME off
