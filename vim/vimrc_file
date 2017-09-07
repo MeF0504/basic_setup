@@ -5,9 +5,9 @@ augroup END
 
 "windiws, unix系で分岐
 if has('win32')
-    let s:vimdir = expand('~/vimfiles/')
+    let g:vimdir = expand('~/vimfiles/')
 else
-    let s:vimdir = expand('~/.vim/')
+    let g:vimdir = expand('~/.vim/')
 endif
 
 ""##########基本設定
@@ -75,7 +75,7 @@ set cursorline
 
 "swp fileあり、backup, undoなし
 set swapfile
-execute "set directory=" . s:vimdir . "swp"
+execute "set directory=" . g:vimdir . "swp"
 set nobackup
 set noundofile
 
@@ -166,28 +166,28 @@ command! SyntaxInfo call s:get_syn_info()
 
 ""##########ファイル読み込み
 "dein directoryがあれば読み込み
-if isdirectory(s:vimdir . 'dein')
-    execute "source " . s:vimdir . "rcdir/vimrc.dein"
+if isdirectory(g:vimdir . 'dein')
+    execute "source " . g:vimdir . "rcdir/vimrc.dein"
 endif
 
 "pluginの設定読み込み
-if isdirectory(s:vimdir . 'plugin') || isdirectory(s:vimdir . 'dein')
-    execute "source " . s:vimdir . "rcdir/vimrc.plugin"
+if isdirectory(g:vimdir . 'plugin') || isdirectory(g:vimdir . 'dein')
+    execute "source " . g:vimdir . "rcdir/vimrc.plugin"
 endif
 
 "local設定ファイル
-let s:localrc = s:vimdir . 'rcdir/vimrc.mine'
+let s:localrc = g:vimdir . 'rcdir/vimrc.mine'
 if filereadable(s:localrc)
     execute "source " . s:localrc
 endif
 
 "言語毎の設定
-autocmd local FileType python execute "source " . s:vimdir . "rcdir/python.vim"
+autocmd local FileType python execute "source " . g:vimdir . "rcdir/python.vim"
 
 "カラーの変更
-if filereadable(s:vimdir . "colors/inkpot.vim") && !has('gui_running')
+if filereadable(g:vimdir . "colors/inkpot.vim") && !has('gui_running')
     colorscheme inkpot
-    execute "source " . s:vimdir . "rcdir/vimrc.color"
+    execute "source " . g:vimdir . "rcdir/vimrc.color"
 else
     colorscheme desert
 endif

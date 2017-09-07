@@ -41,3 +41,9 @@ function! Hide(...)
     execute "sleep " . l:time
     execute "set transparency=" . l:tra
 endfunction
+
+"local設定ファイル
+let s:localgrc = g:vimdir . 'rcdir/gvimrc.mine'
+if filereadable(s:localgrc)
+    execute "source " . s:localgrc
+endif
