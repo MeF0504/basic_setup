@@ -16,12 +16,6 @@ nnoremap <c-]> g<c-]>
 nnoremap <silent> tt :Tlist<CR>
 "escでtag listから抜ける
 autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
-"terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
-"入力方法はc-vから矢印
-nnoremap OA k
-nnoremap OB j
-nnoremap OD h
-nnoremap OC l
 
 "taglistを縦分割で使う際に横ではなく下にlistが出るように変更する関数
 function! Tlist_Horizon()
@@ -75,5 +69,8 @@ let g:NERDTreeShowBookmarks=1
 "見栄え
 let g:NERDTreeDirArrows = 1
 let g:NERDTreeDirArrowExpandable  = '>'
-let g:NERDTreeDirArrowCollapsible = '|'
+let g:NERDTreeDirArrowCollapsible = '!'
 "参考:https://kamiya555.github.io/2015/10/14/nerdtree-command/
+
+"Escでnerdtreeから抜け
+autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p

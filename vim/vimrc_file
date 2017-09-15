@@ -79,6 +79,8 @@ execute "set directory=" . g:vimdir . "swp"
 set nobackup
 set noundofile
 
+"grepコマンドで内部grep(vimgrep)を使う
+set grepprg=internal
 "vimgrepした際に新規windowで開くようにする
 autocmd local QuickFixCmdPost *grep* cwindow
 
@@ -103,6 +105,9 @@ set ttimeoutlen=1
 "使いやすいようにmapping
 nnoremap s <c-w>
 nnoremap T :tabnew
+nnoremap <silent> co :copen<CR>
+nnoremap <silent> cc :cclose<CR>
+nnoremap / /\v
 
 "shiftは逆動作だと思ってるので、単語移動をremap
 noremap W b
@@ -113,6 +118,15 @@ noremap ge E
 
 "ヘッダーファイルをタブで開く
 nnoremap gf <c-w>gf
+
+"新規windowで開いたとき、escでもとのwindowに戻る
+autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>p
+"terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
+"入力方法はc-vから矢印
+nnoremap OA k
+nnoremap OB j
+nnoremap OD h
+nnoremap OC l
 
 "検索pathを追加
 set path+=../include
