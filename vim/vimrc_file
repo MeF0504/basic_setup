@@ -164,6 +164,10 @@ function! s:get_syn_info()
 endfunction
 command! SyntaxInfo call s:get_syn_info()
 
+""##########file, directory変数
+let g:cfile = expand("%:p")
+let g:cdir = expand("%:p:h")
+
 ""##########ファイル読み込み
 "dein directoryがあれば読み込み
 if isdirectory(g:vimdir . 'dein')
