@@ -14,6 +14,8 @@ let Tlist_WinWidth = 45
 "候補が複数ある場合に留守とを表示
 nnoremap <c-]> g<c-]>
 nnoremap <silent> tt :Tlist<CR>
+"<c-x>をlocal用のmappingにする。
+nnoremap <silent> <c-x>t :Tlist<CR>
 "escでtag listから抜ける
 autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
 
@@ -23,30 +25,21 @@ function! Tlist_Horizon()
 endfunction
 
 "指定したdirectoryでctagsを実行
-if has('win32')
-    let s:sla='\'
-else
-    let s:sla='/'
-endif
-
 function! Exe_ctags(dir)
 
-    let l:end=0
+    let l:end = 0
+    let l:curdir = expand('%:p:h') . "/"
+    "echo l:curdir
 
     for d in a:dir
-        if d[0]!=s:sla
-            let d = s:sla . d
-        endif
-        if d[-1]!=s:sla
-            let d = d . s:sla
-        endif
-        echo d
+        let d = '\<' . d . '\>'
+        "echo d
 
-        let l:n = matchend(g:cdir,d)
+        let l:n = matchend(l:curdir,d)
         if l:n != -1
             let l:end=1
-            "echo g:cdir[:l:n-1]
-            execute "cd " . g:cdir[:l:n-1]
+            echo l:curdir[:l:n]
+            execute "cd " . l:curdir[:l:n]
             ! ctags -R
             break
         endif
@@ -54,13 +47,17 @@ function! Exe_ctags(dir)
     if l:end==0
         echo "no match directory"
     endif
-    execute "cd " . $PWD
+    if has("win32")
+        execute "cd " . l:curdir
+    else
+        execute "cd " . $PWD
+    endif
 endfunction
 "tag fileを作りたいdirectory名一覧を変数として作っておいて、
 "call Exe_ctags(g:dir)するとhitしたdirectoryでctagsを実行
 "commandかmapすると楽。
 "~~sample~~
-"let g:ctag_dir = ["hoge","fugs"]
+"let g:ctag_dir = ["work","top_dir"]
 "command! Ctags call Exe_ctags(g:ctag_dir)
 
 "NERDTree
@@ -71,6 +68,8 @@ let g:NERDTreeDirArrows = 1
 let g:NERDTreeDirArrowExpandable  = '>'
 let g:NERDTreeDirArrowCollapsible = '!'
 "参考:https://kamiya555.github.io/2015/10/14/nerdtree-command/
+"local mapping
+nnoremap <silent> <c-x>n :NERDTree<CR>
 
 "Escでnerdtreeから抜け
 autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
