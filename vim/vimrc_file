@@ -180,17 +180,17 @@ command! SyntaxInfo call s:get_syn_info()
 
 function! FT_Binary(on_off)
     if a:on_off == 1
-        if exists("g:old_ft")
+        if exists("t:old_ft")
             echo "already open as binary editor"
             return
         endif
         "前の値を避難させる
-        let g:old_ft = &filetype
-        "let g:old_disp = &display
+        let t:old_ft = &filetype
+        "let t:old_disp = &display
         "binay modeで開く
-        if ! exists("g:pp_bin")
+        if ! exists("t:pp_bin")
             e ++bin
-            let g:pp_bin = 0
+            let t:pp_bin = 0
         endif
         "不可視文字をHexフォーマットで
         "set display=uhex
@@ -202,19 +202,19 @@ function! FT_Binary(on_off)
         nnoremap :wq :execute "%!xxd -r"<CR> :wq
 
     else
-        if ! exists('g:old_ft')
+        if ! exists('t:old_ft')
             echo "not opened as binary editor yet"
             return
         endif
         %!xxd -r
         "e ++nobin
-        "execute "set display=" . g:old_disp
-        execute "set filetype=" . g:old_ft
+        "execute "set display=" . t:old_disp
+        execute "set filetype=" . t:old_ft
 
         unmap :wq
         unmap :q
-        unlet g:old_ft
-        "unlet g:old_disp
+        unlet t:old_ft
+        "unlet t:old_disp
 
     endif
 endfunction
