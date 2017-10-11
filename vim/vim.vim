@@ -1,4 +1,4 @@
 
-nnoremap <silent> <C-p> :execute "source " . expand("%:p")<CR>
+nnoremap <silent><buffer> <C-p> :execute "source " . expand("%:p")<CR>
 
 echo "1"

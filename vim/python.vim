@@ -9,5 +9,5 @@ function! g:ExecPy()
     exe "!" . &ft . " %"
 endfunction
 command! Exec call ExecPy()
-nnoremap <silent> <C-P> :call ExecPy()<CR>
+nnoremap <silent><buffer> <C-P> :call ExecPy()<CR>
 

@@ -104,10 +104,14 @@ set ttimeoutlen=1
 
 "使いやすいようにmapping
 nnoremap s <c-w>
-nnoremap T :tabnew
+nnoremap T :tabnew 
 nnoremap <silent> co :copen<CR>
 nnoremap <silent> cc :cclose<CR>
 nnoremap / /\v
+nnoremap gt<Right> gt
+nnoremap gt<Left> gT
+nnoremap gtl gt
+nnoremap gth gT
 
 "shiftは逆動作だと思ってるので、単語移動をremap
 noremap W b
@@ -119,7 +123,7 @@ noremap ge E
 "ヘッダーファイルをタブで開く
 nnoremap gf <c-w>gf
 
-"新規windowで開いたとき、escでもとのwindowに戻る
+"quick fix windowを新規windowで開いたとき、escでもとのwindowに戻る
 autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>p
 "terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
 "入力方法はc-vから矢印
