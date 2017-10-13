@@ -108,6 +108,7 @@ nnoremap T :tabnew
 nnoremap <silent> co :copen<CR>
 nnoremap <silent> cc :cclose<CR>
 nnoremap / /\v
+nnoremap * /\v<><CR>
 nnoremap gt<Right> gt
 nnoremap gt<Left> gT
 nnoremap gtl gt
