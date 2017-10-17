@@ -22,6 +22,7 @@ hi CursorLineNr guifg=NavyBlue guibg=White
 
 "NERDTree color setting
 hi NERDTreeBookmarksLeader  guifg=DeepSkyBlue3
+hi NERDTreeBookmark guifg=DarkOliveGreen3
 
 "必要ならneocompleteの補完リストの色設定
 "hi Pmenu guibg=LightBlue
