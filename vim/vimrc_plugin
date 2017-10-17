@@ -65,6 +65,9 @@ let g:NERDTreeShowBookmarks=1
 let g:NERDTreeDirArrows = 1
 let g:NERDTreeDirArrowExpandable  = '>'
 let g:NERDTreeDirArrowCollapsible = '!'
+hi NERDTreeBookmark ctermfg=22 guifg=DarkGreen
+hi NERDTreeBookmarksLeader ctermfg=32
+
 "参考:https://kamiya555.github.io/2015/10/14/nerdtree-command/
 "local mapping
 nnoremap <silent> <c-x>n :NERDTree<CR>

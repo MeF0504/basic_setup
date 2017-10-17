@@ -63,6 +63,10 @@ set smartcase
 set noincsearch
 "カーソルが上下５行に行ったらスクロール
 set scrolloff=5
+"候補の出方を良い感じに
+"http://boscono.hatenablog.com/entry/2013/11/17/230740
+set wildmenu
+set wildmode=longest:full,full
 
 "let g:hybrid_use_Xresources = 1
 "colorscheme hybrid
