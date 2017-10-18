@@ -66,7 +66,7 @@ set scrolloff=5
 "候補の出方を良い感じに
 "http://boscono.hatenablog.com/entry/2013/11/17/230740
 set wildmenu
-set wildmode=longest:full,full
+set wildmode=longest,full
 
 "let g:hybrid_use_Xresources = 1
 "colorscheme hybrid
@@ -231,17 +231,17 @@ endfunction
 command! FTBinOn call FT_Binary(1)
 command! FTBinOff call FT_Binary(0)
 
-"ファイルが読み込めない事があるので、
-"その時用にread onlyをつけてencodeし直して開く関数
-function! s:noeol_reenc()
-    if &endofline == 1
-        set readonly
-        e ++enc=utf-8
-    endif
-endfunction
-
-"そしてファイルを開くたびに行うようにautocmd化
-autocmd local BufRead * :call s:noeol_reenc()
+""ファイルが読み込めない事があるので、
+""その時用にread onlyをつけてencodeし直して開く関数
+"function! s:noeol_reenc()
+"    if &endofline == 1
+"        set readonly
+"        e ++enc=utf-8
+"    endif
+"endfunction
+"
+""そしてファイルを開くたびに行うようにautocmd化
+"autocmd local BufRead * :call s:noeol_reenc()
 
 ""##########file, directory変数
 let g:cfile = expand("%:p")
