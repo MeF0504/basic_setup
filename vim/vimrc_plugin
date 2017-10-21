@@ -16,6 +16,8 @@ nnoremap <c-]> g<c-]>
 nnoremap <silent> tt :Tlist<CR>
 "<c-x>をlocal用のmappingにする。
 nnoremap <silent> <c-x>t :Tlist<CR>
+"jump先をnew tabで開く
+nnoremap <c-j> :execute("tabnew " . b:cfile)<CR> <c-o> :execute("tjump " . expand('<cword>'))<CR>
 "escでtag listから抜ける
 autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
 

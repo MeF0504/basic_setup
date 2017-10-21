@@ -231,21 +231,21 @@ endfunction
 command! FTBinOn call FT_Binary(1)
 command! FTBinOff call FT_Binary(0)
 
-""ファイルが読み込めない事があるので、
-""その時用にread onlyをつけてencodeし直して開く関数
-"function! s:noeol_reenc()
-"    if &endofline == 1
-"        set readonly
-"        e ++enc=utf-8
-"    endif
-"endfunction
-"
-""そしてファイルを開くたびに行うようにautocmd化
-"autocmd local BufRead * :call s:noeol_reenc()
+"ファイルが読み込めない事があるので、
+"その時用にread onlyをつけてencodeし直して開く関数
+function! s:noeol_reenc()
+    if &endofline == 0
+        set readonly
+        e ++enc=utf-8
+    endif
+endfunction
+
+"そしてファイルを開くたびに行うようにautocmd化
+autocmd local BufRead * :call s:noeol_reenc()
 
 ""##########file, directory変数
-let g:cfile = expand("%:p")
-let g:cdir = expand("%:p:h")
+autocmd local BufRead * let b:cfile = expand("%:p")
+autocmd local BufRead * let b:cdir = expand("%:p:h")
 
 ""##########ファイル読み込み
 "dein directoryがあれば読み込み
