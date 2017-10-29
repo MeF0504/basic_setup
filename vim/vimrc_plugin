@@ -1,17 +1,17 @@
 ""vim plugin setting
 "
 
-"seiya.vim
+"""""seiya.vim
 "vimの背景を透過
 let g:seiya_auto_enable=1
 
-"taglist.vim
+"""""taglist.vim
 "tag設定
 set tags=tags;,./tags;
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_WinWidth = 45
 "set splitbelow
-"候補が複数ある場合に留守とを表示
+"候補が複数ある場合にリストを表示
 nnoremap <c-]> g<c-]>
 nnoremap <silent> tt :Tlist<CR>
 "<c-x>をlocal用のmappingにする。
@@ -24,43 +24,10 @@ autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
 "taglistを縦分割で使う際に横ではなく下にlistが出るように変更する関数
 function! Tlist_Horizon()
     let g:Tlist_Use_Horiz_Window=1
+    Tlist
 endfunction
 
-"指定したdirectoryでctagsを実行
-function! Exe_ctags(dir)
-
-    let l:end = 0
-    let l:curdir = expand('%:p:h') . "/"
-    let l:pwd = getcwd()
-    "echo l:curdir
-
-    for d in a:dir
-        let d = '\<' . d . '\>'
-        "echo d
-
-        let l:n = matchend(l:curdir,d)
-        if l:n != -1
-            let l:end=1
-            echo l:curdir[:l:n]
-            sleep 1
-            execute "cd " . l:curdir[:l:n]
-            ! ctags -R
-            break
-        endif
-    endfor
-    if l:end==0
-        echo "no match directory"
-    endif
-    execute "cd " . l:pwd
-endfunction
-"tag fileを作りたいdirectory名一覧を変数として作っておいて、
-"call Exe_ctags(g:dir)するとhitしたdirectoryでctagsを実行
-"commandかmapすると楽。
-"~~sample~~
-"let g:ctag_dir = ["work","top_dir"]
-"command! Ctags call Exe_ctags(g:ctag_dir)
-
-"NERDTree
+"""""NERDTree
 "Bookmarkをデフォルト表示
 let g:NERDTreeShowBookmarks=1
 "見栄え
@@ -74,3 +41,26 @@ nnoremap <silent> <c-x>n :NERDTree<CR>
 
 "Escでnerdtreeから抜け
 autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
+
+"""""mftags
+let g:mftag_c_enable_kinds = "cdfgstu"
+
+function! s:Mygrep(...)
+    "args 1 ... search word.
+    "args 2 ... file extention.
+    echo a:0
+    if a:0 == '0'
+        let l:word = expand('<cword>')
+        let l:ft = expand('%:e')
+    elseif a:0 == '1'
+        let l:word = a:1
+        let l:ft = expand('%:e')
+    else
+        let l:word = a:1
+        let l:ft = a:2
+    endif
+    execute "grep /" . l:word . "/j " . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft
+endfunction
+command! -nargs=* Gregrep call s:Mygrep(<f-args>)
+
+"command! -nargs=1 Gregrep execute "grep /" . <f-args> . "/j " . MFsearch_dir(g:mftag_dir) . '**/*.' . expand('%:e')
