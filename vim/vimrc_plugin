@@ -48,7 +48,6 @@ let g:mftag_c_enable_kinds = "cdfgstu"
 function! s:Mygrep(...)
     "args 1 ... search word.
     "args 2 ... file extention.
-    echo a:0
     if a:0 == '0'
         let l:word = expand('<cword>')
         let l:ft = expand('%:e')
@@ -59,7 +58,15 @@ function! s:Mygrep(...)
         let l:word = a:1
         let l:ft = a:2
     endif
-    execute "grep /" . l:word . "/j " . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft
+    if &grepprg == "internal"
+        execute 'grep /' . l:word . '/j ' . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft
+    elseif &grepprg == "grep\ -n"
+        execute 'grep "' . l:word . '" ' . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft
+    elseif &grepprg == "grep\ -n\ $*\ /dev/null"
+        execute 'grep "' . l:word . '" ' . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft
+    else
+        echo "not supported grepprg"
+    endif
 endfunction
 command! -nargs=* Gregrep call s:Mygrep(<f-args>)
 
