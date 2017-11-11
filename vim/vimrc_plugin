@@ -71,3 +71,5 @@ endfunction
 command! -nargs=* Gregrep call s:Mygrep(<f-args>)
 
 "command! -nargs=1 Gregrep execute "grep /" . <f-args> . "/j " . MFsearch_dir(g:mftag_dir) . '**/*.' . expand('%:e')
+
+autocmd BufRead * execute "set path+=" . b:mftag_save_dir . "**/include"
