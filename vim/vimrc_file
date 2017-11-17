@@ -111,6 +111,8 @@ nnoremap s <c-w>
 nnoremap T :tabnew 
 nnoremap <silent> co :copen<CR>
 nnoremap <silent> cc :cclose<CR>
+nnoremap <silent> cn :cnewer<CR>
+nnoremap <silent> cp :colder<CR>
 nnoremap / /\v
 nnoremap * /\v<><CR>
 nnoremap gt<Right> gt
