@@ -131,7 +131,8 @@ noremap ge E
 nnoremap gf <c-w>gf
 
 "quick fix windowを新規windowで開いたとき、escでもとのwindowに戻る
-autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>p
+"autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>p
+autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>k <c-w>l
 "terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
 "入力方法はc-vから矢印
 nnoremap OA k

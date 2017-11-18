@@ -19,7 +19,8 @@ nnoremap <silent> <c-x>t :Tlist<CR>
 "jump先をnew tabで開く
 nnoremap <c-j> :execute("tabnew " . b:cfile)<CR> <c-o> :execute("tjump " . expand('<cword>'))<CR>
 "escでtag listから抜ける
-autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
+"autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
+autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>k <c-w>l
 
 "taglistを縦分割で使う際に横ではなく下にlistが出るように変更する関数
 function! Tlist_Horizon()
@@ -40,7 +41,8 @@ let g:NERDTreeDirArrowCollapsible = '!'
 nnoremap <silent> <c-x>n :NERDTree<CR>
 
 "Escでnerdtreeから抜け
-autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
+"autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
+autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>k <c-w>l
 
 """""mftags
 let g:mftag_c_enable_kinds = "cdfgstu"
