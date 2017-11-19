@@ -46,6 +46,7 @@ autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>k <c-w>l
 
 """""mftags
 let g:mftag_c_enable_kinds = "cdfgstu"
+let g:mftag_syntax_c_enable_kinds = "cdfgstu"
 
 function! s:Mygrep(...)
     "args 1 ... search word.
