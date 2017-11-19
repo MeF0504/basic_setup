@@ -108,7 +108,7 @@ set ttimeoutlen=1
 
 "使いやすいようにmapping
 nnoremap s <c-w>
-nnoremap T :tabnew 
+nnoremap T :tablast <bar> :tabnew<space>
 nnoremap <silent> co :copen<CR>
 nnoremap <silent> cc :cclose<CR>
 nnoremap <silent> cn :cnewer<CR>
@@ -119,6 +119,8 @@ nnoremap gt<Right> gt
 nnoremap gt<Left> gT
 nnoremap gtl gt
 nnoremap gth gT
+nnoremap <silent> gt> :tabmove +1<CR>
+nnoremap <silent> gt< :tabmove -1<CR>
 
 "shiftは逆動作だと思ってるので、単語移動をremap
 noremap W b
@@ -190,6 +192,7 @@ function! s:get_syn_info()
 endfunction
 command! SyntaxInfo call s:get_syn_info()
 
+"vimでbinary fileを見る
 function! FT_Binary(on_off)
     if a:on_off == 1
         if exists("t:old_ft")
@@ -245,6 +248,36 @@ endfunction
 
 "そしてファイルを開くたびに行うようにautocmd化
 autocmd local BufRead * :call s:noeol_reenc()
+
+"tabの表示を快適に
+" https://qiita.com/wadako111/items/755e753677dd72d8036d
+" Anywhere SID.
+function! s:SID_PREFIX()
+  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
+endfunction
+
+" Set tabline.
+function! s:my_tabline()  "{{{
+  let s = ''
+  for i in range(1, tabpagenr('$'))
+    let bufnrs = tabpagebuflist(i)
+    let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
+    let no = i  " display 0-origin tabpagenr.
+    let mod = getbufvar(bufnr, '&modified') ? '!' : ' '
+    let title = fnamemodify(bufname(bufnr), ':t')
+    let title = '[' . title . ']'
+    let s .= '%'.i.'T'
+    let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
+    let s .= no . ':' . title
+    let s .= mod
+    let s .= '%#TabLineFill# '
+  endfor
+  let s .= '%#TabLineFill#%T%=%#TabLine#'
+  return s
+endfunction "}}}
+let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
+set showtabline=2 " 常にタブラインを表示
+
 
 ""##########file, directory変数
 autocmd local BufRead * let b:cfile = expand("%:p")
