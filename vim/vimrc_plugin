@@ -1,15 +1,20 @@
 ""vim plugin setting
 "
 
-"""""seiya.vim
+"""""seiya.vim "{{{
 "vimの背景を透過
 let g:seiya_auto_enable=1
+"}}}
 
-"""""taglist.vim
+"""""taglist.vim "{{{
 "tag設定
 set tags=tags;,./tags;
 let Tlist_Exit_OnlyWindow = 1
-let Tlist_WinWidth = 45
+if has('gui_running')
+    let Tlist_WinWidth = 45
+else
+    let Tlist_WinWidth = 35
+endif
 "set splitbelow
 "候補が複数ある場合にリストを表示
 nnoremap <c-]> g<c-]>
@@ -27,8 +32,9 @@ function! Tlist_Horizon()
     let g:Tlist_Use_Horiz_Window=1
     Tlist
 endfunction
+"}}}
 
-"""""NERDTree
+"""""NERDTree "{{{
 "Bookmarkをデフォルト表示
 let g:NERDTreeShowBookmarks=1
 "見栄え
@@ -43,8 +49,9 @@ nnoremap <silent> <c-x>n :NERDTree<CR>
 "Escでnerdtreeから抜け
 "autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
 autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>k <c-w>l
+"}}}
 
-"""""mftags
+"""""mftags{{{
 let g:mftag_c_enable_kinds = "cdfgstu"
 let g:mftag_syntax_c_enable_kinds = "cdfgstu"
 
@@ -62,7 +69,7 @@ function! s:Mygrep(...)
         let l:ft = a:2
     endif
     if &grepprg == "internal"
-        execute 'grep /' . l:word . '/j ' . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft
+        execute 'grep /' . l:word . '/j ' . MFsearch_dir(g:mftag_dir) . '**/*.[' . l:ft . ']'
     elseif &grepprg == "grep\ -n"
         execute 'grep "' . l:word . '" ' . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft
     elseif &grepprg == "grep\ -n\ $*\ /dev/null"
@@ -84,4 +91,5 @@ function! s:AddPath()
     endif
 endfunction
 autocmd BufRead * call s:AddPath()
+"}}}
 
