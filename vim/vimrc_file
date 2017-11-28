@@ -89,6 +89,9 @@ set noundofile
 set grepprg=internal
 "vimgrepした際に新規windowで開くようにする
 autocmd local QuickFixCmdPost *grep* cwindow
+"}}}
+
+""##########mapping設定 "{{{
 
 "誤って使うとまずいkeymapを削除
 nnoremap ZZ <Nop>
@@ -127,7 +130,7 @@ nnoremap <silent> gt< :tabmove -1<CR>
 nnoremap zO zR
 nnoremap zC zM
 "そしてenterで開く
-nnoremap <silent> <CR> zo
+nnoremap <silent> <CR><CR> zo
 
 "shiftは逆動作だと思ってるので、単語移動をremap
 noremap W b
