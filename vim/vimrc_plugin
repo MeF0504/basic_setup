@@ -54,6 +54,7 @@ autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>k <c-w>l
 """""mftags{{{
 let g:mftag_c_enable_kinds = "cdfgstu"
 let g:mftag_syntax_c_enable_kinds = "cdfgstu"
+let g:mftag_auto_close = 1
 "escでfunction listから抜ける
 autocmd local FileType FuncList nnoremap <buffer> <Esc> <c-w>k <c-w>l
 

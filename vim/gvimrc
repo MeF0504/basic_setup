@@ -1,6 +1,8 @@
 "colorscheme darkblue
 "clipboard共有
 set guioptions+=a
+"tab名いじったのでtabのgui表示をoff
+set guioptions-=e
 ""insert modeから離れるときにIME off
 "set noimdisable
 "set iminsert=2
