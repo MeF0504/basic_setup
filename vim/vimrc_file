@@ -125,6 +125,7 @@ nnoremap g<Right> gt
 nnoremap g<Left> gT
 nnoremap gl gt
 nnoremap gh gT
+nnoremap $gt :tablast
 nnoremap <silent> g> :tabmove +1<CR>
 nnoremap <silent> g< :tabmove -1<CR>
 "大文字にするとファイル全体に適用
