@@ -58,7 +58,7 @@ set smartcase
 "タブとかを可視化?
 "set listchars=tab:»-,trail:-,extends:»,precedes:«,nbsp:%,eol:↲
 "clipboardとyankを共有 (+clipboardが条件)
-"set clipboard+=unnamed
+set clipboard+=unnamed
 "検索のときに移動しない
 set noincsearch
 "カーソルが上下５行に行ったらスクロール
@@ -69,6 +69,8 @@ set wildmenu
 set wildmode=longest,full
 set foldenable
 set foldmethod=marker
+"縦分割時に右に出る
+set splitright
 
 "let g:hybrid_use_Xresources = 1
 "colorscheme hybrid
@@ -154,11 +156,8 @@ nnoremap OB j
 nnoremap OD h
 nnoremap OC l
 
-"検索pathを追加
-set path+=../include
-if exists("$LD_LIBRARY_PATH")
-    set path+=$LD_LIBRARY_PATH
-endif
+"\で検索のハイライトを消す
+nnoremap <silent> \ :nohlsearch<CR>
 " }}}
 
 ""##########作成関数とか{{{
@@ -304,11 +303,39 @@ endif
 command! FileInfo execute "!" . s:ls . expand('%')
 "}}}
 
+"分割した際の幅の変化一気にできるようにして、を見た目と一致するようにしたい。{{{
+function! s:set_bandmap()
+    "let s:cmd1 = "<c-w>"
+    "let s:cmd2 = "<c-w>"
+    let s:cmd1 = "s"
+    let s:cmd2 = "s"
+    for i in range(1, 30)
+        let s:cmd1 = s:cmd1 . ">"
+        let s:cmd2 = s:cmd2 . "<"
+        execute "nnoremap " . s:cmd1 . " " . i . "<c-w>>"
+        execute "nnoremap " . s:cmd2 . " " . i . "<c-w><"
+        if winnr() != 1 && winnr() == winnr('$')
+            "windowの最後のbufferだけ変更
+            execute "nnoremap " . s:cmd1 . " " . i . "<c-w><"
+            execute "nnoremap " . s:cmd2 . " " . i . "<c-w>>"
+        endif
+    endfor
+endfunction
+autocmd WinEnter * call s:set_bandmap()
+"}}}
+
 " }}}
 
 ""##########file, directory変数 "{{{
 autocmd local BufRead * let b:cfile = expand("%:p")
 autocmd local BufRead * let b:cdir = expand("%:p:h")
+
+
+"検索pathを追加
+set path+=../include
+if exists("$LD_LIBRARY_PATH")
+    set path+=$LD_LIBRARY_PATH
+endif
 "}}}
 
 ""##########ファイル読み込み "{{{

@@ -18,7 +18,6 @@ endif
 "set splitbelow
 "候補が複数ある場合にリストを表示
 nnoremap <c-]> g<c-]>
-nnoremap <silent> tt :Tlist<CR>
 "<c-x>をlocal用のmappingにする。
 nnoremap <silent> <c-x>t :Tlist<CR>
 "jump先をnew tabで開く
