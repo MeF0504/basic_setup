@@ -71,6 +71,8 @@ set foldenable
 set foldmethod=marker
 "縦分割時に右に出る
 set splitright
+"Leaderを<space>に設定
+let mapleader = "\<space>"
 
 "let g:hybrid_use_Xresources = 1
 "colorscheme hybrid
@@ -127,14 +129,14 @@ nnoremap g<Right> gt
 nnoremap g<Left> gT
 nnoremap gl gt
 nnoremap gh gT
-nnoremap $gt :tablast
+nnoremap <silent> $gt :tablast<CR>
 nnoremap <silent> g> :tabmove +1<CR>
 nnoremap <silent> g< :tabmove -1<CR>
 "大文字にするとファイル全体に適用
 nnoremap zO zR
 nnoremap zC zM
 "そしてenterで開く
-nnoremap <silent> <CR><CR> zo
+nnoremap <silent> <CR><CR> za
 
 "shiftは逆動作だと思ってるので、単語移動をremap
 noremap W b
@@ -148,13 +150,15 @@ nnoremap gf <c-w>gf
 
 "quick fix windowを新規windowで開いたとき、escでもとのwindowに戻る
 "autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>p
-autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>k <c-w>l
+autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>l <c-w>k
 "terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
 "入力方法はc-vから矢印
-nnoremap OA k
-nnoremap OB j
-nnoremap OD h
-nnoremap OC l
+if !has('win32')
+    nnoremap OA k
+    nnoremap OB j
+    nnoremap OD h
+    nnoremap OC l
+endif
 
 "\で検索のハイライトを消す
 nnoremap <silent> \ :nohlsearch<CR>
@@ -278,12 +282,15 @@ function! s:my_tabline()
     let bufnrs = tabpagebuflist(i)
     let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
     let no = i  " display 0-origin tabpagenr.
-    let mod = getbufvar(bufnr, '&modified') ? '+' : ' '
+    let mod = getbufvar(bufnr, '&modified') ? '[+]' : ''
     let title = fnamemodify(bufname(bufnr), ':t')
+    if getbufvar(bufnr, '&filetype') == 'qf'
+        title = "QuickFix"
+    endif
     let title = '[' . title . ']'
     let s .= '%'.i.'T'
     let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
-    let s .= no . ':' . mod . title
+    let s .= no . ':' . title . mod
     "let s .= mod
     let s .= '%#TabLineFill# '
   endfor

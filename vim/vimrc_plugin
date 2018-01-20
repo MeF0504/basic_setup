@@ -18,13 +18,13 @@ endif
 "set splitbelow
 "候補が複数ある場合にリストを表示
 nnoremap <c-]> g<c-]>
-"<c-x>をlocal用のmappingにする。
-nnoremap <silent> <c-x>t :Tlist<CR>
+"<space>をlocal用のmappingにする。
+nnoremap <silent> <Leader>t :Tlist<CR>
 "jump先をnew tabで開く
 nnoremap <c-j> :execute("tabnew " . b:cfile)<CR> <c-o> :execute("tjump " . expand('<cword>'))<CR>
 "escでtag listから抜ける
 "autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
-autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>k <c-w>l
+autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>l <c-w>k
 
 "taglistを縦分割で使う際に横ではなく下にlistが出るように変更する関数
 function! Tlist_Horizon()
@@ -43,11 +43,11 @@ let g:NERDTreeDirArrowCollapsible = '!'
 
 "参考:https://kamiya555.github.io/2015/10/14/nerdtree-command/
 "local mapping
-nnoremap <silent> <c-x>n :NERDTree<CR>
+nnoremap <silent> <Leader>n :NERDTree<CR>
 
 "Escでnerdtreeから抜け
 "autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
-autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>k <c-w>l
+autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>l <c-w>k
 "}}}
 
 """""mftags{{{
@@ -55,7 +55,9 @@ let g:mftag_c_enable_kinds = "cdfgstu"
 let g:mftag_syntax_c_enable_kinds = "cdfgstu"
 let g:mftag_auto_close = 1
 "escでfunction listから抜ける
-autocmd local FileType FuncList nnoremap <buffer> <Esc> <c-w>k <c-w>l
+autocmd local FileType FuncList nnoremap <buffer> <Esc> <c-w>l <c-w>k
+
+nnoremap <silent> <Leader>m :MFfunclist f<CR>
 
 function! s:Mygrep(...)
     "args 1 ... search word.
