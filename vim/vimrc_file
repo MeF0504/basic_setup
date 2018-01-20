@@ -324,6 +324,32 @@ endfunction
 autocmd WinEnter * call s:set_bandmap()
 "}}}
 
+"clipboardを新しいwindowに保存{{{
+function! Show_clipboard()
+    """ open ... 1 open 0 ... get back
+    execute( winnr('$') . 'wincmd l')
+    if &filetype != 'clipboard'
+        silent botright vertical 20split ClipBoard
+        setlocal noreadonly
+        setlocal number
+        setlocal noswapfile
+        setlocal nobackup
+        setlocal noundofile
+        setlocal filetype=clipboard
+        setlocal buftype=nofile
+        setlocal nobuflisted
+        setlocal wrap
+        setlocal report=9999
+    endif
+    setlocal modifiable
+    put *
+    setlocal nomodifiable
+    wincmd p
+
+endfunction
+nnoremap <space>p :call Show_clipboard()<CR>
+"}}}
+
 " }}}
 
 ""##########file, directory変数 "{{{
