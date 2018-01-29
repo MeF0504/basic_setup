@@ -309,7 +309,7 @@ function! s:my_tabline()
         let mod = getbufvar(bufnr, '&modified') ? '[+]' : ''
         let title = fnamemodify(bufname(bufnr), ':t')
         if getbufvar(bufnr, '&filetype') == 'qf'
-            title = "QuickFix"
+            let title = "QuickFix"
         endif
         let title = '[' . title . ']'
         let s .= '%'.i.'T'
