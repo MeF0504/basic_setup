@@ -151,17 +151,18 @@ noremap ge E
 "ヘッダーファイルをタブで開く
 nnoremap gf <c-w>gf
 
-"quick fix windowを新規windowで開いたとき、escでもとのwindowに戻る
+"quick fix windowを新規windowで開いたとき、c-]でもとのwindowに戻る
 "autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>p
-autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>l <c-w>k
-"terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
-"入力方法はc-vから矢印
-if !has('win32')
-    nnoremap OA k
-    nnoremap OB j
-    nnoremap OD h
-    nnoremap OC l
-endif
+"autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>l <c-w>k
+autocmd local Filetype qf nnoremap <buffer> <c-]> <c-w>l <c-w>k
+""terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
+""入力方法はc-vから矢印
+"if !has('win32')
+"    nnoremap OA k
+"    nnoremap OB j
+"    nnoremap OD h
+"    nnoremap OC l
+"endif
 
 "\で検索のハイライトを消す
 nnoremap <silent> \ :nohlsearch<CR>
