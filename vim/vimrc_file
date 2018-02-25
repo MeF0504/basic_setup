@@ -136,7 +136,7 @@ nnoremap <silent> g< :tabmove -1<CR>
 nnoremap zO zR
 nnoremap zC zM
 "そしてenterで開く下を追加したので消そうと思ったけど、macだとうまくいかなかったので残す
-nnoremap <silent> <CR><CR> za
+"nnoremap <silent> <CR><CR> za
 "右方向で開く
 nnoremap <expr> l foldclosed(line('.')) != -1 ? 'zo' : 'l'
 nnoremap <expr> <Right> foldclosed(line('.')) != -1 ? 'zo' : 'l'
@@ -286,6 +286,7 @@ function! s:my_tabline()
     let endplus = 3
     let st = 1
     let en = tabpagenr('$')
+    let beginstr = ''
     let laststr = ''
     "  以降の例は all no = 10 end plus = 3
     if g:AllTabNo < en  "tabが指定数より多い場合 例では全ファイル数は13
@@ -302,7 +303,10 @@ function! s:my_tabline()
             let laststr = '...'
         endif
     endif
-    let s = ''
+    if st > 1
+        let beginstr = '..'
+    endif
+    let s = beginstr
     for i in range(st, en)
         let bufnrs = tabpagebuflist(i)
         let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
