@@ -22,9 +22,9 @@ nnoremap <c-]> g<c-]>
 nnoremap <silent> <Leader>t :Tlist<CR>
 "jump先をnew tabで開く
 nnoremap <c-j> :execute("tabnew " . b:cfile)<CR> <c-o> :execute("tjump " . expand('<cword>'))<CR>
-"c-]でtag listから抜ける
+"]でtag listから抜ける
 "autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
-autocmd local FileType taglist nnoremap <buffer> <c-]> <c-w>l <c-w>k
+autocmd local FileType taglist nnoremap <buffer> ] <c-w>l <c-w>k
 
 "taglistを縦分割で使う際に横ではなく下にlistが出るように変更する関数
 function! Tlist_Horizon()
@@ -45,17 +45,17 @@ let g:NERDTreeDirArrowCollapsible = '!'
 "local mapping
 nnoremap <silent> <Leader>n :NERDTree<CR>
 
-"c-]でnerdtreeから抜け
+"]でnerdtreeから抜け
 "autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
-autocmd local FileType nerdtree nnoremap <buffer> <c-]> <c-w>l <c-w>k
+autocmd local FileType nerdtree nnoremap <buffer> ] <c-w>l <c-w>k
 "}}}
 
 """""mftags{{{
 let g:mftag_c_enable_kinds = "cdfgstu"
 let g:mftag_syntax_c_enable_kinds = "cdfgstu"
 let g:mftag_auto_close = 1
-"c-]でfunction listから抜ける
-autocmd local FileType FuncList nnoremap <buffer> <c-]> <c-w>l <c-w>k
+"]でfunction listから抜ける
+autocmd local FileType FuncList nnoremap <buffer> ] <c-w>l <c-w>k
 
 nnoremap <silent> <Leader>m :MFfunclist f<CR>
 
