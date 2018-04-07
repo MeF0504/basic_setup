@@ -286,10 +286,14 @@ endfunction
 let g:AllTabNo = 10
 function! s:my_tabline() 
     let endplus = 3
+    if g:AllTabNo < 6
+        let endplus = g:AllTabNo/2
+    endif
     let st = 1
     let en = tabpagenr('$')
     let beginstr = ''
     let laststr = ''
+    let is_edit = ''
     "  以降の例は all no = 10 end plus = 3
     if g:AllTabNo < en  "tabが指定数より多い場合 例では全ファイル数は13
         if tabpagenr()+endplus > g:AllTabNo " 現在 8とか
@@ -308,7 +312,16 @@ function! s:my_tabline()
     if st > 1
         let beginstr = '..'
     endif
-    let s = beginstr
+    let s = ''
+    for i in range(1,tabpagenr('$'))
+        let bufnrs = tabpagebuflist(i)
+        let bufnr = bufnrs[tabpagewinnr(i) - 1]
+        if getbufvar(bufnr, '&modified') == 1
+            let is_edit = '_*_'
+        endif
+    endfor
+    let s .= is_edit
+    let s .= beginstr
     for i in range(st, en)
         let bufnrs = tabpagebuflist(i)
         let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
