@@ -97,3 +97,8 @@ endfunction
 autocmd BufRead * call s:AddPath()
 "}}}
 
+""""ctrlp{{{
+nnoremap <leader>s :<C-U>CtrlP<CR>
+
+"}}}
+
