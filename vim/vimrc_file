@@ -73,6 +73,8 @@ set foldmethod=marker
 set splitright
 "Leaderを<space>に設定
 let mapleader = "\<space>"
+"doc directoryを追加
+execute "helptags " . g:vimdir . "doc"
 
 "let g:hybrid_use_Xresources = 1
 "colorscheme hybrid
