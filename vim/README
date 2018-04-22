@@ -1,5 +1,7 @@
 I suppose using Vim from terminal in Mac/Linux machine and using Kaoriya-gVim in windows machine.
 
+vim help in Japanese is at here: https://github.com/vim-jp/vimdoc-ja/archive/master.tar.gz
+
 using plugins, colors, etc..:
 
 1. dein https://github.com/Shougo/dein.vim
