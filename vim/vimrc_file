@@ -404,10 +404,31 @@ endfunction
 nnoremap <Leader>p :call Show_clipboard()<CR>
 "}}}
 
-"diff系command
+"diff系command {{{
 
 command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command! -nargs=1 -complete=file Diff vertical diffsplit <args>
+"}}}
+
+" 開いているfile一覧 {{{
+function! s:file_list()
+    " tab number
+    for i in range(1,tabpagenr('$'))
+        let l:tab_files = i
+        let l:tab_files .= ' '
+        "buffer number of each window
+        for j in tabpagebuflist(i)
+            let mod = getbufvar(j, '&modified') ? '[+]' : ''
+            let l:fname =  '[ ' . fnamemodify(bufname(j),':t') . mod . ' ] '
+            "let l:fname =  '[ ' . bufname(j) . mod . ' ] '
+            let l:tab_files .= l:fname
+        endfor
+        echo l:tab_files
+    endfor
+endfunction
+
+command! Tls call s:file_list()
+" }}}
 
 " }}}
 
