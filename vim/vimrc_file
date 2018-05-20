@@ -421,6 +421,9 @@ function! s:file_list()
             let mod = getbufvar(j, '&modified') ? '[+]' : ''
             let l:fname =  '[ ' . fnamemodify(bufname(j),':t') . mod . ' ] '
             "let l:fname =  '[ ' . bufname(j) . mod . ' ] '
+            if getbufvar(j, '&filetype') == 'qf'
+                let l:fname = '[ QuickFix' . mod . ']'
+            endif
             let l:tab_files .= l:fname
         endfor
         echo l:tab_files
@@ -428,6 +431,9 @@ function! s:file_list()
 endfunction
 
 command! Tls call s:file_list()
+
+nnoremap <silent> <space>l :Tls<CR>
+
 " }}}
 
 " }}}
