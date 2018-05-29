@@ -31,6 +31,29 @@ hi NERDTreeBookmark guifg=DarkOliveGreen3
 "hi PmenuSel guibg=red
 "hi PmenuSbar guibg=LightBlue
 
+let month = strftime("%b")
+let date = strftime("%d")
+if (month == " 5") && (date == " 4")
+    "" Birthday
+    hi StatusLine guifg=Khaki3 guibg=DarkGoldenrod
+elseif (month == " 3") || (month == " 4" ) || (month == " 5")
+    "" Spring
+    hi StatusLine guifg=Pink1 guibg=DarkMagenta
+elseif (month == " 6") || (month == " 7" ) || (month == " 8")
+    "" Summer
+    hi StatusLine guifg=GreenYellow guibg=DodgerBlue2
+elseif (month == " 9") || (month == "10" ) || (month == "11")
+    "" Fall
+    hi StatusLine guifg=Yellow3 guibg=DarkRed
+elseif (month == "12") || (month == " 1" ) || (month == " 2")
+    "" Winter
+    hi StatusLine guifg=LightSkyBlue3 guibg=NavyBlue
+else
+    hi StatusLine guifg=Grey62 guibg=Grey15
+endif
+"default ... hi StatusLine ??
+
+
 "ビープ音を消す
 set visualbell t_vb=
 
