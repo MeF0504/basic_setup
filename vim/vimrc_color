@@ -13,21 +13,21 @@ hi CursorLineNr ctermfg=17 ctermbg=15
 hi NERDTreeBookmark ctermfg=107
 hi NERDTreeBookmarksLeader ctermfg=32
 
-let month = strftime("%b")
-let date = strftime("%d")
-if (month == " 5") && (date == " 4")
+let month = str2nr(strftime("%b"))
+let date = str2nr(strftime("%d"))
+if (month == 5) && (date == 4)
     "" Birthday
     hi StatusLine ctermfg=185 ctermbg=136
-elseif (month == " 3") || (month == " 4" ) || (month == " 5")
+elseif (month == 3) || (month == 4 ) || (month == 5)
     "" Spring
     hi StatusLine ctermfg=218 ctermbg=90
-elseif (month == " 6") || (month == " 7" ) || (month == " 8")
+elseif (month == 6) || (month == 7 ) || (month == 8)
     "" Summer
     hi StatusLine ctermfg=154 ctermbg=27
-elseif (month == " 9") || (month == "10" ) || (month == "11")
+elseif (month == 9) || (month == 10 ) || (month == 11)
     "" Fall
     hi StatusLine ctermfg=184 ctermbg=88
-elseif (month == "12") || (month == " 1" ) || (month == " 2")
+elseif (month == 12) || (month == 1 ) || (month == 2)
     "" Winter
     hi StatusLine ctermfg=109 ctermbg=17
 else
