@@ -31,25 +31,31 @@ hi NERDTreeBookmark guifg=DarkOliveGreen3
 "hi PmenuSel guibg=red
 "hi PmenuSbar guibg=LightBlue
 
-let month = strftime("%b")
-let date = strftime("%d")
-if (month == 5) && (date == 4)
+let s:month = strftime("%b")
+let s:date = strftime("%d")
+if (s:month == 5) && (s:date == 4)
     "" Birthday
     hi StatusLine guifg=Khaki3 guibg=DarkGoldenrod
-elseif (month == 3) || (month == 4 ) || (month == 5)
+    hi WildMenu guifg=DarkGoldenrod guibg=Khaki3
+elseif (s:month == 3) || (s:month == 4 ) || (s:month == 5)
     "" Spring
     hi StatusLine guifg=Pink1 guibg=DarkMagenta
-elseif (month == 6) || (month == 7 ) || (month == 8)
+    hi WildMenu guifg=DarkMagenta guibg=Pink1
+elseif (s:month == 6) || (s:month == 7 ) || (s:month == 8)
     "" Summer
     hi StatusLine guifg=GreenYellow guibg=DodgerBlue2
-elseif (month == 9) || (month == 10 ) || (month == 11)
+    hi WildMenu guifg=DodgerBlue2 guibg=GreenYellow
+elseif (s:month == 9) || (s:month == 10 ) || (s:month == 11)
     "" Fall
     hi StatusLine guifg=Yellow3 guibg=DarkRed
-elseif (month == 12) || (month == 1 ) || (month == 2)
+    hi WildMenu guifg=DarkRed guibg=Yellow3
+elseif (s:month == 12) || (s:month == 1 ) || (s:month == 2)
     "" Winter
     hi StatusLine guifg=LightSkyBlue3 guibg=NavyBlue
+    hi WildMenu guifg=NavyBlue guibg=LightSkyBlue3
 else
     hi StatusLine guifg=Grey62 guibg=Grey15
+    hi WildMenu guifg=Grey15 guibg=Grey62
 endif
 "default ... hi StatusLine ??
 
