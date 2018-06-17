@@ -101,8 +101,8 @@ set grepprg=grep\ -n\ -r\ -i\ --binary-files=without-match
 autocmd local QuickFixCmdPost *grep* cwindow
 
 set statusline=%f%m%r%h%w   " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
-set statusline+=%<%=%y\ [%l/%L]%P " 切り詰め位置 右端に表示 filetype [今の行/全体の行]%表示
-"autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=[%l/%L]%P
+set statusline+=%<%=%y\ %l/%L\ [%P] " 切り詰め位置 右端に表示 filetype 今の行/全体の行 [%表示]
+"autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
 "See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
 "}}}
 
