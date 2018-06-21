@@ -78,7 +78,7 @@ function! s:Mygrep(...)
     elseif &grepprg == "grep\ -n\ -r\ -i\ --binary-files=without-match"
         execute "set grepprg=grep\\ -n\\ -r\\ -i\\ --binary-files=without-match\\ --include=\\\\*." . l:ft
         "echomsg &grepprg
-        execute 'grep ' . l:word . ' ' . MFsearch_dir(g:mftag_dir) . " | normal "
+        execute 'grep "' . l:word . '" ' . MFsearch_dir(g:mftag_dir) . " | normal "
         set grepprg=grep\ -n\ -r\ -i\ --binary-files=without-match
     elseif &grepprg == "grep\ -n\ $*\ /dev/null"
         execute 'grep "' . l:word . '" ' . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft

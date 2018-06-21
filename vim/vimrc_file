@@ -130,7 +130,7 @@ set ttimeoutlen=1
 nnoremap s <c-w>
 "nnoremap T :tablast <bar> :tabnew<space>
 nnoremap T :tabnew<space>
-nnoremap <silent> co :copen<CR>
+nnoremap <silent> co :botright copen<CR>
 nnoremap <silent> cc :cclose<CR>
 nnoremap <silent> cn :cnewer<CR>
 nnoremap <silent> cp :colder<CR>
