@@ -366,26 +366,26 @@ endif
 command! FileInfo execute "!" . s:ls . expand('%')
 "}}}
 
-"分割した際の幅の変化一気にできるようにして、を見た目と一致するようにしたい。{{{
-function! s:set_bandmap()
-    "let s:cmd1 = "<c-w>"
-    "let s:cmd2 = "<c-w>"
-    let s:cmd1 = "s"
-    let s:cmd2 = "s"
-    for i in range(1, 30)
-        let s:cmd1 = s:cmd1 . ">"
-        let s:cmd2 = s:cmd2 . "<"
-        execute "nnoremap " . s:cmd1 . " " . i . "<c-w>>"
-        execute "nnoremap " . s:cmd2 . " " . i . "<c-w><"
-        if winnr() != 1 && winnr() == winnr('$')
-            "windowの最後のbufferだけ変更
-            execute "nnoremap " . s:cmd1 . " " . i . "<c-w><"
-            execute "nnoremap " . s:cmd2 . " " . i . "<c-w>>"
-        endif
-    endfor
-endfunction
-autocmd WinEnter * call s:set_bandmap()
-"}}}
+""分割した際の幅の変化一気にできるようにして、を見た目と一致するようにしたい。{{{
+"function! s:set_bandmap()
+"    "let s:cmd1 = "<c-w>"
+"    "let s:cmd2 = "<c-w>"
+"    let s:cmd1 = "s"
+"    let s:cmd2 = "s"
+"    for i in range(1, 30)
+"        let s:cmd1 = s:cmd1 . ">"
+"        let s:cmd2 = s:cmd2 . "<"
+"        execute "nnoremap " . s:cmd1 . " " . i . "<c-w>>"
+"        execute "nnoremap " . s:cmd2 . " " . i . "<c-w><"
+"        if winnr() != 1 && winnr() == winnr('$')
+"            "windowの最後のbufferだけ変更
+"            execute "nnoremap " . s:cmd1 . " " . i . "<c-w><"
+"            execute "nnoremap " . s:cmd2 . " " . i . "<c-w>>"
+"        endif
+"    endfor
+"endfunction
+"autocmd WinEnter * call s:set_bandmap()
+""}}}
 
 "clipboardを新しいwindowに保存{{{
 function! Show_clipboard()
@@ -441,6 +441,74 @@ command! Tls call s:file_list()
 
 nnoremap <silent> <space>l :Tls<CR>
 
+" }}}
+"
+" window setiing function {{{
+function! s:window_mode()
+    if !exists("s:wmode_on")
+        let s:wmode_on = 1
+        "save old map
+        let g:wmode_old_map = {}
+        let g:wmode_map_strs = ["<right>", "l", "<left>", "h", "<up>", "k", "<down>", "j", "i", "a", "s", "I", "A", "S", "R"]
+        for st in g:wmode_map_strs
+            let g:wmode_old_map[st] = maparg(st, 'n',0,1)
+        endfor
+
+        "map change window
+        nnoremap <right> <c-w>>
+        nnoremap l <c-w>>
+        nnoremap <left> <c-w><
+        nnoremap h <c-w><
+        nnoremap <up> <c-w>+
+        nnoremap k <c-w>+
+        nnoremap <down> <c-w>-
+        nnoremap j <c-w>-
+        nnoremap i <Nop>
+        nnoremap a <Nop>
+        nnoremap s <Nop>
+        nnoremap I <Nop>
+        nnoremap A <Nop>
+        nnoremap S <Nop>
+        nnoremap R <Nop>
+
+        "show mode in statusline
+        set statusline+=\ [WM]
+    else
+        unlet s:wmode_on
+        "remap
+        for st in g:wmode_map_strs
+            let l:st_map = g:wmode_old_map[st]
+            if l:st_map == {}
+                execute( "unmap " . st )
+            else
+                let l:opt = ''
+                if l:st_map['silent']
+                    let l:opt .= ' <silent> '
+                endif
+                if l:st_map['buffer']
+                    let l:opt .= ' <buffer> '
+                endif
+                if l:st_map['nowait']
+                    let l:opt .= ' <nowait> '
+                endif
+                if l:st_map['expr']
+                    let l:opt .= ' <expr> '
+                endif
+                if l:st_map['noremap']
+                    let l:map_str = 'nnoremap '
+                else
+                    let l:map_str = 'nmap '
+                endif
+                execute(l:map_str . l:opt . l:st_map['lhs'] . " " . l:st_map['rhs'] )
+            endif
+        endfor
+
+        set statusline-=\ [WM]
+    endif
+endfunction
+
+command! Wmode call s:window_mode()
+nnoremap <silent> <Leader>w :Wmode<CR>
 " }}}
 
 " }}}
