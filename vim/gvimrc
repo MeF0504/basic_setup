@@ -42,7 +42,7 @@ elseif (s:month == 3) || (s:month == 4 ) || (s:month == 5)
     hi StatusLine guifg=Pink1 guibg=DarkMagenta
     hi WildMenu guifg=DarkMagenta guibg=Pink1
 elseif (s:month == 6) || (s:month == 7 ) || (s:month == 8)
-botright     "" Summer
+    "" Summer
     hi StatusLine guifg=GreenYellow guibg=DodgerBlue2
     hi WildMenu guifg=DodgerBlue2 guibg=GreenYellow
 elseif (s:month == 9) || (s:month == 10 ) || (s:month == 11)
