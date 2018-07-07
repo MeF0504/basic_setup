@@ -100,8 +100,11 @@ set grepprg=grep\ -n\ -r\ -i\ --binary-files=without-match
 "vimgrepした際に新規windowで開くようにする
 autocmd local QuickFixCmdPost *grep* cwindow
 
-set statusline=%f%m%r%h%w   " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
-set statusline+=%<%=%y\ %l/%L\ [%P] " 切り詰め位置 右端に表示 filetype 今の行/全体の行 [%表示]
+set statusline=%f%m%r%h%w            " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
+set statusline+=%<%=                 " 切り詰め位置 右端に表示
+set statusline+=%y\                  " filetype
+set statusline+=[%{&fileformat}]\    " file format
+set statusline+=%l/%L\ [%P]          " 今の行/全体の行 [%表示]
 "autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
 "See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
 "}}}
@@ -165,7 +168,7 @@ nnoremap gf <c-w>gf
 "quick fix windowを新規windowで開いたとき、]でもとのwindowに戻る
 "autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>p
 "autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>l <c-w>k
-autocmd local Filetype qf nnoremap <buffer> ] <c-w>l <c-w>k
+autocmd local Filetype qf nnoremap <buffer> ] <c-w>k <c-w>l
 "quick fix windowでc-tで新しいtabで開く
 autocmd local Filetype qf nnoremap <buffer><silent> <c-t> <c-w><s-t><CR>:cclose<CR>
 ""terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
@@ -449,7 +452,7 @@ function! s:window_mode()
         let s:wmode_on = 1
         "save old map
         let g:wmode_old_map = {}
-        let g:wmode_map_strs = ["<right>", "l", "<left>", "h", "<up>", "k", "<down>", "j", "i", "a", "s", "I", "A", "S", "R"]
+        let g:wmode_map_strs = ["<right>", "l", "<left>", "h", "<up>", "k", "<down>", "j", "i", "a", "s", "I", "A", "S", "R","+","-"]
         for st in g:wmode_map_strs
             let g:wmode_old_map[st] = maparg(st, 'n',0,1)
         endfor
@@ -470,6 +473,27 @@ function! s:window_mode()
         nnoremap A <Nop>
         nnoremap S <Nop>
         nnoremap R <Nop>
+
+        "change gui font size
+        if has("gui")
+            function! s:set_font_size(pm)
+                let l:fl = strridx(&guifont, 'h')
+                let l:font_size = str2nr(&guifont[fl+1:])
+                if a:pm == '-'
+                    let l:font_size -= 1
+                elseif a:pm == '+'
+                    let l:font_size += 1
+                else
+                    return
+                endif
+                execute("set guifont=" . &guifont[:l:fl] . l:font_size)
+            endfunction
+
+            command! WMPlus call s:set_font_size('+')
+            command! WMMinus call s:set_font_size('-')
+            nnoremap <silent> + :WMPlus<CR>
+            nnoremap <silent> - :WMMinus<CR>
+        endif
 
         "show mode in statusline
         set statusline+=\ [WM]
@@ -502,6 +526,10 @@ function! s:window_mode()
                 execute(l:map_str . l:opt . l:st_map['lhs'] . " " . l:st_map['rhs'] )
             endif
         endfor
+        if has('gui')
+            delcommand WMPlus
+            delcommand WMMinus
+        endif
 
         set statusline-=\ [WM]
     endif

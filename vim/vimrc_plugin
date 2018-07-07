@@ -10,6 +10,7 @@ let g:seiya_auto_enable=1
 "tag設定
 set tags=tags;,./tags;
 let Tlist_Exit_OnlyWindow = 1
+let Tlist_Show_One_File = 1
 if has('gui_running')
     let Tlist_WinWidth = 45
 else
@@ -54,6 +55,7 @@ autocmd local FileType nerdtree nnoremap <buffer> ] <c-w>l <c-w>k
 let g:mftag_c_enable_kinds = "cdfgstu"
 let g:mftag_syntax_c_enable_kinds = "cdfgstu"
 let g:mftag_auto_close = 1
+let g:mftag_dir_auto_set = 1
 "]でfunction listから抜ける
 autocmd local FileType FuncList nnoremap <buffer> ] <c-w>l <c-w>k
 
@@ -62,6 +64,10 @@ nnoremap <silent> <Leader>m :MFfunclist f<CR>
 function! s:Mygrep(...)
     "args 1 ... search word.
     "args 2 ... file extention.
+    if &modified == 1
+        echo "file not saved!"
+        return
+    endif
     if a:0 == '0'
         let l:word = expand('<cword>')
         let l:ft = expand('%:e')
@@ -102,7 +108,8 @@ autocmd BufRead * call s:AddPath()
 "}}}
 
 """"ctrlp{{{
-nnoremap <leader>s :<C-U>CtrlP<CR>
+"nnoremap <leader>s :<C-U>CtrlP<CR>
+let g:ctrlp_map = '<leader>s'
 
 "}}}
 
