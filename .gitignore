@@ -4,4 +4,6 @@ ssh_config
 legacy/*
 .DS_Store
 tmp/*
+tags
+*tag_syntax.vim
 
