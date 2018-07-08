@@ -442,7 +442,7 @@ endfunction
 
 command! Tls call s:file_list()
 
-nnoremap <silent> <space>l :Tls<CR>
+nnoremap <silent> <leader>l :Tls<CR>
 
 " }}}
 "
