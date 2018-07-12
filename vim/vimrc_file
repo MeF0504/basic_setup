@@ -101,10 +101,10 @@ set grepprg=grep\ -n\ -r\ -i\ --binary-files=without-match
 autocmd local QuickFixCmdPost *grep* cwindow
 
 set statusline=%f%m%r%h%w            " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
-set statusline+=%<%=                 " 切り詰め位置 右端に表示
-set statusline+=%y\                  " filetype
-set statusline+=[%{&fileformat}]\    " file format
-set statusline+=%l/%L\ [%P]          " 今の行/全体の行 [%表示]
+set statusline+=%<%=                                    " 切り詰め位置 右端に表示
+set statusline+=%y\                                     " filetype
+set statusline+=[%{&fileformat}:%{&fileencoding}]\      " file format
+set statusline+=%l/%L\ [%P]                             " 今の行/全体の行 [%表示]
 "autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
 "See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
 "}}}
@@ -493,6 +493,9 @@ function! s:window_mode()
             command! WMMinus call s:set_font_size('-')
             nnoremap <silent> + :WMPlus<CR>
             nnoremap <silent> - :WMMinus<CR>
+        else
+            nmap + +
+            nmap - -
         endif
 
         "show mode in statusline
@@ -526,10 +529,15 @@ function! s:window_mode()
                 execute(l:map_str . l:opt . l:st_map['lhs'] . " " . l:st_map['rhs'] )
             endif
         endfor
+        "delete changing font size command
         if has('gui')
             delcommand WMPlus
             delcommand WMMinus
         endif
+
+        "unlet global variables
+        unlet g:wmode_old_map
+        unlet g:wmode_map_strs
 
         set statusline-=\ [WM]
     endif
