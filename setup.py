@@ -136,7 +136,7 @@ if __name__ == "__main__":
                 #fcopy(spath,os.path.expanduser(files[fy]),link=False,force=args.force,condition=(os.uname()[0]=='Linux') and os.path.exists(os.path.expanduser(files[fy])),test=args.test)
 
             else:
-                fcopy(spath,os.path.join(binpath,files[fy]),force=args.force,test=args.test)
+                fcopy(spath,files[fy],force=args.force,test=args.test)
 
     ############### vim setup directory ###############
     vimdir = os.path.join(fpath,'vim')
@@ -149,11 +149,14 @@ if __name__ == "__main__":
             'vimrc_dein':'vimrc.dein', \
             'python.vim':'python.vim',\
             'vim.vim':'vim.vim',\
+            'qf.vim':'qf.vim',\
             }
     mkdir('~/.vim')
     mkdir('~/.vim/rcdir')
     mkdir('~/.vim/swp')
+    mkdir('~/.vim/ftplugin')
     rcdir = os.path.expanduser('~/.vim/rcdir')
+    ftdir = os.path.expanduser('~/.vim/ftplugin')
 
     if args.download:
         mkdir('tmp')
@@ -186,6 +189,8 @@ if __name__ == "__main__":
 
             if 'vimrc_file' in vpath:
                 fcopy(vpath,os.path.expanduser(files[fy]),link=bool(args.link),force=args.force,test=args.test)
+            elif '.vim' in vpath:
+                fcopy(vpath, os.path.join(ftdir,files[fy]),link=bool(args.link), force=args.force, test=args.test)
 
             else:
                 fcopy(vpath,os.path.join(rcdir,files[fy]),link=bool(args.link),force=args.force,test=args.test)

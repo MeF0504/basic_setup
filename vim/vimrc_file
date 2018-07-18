@@ -579,8 +579,8 @@ if filereadable(s:localrc)
 endif
 
 "言語毎の設定
-autocmd local FileType python execute "source " . g:vimdir . "rcdir/python.vim"
-autocmd local FileType vim execute "source " . g:vimdir . "rcdir/vim.vim"
+"autocmd local FileType python execute "source " . g:vimdir . "rcdir/python.vim"
+"autocmd local FileType vim execute "source " . g:vimdir . "rcdir/vim.vim"
 
 "カラーの変更
 if filereadable(g:vimdir . "colors/inkpot.vim") && !has('gui_running')
