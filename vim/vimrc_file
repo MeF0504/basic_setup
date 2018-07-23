@@ -100,7 +100,7 @@ set grepprg=grep\ -n\ -r\ -i\ --binary-files=without-match
 "vimgrepした際に新規windowで開くようにする
 autocmd local QuickFixCmdPost *grep* cwindow
 
-set statusline=%f%m%r%h%w            " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
+set statusline=%f%m%r%h%w\ \                            " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
 set statusline+=%<%=                                    " 切り詰め位置 右端に表示
 set statusline+=%y\                                     " filetype
 set statusline+=[%{&fileformat}:%{&fileencoding}]\      " file format

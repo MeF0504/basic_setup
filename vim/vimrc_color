@@ -14,11 +14,19 @@ hi NERDTreeBookmark ctermfg=107
 hi NERDTreeBookmarksLeader ctermfg=32
 
 let s:month = str2nr(strftime("%b"))
-let s:date = str2nr(strftime("%d"))
-if (s:month == 5) && (s:date == 4)
+let s:day = str2nr(strftime("%d"))
+if ((exists("g:bd_month") && (s:month == g:bd_month))
+    \&& (exists("g:bd_day") && (s:day == g:bd_day)) )
     "" Birthday
-    hi StatusLine ctermfg=185 ctermbg=136
-    hi WildMenu ctermfg=136 ctermbg=185
+    if filereadable(g:vimdir . 'plugin/sushibar.vim')
+        autocmd local BufWinEnter *
+                \ hi StatusLine ctermfg=233 ctermbg=246
+                \ | hi WildMenu ctermfg=246 ctermbg=233
+                \ |  Sushibar
+    else
+        hi StatusLine ctermfg=185 ctermbg=136
+        hi WildMenu ctermfg=136 ctermbg=185
+    endif
 elseif (s:month == 3) || (s:month == 4 ) || (s:month == 5)
     "" Spring
     hi StatusLine ctermfg=218 ctermbg=90
