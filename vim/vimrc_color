@@ -1,3 +1,5 @@
+"vim script encording setting
+scriptencoding utf-8
 "" vim color setting
 "
 
@@ -13,6 +15,11 @@ hi CursorLineNr ctermfg=17 ctermbg=15
 hi NERDTreeBookmark ctermfg=107
 hi NERDTreeBookmarksLeader ctermfg=32
 
+"全角スペース表示
+hi ZenkakuSpace ctermbg=241
+match ZenkakuSpace /　/
+
+"statusline color setting
 let s:month = str2nr(strftime("%b"))
 let s:day = str2nr(strftime("%d"))
 if ((exists("g:bd_month") && (s:month == g:bd_month))

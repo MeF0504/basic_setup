@@ -1,3 +1,6 @@
+"vim script encording setting
+scriptencoding utf-8
+"GUI系基本設定 {{{
 "colorscheme darkblue
 "clipboard共有
 set guioptions+=a
@@ -7,7 +10,12 @@ set guioptions-=e
 "set noimdisable
 "set iminsert=2
 
-"色設定
+"ビープ音を消す
+set visualbell t_vb=
+
+"}}}
+
+"色設定 {{{
 colorscheme inkpot
 hi Identifier guifg=LightSkyBlue3
 hi Number guifg=Red
@@ -30,6 +38,10 @@ hi NERDTreeBookmark guifg=DarkOliveGreen3
 "hi Pmenu guibg=LightBlue
 "hi PmenuSel guibg=red
 "hi PmenuSbar guibg=LightBlue
+
+"全角スペース表示
+hi ZenkakuSpace guibg=darkgray
+match ZenkakuSpace /　/
 
 let s:month = strftime("%b")
 let s:date = strftime("%d")
@@ -59,10 +71,9 @@ else
 endif
 "default ... hi StatusLine ??
 
+"}}}
 
-"ビープ音を消す
-set visualbell t_vb=
-
+"その他 GUI 設定 {{{
 "透過
 autocmd local GUIEnter * set transparency=240 "0~255?
 
@@ -79,3 +90,6 @@ let s:localgrc = g:vimdir . 'rcdir/gvimrc.mine'
 if filereadable(s:localgrc)
     execute "source " . s:localgrc
 endif
+
+"}}}
+

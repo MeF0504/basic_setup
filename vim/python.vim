@@ -1,3 +1,5 @@
+"vim script encording setting
+scriptencoding utf-8
 
 "gfの検索にPYTHON PATHを追加
 if exists("$PYTHONPATH")

@@ -1,3 +1,5 @@
+"vim script encording setting
+scriptencoding utf-8
 "vimrcを再読込する際にautocmdが重複しないようにautocmdをすべて解除
 augroup local
     autocmd!
@@ -56,7 +58,8 @@ set ignorecase
 "検索文字に大文字があると区別する
 set smartcase
 "タブとかを可視化?
-"set listchars=tab:»-,trail:-,extends:»,precedes:«,nbsp:%,eol:↲
+"set list
+"set listchars=tab:».,trail:~,extends:»,precedes:«,nbsp:% ",eol:↲
 "clipboardとyankを共有 (+clipboardが条件)
 set clipboard+=unnamed
 "検索のときに移動しない
@@ -80,9 +83,6 @@ endif
 
 "let g:hybrid_use_Xresources = 1
 "colorscheme hybrid
-"全角スペース表示
-hi ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
-match ZenkakuSpace /　/
 
 "カーソルの下に下線を表示
 set cursorline
@@ -100,11 +100,20 @@ set grepprg=grep\ -n\ -r\ -i\ --binary-files=without-match
 "vimgrepした際に新規windowで開くようにする
 autocmd local QuickFixCmdPost *grep* cwindow
 
-set statusline=%f%m%r%h%w\ \                            " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
-set statusline+=%<%=                                    " 切り詰め位置 右端に表示
-set statusline+=%y\                                     " filetype
-set statusline+=[%{&fileformat}:%{&fileencoding}]\      " file format
-set statusline+=%l/%L\ [%P]                             " 今の行/全体の行 [%表示]
+"statusline setting
+function! Set_statusline(str1, str2, str3, str4, str5)
+    set statusline=%f%m%r%h%w\ \                            " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
+    execute("set statusline+=" . a:str1)
+    set statusline+=%<%=                                    " 切り詰め位置 右端に表示
+    execute("set statusline+=" . a:str2)
+    set statusline+=%y\                                     " filetype
+    execute("set statusline+=" . a:str3)
+    set statusline+=[%{&fileformat}:%{&fileencoding}]\      " file format
+    execute("set statusline+=" . a:str4)
+    set statusline+=%l/%L\ [%P]                             " 今の行/全体の行 [%表示]
+    execute("set statusline+=" . a:str5)
+endfunction
+call Set_statusline("", "", "", "", "")
 "autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
 "See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
 "}}}
@@ -590,4 +599,6 @@ else
     colorscheme desert
 endif
 "}}}
+
+delfunction Set_statusline
 

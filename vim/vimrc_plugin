@@ -1,3 +1,5 @@
+"vim script encording setting
+scriptencoding utf-8
 ""vim plugin setting
 "
 
@@ -32,6 +34,12 @@ function! Tlist_Horizon()
     let g:Tlist_Use_Horiz_Window=1
     Tlist
 endfunction
+
+if has("gui_running")
+    let g:Tlist_Inc_Winwidth = 1
+else
+    let g:Tlist_Inc_Winwidth = 0
+endif
 "}}}
 
 """""NERDTree "{{{
@@ -41,6 +49,8 @@ let g:NERDTreeShowBookmarks=1
 let g:NERDTreeDirArrows = 1
 let g:NERDTreeDirArrowExpandable  = '>'
 let g:NERDTreeDirArrowCollapsible = '!'
+"右側に表示
+let g:NERDTreeWinPos="right"
 
 "参考:https://kamiya555.github.io/2015/10/14/nerdtree-command/
 "local mapping
