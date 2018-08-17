@@ -96,13 +96,13 @@ set noundofile
 "grepコマンドで内部grep(vimgrep)を使う
 "set grepprg=internal
 "外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
-set grepprg=grep\ -n\ -r\ -i\ --binary-files=without-match
+set grepprg=grep\ -nriI
 "vimgrepした際に新規windowで開くようにする
 autocmd local QuickFixCmdPost *grep* cwindow
 
 "statusline setting
 " 検索ヒット数用変数
-let b:search_cnt = 0
+"let b:search_cnt = 0
 function! Set_statusline(str1, str2, str3, str4, str5)
     set statusline=%f%m%r%h%w\ \                            " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
     execute("set statusline+=" . a:str1)
@@ -112,7 +112,7 @@ function! Set_statusline(str1, str2, str3, str4, str5)
     execute("set statusline+=" . a:str3)
     set statusline+=[%{&fileformat}:%{&fileencoding}]\      " file format
     execute("set statusline+=" . a:str4)
-    set statusline+=%l/%L\ [%P]\ [%{b:search_cnt}]           " 今の行/全体の行 [%表示] [検索ヒット数]
+    set statusline+=%l/%L\ [%P] "\ [%{b:search_cnt}]           " 今の行/全体の行 [%表示] [検索ヒット数]
     execute("set statusline+=" . a:str5)
 endfunction
 call Set_statusline("", "", "", "", "")
@@ -447,8 +447,16 @@ function! s:file_list()
             endif
             let l:tab_files .= l:fname
         endfor
-        echo l:tab_files
+        if tabpagenr() == i
+            echohl Search | echo l:tab_files | echohl None
+        else
+            echo l:tab_files
+        endif
     endfor
+    let l:tabnr = input("move tab No:>> ")
+    if (1 <= l:tabnr ) && (l:tabnr <= tabpagenr("$") )
+        execute("normal! " . l:tabnr . "gt")
+    endif
 endfunction
 
 command! Tls call s:file_list()
@@ -558,20 +566,20 @@ command! Wmode call s:window_mode()
 nnoremap <silent> <Leader>w :Wmode<CR>
 " }}}
 
-" 検索ヒット数を表示 {{{
-function! <SID>count_search(n)
-    let b:search_cnt = 0
-    "let l:ln = line(".")
-    "let l:cl = col(".")
-    execute("g/" . @/ . "/ let b:search_cnt+=1")
-    "execute(l:ln)
-    normal! 
-    execute("normal! " . a:n)
-endfunction
-
-nnoremap <silent> n :call <SID>count_search("n")<CR>
-nnoremap <silent> N :call <SID>count_search("N")<CR>
-" }}}
+"" 検索ヒット数を表示 {{{
+"function! <SID>count_search(n)
+"    let b:search_cnt = 0
+"    "let l:ln = line(".")
+"    "let l:cl = col(".")
+"    execute("g/" . @/ . "/ let b:search_cnt+=1")
+"    "execute(l:ln)
+"    normal! 
+"    execute("normal! " . a:n)
+"endfunction
+"
+"nnoremap <silent> n :call <SID>count_search("n")<CR>
+"nnoremap <silent> N :call <SID>count_search("N")<CR>
+"" }}}
 
 " }}}
 
