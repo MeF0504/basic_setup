@@ -45,7 +45,7 @@ command! SyntaxInfo call s:get_syn_info()
 " }}}
 
 " 開いているfile一覧 {{{
-function! s:file_list()
+function! s:file_list() abort
     " tab number
     for i in range(1,tabpagenr('$'))
         let l:tab_files = i
@@ -79,7 +79,7 @@ nnoremap <silent> <leader>l :Tls<CR>
 " }}}
 
 " window setiing function {{{
-function! s:window_mode()
+function! s:window_mode() abort
     if !exists("s:wmode_on")
         let s:wmode_on = 1
         "save old map
@@ -179,3 +179,81 @@ command! Wmode call s:window_mode()
 nnoremap <silent> <Leader>w :Wmode<CR>
 " }}}
 
+" Linux like command line {{{
+let g:prompt = "$ "
+function! Terminux(use_system_cmd)
+
+"================== command functions ====================
+    function! s:ls(opt) "{{{
+        if a:opt == ""
+            let l:cur_dir = "."
+        else
+            let cur_dir = split(a:opt, " ")[0]
+        endif
+        echo "ls " . l:cur_dir
+    endfunction
+    "}}}
+
+    function! s:cd(opt) "{{{
+        execute("cd " . a:opt)
+    endfunction
+    "}}}
+
+    function! s:pwd(opt) "{{{
+        pwd
+    endfunction
+    "}}}
+
+    function! s:vi(opt) "{{{
+        if a:opt == ""
+            echo "no file"
+        else
+            let l:file = split(a:opt, " ")[0]
+            execute("e " . l:file)
+        endif
+    endfunction
+    "}}}
+
+
+"================== command read functions ====================
+    function! s:read_cmd(in_cmd)
+        let l:cmd = split(a:in_cmd, " ")[0]
+        if exists("*s:" . l:cmd )
+            let l:cmd_opt = a:in_cmd[len(l:cmd)+1:]
+            execute("call s:" . l:cmd . "\( l:cmd_opt \)")
+            return 0
+        endif
+        return 1
+    endfunction
+
+    function! s:system_cmd(in_cmd)
+        echo system(a:in_cmd)
+        return 0
+    endfunction
+
+
+"================== main loop ====================
+    while 1
+        let l:in_str = input(g:prompt)
+        if (l:in_str == "exit") || (l:in_str == "q")
+            break
+        elseif l:in_str == "cmds"
+            echo "\n"
+            echo s:cmd_list
+        elseif l:in_str != ""
+            echo "\n"
+            if a:use_system_cmd == 1
+                let l:ret = s:system_cmd(l:in_str)
+            else
+                let l:ret = s:read_cmd(l:in_str)
+            endif
+            if l:ret != 0
+                echo "command not found"
+            endif
+        else
+            echo "\n"
+        endif
+    endwhile
+
+endfunction
+" }}}
