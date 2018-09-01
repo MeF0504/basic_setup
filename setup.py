@@ -143,7 +143,7 @@ if __name__ == "__main__":
     print '\n@ '+vimdir+'\n'
 
     files = { \
-            'vimrc_file':'~/.vimrc', \
+            'vimrc':'~/.vimrc', \
             'vimrc_color':'vimrc.color', \
             'vimrc_plugin':'vimrc.plugin', \
             'vimrc_func':'vimrc.func', \
@@ -189,7 +189,7 @@ if __name__ == "__main__":
         vpath = os.path.join(vimdir,fy)
         if os.path.exists(vpath):
 
-            if 'vimrc_file' in vpath:
+            if 'vimrc' == fy:
                 fcopy(vpath,os.path.expanduser(files[fy]),link=bool(args.link),force=args.force,test=args.test)
             elif '.vim' in vpath:
                 fcopy(vpath, os.path.join(ftdir,files[fy]),link=bool(args.link), force=args.force, test=args.test)
