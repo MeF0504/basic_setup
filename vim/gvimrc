@@ -45,10 +45,18 @@ match ZenkakuSpace /　/
 
 let s:month = strftime("%b")
 let s:date = strftime("%d")
-if (s:month == 5) && (s:date == 4)
+if ((exists("g:bd_month") && (s:month == g:bd_month))
+    \&& (exists("g:bd_day") && (s:day == g:bd_day)) )
     "" Birthday
-    hi StatusLine guifg=Khaki3 guibg=DarkGoldenrod
-    hi WildMenu guifg=DarkGoldenrod guibg=Khaki3
+    if filereadable(g:vimdir . 'plugin/sushibar.vim')
+        autocmd local BufWinEnter *
+                \ hi StatusLine guifg=Grey7 guibg=Grey58
+                \ | hi WildMenu guifg=Grey58 guibg=Grey7
+                \ |  Sushibar
+    else
+        hi StatusLine guifg=Khaki3 guibg=DarkGoldenrod
+        hi WildMenu guifg=DarkGoldenrod guibg=Khaki3
+    endif
 elseif (s:month == 3) || (s:month == 4 ) || (s:month == 5)
     "" Spring
     hi StatusLine guifg=Pink1 guibg=DarkMagenta

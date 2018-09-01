@@ -1,4 +1,6 @@
 "vim script encording setting
+set encoding=utf-8
+set fileencoding=utf-8
 scriptencoding utf-8
 "vimrcを再読込する際にautocmdが重複しないようにautocmdをすべて解除
 augroup local
@@ -51,15 +53,15 @@ set expandtab
 "連続した空白でtabやback spaceが動く幅
 set softtabstop=4
 "日本語OKに
-set encoding=utf-8
-set fileencoding=utf-8
+"set encoding=utf-8
+"set fileencoding=utf-8
 "大文字、小文字を区別しない
 set ignorecase
 "検索文字に大文字があると区別する
 set smartcase
 "タブとかを可視化?
 "set list
-"set listchars=tab:».,trail:~,extends:»,precedes:«,nbsp:% ",eol:↲
+set listchars=tab:».,trail:~,extends:»,precedes:«,nbsp:% ",eol:↲
 "clipboardとyankを共有 (+clipboardが条件)
 set clipboard+=unnamed
 "検索のときに移動しない
@@ -195,50 +197,9 @@ autocmd local Filetype qf nnoremap <buffer><silent> <c-t> <c-w><s-t><CR>:cclose<
 nnoremap <silent> \ :nohlsearch<CR>
 " }}}
 
-""##########作成関数とか{{{
+""########## (簡単な)作成関数とか{{{
 "ls in vim
 command! LS 0tabnew .
-
-"単語のハイライト情報をget "{{{
-"from http://cohama.hateblo.jp/entry/2013/08/11/020849
-function! s:get_syn_id(transparent)
-  let synid = synID(line("."), col("."), 1)
-  if a:transparent
-    return synIDtrans(synid)
-  else
-    return synid
-  endif
-endfunction
-function! s:get_syn_attr(synid)
-  let name = synIDattr(a:synid, "name")
-  let ctermfg = synIDattr(a:synid, "fg", "cterm")
-  let ctermbg = synIDattr(a:synid, "bg", "cterm")
-  let guifg = synIDattr(a:synid, "fg", "gui")
-  let guibg = synIDattr(a:synid, "bg", "gui")
-  return {
-        \ "name": name,
-        \ "ctermfg": ctermfg,
-        \ "ctermbg": ctermbg,
-        \ "guifg": guifg,
-        \ "guibg": guibg}
-endfunction
-function! s:get_syn_info()
-  let baseSyn = s:get_syn_attr(s:get_syn_id(0))
-  echo "name: " . baseSyn.name .
-        \ " ctermfg: " . baseSyn.ctermfg .
-        \ " ctermbg: " . baseSyn.ctermbg .
-        \ " guifg: " . baseSyn.guifg .
-        \ " guibg: " . baseSyn.guibg
-  let linkedSyn = s:get_syn_attr(s:get_syn_id(1))
-  echo "link to"
-  echo "name: " . linkedSyn.name .
-        \ " ctermfg: " . linkedSyn.ctermfg .
-        \ " ctermbg: " . linkedSyn.ctermbg .
-        \ " guifg: " . linkedSyn.guifg .
-        \ " guibg: " . linkedSyn.guibg
-endfunction
-command! SyntaxInfo call s:get_syn_info()
-" }}}
 
 "vimでbinary fileを見る "{{{
 function! FT_Binary(on_off)
@@ -431,141 +392,6 @@ command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | d
 command! -nargs=1 -complete=file Diff vertical diffsplit <args>
 "}}}
 
-" 開いているfile一覧 {{{
-function! s:file_list()
-    " tab number
-    for i in range(1,tabpagenr('$'))
-        let l:tab_files = i
-        let l:tab_files .= ' '
-        "buffer number of each window
-        for j in tabpagebuflist(i)
-            let mod = getbufvar(j, '&modified') ? '[+]' : ''
-            let l:fname =  '[ ' . fnamemodify(bufname(j),':t') . mod . ' ] '
-            "let l:fname =  '[ ' . bufname(j) . mod . ' ] '
-            if getbufvar(j, '&filetype') == 'qf'
-                let l:fname = '[ QuickFix' . mod . ']'
-            endif
-            let l:tab_files .= l:fname
-        endfor
-        if tabpagenr() == i
-            echohl Search | echo l:tab_files | echohl None
-        else
-            echo l:tab_files
-        endif
-    endfor
-    let l:tabnr = input("move tab No:>> ")
-    if (1 <= l:tabnr ) && (l:tabnr <= tabpagenr("$") )
-        execute("normal! " . l:tabnr . "gt")
-    endif
-endfunction
-
-command! Tls call s:file_list()
-
-nnoremap <silent> <leader>l :Tls<CR>
-
-" }}}
-"
-" window setiing function {{{
-function! s:window_mode()
-    if !exists("s:wmode_on")
-        let s:wmode_on = 1
-        "save old map
-        let g:wmode_old_map = {}
-        let g:wmode_map_strs = ["<right>", "l", "<left>", "h", "<up>", "k", "<down>", "j", "i", "a", "s", "I", "A", "S", "R","+","-"]
-        for st in g:wmode_map_strs
-            let g:wmode_old_map[st] = maparg(st, 'n',0,1)
-        endfor
-
-        "map change window
-        nnoremap <right> <c-w>>
-        nnoremap l <c-w>>
-        nnoremap <left> <c-w><
-        nnoremap h <c-w><
-        nnoremap <up> <c-w>+
-        nnoremap k <c-w>+
-        nnoremap <down> <c-w>-
-        nnoremap j <c-w>-
-        nnoremap i <Nop>
-        nnoremap a <Nop>
-        nnoremap s <Nop>
-        nnoremap I <Nop>
-        nnoremap A <Nop>
-        nnoremap S <Nop>
-        nnoremap R <Nop>
-
-        "change gui font size
-        if has("gui")
-            function! s:set_font_size(pm)
-                let l:fl = strridx(&guifont, 'h')
-                let l:font_size = str2nr(&guifont[fl+1:])
-                if a:pm == '-'
-                    let l:font_size -= 1
-                elseif a:pm == '+'
-                    let l:font_size += 1
-                else
-                    return
-                endif
-                execute("set guifont=" . &guifont[:l:fl] . l:font_size)
-            endfunction
-
-            command! WMPlus call s:set_font_size('+')
-            command! WMMinus call s:set_font_size('-')
-            nnoremap <silent> + :WMPlus<CR>
-            nnoremap <silent> - :WMMinus<CR>
-        else
-            nmap + +
-            nmap - -
-        endif
-
-        "show mode in statusline
-        set statusline+=\ [WM]
-    else
-        unlet s:wmode_on
-        "remap
-        for st in g:wmode_map_strs
-            let l:st_map = g:wmode_old_map[st]
-            if l:st_map == {}
-                execute( "unmap " . st )
-            else
-                let l:opt = ''
-                if l:st_map['silent']
-                    let l:opt .= ' <silent> '
-                endif
-                if l:st_map['buffer']
-                    let l:opt .= ' <buffer> '
-                endif
-                if l:st_map['nowait']
-                    let l:opt .= ' <nowait> '
-                endif
-                if l:st_map['expr']
-                    let l:opt .= ' <expr> '
-                endif
-                if l:st_map['noremap']
-                    let l:map_str = 'nnoremap '
-                else
-                    let l:map_str = 'nmap '
-                endif
-                execute(l:map_str . l:opt . l:st_map['lhs'] . " " . l:st_map['rhs'] )
-            endif
-        endfor
-        "delete changing font size command
-        if has('gui')
-            delcommand WMPlus
-            delcommand WMMinus
-        endif
-
-        "unlet global variables
-        unlet g:wmode_old_map
-        unlet g:wmode_map_strs
-
-        set statusline-=\ [WM]
-    endif
-endfunction
-
-command! Wmode call s:window_mode()
-nnoremap <silent> <Leader>w :Wmode<CR>
-" }}}
-
 "" 検索ヒット数を表示 {{{
 "function! <SID>count_search(n)
 "    let b:search_cnt = 0
@@ -580,6 +406,11 @@ nnoremap <silent> <Leader>w :Wmode<CR>
 "nnoremap <silent> n :call <SID>count_search("n")<CR>
 "nnoremap <silent> N :call <SID>count_search("N")<CR>
 "" }}}
+
+" self-made functionファイル読み込み
+if filereadable(g:vimdir . "rcdir/vimrc.func")
+    execute "source " . g:vimdir . "rcdir/vimrc.func"
+endif
 
 " }}}
 
