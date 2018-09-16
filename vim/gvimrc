@@ -9,6 +9,8 @@ set guioptions-=e
 ""insert modeから離れるときにIME off
 "set noimdisable
 "set iminsert=2
+"gui のツールバー非表示
+set guioptions-=m
 
 "ビープ音を消す
 set visualbell t_vb=

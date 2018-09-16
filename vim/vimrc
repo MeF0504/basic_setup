@@ -222,8 +222,8 @@ function! FT_Binary(on_off)
         %!xxd
         set filetype=xxd
 
-        nnoremap :q :execute "%!xxd -r"<CR> :q
-        nnoremap :wq :execute "%!xxd -r"<CR> :wq
+        "nnoremap :q :execute "%!xxd -r"<CR> :q
+        "nnoremap :wq :execute "%!xxd -r"<CR> :wq
 
     else
         if ! exists('t:old_ft')
@@ -235,8 +235,8 @@ function! FT_Binary(on_off)
         "execute "set display=" . t:old_disp
         execute "set filetype=" . t:old_ft
 
-        unmap :wq
-        unmap :q
+        "unmap :wq
+        "unmap :q
         unlet t:old_ft
         "unlet t:old_disp
 

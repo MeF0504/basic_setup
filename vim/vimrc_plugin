@@ -66,10 +66,11 @@ let g:mftag_c_enable_kinds = "cdfgstu"
 let g:mftag_syntax_c_enable_kinds = "cdfgstu"
 let g:mftag_auto_close = 1
 let g:mftag_dir_auto_set = 1
+let g:mftag_python_default = "cfv"
 "]でfunction listから抜ける
 autocmd local FileType FuncList nnoremap <buffer> ] <c-w>l <c-w>k
 
-nnoremap <silent> <Leader>m :MFfunclist f<CR>
+nnoremap <silent> <Leader>m :MFfunclist<CR>
 
 function! s:Mygrep(...)
     "args 1 ... search word.
