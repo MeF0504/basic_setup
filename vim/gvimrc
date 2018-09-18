@@ -10,7 +10,7 @@ set guioptions-=e
 "set noimdisable
 "set iminsert=2
 "gui のツールバー非表示
-set guioptions-=m
+set guioptions-=T
 
 "ビープ音を消す
 set visualbell t_vb=

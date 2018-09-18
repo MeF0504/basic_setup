@@ -143,7 +143,15 @@ endif
 set ttimeoutlen=1
 
 "使いやすいようにmapping
-nnoremap s <c-w>
+"nnoremap s <c-w>
+nnoremap sj <c-w>j
+nnoremap s<Down> <c-w>j
+nnoremap sk <c-w>k
+nnoremap s<Up> <c-w>k
+nnoremap sh <c-w>h
+nnoremap s<Left> <c-w>h
+nnoremap sl <c-w>l
+nnoremap s<Right> <c-w>l
 "nnoremap T :tablast <bar> :tabnew<space>
 nnoremap T :tabnew<space>
 nnoremap <silent> co :botright copen<CR>
@@ -456,5 +464,5 @@ else
 endif
 "}}}
 
-delfunction Set_statusline
+"delfunction Set_statusline
 
