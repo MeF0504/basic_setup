@@ -159,7 +159,7 @@ nnoremap <silent> cc :cclose<CR>
 nnoremap <silent> cn :cnewer<CR>
 nnoremap <silent> cp :colder<CR>
 nnoremap / /\v
-nnoremap * /\v<><CR>
+nnoremap * /\v<<c-r><c-w>><CR>
 nnoremap g<Right> gt
 nnoremap g<Left> gT
 nnoremap gl gt

@@ -13,10 +13,14 @@ let g:seiya_auto_enable=1
 set tags=tags;,./tags;
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_Show_One_File = 1
+" 幅の設定
+" gui offのときは自動で幅が変わらないようにする (バグる)
 if has('gui_running')
     let Tlist_WinWidth = 45
+    let g:Tlist_Inc_Winwidth = 1
 else
     let Tlist_WinWidth = 35
+    let g:Tlist_Inc_Winwidth = 0
 endif
 "set splitbelow
 "候補が複数ある場合にリストを表示
@@ -29,17 +33,6 @@ nnoremap <c-j> :execute("tabnew " . b:cfile)<CR> <c-o> :execute("tjump " . expan
 "autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
 autocmd local FileType taglist nnoremap <buffer> ] <c-w>l <c-w>k
 
-"taglistを縦分割で使う際に横ではなく下にlistが出るように変更する関数
-function! Tlist_Horizon()
-    let g:Tlist_Use_Horiz_Window=1
-    Tlist
-endfunction
-
-if has("gui_running")
-    let g:Tlist_Inc_Winwidth = 1
-else
-    let g:Tlist_Inc_Winwidth = 0
-endif
 "}}}
 
 """""NERDTree "{{{
@@ -89,22 +82,21 @@ function! s:Mygrep(...)
         let l:word = a:1
         let l:ft = a:2
     endif
+
     if &grepprg == "internal"
         execute 'grep /' . l:word . '/j ' . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft
-    elseif &grepprg == "grep\ -n\ -r\ -i\ --binary-files=without-match"
-        execute "set grepprg=grep\\ -n\\ -r\\ -i\\ --binary-files=without-match\\ --include=\\\\*." . l:ft
-        execute 'grep "' . l:word . '" ' . MFsearch_dir(g:mftag_dir) . " | normal "
-        set grepprg=grep\ -n\ -r\ -i\ --binary-files=without-match
     elseif &grepprg == "grep\ -nriI"
+        let l:tabnum = tabpagenr()
         cclose
-        wincmd b
-        vsplit
+        "wincmd b
+        "vsplit
+        tabnew
         execute 'grep --include=\*.' . l:ft . ' "' . l:word . '" ' . MFsearch_dir(g:mftag_dir)
-        quit
         cclose
+        quit
+        execute "normal! " . l:tabnum . "gt"
         botright copen
-    elseif &grepprg == "grep\ -n\ $*\ /dev/null"
-        execute 'grep "' . l:word . '" ' . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft
+        unlet l:tabnum
     else
         echo "not supported grepprg"
     endif
