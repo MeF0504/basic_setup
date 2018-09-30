@@ -45,6 +45,7 @@ command! SyntaxInfo call s:get_syn_info()
 " }}}
 
 " 開いているfile一覧 {{{
+let g:cur_tabnr = 0
 function! s:file_list() abort
     " tab number
     for i in range(1,tabpagenr('$'))
@@ -66,8 +67,13 @@ function! s:file_list() abort
             echo l:tab_files
         endif
     endfor
-    let l:tabnr = input("move tab No:>> ")
+    let l:tabnr = input("Tab No. or 'p'revious :>> ")
+    if l:tabnr == "p"
+        let l:tabnr = g:cur_tabnr
+    endif
     if (1 <= l:tabnr ) && (l:tabnr <= tabpagenr("$") )
+        " get current page number
+        let g:cur_tabnr = tabpagenr()
         execute("normal! " . l:tabnr . "gt")
     endif
 endfunction
