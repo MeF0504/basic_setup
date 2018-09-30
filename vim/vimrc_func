@@ -257,3 +257,29 @@ function! Terminux(use_system_cmd)
 
 endfunction
 " }}}
+
+" Count Search {{{
+" 特殊文字は未対応
+let g:word_cnt = 0
+function! Search_Count(word) abort
+    let l:lines = getline(1,'$')
+    let l:sword = a:word
+    let l:sword = substitute(l:sword,"<","","")
+    let l:sword = substitute(l:sword,">","","")
+    for l:l in l:lines
+        let l:line = l:l
+        let l:cnt = stridx(l:line,l:sword)
+        while l:cnt != -1
+            "echo l:line . "  " . l:cnt
+            let g:word_cnt += 1
+            let l:line = l:line[l:cnt+len(l:sword):]
+            let l:cnt = stridx(l:line, l:sword)
+        endwhile
+    endfor
+    return g:word_cnt
+endfunction
+
+command! -nargs=1 SC call Search_Count(<f-args>) | execute "/\\v" . <f-args>
+nnoremap // :SC<space>
+" }}}
+
