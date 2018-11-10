@@ -22,8 +22,8 @@ match ZenkakuSpace /　/
 "statusline color setting
 let s:month = str2nr(strftime("%b"))
 let s:day = str2nr(strftime("%d"))
-if ((exists("g:bd_month") && (s:month == g:bd_month))
-    \&& (exists("g:bd_day") && (s:day == g:bd_day)) )
+if ((exists("g:l_bd_month") && (s:month == g:l_bd_month))
+    \&& (exists("g:l_bd_day") && (s:day == g:l_bd_day)) )
     "" Birthday
     if filereadable(g:vimdir . 'plugin/sushibar.vim')
         autocmd local BufWinEnter *

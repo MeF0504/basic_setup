@@ -95,6 +95,9 @@ execute "set directory=" . g:vimdir . "swp"
 set nobackup
 set noundofile
 
+"tag設定
+set tags=tags;,./tags;
+
 "grepコマンドで内部grep(vimgrep)を使う
 "set grepprg=internal
 "外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
@@ -103,21 +106,44 @@ set grepprg=grep\ -nriI
 autocmd local QuickFixCmdPost *grep* cwindow
 
 "statusline setting
-" 検索ヒット数用変数
-"let b:search_cnt = 0
-function! Set_statusline(str1, str2, str3, str4, str5)
-    set statusline=%f%m%{&readonly?'[RO]':''}%h%w\ \                            " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
-    execute("set statusline+=" . a:str1)
-    set statusline+=%<%=                                    " 切り詰め位置 右端に表示
-    execute("set statusline+=" . a:str2)
-    set statusline+=%y\                                     " filetype
-    execute("set statusline+=" . a:str3)
-    set statusline+=[%{&fileformat}:%{&fileencoding}]\      " file format
-    execute("set statusline+=" . a:str4)
-    set statusline+=%l/%L\ [%P] "\ [%{b:search_cnt}]           " 今の行/全体の行 [%表示] [検索ヒット数]
-    execute("set statusline+=" . a:str5)
+" old statusline setting {{{
+"function! Set_statusline(str1, str2, str3, str4, str5)
+"    let g:l_st_fileformat = {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRLF"}
+"    set statusline=%f%m%{&readonly?'[RO]':''}%h%w\ \        " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
+"    execute("set statusline+=" . a:str1)
+"    set statusline+=%<%=                                    " 切り詰め位置 右端に表示
+"    execute("set statusline+=" . a:str2)
+"    set statusline+=%y\                                     " filetype
+"    execute("set statusline+=" . a:str3)
+"    set statusline+=[%{g:l_st_fileformat[&fileformat]}:%{&fileencoding}]\      " file format
+"    execute("set statusline+=" . a:str4)
+"    set statusline+=%l/%L\ [%P]                             " 今の行/全体の行 [%表示]
+"    execute("set statusline+=" . a:str5)
+"endfunction
+"call Set_statusline("", "", "", "", "")
+" }}}
+let g:l_st_fileformat = {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRLF"}
+" ファイル名 修正フラグ 読込専用 ヘルプ preview_window
+" 切り詰め位置 右端に表示
+" filetype
+" file format
+" 今の行/全体の行 [%表示]
+""" the variable to administer statusline
+let g:l_statusline = [
+            \"%f%m%{&readonly?'[RO]':''}%h%w\\ \\ ",
+            \"%<%=",
+            \"%y\\ ",
+            \"[%{g:l_st_fileformat[&fileformat]}:%{&fileencoding}]\\ ",
+            \"%l/%L\\ [%P]"
+            \]
+function! Set_statusline()
+    set statusline=
+    for s:st in g:l_statusline
+        execute "set statusline+=" . s:st
+    endfor
 endfunction
-call Set_statusline("", "", "", "", "")
+call Set_statusline()
+
 "autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
 "See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
 "}}}
@@ -137,13 +163,13 @@ endif
 "macでinsert modeから抜けるときにIME off
 "参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
 if has('mac')
-	let g:imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
-	autocmd local InsertLeave * :call system(g:imeoff)
+	let g:l_imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
+	autocmd local InsertLeave * :call system(g:l_imeoff)
 endif
 set ttimeoutlen=1
 
 "使いやすいようにmapping
-"nnoremap s <c-w>
+nnoremap s <c-w>
 nnoremap sj <c-w>j
 nnoremap s<Down> <c-w>j
 nnoremap sk <c-w>k
@@ -170,6 +196,8 @@ nnoremap <silent> g< :tabmove -1<CR>
 "大文字にするとファイル全体に適用
 nnoremap zO zR
 nnoremap zC zM
+"Yで行末までヤンク
+nnoremap Y y$
 "そしてenterで開く下を追加したので消そうと思ったけど、macだとうまくいかなかったので残す
 "nnoremap <silent> <CR><CR> za
 "右方向で再帰的に開く
@@ -203,6 +231,13 @@ autocmd local Filetype qf nnoremap <buffer><silent> <c-t> <c-w><s-t><CR>:cclose<
 "    nnoremap OC l
 "endif
 
+"候補が複数ある場合にリストを表示
+nnoremap <c-]> g<c-]>
+"jump先をnew tabで開く
+nnoremap <c-j> :execute("tabnew " . b:cfile)<CR> <c-o> :execute("tjump " . expand('<cword>'))<CR>
+"preview で開く
+nnoremap <silent> <c-l> :execute("ptjump " . expand("<cword>"))<CR>
+
 "\で検索のハイライトを消す
 nnoremap <silent> \ :nohlsearch<CR>
 " }}}
@@ -214,17 +249,17 @@ command! LS 0tabnew .
 "vimでbinary fileを見る "{{{
 function! FT_Binary(on_off)
     if a:on_off == 1
-        if exists("t:old_ft")
+        if exists("t:l_old_ft")
             echo "already open as binary editor"
             return
         endif
         "前の値を避難させる
-        let t:old_ft = &filetype
-        "let t:old_disp = &display
+        let t:l_old_ft = &filetype
+        "let t:l_old_disp = &display
         "binay modeで開く
-        if ! exists("t:pp_bin")
+        if ! exists("t:l_pp_bin")
             e ++bin
-            let t:pp_bin = 0
+            let t:l_pp_bin = 0
         endif
         "不可視文字をHexフォーマットで
         "set display=uhex
@@ -236,19 +271,19 @@ function! FT_Binary(on_off)
         "nnoremap :wq :execute "%!xxd -r"<CR> :wq
 
     else
-        if ! exists('t:old_ft')
+        if ! exists('t:l_old_ft')
             echo "not opened as binary editor yet"
             return
         endif
         %!xxd -r
         "e ++nobin
-        "execute "set display=" . t:old_disp
-        execute "set filetype=" . t:old_ft
+        "execute "set display=" . t:l_old_disp
+        execute "set filetype=" . t:l_old_ft
 
         "unmap :wq
         "unmap :q
-        unlet t:old_ft
-        "unlet t:old_disp
+        unlet t:l_old_ft
+        "unlet t:l_old_disp
 
     endif
 endfunction
@@ -279,29 +314,29 @@ endfunction
 
 " Set tabline.
 " total tab number
-let g:AllTabNo = 10
+let g:l_AllTabNo = 10
 function! s:my_tabline() 
-    let endplus = 3
-    if g:AllTabNo < 6
-        let endplus = g:AllTabNo/2
-    endif
+    "let endplus = 3
+    "if g:l_AllTabNo < 6
+        let endplus = g:l_AllTabNo/2
+    "endif
     let st = 1
     let en = tabpagenr('$')
     let beginstr = ''
     let laststr = ''
     let is_edit = ''
     "  以降の例は all no = 10 end plus = 3
-    if g:AllTabNo < en  "tabが指定数より多い場合 例では全ファイル数は13
-        if tabpagenr()+endplus > g:AllTabNo " 現在 8とか
+    if g:l_AllTabNo < en  "tabが指定数より多い場合 例では全ファイル数は13
+        if tabpagenr()+endplus > g:l_AllTabNo " 現在 8とか
             let en = tabpagenr()+endplus
             let laststr = '...'
             if en >= tabpagenr('$')  " 現在11とか。足すと余る場合
                 let en = tabpagenr('$')
                 let laststr = ''
             endif
-            let st = en - (g:AllTabNo-1)
+            let st = en - (g:l_AllTabNo-1)
         else    " 現在 6とか。
-            let en = g:AllTabNo
+            let en = g:l_AllTabNo
             let laststr = '...'
         endif
     endif
@@ -351,27 +386,6 @@ endif
 command! FileInfo execute "!" . s:ls . expand('%')
 "}}}
 
-""分割した際の幅の変化一気にできるようにして、を見た目と一致するようにしたい。{{{
-"function! s:set_bandmap()
-"    "let s:cmd1 = "<c-w>"
-"    "let s:cmd2 = "<c-w>"
-"    let s:cmd1 = "s"
-"    let s:cmd2 = "s"
-"    for i in range(1, 30)
-"        let s:cmd1 = s:cmd1 . ">"
-"        let s:cmd2 = s:cmd2 . "<"
-"        execute "nnoremap " . s:cmd1 . " " . i . "<c-w>>"
-"        execute "nnoremap " . s:cmd2 . " " . i . "<c-w><"
-"        if winnr() != 1 && winnr() == winnr('$')
-"            "windowの最後のbufferだけ変更
-"            execute "nnoremap " . s:cmd1 . " " . i . "<c-w><"
-"            execute "nnoremap " . s:cmd2 . " " . i . "<c-w>>"
-"        endif
-"    endfor
-"endfunction
-"autocmd WinEnter * call s:set_bandmap()
-""}}}
-
 "clipboardを新しいwindowに保存{{{
 function! Show_clipboard()
     """ open ... 1 open 0 ... get back
@@ -402,20 +416,14 @@ command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | d
 command! -nargs=1 -complete=file Diff vertical diffsplit <args>
 "}}}
 
-"" 検索ヒット数を表示 {{{
-"function! <SID>count_search(n)
-"    let b:search_cnt = 0
-"    "let l:ln = line(".")
-"    "let l:cl = col(".")
-"    execute("g/" . @/ . "/ let b:search_cnt+=1")
-"    "execute(l:ln)
-"    normal! 
-"    execute("normal! " . a:n)
-"endfunction
-"
-"nnoremap <silent> n :call <SID>count_search("n")<CR>
-"nnoremap <silent> N :call <SID>count_search("N")<CR>
-"" }}}
+"" active window {{{
+
+"let g:l_cur_winnr = 1
+"autocmd local WinEnter let g:l_cur_winnr = winnr()
+autocmd local WinEnter * call Set_statusline()
+autocmd local WinLeave * setlocal statusline=%t%m%{&readonly?'[RO]':''}%h%w
+
+""}}}
 
 " self-made functionファイル読み込み
 if filereadable(g:vimdir . "rcdir/vimrc.func")
@@ -428,6 +436,10 @@ endif
 autocmd local BufRead * let b:cfile = expand("%:p")
 autocmd local BufRead * let b:cdir = expand("%:p:h")
 
+let g:l_last_file = ""
+autocmd local WinLeave * let g:l_last_file = expand("%:p")
+command! LastTab execute "tabnew " . g:l_last_file
+command! LastWin execute "vsplit " . g:l_last_file
 
 "検索pathを追加
 set path+=../include
@@ -465,6 +477,4 @@ else
     colorscheme desert
 endif
 "}}}
-
-"delfunction Set_statusline
 

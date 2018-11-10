@@ -9,8 +9,6 @@ let g:seiya_auto_enable=1
 "}}}
 
 """""taglist.vim "{{{
-"tag設定
-set tags=tags;,./tags;
 let Tlist_Exit_OnlyWindow = 1
 let Tlist_Show_One_File = 1
 " 幅の設定
@@ -23,12 +21,8 @@ else
     let g:Tlist_Inc_Winwidth = 0
 endif
 "set splitbelow
-"候補が複数ある場合にリストを表示
-nnoremap <c-]> g<c-]>
 "<space>をlocal用のmappingにする。
 nnoremap <silent> <Leader>t :Tlist<CR>
-"jump先をnew tabで開く
-nnoremap <c-j> :execute("tabnew " . b:cfile)<CR> <c-o> :execute("tjump " . expand('<cword>'))<CR>
 "]でtag listから抜ける
 "autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
 autocmd local FileType taglist nnoremap <buffer> ] <c-w>l <c-w>k
@@ -109,7 +103,8 @@ command! -nargs=* Gregrep call s:Mygrep(<f-args>)
 function! s:AddPath()
     if exists("b:mftag_save_dir")
         if b:mftag_save_dir != "/"
-            execute "set path+=" . b:mftag_save_dir . "**/include"
+            let l:save_dir = substitute(b:mftag_save_dir, " ", "\\\\ ", "")
+            execute "set path+=" . l:save_dir . "**/include"
         endif
     endif
 endfunction
