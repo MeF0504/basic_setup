@@ -136,11 +136,32 @@ let g:l_statusline = [
             \"[%{g:l_st_fileformat[&fileformat]}:%{&fileencoding}]\\ ",
             \"%l/%L\\ [%P]"
             \]
-function! Set_statusline()
-    set statusline=
-    for s:st in g:l_statusline
-        execute "set statusline+=" . s:st
-    endfor
+""" 1st ... statusline list, 2nd ... local(1) or global(0)
+function! Set_statusline(...)
+    if &filetype == "qf"
+        " ignore QuickFix Window
+        return
+    endif
+    if a:0 == 0
+        let l:st_list = g:l_statusline
+    else
+        let l:st_list = a:1
+    endif
+    if (a:0 >= 2) && (a:2 == 1)
+        " local setting
+        let l:set_str = "setlocal statusline="
+        for s:st in l:st_list
+            let l:set_str .= s:st
+        endfor
+        execute l:set_str
+    else
+        "global setting
+        set statusline=
+        let l:set_str = "set"
+        for s:st in l:st_list
+            execute l:set_str . " statusline+=" . s:st
+        endfor
+    endif
 endfunction
 call Set_statusline()
 
@@ -233,6 +254,8 @@ autocmd local Filetype qf nnoremap <buffer><silent> <c-t> <c-w><s-t><CR>:cclose<
 
 "候補が複数ある場合にリストを表示
 nnoremap <c-]> g<c-]>
+"
+nnoremap <silent> g<c-]> :vertical stjump<CR>
 "jump先をnew tabで開く
 nnoremap <c-j> :execute("tabnew " . b:cfile)<CR> <c-o> :execute("tjump " . expand('<cword>'))<CR>
 "preview で開く
@@ -421,7 +444,7 @@ command! -nargs=1 -complete=file Diff vertical diffsplit <args>
 "let g:l_cur_winnr = 1
 "autocmd local WinEnter let g:l_cur_winnr = winnr()
 autocmd local WinEnter * call Set_statusline()
-autocmd local WinLeave * setlocal statusline=%t%m%{&readonly?'[RO]':''}%h%w
+autocmd local WinLeave * call Set_statusline(["%t%m%{&readonly?'[RO]':''}%h%w"],1)
 
 ""}}}
 
@@ -436,10 +459,11 @@ endif
 autocmd local BufRead * let b:cfile = expand("%:p")
 autocmd local BufRead * let b:cdir = expand("%:p:h")
 
-let g:l_last_file = ""
-autocmd local WinLeave * let g:l_last_file = expand("%:p")
-command! LastTab execute "tabnew " . g:l_last_file
-command! LastWin execute "vsplit " . g:l_last_file
+let g:l_last_file = {'win':'', 'tab':''}
+autocmd local WinLeave * let g:l_last_file['win'] = expand("%:p")
+autocmd local TabClosed * let g:l_last_file['tab'] = g:l_last_file['win']
+command! LastTab execute "tabnew " . g:l_last_file['tab']
+command! LastWin execute "vsplit " . g:l_last_file['win']
 
 "検索pathを追加
 set path+=../include
