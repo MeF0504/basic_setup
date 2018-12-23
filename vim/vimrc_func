@@ -49,7 +49,7 @@ let g:l_cur_tabnr = 0
 function! s:file_list() abort
     " tab number
     for i in range(1,tabpagenr('$'))
-        let l:tab_files = printf("%03d", i)
+        let l:tab_files = printf("%3d", i)
         let l:tab_files .= ' '
         "buffer number of each window
         for j in tabpagebuflist(i)

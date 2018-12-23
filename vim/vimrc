@@ -106,22 +106,6 @@ set grepprg=grep\ -nriI
 autocmd local QuickFixCmdPost *grep* cwindow
 
 "statusline setting
-" old statusline setting {{{
-"function! Set_statusline(str1, str2, str3, str4, str5)
-"    let g:l_st_fileformat = {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRLF"}
-"    set statusline=%f%m%{&readonly?'[RO]':''}%h%w\ \        " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
-"    execute("set statusline+=" . a:str1)
-"    set statusline+=%<%=                                    " 切り詰め位置 右端に表示
-"    execute("set statusline+=" . a:str2)
-"    set statusline+=%y\                                     " filetype
-"    execute("set statusline+=" . a:str3)
-"    set statusline+=[%{g:l_st_fileformat[&fileformat]}:%{&fileencoding}]\      " file format
-"    execute("set statusline+=" . a:str4)
-"    set statusline+=%l/%L\ [%P]                             " 今の行/全体の行 [%表示]
-"    execute("set statusline+=" . a:str5)
-"endfunction
-"call Set_statusline("", "", "", "", "")
-" }}}
 let g:l_st_fileformat = {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRLF"}
 " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
 " 切り詰め位置 右端に表示
@@ -130,40 +114,74 @@ let g:l_st_fileformat = {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRL
 " 今の行/全体の行 [%表示]
 """ the variable to administer statusline
 let g:l_statusline = [
-            \"%f%m%{&readonly?'[RO]':''}%h%w\\ \\ ",
+            \"%f%m%{&readonly?'[RO]':''}%h%w  ",
             \"%<%=",
-            \"%y\\ ",
-            \"[%{g:l_st_fileformat[&fileformat]}:%{&fileencoding}]\\ ",
-            \"%l/%L\\ [%P]"
+            \"%y ",
+            \"[%{g:l_st_fileformat[&fileformat]}:%{&fileencoding}] ",
+            \"%l/%L [%P]"
             \]
-""" 1st ... statusline list, 2nd ... local(1) or global(0)
+" --- old Set_statusline() --- {{{
+"""" 1st ... statusline list, 2nd ... local(1) or global(0)
+"function! Set_statusline(...)
+"    if &filetype == "qf"
+"        " ignore QuickFix Window
+"        return
+"    endif
+"    if a:0 == 0
+"        let l:st_list = g:l_statusline
+"    else
+"        let l:st_list = a:1
+"    endif
+"    if (a:0 >= 2) && (a:2 == 1)
+"        " local setting
+"        let l:set_str = "setlocal statusline="
+"        for s:st in l:st_list
+"            let l:set_str .= s:st
+"        endfor
+"        execute l:set_str
+"    else
+"        "global setting
+"        set statusline=
+"        let l:set_str = "set"
+"        for s:st in l:st_list
+"            execute l:set_str . " statusline+=" . s:st
+"        endfor
+"    endif
+"endfunction
+"call Set_statusline()
+" }}}
+
+""" control statusline showing
+let g:l_st_width_level = [30, 50]
 function! Set_statusline(...)
     if &filetype == "qf"
         " ignore QuickFix Window
         return
     endif
     if a:0 == 0
-        let l:st_list = g:l_statusline
+        let l:st_list1 = g:l_statusline
     else
-        let l:st_list = a:1
+        let l:st_list1 = a:1
     endif
-    if (a:0 >= 2) && (a:2 == 1)
-        " local setting
-        let l:set_str = "setlocal statusline="
-        for s:st in l:st_list
-            let l:set_str .= s:st
-        endfor
-        execute l:set_str
+
+    if winwidth(".") < g:l_st_width_level[0]
+        let l:st_list2 = [l:st_list1[0]]
+    elseif winwidth(".") < g:l_st_width_level[1]
+        if len(st_list1) >= 3
+            let l:st_list2 = [l:st_list1[0], l:st_list1[1], l:st_list1[-1]]
+        endif
     else
-        "global setting
-        set statusline=
-        let l:set_str = "set"
-        for s:st in l:st_list
-            execute l:set_str . " statusline+=" . s:st
-        endfor
+        let l:st_list2 = l:st_list1
     endif
+
+    let l:st_str = ""
+    for l:st in l:st_list2
+        let l:st_str .= l:st
+    endfor
+
+    return l:st_str
 endfunction
-call Set_statusline()
+set statusline=%!Set_statusline()
 
 "autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
 "See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
@@ -265,6 +283,15 @@ nnoremap <silent> <c-l> :execute("ptjump " . expand("<cword>"))<CR>
 nnoremap <silent> \ :nohlsearch<CR>
 " }}}
 
+""##########autocmd系 "{{{
+autocmd local BufEnter * let b:no_match_paren = 1   " tentative? because of paren error (Highlight_matching_Pair()).
+
+" remove tags information when open new tab.
+if exists("*settagstack")
+    autocmd local TabNew * call settagstack(winnr(), {'length':0, 'curidx':1, 'items':[]})
+endif
+" }}}
+
 ""########## (簡単な)作成関数とか{{{
 "ls in vim
 command! LS 0tabnew .
@@ -319,8 +346,10 @@ command! FTBinOff call FT_Binary(0)
 
 function! s:noeol_reenc()
     if &endofline == 0
-        set readonly
-        e ++enc=utf-8
+        if input("reencode? 'y' or 'n'")=='y'
+            set readonly
+            e ++enc=utf-8
+        endif
     endif
 endfunction
 
@@ -443,10 +472,56 @@ command! -nargs=1 -complete=file Diff vertical diffsplit <args>
 
 "let g:l_cur_winnr = 1
 "autocmd local WinEnter let g:l_cur_winnr = winnr()
-autocmd local WinEnter * call Set_statusline()
-autocmd local WinLeave * call Set_statusline(["%t%m%{&readonly?'[RO]':''}%h%w"],1)
+let g:l_statusline_off = ["%t%m%{&readonly?'[RO]':''}%h%w"]
+autocmd local WinEnter * set statusline=%!Set_statusline()
+autocmd local WinLeave * setlocal statusline=%!Set_statusline(g:l_statusline_off)
 
 ""}}}
+
+""" #で行末から括弧を見つけたり、次のcase文を見つけたりしてとぶ {{{
+function! <SID>chk_kakko()
+    """ next case
+    if &expandtab == 1
+        let l:tab_str = ""
+        for i in range(&tabstop)
+            let l:tab_str .= " "
+        endfor
+    else
+        let l:tab_str = "    "
+    endif
+    if len(split(getline("."), l:tab_str)) > 0 && len(split(getline("."), l:tab_str)[0]) > 4
+        if split(getline("."), l:tab_str)[0][:3] == "case"
+            for l:ln in range(line(".")+1, line("$"))
+                try
+                    if split(getline(l:ln), tab_str)[0][:3] == "case"
+                        return l:ln . "gg"
+                    elseif split(getline(l:ln), tab_str)[0][:6] == "default"
+                        return l:ln . "gg"
+                    endif
+                catch
+                    "echo v:exception
+                endtry
+            endfor
+        endif
+    endif
+
+    """ find () or {}
+    let l:src_strs = ["{", "}", "(", ")"]
+    for l:ss in l:src_strs
+        let l:idx = strridx(getline("."), l:ss)
+        if l:idx == -1
+            continue
+        endif
+        if l:idx == len(getline("."))-1
+            return "$%"
+        else
+            return "$F" . l:ss . "%"
+        endif
+    endfor
+    return ""
+endfunction
+nnoremap <expr> # <SID>chk_kakko()
+" }}}
 
 " self-made functionファイル読み込み
 if filereadable(g:vimdir . "rcdir/vimrc.func")
@@ -483,22 +558,18 @@ if isdirectory(g:vimdir . 'plugin') || isdirectory(g:vimdir . 'dein')
     execute "source " . g:vimdir . "rcdir/vimrc.plugin"
 endif
 
-"local設定ファイル
-let s:localrc = g:vimdir . 'rcdir/vimrc.mine'
-if filereadable(s:localrc)
-    execute "source " . s:localrc
-endif
-
-"言語毎の設定
-"autocmd local FileType python execute "source " . g:vimdir . "rcdir/python.vim"
-"autocmd local FileType vim execute "source " . g:vimdir . "rcdir/vim.vim"
-
 "カラーの変更
 if filereadable(g:vimdir . "colors/inkpot.vim") && !has('gui_running')
     colorscheme inkpot
     execute "source " . g:vimdir . "rcdir/vimrc.color"
 else
     colorscheme desert
+endif
+
+"local設定ファイル
+let s:localrc = g:vimdir . 'rcdir/vimrc.mine'
+if filereadable(s:localrc)
+    execute "source " . s:localrc
 endif
 "}}}
 

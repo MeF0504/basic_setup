@@ -11,13 +11,15 @@ hi String ctermbg=None ctermfg=222
 hi Comment ctermfg=60
 hi LineNr ctermfg=239
 "hi Comment ctermfg=212
-hi CursorLineNr ctermfg=17 ctermbg=15
+autocmd local InsertLeave * hi CursorLineNr term=Bold ctermfg=17 ctermbg=15
+autocmd local InsertEnter * hi CursorLineNr term=Bold ctermfg=17 ctermbg=97
+
 hi NERDTreeBookmark ctermfg=107
 hi NERDTreeBookmarksLeader ctermfg=32
 
 "全角スペース表示
 hi ZenkakuSpace ctermbg=241
-match ZenkakuSpace /　/
+autocmd local BufEnter * match ZenkakuSpace /　/
 
 "statusline color setting
 let s:month = str2nr(strftime("%b"))
