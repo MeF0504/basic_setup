@@ -4,21 +4,22 @@ scriptencoding utf-8
 "
 
 ""optimized in inkpot
-hi Identifier ctermfg=110
-hi Number ctermfg=9
-hi Type ctermfg=149
-hi String ctermbg=None ctermfg=222
-hi Comment ctermfg=60
-hi LineNr ctermfg=239
-"hi Comment ctermfg=212
-autocmd local InsertLeave * hi CursorLineNr term=Bold ctermfg=17 ctermbg=15
-autocmd local InsertEnter * hi CursorLineNr term=Bold ctermfg=17 ctermbg=97
+highlight Identifier ctermfg=110
+highlight Number ctermfg=9
+highlight Type ctermfg=149
+highlight String ctermbg=None ctermfg=222
+highlight Comment ctermfg=60
+highlight LineNr ctermfg=239
+"highlight Comment ctermfg=212
+highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
+autocmd local InsertLeave * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
+autocmd local InsertEnter * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=97
 
-hi NERDTreeBookmark ctermfg=107
-hi NERDTreeBookmarksLeader ctermfg=32
+highlight NERDTreeBookmark ctermfg=107
+highlight NERDTreeBookmarksLeader ctermfg=32
 
 "全角スペース表示
-hi ZenkakuSpace ctermbg=241
+highlight ZenkakuSpace ctermbg=241
 autocmd local BufEnter * match ZenkakuSpace /　/
 
 "statusline color setting
@@ -29,32 +30,32 @@ if ((exists("g:l_bd_month") && (s:month == g:l_bd_month))
     "" Birthday
     if filereadable(g:vimdir . 'plugin/sushibar.vim')
         autocmd local BufWinEnter *
-                \ hi StatusLine ctermfg=233 ctermbg=246
-                \ | hi WildMenu ctermfg=246 ctermbg=233
+                \ highlight StatusLine ctermfg=233 ctermbg=246
+                \ | highlight WildMenu ctermfg=246 ctermbg=233
                 \ |  Sushibar
     else
-        hi StatusLine ctermfg=185 ctermbg=136
-        hi WildMenu ctermfg=136 ctermbg=185
+        highlight StatusLine ctermfg=185 ctermbg=136
+        highlight WildMenu ctermfg=136 ctermbg=185
     endif
 elseif (s:month == 3) || (s:month == 4 ) || (s:month == 5)
     "" Spring
-    hi StatusLine ctermfg=218 ctermbg=90
-    hi WildMenu ctermfg=90 ctermbg=218
+    highlight StatusLine ctermfg=218 ctermbg=90
+    highlight WildMenu ctermfg=90 ctermbg=218
 elseif (s:month == 6) || (s:month == 7 ) || (s:month == 8)
     "" Summer
-    hi StatusLine ctermfg=154 ctermbg=27
-    hi WildMenu ctermfg=27 ctermbg=154
+    highlight StatusLine ctermfg=154 ctermbg=27
+    highlight WildMenu ctermfg=27 ctermbg=154
 elseif (s:month == 9) || (s:month == 10 ) || (s:month == 11)
     "" Fall
-    hi StatusLine ctermfg=184 ctermbg=88
-    hi WildMenu ctermfg=88 ctermbg=184
+    highlight StatusLine ctermfg=184 ctermbg=88
+    highlight WildMenu ctermfg=88 ctermbg=184
 elseif (s:month == 12) || (s:month == 1 ) || (s:month == 2)
     "" Winter
-    hi StatusLine ctermfg=109 ctermbg=17
-    hi WildMenu ctermfg=17 ctermbg=109
+    highlight StatusLine ctermfg=109 ctermbg=17
+    highlight WildMenu ctermfg=17 ctermbg=109
 else
-    hi StatusLine ctermfg=247 ctermbg=235
-    hi WildMenu ctermfg=235 ctermbg=247
+    highlight StatusLine ctermfg=247 ctermbg=235
+    highlight WildMenu ctermfg=235 ctermbg=247
 endif
-"default ... hi StatusLine term=bold,reverse cterm=bold ctermfg=247 ctermbg=235
+"default ... highlight StatusLine term=bold,reverse cterm=bold ctermfg=247 ctermbg=235
 
