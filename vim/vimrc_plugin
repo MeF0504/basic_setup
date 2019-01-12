@@ -95,12 +95,16 @@ if s:mftag_set == 1
             let l:word = expand('<cword>')
             let l:ft = expand('%:e')
         elseif a:0 == '1'
-            let l:word = a:1
-            let l:ft = expand('%:e')
+            let l:ft = a:1
+            let l:word = expand('<cword>')
         else
-            let l:word = a:1
-            let l:ft = a:2
+            let l:ft = a:1
+            let l:word = a:2
+            for i in range(3, a:0)
+                let l:word = l:word . " " . a:[i]
+            endfor
         endif
+        echo l:ft . " " . l:word
 
         if &grepprg == "internal"
             execute 'grep /' . l:word . '/j ' . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft

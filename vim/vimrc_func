@@ -137,7 +137,9 @@ function! s:window_mode() abort
         endif
 
         "show mode in statusline
-        set statusline+=\ [WM]
+        "set statusline+=\ [WM]
+        let s:old_st = &statusline
+        let &statusline = "%f%m%r%h%w  %=[wimdow mode on]"
     else
         unlet s:wmode_on
         "remap
@@ -177,7 +179,8 @@ function! s:window_mode() abort
         unlet g:l_wmode_old_map
         unlet g:l_wmode_map_strs
 
-        set statusline-=\ [WM]
+        "set statusline-=\ [WM]
+        let &statusline = s:old_st
     endif
 endfunction
 
