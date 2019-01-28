@@ -19,31 +19,33 @@ set visualbell t_vb=
 
 "色設定 {{{
 colorscheme inkpot
-hi Identifier guifg=LightSkyBlue3
-hi Number guifg=Red
-hi Type guifg=DarkOliveGreen3
-hi string guibg=NONE guifg=LightGoldenrod2
-hi Comment guifg=MediumPurple4
-hi LineNr guifg=Grey30 guibg=NONE
-hi Normal guifg=LightGray
+highlight Identifier guifg=LightSkyBlue3
+highlight Number guifg=Red
+highlight Type guifg=DarkOliveGreen3
+highlight string guibg=NONE guifg=LightGoldenrod2
+highlight Comment guifg=MediumPurple4
+highlight LineNr guifg=Grey30 guibg=NONE
+highlight Normal guifg=LightGray
 
 "下線設定
 set cursorline
-hi CursorLine gui=underline guifg=NONE guibg=NONE
-hi CursorLineNr guifg=NavyBlue guibg=White
+highlight CursorLine gui=underline guifg=NONE guibg=NONE
+highlight CursorLineNr term=Bold guifg=NavyBlue guibg=White
+autocmd local InsertLeave * highlight CursorLineNr term=Bold guifg=NavyBlue guibg=White
+autocmd local InsertEnter * highlight CursorLineNr term=Bold guifg=NavyBlue guibg=MediumPurple3
 
 "NERDTree color setting
-hi NERDTreeBookmarksLeader  guifg=DeepSkyBlue3
-hi NERDTreeBookmark guifg=DarkOliveGreen3
+highlight NERDTreeBookmarksLeader  guifg=DeepSkyBlue3
+highlight NERDTreeBookmark guifg=DarkOliveGreen3
 
 "必要ならneocompleteの補完リストの色設定
-"hi Pmenu guibg=LightBlue
-"hi PmenuSel guibg=red
-"hi PmenuSbar guibg=LightBlue
+"highlight Pmenu guibg=LightBlue
+"highlight PmenuSel guibg=red
+"highlight PmenuSbar guibg=LightBlue
 
 "全角スペース表示
-hi ZenkakuSpace guibg=darkgray
-match ZenkakuSpace /　/
+highlight ZenkakuSpace guibg=darkgray
+autocmd local BufEnter * match ZenkakuSpace /　/
 
 let s:month = strftime("%b")
 let s:date = strftime("%d")
@@ -52,34 +54,34 @@ if ((exists("g:l_bd_month") && (s:month == g:l_bd_month))
     "" Birthday
     if filereadable(g:vimdir . 'plugin/sushibar.vim')
         autocmd local BufWinEnter *
-                \ hi StatusLine guifg=Grey7 guibg=Grey58
-                \ | hi WildMenu guifg=Grey58 guibg=Grey7
+                \ highlight StatusLine guifg=Grey7 guibg=Grey58
+                \ | highlight WildMenu guifg=Grey58 guibg=Grey7
                 \ |  Sushibar
     else
-        hi StatusLine guifg=Khaki3 guibg=DarkGoldenrod
-        hi WildMenu guifg=DarkGoldenrod guibg=Khaki3
+        highlight StatusLine guifg=Khaki3 guibg=DarkGoldenrod
+        highlight WildMenu guifg=DarkGoldenrod guibg=Khaki3
     endif
 elseif (s:month == 3) || (s:month == 4 ) || (s:month == 5)
     "" Spring
-    hi StatusLine guifg=Pink1 guibg=DarkMagenta
-    hi WildMenu guifg=DarkMagenta guibg=Pink1
+    highlight StatusLine guifg=Pink1 guibg=DarkMagenta
+    highlight WildMenu guifg=DarkMagenta guibg=Pink1
 elseif (s:month == 6) || (s:month == 7 ) || (s:month == 8)
     "" Summer
-    hi StatusLine guifg=GreenYellow guibg=DodgerBlue2
-    hi WildMenu guifg=DodgerBlue2 guibg=GreenYellow
+    highlight StatusLine guifg=GreenYellow guibg=DodgerBlue2
+    highlight WildMenu guifg=DodgerBlue2 guibg=GreenYellow
 elseif (s:month == 9) || (s:month == 10 ) || (s:month == 11)
     "" Fall
-    hi StatusLine guifg=Yellow3 guibg=DarkRed
-    hi WildMenu guifg=DarkRed guibg=Yellow3
+    highlight StatusLine guifg=Yellow3 guibg=DarkRed
+    highlight WildMenu guifg=DarkRed guibg=Yellow3
 elseif (s:month == 12) || (s:month == 1 ) || (s:month == 2)
     "" Winter
-    hi StatusLine guifg=LightSkyBlue3 guibg=NavyBlue
-    hi WildMenu guifg=NavyBlue guibg=LightSkyBlue3
+    highlight StatusLine guifg=LightSkyBlue3 guibg=NavyBlue
+    highlight WildMenu guifg=NavyBlue guibg=LightSkyBlue3
 else
-    hi StatusLine guifg=Grey62 guibg=Grey15
-    hi WildMenu guifg=Grey15 guibg=Grey62
+    highlight StatusLine guifg=Grey62 guibg=Grey15
+    highlight WildMenu guifg=Grey15 guibg=Grey62
 endif
-"default ... hi StatusLine ??
+"default ... highlight StatusLine ??
 
 "}}}
 

@@ -273,8 +273,6 @@ autocmd local Filetype qf nnoremap <buffer><silent> <c-t> <c-w><s-t><CR>:cclose<
 nnoremap <c-]> g<c-]>
 "
 nnoremap <silent> g<c-]> :vertical stjump<CR>
-"jump先をnew tabで開く
-nnoremap <c-j> :execute("tabnew " . b:cfile)<CR> <c-o> :execute("tjump " . expand('<cword>'))<CR>
 "preview で開く
 nnoremap <silent> <c-l> :execute("ptjump " . expand("<cword>"))<CR>
 
@@ -436,6 +434,22 @@ else
 endif
 command! FileInfo execute "!" . s:ls . expand('%')
 "}}}
+
+" 新しいtabで関数ジャンプする {{{
+function! <SID>Tab_Jump()
+    let l:cword = expand('<cword>')
+    tabnew
+
+    execute "tjump " . l:cword
+    if expand("%:t") == ""
+        quit
+    endif
+endfunction
+
+"jump先をnew tabで開く
+nnoremap <silent> <c-j> :call <SID>Tab_Jump()<CR>
+
+" }}}
 
 "clipboardを新しいwindowに保存{{{
 function! Show_clipboard()

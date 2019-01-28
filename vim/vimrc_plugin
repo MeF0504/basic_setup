@@ -104,7 +104,6 @@ if s:mftag_set == 1
                 let l:word = l:word . " " . a:[i]
             endfor
         endif
-        echo l:ft . " " . l:word
 
         if &grepprg == "internal"
             execute 'grep /' . l:word . '/j ' . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft
