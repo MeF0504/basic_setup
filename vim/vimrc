@@ -255,19 +255,9 @@ noremap ge E
 nnoremap gf <c-w>gf
 
 "quick fix windowを新規windowで開いたとき、]でもとのwindowに戻る
-"autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>p
-"autocmd local Filetype qf nnoremap <buffer> <Esc> <c-w>l <c-w>k
-autocmd local Filetype qf nnoremap <buffer> ] <c-w>k <c-w>l
+"autocmd local Filetype qf nnoremap <buffer> ] <c-w>k <c-w>l
 "quick fix windowでc-tで新しいtabで開く
 autocmd local Filetype qf nnoremap <buffer><silent> <c-t> <c-w><s-t><CR>:cclose<CR>
-""terminal上だと矢印キーでの挙動がおかしくなるので、強制的にmapping
-""入力方法はc-vから矢印
-"if !has('win32')
-"    nnoremap OA k
-"    nnoremap OB j
-"    nnoremap OD h
-"    nnoremap OC l
-"endif
 
 "候補が複数ある場合にリストを表示
 nnoremap <c-]> g<c-]>
@@ -278,6 +268,10 @@ nnoremap <silent> <c-l> :execute("ptjump " . expand("<cword>"))<CR>
 
 "\で検索のハイライトを消す
 nnoremap <silent> \ :nohlsearch<CR>
+
+" preview windowはqで閉じる
+nnoremap <expr> <silent> q &previewwindow==0 ? 'q' : ':quit<CR>'
+
 " }}}
 
 ""##########autocmd系 "{{{
@@ -500,7 +494,7 @@ function! <SID>chk_kakko()
             let l:tab_str .= " "
         endfor
     else
-        let l:tab_str = "    "
+        let l:tab_str = "\t"
     endif
     if len(split(getline("."), l:tab_str)) > 0 && len(split(getline("."), l:tab_str)[0]) > 4
         if split(getline("."), l:tab_str)[0][:3] == "case"
