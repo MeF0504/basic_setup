@@ -45,7 +45,7 @@ command! SyntaxInfo call s:get_syn_info()
 " }}}
 
 " 開いているfile一覧 {{{
-let g:l_cur_tabnr = 0
+let g:l_cur_winID = win_getid()
 function! s:file_list() abort
     " tab number
     for i in range(1,tabpagenr('$'))
@@ -69,11 +69,11 @@ function! s:file_list() abort
     endfor
     let l:tabnr = input("Tab No. or 'p'revious :>> ")
     if l:tabnr == "p"
-        let l:tabnr = g:l_cur_tabnr
+        let l:tabnr = win_id2tabwin(g:l_cur_winID)[0]
     endif
     if (1 <= l:tabnr ) && (l:tabnr <= tabpagenr("$") )
         " get current page number
-        let g:l_cur_tabnr = tabpagenr()
+        let g:l_cur_winID = win_getid()
         execute("normal! " . l:tabnr . "gt")
     endif
 endfunction

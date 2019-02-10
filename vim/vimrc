@@ -431,12 +431,18 @@ command! FileInfo execute "!" . s:ls . expand('%')
 
 " 新しいtabで関数ジャンプする {{{
 function! <SID>Tab_Jump()
+    let l:ctabnr = tabpagenr()
     let l:cword = expand('<cword>')
     tabnew
-
+    " tag listを初期化
+    try
+        $pop
+    catch
+    endtry
     execute "tjump " . l:cword
     if expand("%:t") == ""
         quit
+        execute "normal! " . l:ctabnr . "gt"
     endif
 endfunction
 
