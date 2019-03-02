@@ -8,6 +8,7 @@ let s:nerd_tree_set = 1
 let s:mftag_set = 1
 let s:ctrlp_set = 1
 let s:cfi_set = 1
+let s:quickrun_set = 1
 
 """""seiya.vim "{{{
 if s:seiya_set == 1
@@ -158,6 +159,13 @@ if s:cfi_set == 1
             let g:l_statusline += [s:st_tmp[s:i]]
         endif
     endfor
+endif
+" }}}
+
+""" vim-quick_run {{{
+if s:quickrun_set == 1
+    let g:quickrun_no_default_key_mappings = 1
+    nnoremap <silent> <Leader>q :QuickRun<CR>
 endif
 " }}}
 
