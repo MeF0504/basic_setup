@@ -218,3 +218,10 @@ if __name__ == "__main__":
             print >> f,'"'
             print >> f,'\n'
 
+    vim_init = os.path.expanduser('~/.vim/rcdir/vimrc.init')
+    if not os.path.exists(vim_init):
+        with open(vim_init,'a') as f:
+            print >> f,'"" init setting file for vim'
+            print >> f,'"'
+            print >> f,'\n'
+

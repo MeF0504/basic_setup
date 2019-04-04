@@ -14,6 +14,12 @@ else
     let g:vimdir = expand('~/.vim/')
 endif
 
+"local設定ファイル (1st)
+let s:initrc = g:vimdir . 'rcdir/vimrc.init'
+if filereadable(s:initrc)
+    execute "source " . s:initrc
+endif
+
 ""##########基本設定 "{{{
 "左端に数字を表示
 set number
@@ -581,7 +587,7 @@ else
     colorscheme desert
 endif
 
-"local設定ファイル
+"local設定ファイル (2nd)
 let s:localrc = g:vimdir . 'rcdir/vimrc.mine'
 if filereadable(s:localrc)
     execute "source " . s:localrc
