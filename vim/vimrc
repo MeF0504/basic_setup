@@ -242,6 +242,7 @@ nnoremap zO zR
 nnoremap zC zM
 "Yで行末までヤンク
 nnoremap Y y$
+vnoremap Y $y
 "そしてenterで開く下を追加したので消そうと思ったけど、macだとうまくいかなかったので残す
 "nnoremap <silent> <CR><CR> za
 "右方向で再帰的に開く
