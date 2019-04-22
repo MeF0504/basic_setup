@@ -1,22 +1,29 @@
 
 function! Add_env(...)
-    let l:opt = [
-                \"document",
-                \"equation",
-                \"itemize",
-                \"enumerate",
-                \]
+    let l:opt = {
+                \"doc":"document",
+                \"eq":"equation",
+                \"item":"itemize",
+                \"enum":"enumerate",
+                \}
+    function! s:echo_help(opt)
+        echo "enable options;"
+        for i in keys(a:opt)
+            echo i . " : " . a:opt[i]
+        endfor
+        return
+    endfunction
 
     if a:0 == "0"
-        echo "enable options;"
-        for i in range(len(l:opt))
-            echo i . " : " . l:opt[i]
-        endfor
+        call s:echo_help(l:opt)
         return
     endif
 
-    if a:1 < len(l:opt)
+    if has_key(l:opt, a:1)
         let l:env = l:opt[a:1]
+    else
+        call s:echo_help(l:opt)
+        return
     endif
 
     call append(line("."), "\\end(" . l:env . ")")
@@ -26,6 +33,6 @@ function! Add_env(...)
 
 endfunction
 
-command! -nargs=? AddEnv call Add_env(<args>)
+command! -nargs=? AddEnv call Add_env(<q-args>)
 
 
