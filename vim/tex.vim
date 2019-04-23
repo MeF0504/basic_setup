@@ -26,9 +26,9 @@ function! Add_env(...)
         return
     endif
 
-    call append(line("."), "\\end(" . l:env . ")")
+    call append(line("."), "\\end{" . l:env . "}")
     call append(line("."), "")
-    call append(line("."), "\\begin(" . l:env . ")")
+    call append(line("."), "\\begin{" . l:env . "}")
     normal! 2j
 
 endfunction
