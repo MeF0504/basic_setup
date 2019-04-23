@@ -19,11 +19,18 @@ function! Add_env(...)
         return
     endif
 
-    if has_key(l:opt, a:1)
-        let l:env = l:opt[a:1]
+    let l:args = split(a:1)
+    if has_key(l:opt, l:args[0])
+        let l:env = l:opt[l:args[0]]
     else
         call s:echo_help(l:opt)
         return
+    endif
+
+    if len(l:args) > 1
+        if l:args[1] == "as"
+            let l:env .= "*"
+        endif
     endif
 
     call append(line("."), "\\end{" . l:env . "}")
