@@ -152,6 +152,7 @@ if __name__ == "__main__":
             'vim.vim':'vim.vim',\
             'qf.vim':'qf.vim',\
             'help.vim':'help.vim',\
+            'tex.vim':'tex.vim',\
             }
     mkdir('~/.vim')
     mkdir('~/.vim/rcdir')
