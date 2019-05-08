@@ -20,6 +20,11 @@ function! Add_env(...)
     endif
 
     let l:args = split(a:1)
+    if len(l:args) == 0
+        call s:echo_help(l:opt)
+        return
+    endif
+
     if has_key(l:opt, l:args[0])
         let l:env = l:opt[l:args[0]]
     else
