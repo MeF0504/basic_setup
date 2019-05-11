@@ -104,6 +104,10 @@ set noundofile
 "tag設定
 set tags=tags;,./tags;
 
+"terminal mode設定
+"terminal-job modeでのwindow移動short cutを変更
+"set termwinkey=<c-l>
+
 "grepコマンドで内部grep(vimgrep)を使う
 "set grepprg=internal
 "外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
@@ -278,6 +282,10 @@ nnoremap <silent> \ :nohlsearch<CR>
 
 " preview windowはqで閉じる
 nnoremap <expr> <silent> q &previewwindow==0 ? 'q' : ':quit<CR>'
+
+"terminal mode設定
+"terminal-job modeからterminal-normal modeへの移行をescapeで行えるようにする
+tnoremap <ESC> <c-\><c-n>
 
 " }}}
 
