@@ -155,6 +155,7 @@ if __name__ == "__main__":
             'tex.vim':'tex.vim',\
             'javascript.vim':'javascript.vim',\
             'html.vim':'html.vim'\
+            'css.vim':'css.vim'\
             }
     mkdir('~/.vim')
     mkdir('~/.vim/rcdir')
