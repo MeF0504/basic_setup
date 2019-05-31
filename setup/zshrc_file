@@ -1,6 +1,6 @@
 # users generic .zshrc file for zsh(1)
 
-## Environment variable configuration
+##{{{ Environment variable configuration
 #
 # LANG
 #
@@ -10,9 +10,9 @@ case ${UID} in
     LANG=C
     ;;
 esac
+#}}}
 
-
-## Default shell configuration
+##{{{ Default shell configuration
 #
 # set prompt
 #
@@ -86,8 +86,9 @@ setopt noautoremoveslash
 # no beep sound when complete list displayed
 #
 setopt nolistbeep
+#}}}
 
-## Keybind configuration
+##{{{ Keybind configuration
 #
 # emacs like keybind (e.x. Ctrl-a gets to line head and Ctrl-e gets
 #   to end) and something additions
@@ -110,9 +111,9 @@ bindkey "\\en" history-beginning-search-forward-end
 # reverse menu completion binded to Shift-Tab
 #
 bindkey "\e[Z" reverse-menu-complete
+#}}}
 
-
-## Command history configuration
+##{{{ Command history configuration
 #
 HISTFILE=${HOME}/.zsh_history
 HISTSIZE=50000
@@ -120,27 +121,27 @@ SAVEHIST=50000
 setopt hist_ignore_dups     # ignore duplication command history list
 setopt hist_ignore_space    # ignore command starting with space
 setopt share_history        # share command history data
+#}}}
 
-
-## Completion configuration
+##{{{ Completion configuration
 #
 fpath=(${HOME}/.zsh/functions/Completion ${fpath})
 autoload -U compinit
 compinit
+#}}}
 
-
-## zsh editor
+##{{{ zsh editor
 #
 autoload zed
+#}}}
 
-
-## Prediction configuration
+##{{{ Prediction configuration
 #
 #autoload predict-on
 #predict-off
+#}}}
 
-
-## Alias configuration
+##{{{ Alias configuration
 #
 # expand aliases before completing
 #
@@ -184,8 +185,10 @@ alias zshhistory="vi -R ~/.zsh_history"
 if [[ $TERMINOLOGY -eq 1 ]]; then
     alias ls="tyls -m"
 fi
+#}}}
 
-#cdpwd ()
+##{{{ hook function setting
+# cdpwd ()
 #{
     #\cd "$@" && pwd
 #}
@@ -203,13 +206,9 @@ function chpwd() {
     fi
 }
 #from http://qiita.com/dai___chi/items/135d063444d152e63e1c
+#}}}
 
-#if [[ ${OSTYPE} = darwin* && -z ${SSH_CLIENT} ]]; then
-    #alias ssh="ssh-host-color.sh"
-#fi
-
-#
-## terminal configuration
+##{{{ terminal configuration
 #
 #case "${TERM}" in
 #screen)
@@ -264,7 +263,9 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color)
     }
     ;;
 esac
+#}}}
 
+## {{{added functions
 #check the terminal can display 256colors
 function 256colortest() {
     local code
@@ -279,8 +280,17 @@ function p(){
     /usr/bin/env python -c "print $@"
     #echo $@
 }
+#}}}
 
-## load user .zshrc configuration file
+## {{{ OS dependent settings
+if [ "$(uname)" = "Darwin" ]; then
+    alias ad_space="defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type=\"spacer-tile\";}' && killall Dock"
+    alias ldd="otool -L"
+fi
+#}}}
+
+##{{{ load user .zshrc configuration file
 #
 [ -f ${HOME}/.zshrc.mine ] && source ${HOME}/.zshrc.mine
+#}}}
 
