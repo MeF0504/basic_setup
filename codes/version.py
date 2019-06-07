@@ -10,7 +10,6 @@ def linux_version():
         if os.path.exists(rf):
             #print subprocess.check_output('cat '+rf,shell=True)
             subprocess.call('cat '+rf,shell=True)
-            exit()
 
 def linux_cpu():
     subprocess.call('cat /proc/cpuinfo', shell=True)
@@ -53,15 +52,21 @@ if __name__ == "__main__":
             mac_mem()
         elif uname == 'Linux':
             linux_mem()
+        else:
             print("can't find memory file. please add version file place in version.py!")
 
     elif sys.argv[1] == "all":
         if uname == 'Darwin':
+            print("----------OS version----------")
             mac_version()
+            print("----------cpu & memory information----------")
             mac_cpu()
         elif uname == 'Linux':
+            print("----------OS version----------")
             linux_version()
+            print("----------cpu  information----------")
             linux_cpu()
+            print("----------memory information----------")
             linux_mem()
 
     else:
