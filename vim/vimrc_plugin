@@ -10,6 +10,22 @@ let s:ctrlp_set = 1
 let s:cfi_set = 1
 let s:quickrun_set = 1
 
+function! s:analythis_args(arg)
+    let args = split(a:arg, ' ')
+    let ret = {'no_key':""}
+    for dic in args
+        let dic_sub = split(dic, "=")
+        if len(dic_sub) < 2
+            let ret["no_key"] .= ' ' . dic_sub[0]
+        else
+            let ret[dic_sub[0]] = dic_sub[1]
+        endif
+    endfor
+
+    return ret
+endfunction
+
+
 """""seiya.vim "{{{
 if s:seiya_set == 1
     "vimの背景を透過
@@ -86,8 +102,14 @@ if s:mftag_set == 1
     nnoremap <silent> <Leader>m :MFfunclist<CR>
 
     function! s:Mygrep(...)
-        "args 1 ... search word.
-        "args 2 ... file extention.
+        "args keywords ... wd, ex, dir
+        "wd  ... search word.
+        "ex  ... file extention.
+        "dir ... search directory.
+        "e.g. :Gregrep wd=hoge ex=.vim dir=%:h../../
+        "e.g. :Gregrep wd=fuga ex=.py
+        "e.g. :Gregrep mofumofu
+        "is also OK.
         if &modified == 1
             echo "file not saved!"
             return
@@ -95,26 +117,33 @@ if s:mftag_set == 1
         if a:0 == '0'
             let l:word = expand('<cword>')
             let l:ft = expand('%:e')
-        elseif a:0 == '1'
-            let l:ft = a:1
-            let l:word = expand('<cword>')
+            let l:dir = MFsearch_dir(g:mftag_dir)
         else
-            let l:ft = a:1
-            let l:word = a:2
-            for i in range(3, a:0)
-                let l:word = l:word . " " . a:[i]
-            endfor
+            let arg = s:analythis_args(a:1)
+            if has_key(arg, "wd")
+                let l:word = arg["wd"]
+                let l:word .= arg["no_key"]
+            elseif arg["no_key"] != ""
+                let l:word = arg["no_key"]
+            else
+                let l:word = expand('<cword>')
+            endif
+            let l:ft = has_key(arg, "ex") ? arg["ex"] : expand('%:e')
+            let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : MFsearch_dir(g:mftag_dir)
+        endif
+        if l:dir[-1] != "/"
+            l:dir .= "/"
         endif
 
         if &grepprg == "internal"
-            execute 'grep /' . l:word . '/j ' . MFsearch_dir(g:mftag_dir) . '**/*.' . l:ft
+            execute 'grep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
         elseif &grepprg == "grep\ -nriI"
             let l:tabnum = tabpagenr()
             cclose
             "wincmd b
             "vsplit
             tabnew
-            execute 'grep --include=\*.' . l:ft . ' "' . l:word . '" ' . MFsearch_dir(g:mftag_dir)
+            execute 'grep --include=\*' . l:ft . ' "' . l:word . '" ' .l:dir 
             cclose
             quit
             execute "normal! " . l:tabnum . "gt"
@@ -124,7 +153,7 @@ if s:mftag_set == 1
             echo "not supported grepprg"
         endif
     endfunction
-    command! -nargs=* Gregrep call s:Mygrep(<f-args>)
+    command! -nargs=? Gregrep call s:Mygrep(<f-args>)
 
     "command! -nargs=1 Gregrep execute "grep /" . <f-args> . "/j " . MFsearch_dir(g:mftag_dir) . '**/*.' . expand('%:e')
 
