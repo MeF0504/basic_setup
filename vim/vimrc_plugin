@@ -10,6 +10,7 @@ let s:ctrlp_set = 1
 let s:cfi_set = 1
 let s:quickrun_set = 1
 
+"{{{ local function
 function! s:analythis_args(arg)
     let args = split(a:arg, ' ')
     let ret = {'no_key':""}
@@ -24,7 +25,7 @@ function! s:analythis_args(arg)
 
     return ret
 endfunction
-
+" }}}
 
 """""seiya.vim "{{{
 if s:seiya_set == 1
@@ -195,6 +196,20 @@ endif
 if s:quickrun_set == 1
     let g:quickrun_no_default_key_mappings = 1
     nnoremap <silent> <Leader>q :QuickRun<CR>
+
+    " macOSでlatex (ptex2pdf)を使う場合
+    " https://texwiki.texjp.org/?quickrun
+    if system('uname') == "Darwin\n"
+        let g:quickrun_config = get(g:, 'quickrun_config', {})  " 変数がなければ初期化
+        "let g:quickrun_config.tex = {
+        "            \ 'command' : 'ptex2pdf',
+        "            \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" %s', 'open %s:r.pdf']
+        "            \ }
+        let g:quickrun_config.tex = {
+                    \ 'command' : 'ptex2pdf',
+                    \ 'exec' : ['%c -l %s', 'open %s:r.pdf']
+                    \ }
+    endif
 endif
 " }}}
 
