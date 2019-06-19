@@ -132,9 +132,6 @@ if s:mftag_set == 1
             let l:ft = has_key(arg, "ex") ? arg["ex"] : expand('%:e')
             let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : MFsearch_dir(g:mftag_dir)
         endif
-        if l:dir[-1] != "/"
-            l:dir .= "/"
-        endif
 
         if &grepprg == "internal"
             execute 'grep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
