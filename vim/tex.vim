@@ -1,3 +1,6 @@
+augroup texvim
+    autocmd!
+augroup END
 
 function! Add_env(...)
     let l:opt = {
@@ -46,5 +49,7 @@ function! Add_env(...)
 endfunction
 
 command! -nargs=? AddEnv call Add_env(<q-args>)
+
+autocmd texvim InsertLeave *.tex %s/、/，/ge
 
 
