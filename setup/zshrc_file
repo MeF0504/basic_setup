@@ -10,6 +10,9 @@ case ${UID} in
     LANG=C
     ;;
 esac
+
+export XDG_CONFIG_HOME=~/.config
+
 #}}}
 
 ##{{{ Default shell configuration
