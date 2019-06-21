@@ -286,6 +286,10 @@ function p(){
 if [ "$(uname)" = "Darwin" ]; then
     alias ad_space="defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type=\"spacer-tile\";}' && killall Dock"
     alias ldd="otool -L"
+    function mv_Trash() {
+        mv $@ ~/.Trash/
+    }
+    alias rm="mv_Trash"
 fi
 #}}}
 
