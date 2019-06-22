@@ -24,6 +24,11 @@ if dein#load_state(expand('~/.config/nvim/dein/'))
   call dein#add('miyakogi/seiya.vim')
   call dein#add('vim-scripts/taglist.vim')
   call dein#add('ctrlpvim/ctrlp.vim')
+  call dein#add('MeF0504/mftags')
+  call dein#add('MeF0504/sl.vim')
+  call dein#add('ciaranm/inkpot')
+  call dein#add('tyru/current-func-info.vim')
+  call dein#add('pocke/sushibar.vim')
 
   " You can specify revision/branch/tag.
   "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })

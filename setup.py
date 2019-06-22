@@ -156,9 +156,9 @@ if __name__ == "__main__":
         mkdir('~/.config/nvim/dein')
         subprocess.call('curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && chmod u+x installer.sh && ./installer.sh ~/.config/nvim/dein',shell=True)
 
-        print '\nclone inkpot'
-        subprocess.call('git clone https://github.com/ciaranm/inkpot',shell=True)
-        subprocess.call('cp -ri ./inkpot/colors ~/.config/nvim/',shell=True)
+        #print '\nclone inkpot'
+        #subprocess.call('git clone https://github.com/ciaranm/inkpot',shell=True)
+        #subprocess.call('cp -ri ./inkpot/colors ~/.config/nvim/',shell=True)
 
         #print '\nclone seiya'
         #subprocess.call('git clone https://github.com/miyakogi/seiya.vim',shell=True)
@@ -172,12 +172,12 @@ if __name__ == "__main__":
         #subprocess.call('git clone https://github.com/vim-scripts/taglist.vim',shell=True)
         #subprocess.call('cp -ri ./taglist.vim/plugin/taglist.vim ~/.vim/plugin/',shell=True)
 
-        print '\nclone current-func-info'
-        subprocess.call('git clone https://github.com/tyru/current-func-info.vim.git',shell=True)
-        subprocess.call('cp -ri ./current-func-info.vim/autoload ~/.config/nvim/',shell=True)
-        subprocess.call('cp -ri ./current-func-info.vim/doc ~/.config/nvim/',shell=True)
-        subprocess.call('cp -ri ./current-func-info.vim/ftplugin ~/.config/nvim/',shell=True)
-        subprocess.call('cp -ri ./current-func-info.vim/plugin ~/.config/nvim/',shell=True)
+        #print '\nclone current-func-info'
+        #subprocess.call('git clone https://github.com/tyru/current-func-info.vim.git',shell=True)
+        #subprocess.call('cp -ri ./current-func-info.vim/autoload ~/.config/nvim/',shell=True)
+        #subprocess.call('cp -ri ./current-func-info.vim/doc ~/.config/nvim/',shell=True)
+        #subprocess.call('cp -ri ./current-func-info.vim/ftplugin ~/.config/nvim/',shell=True)
+        #subprocess.call('cp -ri ./current-func-info.vim/plugin ~/.config/nvim/',shell=True)
 
         print '\nremove download tmp files'
         subprocess.call('rm -rf %s' % op.join(fpath,'tmp','*'),shell=True)

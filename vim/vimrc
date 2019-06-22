@@ -597,13 +597,15 @@ endif
 
 "カラーの変更
 let s:color_file = g:vimdir . "rcdir/vimrc.color"
-if filereadable(g:vimdir . "colors/inkpot.vim") && !has('gui_running')
-    colorscheme inkpot
-    if filereadable(s:color_file)
-        execute "source " . s:color_file
-    endif
-else
-    colorscheme desert
+if !has('gui_running')
+    try
+        colorscheme inkpot
+        if filereadable(s:color_file)
+            execute "source " . s:color_file
+        endif
+    catch
+        colorscheme desert
+    endtry
 endif
 
 "local設定ファイル (2nd)
