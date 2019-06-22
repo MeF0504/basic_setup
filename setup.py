@@ -183,6 +183,7 @@ if __name__ == "__main__":
         subprocess.call('rm -rf %s' % op.join(fpath,'tmp','*'),shell=True)
         os.chdir(fpath)
 
+    fcopy(op.join(vimdir, "vimrc"), op.join(vim_config_dir, "init.vim"), link=bool(args.link), force=args.force, test=args.test)
     for fy in glob.glob(op.join(vimdir, 'rcdir', "*")):
         fcopy(fy, op.join(rcdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
 
@@ -203,7 +204,7 @@ if __name__ == "__main__":
             print >> f,'"'
             print >> f,'\n'
 
-    src = op.join(vimdir, "vimrc")
+    src = op.join(vim_config_dir, "init.vim")
     dst = op.expanduser('~/.vimrc')
     if not op.exists(dst):
         print("link " + src + " -> " + dst)
