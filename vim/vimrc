@@ -7,11 +7,15 @@ augroup local
     autocmd!
 augroup END
 
-"windiws, unix系で分岐
-if has('win32')
-    let g:vimdir = expand('~/vimfiles/')
+"neovim, windiws, unix系で分岐
+if has('nvim')
+    let g:vimdir = expand('~/.config/nvim/')
 else
-    let g:vimdir = expand('~/.vim/')
+    if has('win32')
+        let g:vimdir = expand('~/vimfiles/')
+    else
+        let g:vimdir = expand('~/.vim/')
+    endif
 endif
 
 "local設定ファイル (1st)
