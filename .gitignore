@@ -6,4 +6,5 @@ legacy/*
 tmp/*
 tags
 *tag_syntax.vim
+*.mine
 

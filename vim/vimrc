@@ -15,7 +15,7 @@ else
 endif
 
 "local設定ファイル (1st)
-let s:initrc = g:vimdir . 'rcdir/vimrc.init'
+let s:initrc = g:vimdir . 'rcdir/init.vim.mine'
 if filereadable(s:initrc)
     execute "source " . s:initrc
 endif
@@ -579,19 +579,25 @@ endif
 
 ""##########ファイル読み込み "{{{
 "dein directoryがあれば読み込み
-if isdirectory(g:vimdir . 'dein')
-    execute "source " . g:vimdir . "rcdir/vimrc.dein"
+let s:dein_file = g:vimdir . "rcdir/vimrc.dein"
+if isdirectory(g:vimdir . 'dein') && filereadable(s:dein_file)
+    execute "source " . s:dein_file
 endif
 
 "pluginの設定読み込み
-if isdirectory(g:vimdir . 'plugin') || isdirectory(g:vimdir . 'dein')
-    execute "source " . g:vimdir . "rcdir/vimrc.plugin"
+let s:plugin_file = g:vimdir . "rcdir/vimrc.plugin"
+if (isdirectory(g:vimdir . 'plugin') || isdirectory(g:vimdir . 'dein'))
+\ && filereadable(s:plugin_file)
+    execute "source " . s:plugin_file
 endif
 
 "カラーの変更
+let s:color_file = g:vimdir . "rcdir/vimrc.color"
 if filereadable(g:vimdir . "colors/inkpot.vim") && !has('gui_running')
     colorscheme inkpot
-    execute "source " . g:vimdir . "rcdir/vimrc.color"
+    if filereadable(s:color_file)
+        execute "source " . s:color_file
+    endif
 else
     colorscheme desert
 endif
