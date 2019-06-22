@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
         print '\nclone inkpot'
         subprocess.call('git clone https://github.com/ciaranm/inkpot',shell=True)
-        subprocess.call('cp -ri ./inkpot/colors ~/.vim',shell=True)
+        subprocess.call('cp -ri ./inkpot/colors ~/.config/nvim/',shell=True)
 
         #print '\nclone seiya'
         #subprocess.call('git clone https://github.com/miyakogi/seiya.vim',shell=True)
@@ -174,10 +174,10 @@ if __name__ == "__main__":
 
         print '\nclone current-func-info'
         subprocess.call('git clone https://github.com/tyru/current-func-info.vim.git',shell=True)
-        subprocess.call('cp -ri ./current-func-info.vim/autoload ~/.vim',shell=True)
-        subprocess.call('cp -ri ./current-func-info.vim/doc ~/.vim',shell=True)
-        subprocess.call('cp -ri ./current-func-info.vim/ftplugin ~/.vim',shell=True)
-        subprocess.call('cp -ri ./current-func-info.vim/plugin ~/.vim',shell=True)
+        subprocess.call('cp -ri ./current-func-info.vim/autoload ~/.config/nvim/',shell=True)
+        subprocess.call('cp -ri ./current-func-info.vim/doc ~/.config/nvim/',shell=True)
+        subprocess.call('cp -ri ./current-func-info.vim/ftplugin ~/.config/nvim/',shell=True)
+        subprocess.call('cp -ri ./current-func-info.vim/plugin ~/.config/nvim/',shell=True)
 
         print '\nremove download tmp files'
         subprocess.call('rm -rf %s' % op.join(fpath,'tmp','*'),shell=True)
