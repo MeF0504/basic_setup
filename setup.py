@@ -123,7 +123,7 @@ if __name__ == "__main__":
     for fy in files:
         spath = op.join(setdir,fy)
         if op.exists(spath):
-            fcopy(spath,files[fy],force=args.force,test=args.test)
+            fcopy(spath,files[fy], link=bool(args.link), force=args.force,test=args.test)
 
     zshrc_mine = op.expanduser('~/.zshrc.mine')
     if not op.exists(zshrc_mine):
