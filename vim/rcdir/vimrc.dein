@@ -29,6 +29,7 @@ if dein#load_state(expand('~/.config/nvim/dein/'))
   call dein#add('ciaranm/inkpot')
   call dein#add('tyru/current-func-info.vim')
   call dein#add('pocke/sushibar.vim')
+  call dein#add('osyo-manga/vim-anzu')
 
   " You can specify revision/branch/tag.
   "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })

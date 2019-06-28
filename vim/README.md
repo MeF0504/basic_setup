@@ -13,4 +13,5 @@ using plugins, colors, etc..:
 1. [NERDTree](https://github.com/scrooloose/nerdtree)
 1. [current-func-info](https://github.com/tyru/current-func-info.vim)
 1. [sushibar.vim](https://github.com/pocke/sushibar.vim)
+1. [vim-anzu](https://github.com/osyo-manga/vim-anzu)
 
