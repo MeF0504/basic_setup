@@ -10,6 +10,7 @@ let s:ctrlp_set = 1
 let s:cfi_set = 1
 let s:quickrun_set = 1
 let s:anzu_set = 1
+let s:endwise_set = 1
 
 "{{{ local function
 function! s:analythis_args(arg)
@@ -211,7 +212,7 @@ if s:quickrun_set == 1
 endif
 " }}}
 
-""" vim-quick_run {{{
+""" vim-anzu {{{
 if s:anzu_set == 1
     " mapping
     nmap n <Plug>(anzu-n-with-echo)
@@ -221,4 +222,13 @@ if s:anzu_set == 1
     nmap <ESC><ESC> <Plug>(anzu-clear-search-status)
 endif
 " }}}
+
+""" endwise.vim
+if s:endwise_set == 1
+autocmd local FileType html
+        \ let b:endwise_addition = '\=submatch(0)=="\<html" ? "\</html\>" : submatch(0)=="\<head" ? "\</head\>" : submatch(0)=="\<body" ? "\</body\>" : submatch(0)=="\<script" ? "\</script\>" : "\</style\>"' |
+        \ let b:endwise_words = '<html,<head,<body,<script,<style' |
+        \ let b:endwise_syngroups = 'htmlTagName,htmlSpecialTagName'
+
+endif
 
