@@ -4,32 +4,42 @@ if &compatible
   set nocompatible               " Be iMproved
 endif
 
-" Required:
-set runtimepath+=~/.config/nvim/dein/repos/github.com/Shougo/dein.vim
+if !exists("$XDG_CONFIG_HOME")
+    let $XDG_CONFIG_HOME = expand("~/.config")
+endif
+
+let s:toml_file = $XDG_CONFIG_HOME . '/toml/dein.toml'
+let s:lazy_file = $XDG_CONFIG_HOME . '/toml/dein_lazy.toml'
 
 " Required:
-if dein#load_state(expand('~/.config/nvim/dein/'))
-  call dein#begin(expand('~/.config/nvim/dein/'))
+set runtimepath+=$XDG_CONFIG_HOME/nvim/dein/repos/github.com/Shougo/dein.vim
 
-  " Let dein manage dein
-  " Required:
-  call dein#add('Shougo/dein.vim')
+" Required:
+if dein#load_state($XDG_CONFIG_HOME . '/nvim/dein/')
+  call dein#begin($XDG_CONFIG_HOME . '/nvim/dein/')
 
-  " Add or remove your plugins here:
-  call dein#add('Shougo/neocomplete.vim')
-  call dein#add('Shougo/neosnippet.vim')
-  call dein#add('Shougo/neosnippet-snippets')
-  call dein#add('scrooloose/nerdtree')
-  call dein#add('thinca/vim-quickrun')
-  call dein#add('miyakogi/seiya.vim')
-  call dein#add('vim-scripts/taglist.vim')
-  call dein#add('ctrlpvim/ctrlp.vim')
-  call dein#add('MeF0504/mftags')
-  call dein#add('MeF0504/sl.vim')
-  call dein#add('ciaranm/inkpot')
-  call dein#add('tyru/current-func-info.vim')
-  call dein#add('pocke/sushibar.vim')
-  call dein#add('osyo-manga/vim-anzu')
+  call dein#load_toml(s:toml_file, {'lazy':0})
+  call dein#load_toml(s:lazy_file, {'lazy':1})
+
+"  " Let dein manage dein
+"  " Required:
+"  call dein#add('Shougo/dein.vim')
+"
+"  " Add or remove your plugins here:
+"  call dein#add('Shougo/neocomplete.vim')
+"  call dein#add('Shougo/neosnippet.vim')
+"  call dein#add('Shougo/neosnippet-snippets')
+"  call dein#add('scrooloose/nerdtree')
+"  call dein#add('thinca/vim-quickrun')
+"  call dein#add('miyakogi/seiya.vim')
+"  call dein#add('vim-scripts/taglist.vim')
+"  call dein#add('ctrlpvim/ctrlp.vim')
+"  call dein#add('MeF0504/mftags')
+"  call dein#add('MeF0504/sl.vim')
+"  call dein#add('ciaranm/inkpot')
+"  call dein#add('tyru/current-func-info.vim')
+"  call dein#add('pocke/sushibar.vim')
+"  call dein#add('osyo-manga/vim-anzu')
 
   " You can specify revision/branch/tag.
   "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })

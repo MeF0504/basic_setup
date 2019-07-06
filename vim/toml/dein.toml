@@ -1,0 +1,46 @@
+
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+[[plugins]]
+repo = 'Shougo/neocomplete.vim'
+
+[[plugins]]
+repo = 'Shougo/neosnippet.vim'
+
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+
+[[plugins]]
+repo = 'thinca/vim-quickrun'
+
+[[plugins]]
+repo = 'miyakogi/seiya.vim'
+
+[[plugins]]
+repo = 'vim-scripts/taglist.vim'
+
+[[plugins]]
+repo = 'ctrlpvim/ctrlp.vim'
+
+[[plugins]]
+repo = 'MeF0504/mftags'
+
+[[plugins]]
+repo = 'MeF0504/sl.vim'
+
+[[plugins]]
+repo = 'ciaranm/inkpot'
+
+[[plugins]]
+repo = 'tyru/current-func-info.vim'
+
+[[plugins]]
+repo = 'pocke/sushibar.vim'
+
+[[plugins]]
+repo = 'osyo-manga/vim-anzu'
+

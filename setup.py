@@ -82,6 +82,11 @@ if __name__ == "__main__":
     #print fpath
     os.chdir(fpath)
 
+    if not os.environ.has_key('XDG_CONFIG_HOME'):
+        conf_home = os.environ['XDG_CONFIG_HOME']
+    else:
+        conf_home = op.expanduser('~/.config')
+
     ############### script directory ###############
     codedir = op.join(fpath,'codes')
     print '\n@ '+codedir+'\n'
@@ -108,8 +113,8 @@ if __name__ == "__main__":
 
     files_linux = {\
                   'zshrc_file':'~/.zshrc', \
-                  'terminator_config':'~/.config/terminator/config', \
-                  'matplotlibrc':'~/.config/matplotlib', \
+                  'terminator_config':op.join(conf_home,'terminator/config'), \
+                  'matplotlibrc':op.join(conf_home, 'matplotlib'), \
                 }
     if os.uname()[0] == 'Darwin':
         files = files_mac
@@ -135,7 +140,7 @@ if __name__ == "__main__":
     vimdir = op.join(fpath,'vim')
     print '\n@ '+vimdir+'\n'
 
-    vim_config_dir = op.expanduser('~/.config/nvim')
+    vim_config_dir = op.join(conf_home, 'nvim')
     rcdir = op.join(vim_config_dir, 'rcdir')
     ftdir = op.join(vim_config_dir, 'ftplugin')
     mkdir(rcdir)
@@ -151,8 +156,8 @@ if __name__ == "__main__":
         #subprocess.call('git clone git://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim',shell=True)
 
         print '\nclone dein'
-        mkdir('~/.config/nvim/dein')
-        subprocess.call('curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && chmod u+x installer.sh && ./installer.sh ~/.config/nvim/dein',shell=True)
+        mkdir(op.join(conf_home, 'nvim/dein')
+        subprocess.call('curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && chmod u+x installer.sh && ./installer.sh %s/nvim/dein' % conf_home,shell=True)
 
         #print '\nclone inkpot'
         #subprocess.call('git clone https://github.com/ciaranm/inkpot',shell=True)
@@ -187,6 +192,8 @@ if __name__ == "__main__":
 
     for fy in glob.glob(op.join(vimdir, 'ftplugin', "*")):
         fcopy(fy, op.join(ftdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
+
+    fcopy(op.join(vimdir, 'toml'), vim_config_dir,  link=bool(args.link), force=args.force, test=args.test)
 
     vim_mine = op.expanduser('~/.config/nvim/rcdir/vimrc.mine')
     if not op.exists(vim_mine):
