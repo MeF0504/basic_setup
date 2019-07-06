@@ -156,8 +156,8 @@ if __name__ == "__main__":
         #subprocess.call('git clone git://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim',shell=True)
 
         print '\nclone dein'
-        mkdir(op.join(conf_home, 'nvim/dein')
-        subprocess.call('curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && chmod u+x installer.sh && ./installer.sh %s/nvim/dein' % conf_home,shell=True)
+        mkdir(op.join(conf_home, 'nvim/dein'))
+        subprocess.call('curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && chmod u+x installer.sh && ./installer.sh %s/nvim/dein' % conf_home, shell=True)
 
         #print '\nclone inkpot'
         #subprocess.call('git clone https://github.com/ciaranm/inkpot',shell=True)
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     for fy in glob.glob(op.join(vimdir, 'ftplugin', "*")):
         fcopy(fy, op.join(ftdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
 
-    fcopy(op.join(vimdir, 'toml'), vim_config_dir,  link=bool(args.link), force=args.force, test=args.test)
+    fcopy(op.join(vimdir, 'toml'), op.join(vim_config_dir,'toml') ,  link=bool(args.link), force=args.force, test=args.test)
 
     vim_mine = op.expanduser('~/.config/nvim/rcdir/vimrc.mine')
     if not op.exists(vim_mine):
