@@ -2,6 +2,7 @@
 import os
 import os.path as op
 import argparse
+import shutil
 import subprocess
 import glob
 #if float(sys.version[:3]) < 2.7:
@@ -87,10 +88,7 @@ if __name__ == "__main__":
     codefiles = []
     for cfy in glob.glob(op.join(codedir,'*')):
         if os.access(cfy,os.X_OK):
-            if (op.basename(cfy) == 'ssh-host-color.ssh'):
-                if (os.uname()[0] =='Darwin'):
-                    codefiles.append(cfy)
-            elif (op.basename(cfy) == 'pdf2jpg'):
+            if (op.basename(cfy) == 'pdf2jpg'):
                 if (os.uname()[0] == 'Darwin'):
                     codefiles.append(cfy)
             else:
@@ -180,8 +178,8 @@ if __name__ == "__main__":
         #subprocess.call('cp -ri ./current-func-info.vim/plugin ~/.config/nvim/',shell=True)
 
         print '\nremove download tmp files'
-        subprocess.call('rm -rf %s' % op.join(fpath,'tmp','*'),shell=True)
         os.chdir(fpath)
+        shutil.rmtree(op.join(fpath, 'tmp'))
 
     fcopy(op.join(vimdir, "vimrc"), op.join(vim_config_dir, "init.vim"), link=bool(args.link), force=args.force, test=args.test)
     for fy in glob.glob(op.join(vimdir, 'rcdir', "*")):
