@@ -292,7 +292,7 @@ if [ "$(uname)" = "Darwin" ]; then
 
     function mv_Trash() {
         for item in $@; do
-            rm_item=$item
+            rm_item=$(basename $item)
             for i in {1..100}; do
                 if [ ! -e ~/.Trash/$rm_item ]; then
                     mv $item ~/.Trash/$rm_item
