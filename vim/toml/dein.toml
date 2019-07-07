@@ -3,31 +3,204 @@
 repo = 'Shougo/dein.vim'
 
 [[plugins]]
-repo = 'Shougo/neocomplete.vim'
-
-[[plugins]]
-repo = 'Shougo/neosnippet.vim'
-
-[[plugins]]
 repo = 'Shougo/neosnippet-snippets'
 
 [[plugins]]
 repo = 'scrooloose/nerdtree'
+hook_add = '''
+"""""NERDTree "{{{
+"Bookmarkをデフォルト表示
+let g:NERDTreeShowBookmarks=1
+"見栄え
+let g:NERDTreeDirArrows = 1
+let g:NERDTreeDirArrowExpandable  = '>'
+let g:NERDTreeDirArrowCollapsible = '!'
+"右側に表示
+let g:NERDTreeWinPos="right"
+
+"参考:https://kamiya555.github.io/2015/10/14/nerdtree-command/
+"local mapping
+nnoremap <silent> <Leader>n :NERDTree<CR>
+
+"]でnerdtreeから抜け
+"autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
+autocmd local FileType nerdtree nnoremap <buffer> ] <c-w>l <c-w>k
+"}}}
+'''
 
 [[plugins]]
 repo = 'thinca/vim-quickrun'
+hook_add = '''
+""" vim-quick_run {{{
+let g:quickrun_no_default_key_mappings = 1
+nnoremap <silent> <Leader>q :QuickRun<CR>
+
+" macOSでlatex (ptex2pdf)を使う場合
+" https://texwiki.texjp.org/?quickrun
+if system('uname') == "Darwin\n"
+    let g:quickrun_config = get(g:, 'quickrun_config', {})  " 変数がなければ初期化
+    "let g:quickrun_config.tex = {
+    "            \ 'command' : 'ptex2pdf',
+    "            \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" %s', 'open %s:r.pdf']
+    "            \ }
+    let g:quickrun_config.tex = {
+                \ 'command' : 'ptex2pdf',
+                \ 'exec' : ['%c -l %s', 'open %s:r.pdf']
+                \ }
+endif
+" }}}
+'''
 
 [[plugins]]
 repo = 'miyakogi/seiya.vim'
+hook_add = '''
+"""""seiya.vim "{{{
+"vimの背景を透過
+let g:seiya_auto_enable=1
+"}}}
+'''
 
 [[plugins]]
 repo = 'vim-scripts/taglist.vim'
+hook_add = '''
+"""""taglist.vim "{{{
+let Tlist_Exit_OnlyWindow = 1
+let Tlist_Show_One_File = 1
+" 幅の設定
+" gui offのときは自動で幅が変わらないようにする (バグる)
+if has('gui_running')
+    let Tlist_WinWidth = 45
+    let g:Tlist_Inc_Winwidth = 1
+else
+    let Tlist_WinWidth = 35
+    let g:Tlist_Inc_Winwidth = 0
+endif
+"set splitbelow
+"<space>をlocal用のmappingにする。
+"nnoremap <silent> <Leader>t :Tlist<CR>
+
+"]でtag listから抜ける
+"autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
+autocmd local FileType taglist nnoremap <buffer> ] <c-w>l <c-w>k
+
+function! Open_taglist()
+    let l:tlist_right_old = g:Tlist_Use_Right_Window
+    if (winnr()==1 ) || (winnr() != winnr("$"))
+        let g:Tlist_Use_Right_Window = 0
+    else
+        let g:Tlist_Use_Right_Window = 1
+    endif
+    TlistToggle
+    let g:Tlist_Use_Right_Window = l:tlist_right_old
+endfunction
+nnoremap <silent> <Leader>t :call Open_taglist()<CR>
+"}}}
+'''
 
 [[plugins]]
 repo = 'ctrlpvim/ctrlp.vim'
+hook_add = '''
+""""ctrlp{{{
+"nnoremap <leader>s :<C-U>CtrlP<CR>
+let g:ctrlp_map = '<leader>s'
+"}}}
+'''
 
 [[plugins]]
 repo = 'MeF0504/mftags'
+hook_add = '''
+"""""mftags{{{
+"{{{ local function
+function! s:analythis_args(arg)
+    let args = split(a:arg, ' ')
+    let ret = {'no_key':""}
+    for dic in args
+        let dic_sub = split(dic, "=")
+        if len(dic_sub) < 2
+            let ret["no_key"] .= ' ' . dic_sub[0]
+        else
+            let ret[dic_sub[0]] = dic_sub[1]
+        endif
+    endfor
+
+    return ret
+endfunction
+" }}}
+let g:mftag_c_enable_kinds = "cdfgstu"
+let g:mftag_syntax_c_enable_kinds = "cdfgstu"
+let g:mftag_auto_close = 1
+let g:mftag_dir_auto_set = 1
+let g:mftag_python_default = "cfv"
+"]でfunction listから抜ける
+autocmd local FileType FuncList nnoremap <buffer> ] <c-w>l <c-w>k
+
+nnoremap <silent> <Leader>m :MFfunclist<CR>
+
+function! s:Mygrep(...)
+    "args keywords ... wd, ex, dir
+    "wd  ... search word.
+    "ex  ... file extention.
+    "dir ... search directory.
+    "e.g. :Gregrep wd=hoge ex=.vim dir=%:h../../
+    "e.g. :Gregrep wd=fuga ex=.py
+    "e.g. :Gregrep mofumofu
+    "is also OK.
+    if &modified == 1
+        echo "file not saved!"
+        return
+    endif
+    if a:0 == '0'
+        let l:word = expand('<cword>')
+        let l:ft = expand('%:e')
+        let l:dir = MFsearch_dir(g:mftag_dir)
+    else
+        let arg = s:analythis_args(a:1)
+        if has_key(arg, "wd")
+            let l:word = arg["wd"]
+            let l:word .= arg["no_key"]
+        elseif arg["no_key"] != ""
+            let l:word = arg["no_key"]
+        else
+            let l:word = expand('<cword>')
+        endif
+        let l:ft = has_key(arg, "ex") ? arg["ex"] : expand('%:e')
+        let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : MFsearch_dir(g:mftag_dir)
+    endif
+
+    if &grepprg == "internal"
+        execute 'grep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
+    elseif &grepprg == "grep\ -nriI"
+        let l:tabnum = tabpagenr()
+        cclose
+        "wincmd b
+        "vsplit
+        tabnew
+        execute 'grep --include=\*' . l:ft . ' "' . l:word . '" ' .l:dir 
+        cclose
+        quit
+        execute "normal! " . l:tabnum . "gt"
+        botright copen
+        unlet l:tabnum
+    else
+        echo "not supported grepprg"
+    endif
+endfunction
+command! -nargs=? Gregrep call s:Mygrep(<f-args>)
+
+"command! -nargs=1 Gregrep execute "grep /" . <f-args> . "/j " . MFsearch_dir(g:mftag_dir) . '**/*.' . expand('%:e')
+
+"autocmd BufRead * execute "set path+=" . b:mftag_save_dir . "**/include"
+function! s:AddPath()
+    if exists("b:mftag_save_dir")
+        if b:mftag_save_dir != "/"
+            let l:save_dir = substitute(b:mftag_save_dir, " ", "\\\\ ", "")
+            execute "set path+=" . l:save_dir . "**/include"
+        endif
+    endif
+endfunction
+autocmd BufRead * call s:AddPath()
+"}}}
+'''
 
 [[plugins]]
 repo = 'MeF0504/sl.vim'
@@ -37,10 +210,33 @@ repo = 'ciaranm/inkpot'
 
 [[plugins]]
 repo = 'tyru/current-func-info.vim'
+hook_add = '''
+"""" current-func-info.vim {{{
+let s:st_tmp = g:l_statusline
+let g:l_statusline = []
+for s:i in range(len(s:st_tmp))
+    if s:i == 2
+        let g:l_statusline += ["[%{cfi#get_func_name()}] "]
+    else
+        let g:l_statusline += [s:st_tmp[s:i]]
+    endif
+endfor
+" }}}
+'''
 
 [[plugins]]
 repo = 'pocke/sushibar.vim'
 
 [[plugins]]
 repo = 'osyo-manga/vim-anzu'
+hook_add = '''
+""" vim-anzu {{{
+" mapping
+nmap n <Plug>(anzu-n-with-echo)
+nmap N <Plug>(anzu-N-with-echo)
+
+" clear status
+nmap <ESC><ESC> <Plug>(anzu-clear-search-status)
+" }}}
+'''
 
