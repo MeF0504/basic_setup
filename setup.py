@@ -47,7 +47,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             print '[  %s  ] is already exist, cannot link!' % name2
 
     else:       #copy
-        cmd = 'cp %s %s' % (file1, file2)
+        cmd = 'cp -r %s %s' % (file1, file2)
         comment = 'copy %s --> %s\n' % (name1,file2)
 
         if force and condition:
