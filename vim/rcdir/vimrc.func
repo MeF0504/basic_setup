@@ -267,50 +267,50 @@ function! Terminux(use_system_cmd)
 endfunction
 " }}}
 
-" Count Search {{{
-" let g:l_sc_enable
-" 特殊文字は未対応
-" bufferの全ヒット数
-let g:l_all_word_cnt = 0
-" current lineまでのヒット数
-let g:l_cur_word_cnt = 0
-function! Search_Count(word) abort
-    if !exists("g:l_sc_enable")
-        return
-    endif
-    let g:l_all_word_cnt = 0
-    let g:l_cur_word_cnt = 0
-    let l:lines = getline(1,'$')
-    let l:cur_line = line(".")
-    let l:sword = a:word
-    let l:sword = substitute(l:sword,"<","","")
-    let l:sword = substitute(l:sword,">","","")
-    let l:sword = substitute(l:sword,"\\vv","","")
-    let l:sword = substitute(l:sword,"\\","","")
-    let l:ln = 0
-    for l:l in l:lines
-        let l:line = l:l
-        let l:cnt = stridx(l:line,l:sword)
-        while l:cnt != -1
-            "echo l:line . "  " . l:cnt
-            let g:l_all_word_cnt += 1
-            if l:ln <= l:cur_line
-                let g:l_cur_word_cnt += 1
-            endif
-            let l:line = l:line[l:cnt+len(l:sword):]
-            let l:cnt = stridx(l:line, l:sword)
-        endwhile
-        let l:ln += 1
-    endfor
-    "return g:l_word_cnt
-endfunction
-
-if exists("g:l_sc_enable")
-    "command! -nargs=1 SC call Search_Count(<f-args>) | execute "/\\v" . <f-args>
-    "nnoremap // :SC<space>
-    nnoremap <silent> n n :call Search_Count(getreg("/"))<CR>h
-    nnoremap <silent> N N :call Search_Count(getreg("/"))<CR>h
-    set statusline+=[%{g:l_cur_word_cnt}/%{g:l_all_word_cnt}]
-endif
+" Count Search {{{ --->> replace to 'vim-anzu'
+"" let g:l_sc_enable
+"" 特殊文字は未対応
+"" bufferの全ヒット数
+"let g:l_all_word_cnt = 0
+"" current lineまでのヒット数
+"let g:l_cur_word_cnt = 0
+"function! Search_Count(word) abort
+"    if !exists("g:l_sc_enable")
+"        return
+"    endif
+"    let g:l_all_word_cnt = 0
+"    let g:l_cur_word_cnt = 0
+"    let l:lines = getline(1,'$')
+"    let l:cur_line = line(".")
+"    let l:sword = a:word
+"    let l:sword = substitute(l:sword,"<","","")
+"    let l:sword = substitute(l:sword,">","","")
+"    let l:sword = substitute(l:sword,"\\vv","","")
+"    let l:sword = substitute(l:sword,"\\","","")
+"    let l:ln = 0
+"    for l:l in l:lines
+"        let l:line = l:l
+"        let l:cnt = stridx(l:line,l:sword)
+"        while l:cnt != -1
+"            "echo l:line . "  " . l:cnt
+"            let g:l_all_word_cnt += 1
+"            if l:ln <= l:cur_line
+"                let g:l_cur_word_cnt += 1
+"            endif
+"            let l:line = l:line[l:cnt+len(l:sword):]
+"            let l:cnt = stridx(l:line, l:sword)
+"        endwhile
+"        let l:ln += 1
+"    endfor
+"    "return g:l_word_cnt
+"endfunction
+"
+"if exists("g:l_sc_enable")
+"    "command! -nargs=1 SC call Search_Count(<f-args>) | execute "/\\v" . <f-args>
+"    "nnoremap // :SC<space>
+"    nnoremap <silent> n n :call Search_Count(getreg("/"))<CR>h
+"    nnoremap <silent> N N :call Search_Count(getreg("/"))<CR>h
+"    set statusline+=[%{g:l_cur_word_cnt}/%{g:l_all_word_cnt}]
+"endif
 " }}}
 
