@@ -8,15 +8,22 @@ if !exists("$XDG_CONFIG_HOME")
     let $XDG_CONFIG_HOME = expand("~/.config")
 endif
 
-let s:toml_file = $XDG_CONFIG_HOME . '/nvim/toml/dein.toml'
-let s:lazy_file = $XDG_CONFIG_HOME . '/nvim/toml/dein_lazy.toml'
+if has('win32')
+    let dein_dir = expand("~/vimfiles/")
+else
+    let dein_dir = $XDG_CONFIG_HOME . 'nvim/'
+endif
+
+let s:toml_file = dein_dir . '/toml/dein.toml'
+let s:lazy_file = dein_dir . '/toml/dein_lazy.toml'
 
 " Required:
-set runtimepath+=$XDG_CONFIG_HOME/nvim/dein/repos/github.com/Shougo/dein.vim
+"set runtimepath+=$XDG_CONFIG_HOME/nvim/dein/repos/github.com/Shougo/dein.vim
+execute "set runtimepath+=" . dein_dir . "/dein/repos/github.com/Shougo/dein.vim"
 
 " Required:
-if dein#load_state($XDG_CONFIG_HOME . '/nvim/dein/')
-  call dein#begin($XDG_CONFIG_HOME . '/nvim/dein/')
+if dein#load_state(dein_dir . '/dein/')
+  call dein#begin(dein_dir . '/dein/')
 
   call dein#load_toml(s:toml_file, {'lazy':0})
   call dein#load_toml(s:lazy_file, {'lazy':1})
