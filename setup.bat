@@ -2,12 +2,12 @@
 
 set curdir=%~dp0
 set vimcon=%homedrive%%homepath%\vimfiles\
-rem if exist %vimcon%\dein\repos\github.com\Shougo\dein.vim (
-rem     echo dein already exists.
-rem ) else (
-rem     mkdir %vimcon%\dein\repos\github.com\Shougo\dein.vim\
-rem     git clone https://github.com/Shougo/dein.vim %vimcon%\dein\repos\github.com\Shougo\dein.vim\
-rem )
+if exist %vimcon%\dein\repos\github.com\Shougo\dein.vim (
+    echo dein already exists.
+) else (
+    mkdir %vimcon%\dein\repos\github.com\Shougo\dein.vim\
+    git clone https://github.com/Shougo/dein.vim %vimcon%\dein\repos\github.com\Shougo\dein.vim\
+)
 
 if exist %vimcon%\swp (
     echo swp exist.
