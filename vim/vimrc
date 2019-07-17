@@ -557,6 +557,44 @@ vnoremap <expr> # <SID>chk_kakko()
 
 " }}}
 
+" windowsでterminalコマンドを打った時にgit bashを使えるようにする {{{
+function! s:Terminal()
+    " https://qiita.com/shiena/items/1dcb20e99f43c9383783
+    if has('win32')
+        botright split
+        " 日本語Windowsの場合`ja`が設定されるので、入力ロケールに合わせたUTF-8に設定しなおす
+        " コマンドの存在確認はあとで考える
+        let l:env = {
+                    \ 'LANG': systemlist('"locale.exe" -iU')[0],
+                    \ }
+
+        " remote連携のための設定
+        if has('clientserver')
+            call extend(l:env, {
+                        \ 'GVIM': $VIMRUNTIME,
+                        \ 'VIM_SERVERNAME': v:servername,
+                        \ })
+        endif
+
+        " term_startでgit for windowsのbashを実行する
+        call term_start(['bash.exe', '-l'], {
+                    \ 'term_name': 'Git',
+                    \ 'term_finish': 'close',
+                    \ 'curwin': v:true,
+                    \ 'cwd': $USERPROFILE,
+                    \ 'env': l:env,
+                    \ })
+    else
+        botright terminal
+    endif
+endfunction
+
+command! Terminal call s:Terminal()
+
+
+
+" }}}
+
 " self-made functionファイル読み込み
 if filereadable(g:vimdir . "rcdir/vimrc.func")
     execute "source " . g:vimdir . "rcdir/vimrc.func"
