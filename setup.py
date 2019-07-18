@@ -124,7 +124,7 @@ if __name__ == "__main__":
     files_linux = {\
                   'zshrc_file':'~/.zshrc', \
                   'terminator_config':op.join(conf_home,'terminator/config'), \
-                  'matplotlibrc':op.join(conf_home, 'matplotlib'), \
+                  'matplotlibrc':op.join(conf_home, 'matplotlib/matplotlibrc'), \
                 }
     if os.uname()[0] == 'Darwin':
         files = files_mac
