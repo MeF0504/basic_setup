@@ -185,6 +185,8 @@ alias grep="grep --color -n"
 
 alias zshhistory="vi -R ~/.zsh_history"
 
+alias rm="mv_Trash.py"
+
 if [[ $TERMINOLOGY -eq 1 ]]; then
     alias ls="tyls -m"
 fi
@@ -290,21 +292,8 @@ if [ "$(uname)" = "Darwin" ]; then
     alias ad_space="defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type=\"spacer-tile\";}' && killall Dock"
     alias ldd="otool -L"
 
-    function mv_Trash() {
-        for item in $@; do
-            rm_item=$(basename $item)
-            for i in {1..100}; do
-                if [ ! -e ~/.Trash/$rm_item ]; then
-                    mv $item ~/.Trash/$rm_item
-                    break
-                else
-                    rm_item=$item"_"$i
-                fi 
-            done
-        done
-        #mv $@ ~/.Trash/
-    }
-    alias rm="mv_Trash"
+elif [ "$(uname)" = "Linux" ]; then
+    # do nothing now.
 fi
 #}}}
 
