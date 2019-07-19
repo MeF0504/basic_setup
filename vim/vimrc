@@ -585,6 +585,9 @@ function! s:Terminal()
                     \ 'env': l:env,
                     \ })
     else
+        if has('nvim')
+            botright split
+        endif
         botright terminal
     endif
 endfunction
