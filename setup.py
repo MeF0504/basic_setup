@@ -92,7 +92,7 @@ if __name__ == "__main__":
     mkdir(binpath)
     os.chdir(fpath)
 
-    if not os.environ.has_key('XDG_CONFIG_HOME'):
+    if os.environ.has_key('XDG_CONFIG_HOME'):
         conf_home = os.environ['XDG_CONFIG_HOME']
     else:
         conf_home = op.expanduser('~/.config')
