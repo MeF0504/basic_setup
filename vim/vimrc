@@ -560,7 +560,7 @@ vnoremap <expr> # <SID>chk_kakko()
 " windowsでterminalコマンドを打った時にgit bashを使えるようにする {{{
 function! s:Terminal()
     " https://qiita.com/shiena/items/1dcb20e99f43c9383783
-    if has('gui_running')
+    if has('win32')
         botright split
         " 日本語Windowsの場合`ja`が設定されるので、入力ロケールに合わせたUTF-8に設定しなおす
         " コマンドの存在確認はあとで考える
