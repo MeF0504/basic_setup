@@ -190,6 +190,11 @@ alias rm="mv_Trash.py"
 if [[ $TERMINOLOGY -eq 1 ]]; then
     alias ls="tyls -m"
 fi
+
+if [[ ${SSH_CLIENT} != "" ]]; then
+    alias su=''
+    alias sudo=''
+fi
 #}}}
 
 ##{{{ hook function setting
