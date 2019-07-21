@@ -24,6 +24,11 @@ if filereadable(s:initrc)
     execute "source " . s:initrc
 endif
 
+""########## shortcut comment {{{
+" <c-h> ... backspace <c-m> ... Enter
+" <c-i> ... tab <c-j> ... Enter?
+"" }}}
+
 ""##########基本設定 "{{{
 "左端に数字を表示
 set number
@@ -119,7 +124,11 @@ set grepprg=grep\ -nriI
 "vimgrepした際に新規windowで開くようにする
 autocmd local QuickFixCmdPost *grep* cwindow
 
-"statusline setting
+" 分割したwindow間で移動を同期
+" (それぞれのwindowでsetする必要あり)
+" set scrollbind
+
+""statusline setting {{{
 let g:l_st_fileformat = {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRLF"}
 " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
 " 切り詰め位置 右端に表示
@@ -134,36 +143,6 @@ let g:l_statusline = [
             \"[%{g:l_st_fileformat[&fileformat]}:%{&fileencoding}] ",
             \"%l/%L [%P]"
             \]
-" --- old Set_statusline() --- {{{
-"""" 1st ... statusline list, 2nd ... local(1) or global(0)
-"function! Set_statusline(...)
-"    if &filetype == "qf"
-"        " ignore QuickFix Window
-"        return
-"    endif
-"    if a:0 == 0
-"        let l:st_list = g:l_statusline
-"    else
-"        let l:st_list = a:1
-"    endif
-"    if (a:0 >= 2) && (a:2 == 1)
-"        " local setting
-"        let l:set_str = "setlocal statusline="
-"        for s:st in l:st_list
-"            let l:set_str .= s:st
-"        endfor
-"        execute l:set_str
-"    else
-"        "global setting
-"        set statusline=
-"        let l:set_str = "set"
-"        for s:st in l:st_list
-"            execute l:set_str . " statusline+=" . s:st
-"        endfor
-"    endif
-"endfunction
-"call Set_statusline()
-" }}}
 
 let g:l_statusline_off = ["%t%m%{&readonly?'[RO]':''}%h%w"]
 """ control statusline showing
@@ -198,6 +177,7 @@ set statusline=%!Set_statusline()
 
 "autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
 "See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
+"}}}
 "}}}
 
 ""##########mapping設定 "{{{
