@@ -188,3 +188,143 @@ command! Wmode call s:window_mode()
 nnoremap <silent> <Leader>w :Wmode<CR>
 " }}}
 
+""" #で行末から括弧を見つけたり、次のcase文を見つけたりしてとぶ {{{
+function! <SID>chk_braket_python()
+    " これから作る
+    return ""
+endfunction
+
+function! <SID>chk_braket()
+    """ language specific type
+    if &filetype == "vim"
+        let l:bra = "if if function for"
+        let l:ak = "else elseif None None"
+        let l:ket = "endif endif endfunction endfor"
+    elseif (&filetype == "c") || (&filetype == "cpp")
+        let l:bra = "#if #ifdef #ifndef switch"
+        let l:ak = "#else #else #else case"
+        let l:ket = "#endif #endif #endif default"
+    elseif (&filetype == "python")
+        let l:res = <SID>chk_braket_python()
+        if l:res != ""
+            return l:res
+        endif
+    else
+        let l:bra = ""
+        let l:ak = ""
+        let l:ket = ""
+    endif
+
+    " configure {{{
+    if &expandtab
+        let l:tab = " "
+    else
+        let l:tab = "\t"
+    endif
+
+    let l:braList = split(l:bra, ' ')
+    let l:akList = split(l:ak, ' ')
+    let l:ketList = split(l:ket, ' ')
+
+    if len(l:braList) != len(l:akList)
+        echo "list length don't match."
+        return ""
+    endif
+    if len(l:braList) != len(l:ketList)
+        echo "list length don't match."
+        return ""
+    endif
+    " }}}
+
+    for i in range(0, len(l:braList)-1)
+        let b = l:braList[i]
+        let a = l:akList[i]
+        let k = l:ketList[i]
+        if a == "None"
+            let a = ''
+        endif
+
+        let l:cline = split(getline("."), l:tab)
+        if len(l:cline) == 0
+            return
+        endif
+
+        " start from bra or ak {{{
+        if (l:cline[0][:len(b)-1] == b) || (l:cline[0][:len(a)-1] == a)
+            let l:count = 1
+            for l in range(line('.')+1, line('$'))
+                let l:linestr = split(getline(l), l:tab)
+                if len(l:linestr) == 0
+                    continue
+                endif
+                " find bra ... count up.
+                if l:linestr[0][:len(b)-1] == b
+                    let l:count += 1
+                    continue
+                endif
+                " find ak ... if count=1, finish
+                if l:linestr[0][:len(a)-1] == a
+                    if l:count == 1
+                        return l . "gg"
+                    endif
+                endif
+                " find ket ... if count=1, finish. else, count down
+                if l:linestr[0][:len(k)-1] == k
+                    if l:count == 1
+                        return l . "gg"
+                    else
+                        let l:count -= 1
+                        continue
+                    endif
+                endif
+            endfor
+        " }}}
+        " start from ket {{{
+        elseif (l:cline[0][:len(k)-1] == k)
+            let l:count = 1
+            for ltmp in range(1, line('.')-1)
+                let l = line('.') - ltmp
+                let l:linestr = split(getline(l), l:tab)
+                if len(l:linestr) == 0
+                    continue
+                endif
+                " find bra ... if count=1, finish. else, count down
+                if l:linestr[0][:len(b)-1] == b
+                    if l:count == 1
+                        return l . "gg"
+                    else
+                        let l:count -= 1
+                        continue
+                    endif
+                endif
+                " find ket ... count up.
+                if l:linestr[0][:len(k)-1] == k
+                    let l:count += 1
+                    continue
+                endif
+            endfor
+        endif
+        " }}}
+    endfor
+
+    """ find braket {{{
+    let l:src_strs = ["{", "(", "[", "}", ")", "]"]
+    for l:ss in l:src_strs
+        let l:idx = strridx(getline("."), l:ss)
+        if l:idx == -1
+            continue
+        endif
+        if l:idx == len(getline("."))-1
+            return "$%"
+        else
+            return "$F" . l:ss . "%"
+        endif
+    endfor
+    " }}}
+    return ""
+endfunction
+nnoremap <expr> # <SID>chk_braket()
+vnoremap <expr> # <SID>chk_braket()
+
+" }}}
+

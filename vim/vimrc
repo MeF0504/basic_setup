@@ -490,53 +490,6 @@ autocmd local WinLeave ?* setlocal statusline=%!Set_statusline(g:l_statusline_of
 
 ""}}}
 
-""" #で行末から括弧を見つけたり、次のcase文を見つけたりしてとぶ {{{
-function! <SID>chk_kakko()
-    """ next case
-    if &expandtab == 1
-        let l:tab_str = ""
-        for i in range(&tabstop)
-            let l:tab_str .= " "
-        endfor
-    else
-        let l:tab_str = "\t"
-    endif
-    if len(split(getline("."), l:tab_str)) > 0 && len(split(getline("."), l:tab_str)[0]) > 4
-        if split(getline("."), l:tab_str)[0][:3] == "case"
-            for l:ln in range(line(".")+1, line("$"))
-                try
-                    if split(getline(l:ln), tab_str)[0][:3] == "case"
-                        return l:ln . "gg"
-                    elseif split(getline(l:ln), tab_str)[0][:6] == "default"
-                        return l:ln . "gg"
-                    endif
-                catch
-                    "echo v:exception
-                endtry
-            endfor
-        endif
-    endif
-
-    """ find () or {}
-    let l:src_strs = ["{", "}", "(", ")"]
-    for l:ss in l:src_strs
-        let l:idx = strridx(getline("."), l:ss)
-        if l:idx == -1
-            continue
-        endif
-        if l:idx == len(getline("."))-1
-            return "$%"
-        else
-            return "$F" . l:ss . "%"
-        endif
-    endfor
-    return ""
-endfunction
-nnoremap <expr> # <SID>chk_kakko()
-vnoremap <expr> # <SID>chk_kakko()
-
-" }}}
-
 " windowsでterminalコマンドを打った時にgit bashを使えるようにする {{{
 function! s:Terminal()
     " https://qiita.com/shiena/items/1dcb20e99f43c9383783
