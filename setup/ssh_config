@@ -1,0 +1,27 @@
+## include another file.
+## This command shoul be called at first.
+# Include my_ssh_config
+
+Host dummy
+## shortcut name
+    Hostname 192.168.1.1
+## host ip address
+    User hoge
+## user name
+    ServerAliveInterval 60
+## to avoid timeout
+    ForwardAgent yes
+## use same key at server A and server B
+    IdentityFile /path/to/id_rsa
+## set key file
+    ProxyCommand ssh {server} -W %h:%p
+## multi ssh
+    ForwardX11 yes
+## enable ssh with X-window
+    ForwardX11Trusted yes
+## set server as trasted one
+    AddKeysToAgent yes
+## add key passphrase to KeyChain
+    UseKeychain yes
+## enable to use passphrase in keychain on macOS?
+
