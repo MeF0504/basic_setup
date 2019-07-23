@@ -1,6 +1,13 @@
 
 [[plugins]]
+repo = 'cespare/vim-toml'
+on_ft = 'toml'
+
+# complete setting
+
+[[plugins]]
 repo = 'Shougo/neocomplete.vim'
+on_i = 1
 if = '''! has('nvim')'''
 hook_add = '''
 ""{{{
@@ -88,8 +95,9 @@ hi PMenuSbar ctermbg=4
 "}}}
 '''
 
-[[plugin]]
+[[plugins]]
 repo = 'Shougo/deoplete.nvim'
+on_i = 1
 if = '''has('nvim')'''
 hook_source = '''
 "{{{ "deoplete
@@ -110,4 +118,26 @@ autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 [[plugins]]
 repo = 'Shougo/neosnippet.vim'
+on_ft = 'snippet'
+
+[[plugins]]
+repo = 'Shougo/neco-vim'
+on_i = 1
+on_ft = 'vim'
+
+[[plugins]]
+repo = 'Shougo/neco-syntax'
+on_i = 1
+
+# https://github.com/Shougo/deoplete.nvim/wiki/Completion-Sources
+
+[[plugins]]
+repo = 'Shougo/deoplete-clangx'
+on_source = ['deoplete.nvim']
+on_ft = 'c'
+
+[[plugins]]
+repo = 'deoplete-plugins/deoplete-jedi'
+on_source = ['deoplete.nvim']
+on_ft = 'python'
 

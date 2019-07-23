@@ -280,6 +280,10 @@ autocmd local BufEnter * let b:no_match_paren = 1   " tentative? because of pare
 if exists("*settagstack")
     autocmd local TabNew * call settagstack(winnr(), {'length':0, 'curidx':1, 'items':[]})
 endif
+
+" toml fileのfiletypeをtomlにする
+autocmd local BufEnter *.toml set filetype=toml
+
 " }}}
 
 ""########## (簡単な)作成関数とか{{{
