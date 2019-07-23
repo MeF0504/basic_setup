@@ -2,7 +2,6 @@
 scriptencoding utf-8
 
 " vim (almost) self-made function file
-
 "単語のハイライト情報をget "{{{
 "from http://cohama.hateblo.jp/entry/2013/08/11/020849
 function! s:get_syn_id(transparent)
@@ -190,7 +189,59 @@ nnoremap <silent> <Leader>w :Wmode<CR>
 
 """ #で行末から括弧を見つけたり、次のcase文を見つけたりしてとぶ {{{
 function! <SID>chk_braket_python()
-    " これから作る
+    let l:bra = "def if if for with try"
+    let l:ak = "None else elif None None except"
+
+    if &expandtab
+        let l:tab = " "
+        "for i in range(&tabstop)
+        "    let l:tab .= " "
+        "endfor
+    else
+        let l:tab = "\t"
+    endif
+
+    let l:braList = split(l:bra, ' ')
+    let l:akList = split(l:ak, ' ')
+
+    if len(l:braList) != len(l:akList)
+        echo "list length don't match."
+        return ""
+    endif
+
+    for i in range(0, len(l:braList)-1)
+        let b = l:braList[i]
+        let a = l:akList[i]
+        let l:bidx = stridx(getline('.'), b)
+        let l:aidx = stridx(getline('.'), a)
+        if a == "None"
+            let l:aidx = -1
+        endif
+        if (l:bidx != -1) || (l:aidx != -1)
+            let l:idx = (l:bidx!=-1) ? l:bidx : l:aidx
+            if l:idx == 0
+                let l:lnspace = ''
+            else
+                let l:lnspace = getline('.')[:l:idx-1]
+            endif
+            for l in range(line('.')+1, line('$'))
+                let l:linestr = getline(l)
+                if (match(l:linestr, '\w') != -1) && (match(l:linestr, '\w') <= l:idx)
+                    return l . "gg"
+                endif
+            endfor
+        endif
+    endfor
+    let l:nidx = match(getline(line('.')+1), '\w')
+    if (getline('.') == '') && (l:nidx != -1)
+        for l_tmp in range(1, line('.')-1)
+            let l = line('.') - l_tmp
+            let l:linestr = getline(l)
+            if (match(l:linestr, '\w') != -1) && (match(l:linestr, '\w') <= l:nidx)
+                return l . "gg"
+            endif
+        endfor
+    endif
     return ""
 endfunction
 
@@ -209,6 +260,9 @@ function! <SID>chk_braket()
         if l:res != ""
             return l:res
         endif
+        let l:bra = ""
+        let l:ak = ""
+        let l:ket = ""
     else
         let l:bra = ""
         let l:ak = ""
@@ -323,6 +377,78 @@ function! <SID>chk_braket()
     " }}}
     return ""
 endfunction
+
+"{{{ sometimes this function does't work as expected
+function! <SID>chk_braket_test()
+    """ language specific type
+    if &filetype == "vim"
+        let l:bra = "if if function for"
+        let l:ak = "else elseif None None"
+        let l:ket = "endif endif endfunction endfor"
+        let l:com = '\"'
+    elseif (&filetype == "c") || (&filetype == "cpp")
+        let l:bra = "#if #ifdef #ifndef switch"
+        let l:ak = "#else #else #else case"
+        let l:ket = "#endif #endif #endif default"
+        let l:com = "/"
+    elseif (&filetype == "python")
+        let l:res = <SID>chk_braket_python()
+        if l:res != ""
+            return l:res
+        endif
+        let l:bra = ""
+        let l:ak = ""
+        let l:ket = ""
+        let l:com = "#"
+    else
+        let l:bra = ""
+        let l:ak = ""
+        let l:ket = ""
+        let l:com = ""
+    endif
+
+    " configure {{{
+    let l:braList = split(l:bra, ' ')
+    let l:akList = split(l:ak, ' ')
+    let l:ketList = split(l:ket, ' ')
+
+    if len(l:braList) != len(l:akList)
+        echo "list length don't match."
+        return ""
+    endif
+    if len(l:braList) != len(l:ketList)
+        echo "list length don't match."
+        return ""
+    endif
+    " }}}
+
+    for i in range(len(l:braList)-1)
+        let b = l:braList[i]
+        let a = l:akList[i]
+        let k = l:ketList[i]
+
+        if a == "None"
+            let a = ""
+        endif
+
+        let l:cline = getline(".")
+        let l:bidx = match(l:cline, '\<' . b . '\>')
+        let l:aidx = match(l:cline, '\<' . a . '\>')
+        let l:kidx = match(l:cline, '\<' . k . '\>')
+        if (l:bidx != -1) || (l:aidx != -1)
+            let l = max([l:bidx, l:aidx])
+            call cursor(line('.'), l+1)
+            let l:line = searchpair(b, a, k, 'zW', 'getline(".") =~ "^\\s*' . l:com . '"')
+            return l:line . "gg"
+        endif
+        if (l:kidx != -1)
+            call cursor(line('.'), l:kidx)
+            let l:line = searchpair(b, '', k, 'bzW', 'getline(".") =~ "^\\s*' . l:com . '"')
+            return l:line . "gg"
+        endif
+    endfor
+endfunction
+" }}}
 nnoremap <expr> # <SID>chk_braket()
 vnoremap <expr> # <SID>chk_braket()
 
