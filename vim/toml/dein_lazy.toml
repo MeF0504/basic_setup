@@ -107,11 +107,13 @@ inoremap <expr><tab> pumvisible() ? "\<C-n>" :
         \    "\<Plug>(neosnippet_expand_or_jump)" : "\<tab>"
 
 """ test
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+autocmd local FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd local FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd local FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd local FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd local FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+" auto close preview window.
+autocmd local CompleteDone * silent! pclose!
 
 "}}}
 '''
