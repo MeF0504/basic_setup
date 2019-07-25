@@ -255,6 +255,10 @@ function! <SID>chk_braket()
         let l:bra = "#if #ifdef #ifndef switch"
         let l:ak = "#else #else #else case"
         let l:ket = "#endif #endif #endif default"
+    elseif &filetype == "html"
+        let l:bra = '<html <head <body <script <style <p'
+        let l:ak = 'None None None None None None'
+        let l:ket = '</html </head </body </script </style </p'
     elseif (&filetype == "python")
         let l:res = <SID>chk_braket_python()
         if l:res != ""
