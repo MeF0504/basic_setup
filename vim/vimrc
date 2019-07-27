@@ -117,6 +117,14 @@ set tags=tags;,./tags;
 "terminal-job modeでのwindow移動short cutを変更
 "set termwinkey=<c-l>
 
+" neovim specified config
+if has('nvim')
+    " pop-up menuを半透明にする [0-100(%)]
+    set pumblend = 20
+    " 置換をinteractiveに行う
+    set inccommand = split
+endif
+
 "grepコマンドで内部grep(vimgrep)を使う
 "set grepprg=internal
 "外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
