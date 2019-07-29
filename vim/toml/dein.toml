@@ -24,7 +24,7 @@ nnoremap <silent> <Leader>n :NERDTree<CR>
 
 "]でnerdtreeから抜け
 "autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
-autocmd local FileType nerdtree nnoremap <buffer> ] <c-w>l <c-w>k
+"autocmd local FileType nerdtree nnoremap <buffer> ] <c-w>l <c-w>k
 "}}}
 '''
 
@@ -69,10 +69,10 @@ let Tlist_Show_One_File = 1
 " 幅の設定
 " gui offのときは自動で幅が変わらないようにする (バグる)
 if has('gui_running')
-    let Tlist_WinWidth = 45
+    let s:Max_WinWidth = 45
     let g:Tlist_Inc_Winwidth = 1
 else
-    let Tlist_WinWidth = 35
+    let s:Max_WinWidth = 35
     let g:Tlist_Inc_Winwidth = 0
 endif
 "set splitbelow
@@ -81,10 +81,16 @@ endif
 
 "]でtag listから抜ける
 "autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
-autocmd local FileType taglist nnoremap <buffer> ] <c-w>l <c-w>k
+"autocmd local FileType taglist nnoremap <buffer> ] <c-w>l <c-w>k
 
 function! Open_taglist()
     let l:tlist_right_old = g:Tlist_Use_Right_Window
+    if &columns > s:Max_WinWidth*3
+        let g:Tlist_WinWidth = s:Max_WinWidth
+    else
+        let g:Tlist_WinWidth = (&columns/10)*3
+    endif
+
     if (winnr()==1 ) || (winnr() != winnr("$"))
         let g:Tlist_Use_Right_Window = 0
     else
@@ -132,7 +138,7 @@ let g:mftag_auto_close = 1
 let g:mftag_dir_auto_set = 1
 let g:mftag_python_default = "cfv"
 "]でfunction listから抜ける
-autocmd local FileType FuncList nnoremap <buffer> ] <c-w>l <c-w>k
+"autocmd local FileType FuncList nnoremap <buffer> ] <c-w>l <c-w>k
 
 nnoremap <silent> <Leader>m :MFfunclist<CR>
 
