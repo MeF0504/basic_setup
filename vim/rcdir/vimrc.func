@@ -281,9 +281,9 @@ endfunction
 function! <SID>chk_braket()
     """ language specific type
     if &filetype == "vim"
-        let l:bra = "if if function for"
-        let l:ak = "else elseif None None"
-        let l:ket = "endif endif endfunction endfor"
+        let l:bra = "if if function for while"
+        let l:ak = "else elseif None None None"
+        let l:ket = "endif endif endfunction endfor endwhile"
     elseif (&filetype == "c") || (&filetype == "cpp")
         let l:bra = "#if #ifdef #ifndef switch"
         let l:ak = "#else #else #else case"
