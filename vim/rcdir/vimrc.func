@@ -45,36 +45,69 @@ command! SyntaxInfo call s:get_syn_info()
 
 " 開いているfile一覧 {{{
 let g:l_cur_winID = win_getid()
+
 function! s:file_list() abort
+    let l:fnames = {}
     " tab number
     for i in range(1,tabpagenr('$'))
-        let l:tab_files = printf("%3d", i)
-        let l:tab_files .= ' '
         "buffer number of each window
         for j in tabpagebuflist(i)
-            let mod = getbufvar(j, '&modified') ? '[+]' : ''
-            let l:fname =  '[ ' . fnamemodify(bufname(j),':t') . mod . ' ] '
-            "let l:fname =  '[ ' . bufname(j) . mod . ' ] '
-            if getbufvar(j, '&filetype') == 'qf'
-                let l:fname = '[ QuickFix' . mod . ']'
-            endif
-            let l:tab_files .= l:fname
+            let l:fname = fnamemodify(bufname(j),':t')
+            let l:fnames[i . "-" . j] = l:fname
         endfor
-        if tabpagenr() == i
-            echohl Search | echo l:tab_files | echohl None
-        else
-            echo l:tab_files
-        endif
     endfor
-    let l:tabnr = input("Tab No. or 'p'revious :>> ")
-    if l:tabnr == "p"
-        let l:tabnr = win_id2tabwin(g:l_cur_winID)[0]
-    endif
-    if (1 <= l:tabnr ) && (l:tabnr <= tabpagenr("$") )
-        " get current page number
-        let g:l_cur_winID = win_getid()
-        execute("normal! " . l:tabnr . "gt")
-    endif
+
+    let l:search_name = '.'
+    while 1
+        redraw!
+        for i in range(1,tabpagenr('$'))
+            let l:disp = 1
+            let l:tab_files = printf("%3d", i)
+            let l:tab_files .= ' '
+            for j in tabpagebuflist(i)
+                "check if 'search word' in file name.
+                if match(l:fnames[i . "-" . j], l:search_name) == -1
+                    let l:disp = 0
+                endif
+
+                let mod = getbufvar(j, '&modified') ? '[+]' : ''
+                let l:flist =  '[ ' . l:fnames[i . "-" . j] . mod . ' ] '
+                if getbufvar(j, '&filetype') == 'qf'
+                    let l:flist = '[ QuickFix' . mod . ']'
+                endif
+                let l:tab_files .= l:flist
+            endfor
+            if l:disp == 1
+                if tabpagenr() == i
+                    echohl Search | echo l:tab_files | echohl None
+                else
+                    echo l:tab_files
+                endif
+            else
+                echohl Comment | echo l:tab_files | echohl None
+            endif
+        endfor
+        let l:tabnr = input("Tab No. / 'q'uit / 'p'revious / 's'earch [FileName] :>> ")
+        " quit
+        if l:tabnr == "q"
+            redraw!
+            return
+        " set search word
+        elseif l:tabnr[0] == "s"
+            let l:search_name = l:tabnr[2:]
+            continue
+        " move to previous tab
+        elseif l:tabnr == "p"
+            let l:tabnr = win_id2tabwin(g:l_cur_winID)[0]
+        endif
+        if (1 <= l:tabnr ) && (l:tabnr <= tabpagenr("$") )
+            " get current page number
+            let g:l_cur_winID = win_getid()
+            execute("normal! " . l:tabnr . "gt")
+            redraw!
+            return
+        endif
+    endwhile
 endfunction
 
 command! Tls call s:file_list()
