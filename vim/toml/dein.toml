@@ -64,8 +64,8 @@ let g:seiya_auto_enable=1
 repo = 'vim-scripts/taglist.vim'
 hook_add = '''
 """""taglist.vim "{{{
-let Tlist_Exit_OnlyWindow = 1
-let Tlist_Show_One_File = 1
+let g:Tlist_Exit_OnlyWindow = 1
+let g:Tlist_Show_One_File = 1
 " 幅の設定
 " gui offのときは自動で幅が変わらないようにする (バグる)
 if has('gui_running')
