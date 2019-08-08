@@ -546,6 +546,9 @@ command! Terminal call s:Terminal()
 
 " }}}
 
+" conflict commentを検索
+command! SearchConf /<<<<<<<\|=======\|>>>>>>>
+
 " self-made functionファイル読み込み
 if filereadable(g:vimdir . "rcdir/vimrc.func")
     execute "source " . g:vimdir . "rcdir/vimrc.func"
