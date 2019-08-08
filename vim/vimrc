@@ -115,7 +115,7 @@ set tags=tags;,./tags;
 
 "terminal mode設定
 "terminal-job modeでのwindow移動short cutを変更
-"set termwinkey=<c-l>
+set termwinkey=<c-l>
 
 " neovim specified config
 if has('nvim')
