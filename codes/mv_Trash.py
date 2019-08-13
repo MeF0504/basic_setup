@@ -2,9 +2,11 @@
 
 from send2trash import send2trash
 import sys
+import os.path as op
 
 files = sys.argv[1:]
 
 for fy in files:
-    send2trash(fy)
+    if op.exists(fy):
+        send2trash(fy)
 

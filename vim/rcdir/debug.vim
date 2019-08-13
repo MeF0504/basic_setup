@@ -40,7 +40,7 @@ function! LocalDebug(string) abort
             endif
         endif
     endif
-    execute "botright vertical 20split " . l:logfile
+    execute "botright vertical split " . l:logfile
     wincmd p
 
 endfunction
