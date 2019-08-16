@@ -116,7 +116,6 @@ let g:ctrlp_map = '<leader>s'
 repo = 'MeF0504/mftags'
 hook_add = '''
 """""mftags{{{
-"{{{ local function
 function! s:analythis_args(arg)
     let args = split(a:arg, ' ')
     let ret = {'no_key':""}
@@ -131,7 +130,15 @@ function! s:analythis_args(arg)
 
     return ret
 endfunction
-" }}}
+
+function! s:echo_gregrep_help()
+    echo "usage..."
+    echo ":Gregrep [wd=word] [dir=dir_path] [ex=extention]"
+    echo "wd ... search word."
+    echo "dir ... path to root directory for search."
+    echo "ex ... file extention of target files."
+endfunction
+
 let g:mftag_c_enable_kinds = "cdfgstu"
 let g:mftag_syntax_c_enable_kinds = "cdfgstu"
 let g:mftag_auto_close = 1
@@ -149,8 +156,6 @@ function! s:Mygrep(...)
     "dir ... search directory.
     "e.g. :Gregrep wd=hoge ex=.vim dir=%:h../../
     "e.g. :Gregrep wd=fuga ex=.py
-    "e.g. :Gregrep mofumofu
-    "is also OK.
     if &modified == 1
         echo "file not saved!"
         return
@@ -161,11 +166,15 @@ function! s:Mygrep(...)
         let l:dir = MFsearch_dir(g:mftag_dir)
     else
         let arg = s:analythis_args(a:1)
+
+        if !has_key(arg, "wd") && !has_key(arg, "ex") && !has_key(arg, "dir")
+            call s:echo_gregrep_help()
+            return
+        endif
+
         if has_key(arg, "wd")
             let l:word = arg["wd"]
             let l:word .= arg["no_key"]
-        elseif arg["no_key"] != ""
-            let l:word = arg["no_key"]
         else
             let l:word = expand('<cword>')
         endif
