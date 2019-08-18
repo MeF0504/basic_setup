@@ -9,4 +9,6 @@ files = sys.argv[1:]
 for fy in files:
     if op.exists(fy):
         send2trash(fy)
+    else:
+        print("[" + fy + "] not found.")
 
