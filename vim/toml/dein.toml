@@ -137,6 +137,7 @@ function! s:echo_gregrep_help()
     echo "wd ... search word."
     echo "dir ... path to root directory for search."
     echo "ex ... file extention of target files."
+    echo "       if ex=None, search all files."
 endfunction
 
 let g:mftag_c_enable_kinds = "cdfgstu"
@@ -178,7 +179,7 @@ function! s:Mygrep(...)
         else
             let l:word = expand('<cword>')
         endif
-        let l:ft = has_key(arg, "ex") ? arg["ex"] : expand('%:e')
+        let l:ft = has_key(arg, "ex") ? (arg["ex"]=="None" ? "" : arg["ex"]) : expand('%:e')
         let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : MFsearch_dir(g:mftag_dir)
     endif
 
