@@ -22,6 +22,10 @@ let g:NERDTreeWinPos="right"
 "local mapping
 nnoremap <silent> <Leader>n :NERDTreeToggle<CR>
 
+"NERDTree color setting
+highlight NERDTreeBookmarksLeader ctermfg=32 guifg=DeepSkyBlue3
+highlight NERDTreeBookmark ctermfg=107 guifg=DarkOliveGreen3
+
 "]でnerdtreeから抜け
 "autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
 "autocmd local FileType nerdtree nnoremap <buffer> ] <c-w>l <c-w>k
@@ -242,6 +246,21 @@ endfor
 
 [[plugins]]
 repo = 'pocke/sushibar.vim'
+hook_add = '''
+""" sushibar.vim {{{
+let s:sushi = 1
+if ((exists("g:l_bd_month") && (str2nr(strftime("%b")) == g:l_bd_month))
+    \&& (exists("g:l_bd_day") && (str2nr(strftime("%d")) == g:l_bd_day)) )
+    "" Birthday
+    if s:sushi == 1
+        autocmd local BufWinEnter *
+                \ highlight StatusLine ctermfg=233 ctermbg=246 guifg=Grey7 guibg=Grey58
+                \ | highlight WildMenu ctermfg=246 ctermbg=233 guifg=Grey58 guibg=Grey7
+                \ |  Sushibar
+    endif
+endif
+""" }}}
+'''
 
 [[plugins]]
 repo = 'osyo-manga/vim-anzu'

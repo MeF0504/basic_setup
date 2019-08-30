@@ -18,14 +18,23 @@ set visualbell t_vb=
 "}}}
 
 "色設定 {{{
-colorscheme inkpot
-highlight Identifier guifg=LightSkyBlue3
-highlight Number guifg=Red
-highlight Type guifg=DarkOliveGreen3
-highlight string guibg=NONE guifg=LightGoldenrod2
-highlight Comment guifg=MediumPurple4
-highlight LineNr guifg=Grey30 guibg=NONE
-highlight Normal guifg=LightGray
+try
+    colorscheme inkpot
+catch
+    colorscheme desert
+endtry
+
+if colors_name == "inkpot"
+    highlight Identifier guifg=LightSkyBlue3
+    highlight Number guifg=Red
+    highlight Type guifg=DarkOliveGreen3
+    highlight String guibg=NONE guifg=LightGoldenrod2
+    highlight Comment guifg=MediumPurple4
+    highlight LineNr guifg=Grey30 guibg=NONE
+    highlight Normal guifg=LightGray
+else
+    echo "color scheme: " . color_name
+endif
 
 "下線設定
 set cursorline
@@ -33,10 +42,6 @@ highlight CursorLine gui=underline guifg=NONE guibg=NONE
 highlight CursorLineNr term=Bold guifg=NavyBlue guibg=White
 autocmd local InsertLeave * highlight CursorLineNr term=Bold guifg=NavyBlue guibg=White
 autocmd local InsertEnter * highlight CursorLineNr term=Bold guifg=NavyBlue guibg=MediumPurple3
-
-"NERDTree color setting
-highlight NERDTreeBookmarksLeader  guifg=DeepSkyBlue3
-highlight NERDTreeBookmark guifg=DarkOliveGreen3
 
 "必要ならneocompleteの補完リストの色設定
 "highlight Pmenu guibg=LightBlue
@@ -47,20 +52,13 @@ highlight NERDTreeBookmark guifg=DarkOliveGreen3
 highlight ZenkakuSpace guibg=darkgray
 autocmd local BufEnter * match ZenkakuSpace /　/
 
-let s:month = strftime("%b")
-let s:date = strftime("%d")
+let s:month = str2nr(strftime("%b"))
+let s:day = str2nr(strftime("%d"))
 if ((exists("g:l_bd_month") && (s:month == g:l_bd_month))
     \&& (exists("g:l_bd_day") && (s:day == g:l_bd_day)) )
     "" Birthday
-    if filereadable(g:vimdir . 'plugin/sushibar.vim')
-        autocmd local BufWinEnter *
-                \ highlight StatusLine guifg=Grey7 guibg=Grey58
-                \ | highlight WildMenu guifg=Grey58 guibg=Grey7
-                \ |  Sushibar
-    else
-        highlight StatusLine guifg=Khaki3 guibg=DarkGoldenrod
-        highlight WildMenu guifg=DarkGoldenrod guibg=Khaki3
-    endif
+    highlight StatusLine guifg=Khaki3 guibg=DarkGoldenrod
+    highlight WildMenu guifg=DarkGoldenrod guibg=Khaki3
 elseif (s:month == 3) || (s:month == 4 ) || (s:month == 5)
     "" Spring
     highlight StatusLine guifg=Pink1 guibg=DarkMagenta

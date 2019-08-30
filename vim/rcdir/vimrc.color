@@ -3,20 +3,28 @@ scriptencoding utf-8
 "" vim color setting
 "
 
-""optimized in inkpot
-highlight Identifier ctermfg=110
-highlight Number ctermfg=9
-highlight Type ctermfg=149
-highlight String ctermbg=None ctermfg=222
-highlight Comment ctermfg=60
-highlight LineNr ctermfg=239
-"highlight Comment ctermfg=212
+try
+    colorscheme inkpot
+catch
+    colorscheme desert
+endtry
+
+if colors_name == "inkpot"
+    highlight Identifier ctermfg=110
+    highlight Number ctermfg=9
+    highlight Type ctermfg=149
+    highlight String ctermbg=None ctermfg=222
+    highlight Comment ctermfg=60
+    highlight LineNr ctermfg=239
+    "highlight Comment ctermfg=212
+else
+    echo "color scheme: " . color_name
+endif
+
+" corsor line 
 highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
 autocmd local InsertLeave * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
 autocmd local InsertEnter * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=97
-
-highlight NERDTreeBookmark ctermfg=107
-highlight NERDTreeBookmarksLeader ctermfg=32
 
 "全角スペース表示
 highlight ZenkakuSpace ctermbg=241
@@ -28,15 +36,8 @@ let s:day = str2nr(strftime("%d"))
 if ((exists("g:l_bd_month") && (s:month == g:l_bd_month))
     \&& (exists("g:l_bd_day") && (s:day == g:l_bd_day)) )
     "" Birthday
-    if filereadable(g:vimdir . 'plugin/sushibar.vim')
-        autocmd local BufWinEnter *
-                \ highlight StatusLine ctermfg=233 ctermbg=246
-                \ | highlight WildMenu ctermfg=246 ctermbg=233
-                \ |  Sushibar
-    else
-        highlight StatusLine ctermfg=185 ctermbg=136
-        highlight WildMenu ctermfg=136 ctermbg=185
-    endif
+    highlight StatusLine ctermfg=185 ctermbg=136
+    highlight WildMenu ctermfg=136 ctermbg=185
 elseif (s:month == 3) || (s:month == 4 ) || (s:month == 5)
     "" Spring
     highlight StatusLine ctermfg=218 ctermbg=90
