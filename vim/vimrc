@@ -24,9 +24,17 @@ if filereadable(s:initrc)
     execute "source " . s:initrc
 endif
 
-""########## shortcut comment {{{
+""########## tips {{{
+" shortcut comment
 " <c-h> ... backspace <c-m> ... Enter
 " <c-i> ... tab <c-j> ... Enter?
+" useful command
+" :set          ... Show all options that differ from their default value.
+" :set all      ... Show all but terminal options.
+" :set termcap  ... Show all terminal options.
+" :map          ... Show all mapping settings.
+" :highlight    ... Show all highlight settings.
+" command       ... Show all user commands.
 "" }}}
 
 ""##########基本設定 "{{{
