@@ -58,8 +58,8 @@ set tabstop=4
 set autoindent
 "オートインデントの幅
 set shiftwidth=4
-"文字の色づけ
-syntax on
+"文字の色づけ ... onだと現状の設定を破棄する。詳しくは:h :syntax-on
+syntax enable
 "検索したときにハイライト
 set hlsearch
 "右下に入力コマンドを表示
