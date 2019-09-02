@@ -292,6 +292,10 @@ function! <SID>chk_braket()
         let l:bra = '<html <head <body <script <style <p'
         let l:ak = 'None None None None None None'
         let l:ket = '</html </head </body </script </style </p'
+    elseif (&filetype == 'sh') || (&filetype == 'zsh')
+        let l:bra = "if if for while case"
+        let l:ak = "else elif None None .)"
+        let l:ket = "fi fi done done esac"
     elseif (&filetype == "python")
         let l:res = <SID>chk_braket_python()
         if l:res != ""
