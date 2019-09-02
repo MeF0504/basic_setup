@@ -511,10 +511,14 @@ autocmd local WinLeave ?* setlocal statusline=%!Set_statusline(g:l_statusline_of
 ""}}}
 
 " windowsでterminalコマンドを打った時にgit bashを使えるようにする {{{
-function! s:Terminal()
+function! s:Terminal(vertical)
     " https://qiita.com/shiena/items/1dcb20e99f43c9383783
     if has('win32')
-        botright split
+        if a:vertical == 1
+            botright vertical split
+        else
+            botright split
+        endif
         " 日本語Windowsの場合`ja`が設定されるので、入力ロケールに合わせたUTF-8に設定しなおす
         " コマンドの存在確認はあとで考える
         let l:env = {
@@ -539,17 +543,25 @@ function! s:Terminal()
                     \ })
     else
         if has('nvim')
-            botright split
+            if a:vertical == 1
+                botright vertical split
+            else
+                botright split
+            endif
             terminal
             startinsert
         else
-            botright terminal
+            if a:vertical == 1
+                botright vertical terminal
+            else
+                botright terminal
+            endif
         endif
     endif
 endfunction
 
-command! Terminal call s:Terminal()
-
+command! Terminal call s:Terminal(0)
+command! TerminalV call s:Terminal(1)
 
 
 " }}}
