@@ -266,6 +266,8 @@ endif
 repo = 'osyo-manga/vim-anzu'
 hook_add = '''
 """ vim-anzu {{{
+" max search count
+let g:anzu_search_limit = 3000
 " mapping
 nmap n <Plug>(anzu-n-with-echo)
 nmap N <Plug>(anzu-N-with-echo)
