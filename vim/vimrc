@@ -25,16 +25,18 @@ if filereadable(s:initrc)
 endif
 
 ""########## tips {{{
-" shortcut comment
+" ##### shortcut comment
 " <c-h> ... backspace <c-m> ... Enter
 " <c-i> ... tab <c-j> ... Enter?
-" useful command
+" ##### useful command
 " :set          ... Show all options that differ from their default value.
 " :set all      ... Show all but terminal options.
 " :set termcap  ... Show all terminal options.
 " :map          ... Show all mapping settings.
 " :highlight    ... Show all highlight settings.
 " command       ... Show all user commands.
+" ##### other topics
+" about command args... <f-args>=string, <args>=value
 "" }}}
 
 ""##########基本設定 "{{{
