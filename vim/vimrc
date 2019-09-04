@@ -128,9 +128,9 @@ set tags=tags;,./tags;
 " neovim specified config
 if has('nvim')
     " pop-up menuを半透明にする [0-100(%)]
-    set pumblend = 20
+    set pumblend=20
     " 置換をinteractiveに行う
-    set inccommand = split
+    set inccommand=split
 else
     "terminal-job modeでのwindow移動short cutを変更
     set termwinkey=<c-l>
