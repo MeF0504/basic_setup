@@ -281,21 +281,21 @@ endfunction
 function! <SID>chk_braket()
     """ language specific type
     if &filetype == "vim"
-        let l:bra = "if if function for while"
-        let l:ak = "else elseif None None None"
-        let l:ket = "endif endif endfunction endfor endwhile"
+        let l:bra = "if function for while"
+        let l:ak = "else,elseif , , ,"
+        let l:ket = "endif endfunction endfor endwhile"
     elseif (&filetype == "c") || (&filetype == "cpp")
         let l:bra = "#if #ifdef #ifndef switch"
         let l:ak = "#else #else #else case"
         let l:ket = "#endif #endif #endif default"
     elseif &filetype == "html"
         let l:bra = '<html <head <body <script <style <p'
-        let l:ak = 'None None None None None None'
+        let l:ak = ', , , , , ,'
         let l:ket = '</html </head </body </script </style </p'
     elseif (&filetype == 'sh') || (&filetype == 'zsh')
-        let l:bra = "if if for while case"
-        let l:ak = "else elif None None .)"
-        let l:ket = "fi fi done done esac"
+        let l:bra = "if for while case"
+        let l:ak = "else,elif , , .)"
+        let l:ket = "fi done done esac"
     elseif (&filetype == "python")
         let l:res = <SID>chk_braket_python()
         if l:res != ""
@@ -311,6 +311,15 @@ function! <SID>chk_braket()
     endif
 
     " configure {{{
+    function! s:match_bak(line, bak_list)
+        for i in a:bak_list
+            if a:line[0][:len(i)-1] =~ i
+                return 1
+            endif
+        endfor
+        return 0
+    endfunction
+
     if &expandtab
         let l:tab = " "
     else
@@ -335,9 +344,9 @@ function! <SID>chk_braket()
         let b = l:braList[i]
         let a = l:akList[i]
         let k = l:ketList[i]
-        if a == "None"
-            let a = ''
-        endif
+        let b = [b]
+        let a = split(a, ',')
+        let k = [k]
 
         let l:cline = split(getline("."), l:tab)
         if len(l:cline) == 0
@@ -345,7 +354,7 @@ function! <SID>chk_braket()
         endif
 
         " start from bra or ak {{{
-        if (l:cline[0][:len(b)-1] == b) || (l:cline[0][:len(a)-1] == a)
+        if s:match_bak(cline, b + a)
             let l:count = 1
             for l in range(line('.')+1, line('$'))
                 let l:linestr = split(getline(l), l:tab)
@@ -353,18 +362,18 @@ function! <SID>chk_braket()
                     continue
                 endif
                 " find bra ... count up.
-                if l:linestr[0][:len(b)-1] == b
+                if s:match_bak(l:linestr, b)
                     let l:count += 1
                     continue
                 endif
                 " find ak ... if count=1, finish
-                if l:linestr[0][:len(a)-1] == a
+                if s:match_bak(l:linestr, a)
                     if l:count == 1
                         return l . "gg"
                     endif
                 endif
                 " find ket ... if count=1, finish. else, count down
-                if l:linestr[0][:len(k)-1] == k
+                if s:match_bak(l:linestr, k)
                     if l:count == 1
                         return l . "gg"
                     else
@@ -375,7 +384,7 @@ function! <SID>chk_braket()
             endfor
         " }}}
         " start from ket {{{
-        elseif (l:cline[0][:len(k)-1] == k)
+    elseif s:match_bak(l:cline, k)
             let l:count = 1
             for ltmp in range(1, line('.')-1)
                 let l = line('.') - ltmp
@@ -384,7 +393,7 @@ function! <SID>chk_braket()
                     continue
                 endif
                 " find bra ... if count=1, finish. else, count down
-                if l:linestr[0][:len(b)-1] == b
+                if s:match_bak(l:linestr, b)
                     if l:count == 1
                         return l . "gg"
                     else
@@ -393,7 +402,7 @@ function! <SID>chk_braket()
                     endif
                 endif
                 " find ket ... count up.
-                if l:linestr[0][:len(k)-1] == k
+                if s:match_bak(l:linestr, k)
                     let l:count += 1
                     continue
                 endif
