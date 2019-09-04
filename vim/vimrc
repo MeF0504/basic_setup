@@ -124,8 +124,6 @@ set noundofile
 set tags=tags;,./tags;
 
 "terminal mode設定
-"terminal-job modeでのwindow移動short cutを変更
-set termwinkey=<c-l>
 
 " neovim specified config
 if has('nvim')
@@ -133,6 +131,9 @@ if has('nvim')
     set pumblend = 20
     " 置換をinteractiveに行う
     set inccommand = split
+else
+    "terminal-job modeでのwindow移動short cutを変更
+    set termwinkey=<c-l>
 endif
 
 "grepコマンドで内部grep(vimgrep)を使う
