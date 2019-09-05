@@ -174,9 +174,14 @@ alias ll="ls -l"
 alias l="ls"
 alias c="cd"
 
+# check if already exists
 alias cp="cp -i"
 alias mv="mv -i"
 
+# make directory recursively
+alias mkdir="mkdir -p"
+
+# change the unit
 alias du="du -h"
 alias df="df -h"
 
@@ -187,10 +192,12 @@ alias zshhistory="vi -R ~/.zsh_history"
 
 alias rm="mv_Trash.py"
 
+## if use terminology [https://www.enlightenment.org/about-terminology.md]
 if [[ $TERMINOLOGY -eq 1 ]]; then
     alias ls="tyls -m"
 fi
 
+## remote host
 if [[ ${SSH_CLIENT} != "" ]]; then
     alias su=''
     alias sudo=''
