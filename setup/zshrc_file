@@ -223,6 +223,8 @@ function chpwd() {
         if [[ -z $(echo $IGNORE_FETCH | grep -e $(basename $(pwd))) ]]; then
             echo "fetching..."
             git fetch
+        else
+            echo "fetching... canceled"
         fi
     fi
 }
