@@ -77,9 +77,6 @@ set mouse=i
 set expandtab
 "連続した空白でtabやback spaceが動く幅
 set softtabstop=4
-"日本語OKに
-"set encoding=utf-8
-"set fileencoding=utf-8
 "大文字、小文字を区別しない
 set ignorecase
 "検索文字に大文字があると区別する
@@ -107,9 +104,6 @@ let mapleader = "\<space>"
 if isdirectory(g:vimdir . 'doc')
     execute "helptags " . g:vimdir . "doc"
 endif
-
-"let g:hybrid_use_Xresources = 1
-"colorscheme hybrid
 
 "カーソルの下に下線を表示
 set cursorline
