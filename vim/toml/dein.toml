@@ -237,6 +237,7 @@ let g:l_statusline = []
 for s:i in range(len(s:st_tmp))
     if s:i == 2
         let g:l_statusline += ["[%{cfi#get_func_name()}] "]
+        let g:l_statusline += [s:st_tmp[s:i]]
     else
         let g:l_statusline += [s:st_tmp[s:i]]
     endif

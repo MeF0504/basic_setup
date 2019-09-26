@@ -119,7 +119,7 @@ set noundofile
 set tags=tags;,./tags;
 
 " 右端にfoldの表示を追加
-set foldcolumn=3
+set foldcolumn=1
 
 "terminal mode設定
 
