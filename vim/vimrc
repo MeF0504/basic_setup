@@ -28,7 +28,6 @@ endif
 " ##### shortcut comment
 " <c-h> ... backspace <c-m> ... Enter
 " <c-i> ... tab <c-j> ... Enter?
-" <c-o> ... Enter
 " ##### useful command
 " :set          ... Show all options that differ from their default value.
 " :set all      ... Show all but terminal options.
