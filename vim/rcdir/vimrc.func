@@ -560,3 +560,39 @@ command! TerminalV call s:Terminal(1)
 
 " }}}
 
+" 検索せずにただ色をつけるコマンド {{{
+let g:l_word_color_cnt = [-1,-1]
+function! s:set_color(...)
+    if a:0 == 0
+        for i in range(0, g:l_word_color_cnt[1])
+            execute "syntax clear WordColor" . i
+        endfor
+        return
+    endif
+
+    let wd = a:1
+    let g:l_word_color_cnt[0] += 1
+    if g:l_word_color_cnt[0] > 6    " color ... 9-15 ( cnt ... 0-6)
+        let g:l_word_color_cnt[0] = 0
+    endif
+    if g:l_word_color_cnt[1] < 6
+        let g:l_word_color_cnt[1] = g:l_word_color_cnt[0]
+    endif
+
+    " matchはpriorityが低いらしいので使わない {{{
+    " https://vim-jp.org/vimdoc-ja/syntax.html#:syn-priority
+    " let magic_words = ['(', ')', '<', '>', '|', '+', '?']
+    " for mw in magic_words
+    "     let wd = substitute(wd, mw, '\'.mw, 'g')
+    " endfor
+    " execute "syntax match WordColor" . g:l_word_color_cnt . " containedin=ALL /" . wd . "/"
+    " }}}
+    " containedin=ALLで優先表示 https://osyo-manga.hatenadiary.org/entry/20140822/1408717386
+    execute "syntax keyword WordColor" . g:l_word_color_cnt[0] . " containedin=ALL " . wd
+    execute "highlight WordColor" . g:l_word_color_cnt[0] . " ctermfg=0 ctermbg=" . (g:l_word_color_cnt[0]+9)
+endfunction
+
+command! -nargs=? WordColor call s:set_color(<f-args>)
+nnoremap // :WordColor<space>
+" }}}
+
