@@ -305,6 +305,17 @@ function p(){
     /usr/bin/env python -c "print $@"
     #echo $@
 }
+
+# grep from all git repository
+# https://qiita.com/yuba/items/852d019af48ee7ccd92e
+function git_grep() {
+    ## option of uniq is different btw mac and linux?
+    if [ "$(uname)" = "Darwin" ]; then
+        git grep $1 $(git branch -a --format='%(objectname) %(refname:short)' | sort | uniq -s 40 | cut -c 42-)
+    elif [ "$(uname)" = "Linux" ]; then
+        git grep $1 $(git branch -a --format='%(objectname) %(refname:short)' | sort | uniq -w 40 | cut -c 42-)
+    fi
+}
 #}}}
 
 ## {{{ OS dependent settings
