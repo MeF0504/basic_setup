@@ -3,23 +3,27 @@ scriptencoding utf-8
 "" vim color setting
 "
 
+function! <SID>my_color_set()
+    if g:colors_name == "inkpot"
+        highlight Identifier ctermfg=110
+        highlight Number ctermfg=9
+        highlight Type ctermfg=149
+        highlight String ctermbg=None ctermfg=222
+        highlight Comment ctermfg=60
+        highlight LineNr ctermfg=239
+        "highlight Comment ctermfg=212
+    else
+        echo "color scheme: " . g:colors_name
+    endif
+endfunction
+
+autocmd local ColorScheme * call <SID>my_color_set()
+
 try
     colorscheme inkpot
 catch
     colorscheme desert
 endtry
-
-if colors_name == "inkpot"
-    highlight Identifier ctermfg=110
-    highlight Number ctermfg=9
-    highlight Type ctermfg=149
-    highlight String ctermbg=None ctermfg=222
-    highlight Comment ctermfg=60
-    highlight LineNr ctermfg=239
-    "highlight Comment ctermfg=212
-else
-    echo "color scheme: " . color_name
-endif
 
 " corsor line 
 highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
