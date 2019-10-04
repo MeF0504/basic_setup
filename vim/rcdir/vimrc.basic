@@ -2,6 +2,9 @@
 "" 基本的にはset, map系のみ書かれており、autcmd, 関数などはなし。
 "" のちのちversion依存、コンパイル依存もちゃんと書いていきたい。
 "" 日本語なしは諦めた
+
+" 単体で動かすことも考えて
+set encoding=utf-8
 scriptencoding utf-8
 
 ""########## tips {{{
