@@ -167,6 +167,7 @@ alias -g T='| tail'
 alias -g W='| wc'
 alias -g G='| grep'
 alias -g L='| less -R'
+alias -g TE='| tee '
 
 alias la="ls -a"
 alias lf="ls -F"
