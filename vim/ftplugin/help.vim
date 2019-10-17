@@ -1,5 +1,5 @@
 "vim script encording setting
 scriptencoding utf-8
 
-nnoremap <buffer> q :q<CR>
+nnoremap <silent><buffer> q :q<CR>
 
