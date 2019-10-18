@@ -7,17 +7,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument('environ',help='environment value')
 args = parser.parse_args()
 
-if ':' in args.environ:
+sep = os.pathsep
+
+if sep in args.environ:
     envar = args.environ
-    envar = envar.replace(':',':\n')
-    print envar
-    exit()
+    envar = envar.replace(sep,sep+'\n')
+    print(envar)
 
-try:
+elif args.environ in os.environ:    # key check
     envar = os.environ[args.environ]
-    envar = envar.replace(':',':\n')
-    print envar
+    envar = envar.replace(sep,sep+'\n')
+    print(envar)
 
-except KeyError:
-    print 'please input environmental variable'
+else:
+    #print('please input environmental variable')
+    print(args.environ)
 
