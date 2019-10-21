@@ -79,13 +79,30 @@ else
     let s:Max_WinWidth = 35
     let g:Tlist_Inc_Winwidth = 0
 endif
+"
+" ######################################################
+" #### Tlist_Show_One_Fileでエラーを吐く場合のpatch ####
+" ######################################################
+" diff --git a/plugin/taglist.vim b/plugin/taglist.vim
+" index 59901f6..c961778 100644
+" --- a/plugin/taglist.vim
+" +++ b/plugin/taglist.vim
+" @@ -4097,6 +4097,9 @@ endfunction
+"  " window. Used after entering a tab. If this is not done, then the folds
+"  " are not properly created for taglist windows displayed in multiple tabs.
+"  function! s:Tlist_Refresh_Folds()
+" +    if g:Tlist_Show_One_File
+" +        return
+" +    endif
+"      let winnum = bufwinnr(g:TagList_title)
+"      if winnum == -1
+"          return
+" ######################################################
+"
+
 "set splitbelow
 "<space>をlocal用のmappingにする。
 "nnoremap <silent> <Leader>t :Tlist<CR>
-
-"]でtag listから抜ける
-"autocmd local FileType taglist nnoremap <buffer> <Esc> <c-w>p
-"autocmd local FileType taglist nnoremap <buffer> ] <c-w>l <c-w>k
 
 function! Open_taglist()
     let l:tlist_right_old = g:Tlist_Use_Right_Window
