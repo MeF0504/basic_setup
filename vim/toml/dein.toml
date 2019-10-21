@@ -232,16 +232,40 @@ repo = 'ciaranm/inkpot'
 repo = 'tyru/current-func-info.vim'
 hook_add = '''
 """" current-func-info.vim {{{
-let s:st_tmp = g:l_statusline
-let g:l_statusline = []
-for s:i in range(len(s:st_tmp))
-    if s:i == 2
-        let g:l_statusline += ["[%{cfi#get_func_name()}] "]
-        let g:l_statusline += [s:st_tmp[s:i]]
-    else
-        let g:l_statusline += [s:st_tmp[s:i]]
+let s:cfi_st = "[%{cfi#get_func_name()}] "
+function! <SID>add_cfi_sl()
+    " if file is long enough, don't show in statusline.
+    if line('$') > 10000
+        if g:l_statusline[2] == s:cfi_st
+            let l:st_tmp = g:l_statusline
+            let g:l_statusline = []
+            for i in range(len(l:st_tmp))
+                if i!=2
+                    let g:l_statusline += [l:st_tmp[i]]
+                endif
+            endfor
+        endif
+        return
     endif
-endfor
+
+    " do nothing if already set.
+    if g:l_statusline[2] == s:cfi_st
+        return
+    endif
+
+    let l:st_tmp = g:l_statusline
+    let g:l_statusline = []
+    for i in range(len(l:st_tmp))
+        if i == 2
+            let g:l_statusline += [s:cfi_st]
+            let g:l_statusline += [l:st_tmp[i]]
+        else
+            let g:l_statusline += [l:st_tmp[i]]
+        endif
+    endfor
+endfunction
+
+autocmd local BufEnter * call <SID>add_cfi_sl()
 " }}}
 '''
 
