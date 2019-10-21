@@ -2,26 +2,26 @@
 ## This command shoul be called at first.
 # Include my_ssh_config
 
-Host dummy
 ## shortcut name
-    Hostname 192.168.1.1
+Host dummy
 ## host ip address
-    User hoge
+    Hostname 192.168.1.1
 ## user name
-    ServerAliveInterval 60
+    User hoge
 ## to avoid timeout
-    ForwardAgent yes
+    ServerAliveInterval 60
 ## use same key at server A and server B
-    IdentityFile /path/to/id_rsa
+    ForwardAgent yes
 ## set key file
-    ProxyCommand ssh {server} -W %h:%p
+    IdentityFile /path/to/id_rsa
 ## multi ssh
-    ForwardX11 yes
+    ProxyCommand ssh {server} -W %h:%p
 ## enable ssh with X-window
-    ForwardX11Trusted yes
+    ForwardX11 yes
 ## set server as trasted one
-    AddKeysToAgent yes
+    ForwardX11Trusted yes
 ## add key passphrase to KeyChain
-    UseKeychain yes
+    AddKeysToAgent yes
 ## enable to use passphrase in keychain on macOS?
+    UseKeychain yes
 
