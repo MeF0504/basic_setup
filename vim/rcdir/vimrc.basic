@@ -205,8 +205,9 @@ nnoremap <expr> <silent> q &previewwindow==0 ? 'q' : ':quit<CR>'
 
 "terminal mode設定
 if has('terminal')
-    "terminal-job modeからterminal-normal modeへの移行をescapeで行えるようにする
-    tnoremap <ESC> <c-\><c-n>
+    "terminal-job modeからterminal-normal modeへの移行をescape*2で行えるようにする
+    "(1回だと矢印を検知してしまうため2回にする)
+    tnoremap <ESC><ESC> <c-\><c-n>
 endif
 
 " }}}
