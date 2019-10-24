@@ -222,8 +222,19 @@ nnoremap <silent> <Leader>w :Wmode<CR>
 
 """ #で行末から括弧を見つけたり、次のcase文を見つけたりしてとぶ {{{
 function! <SID>chk_braket_python()
-    let l:bra = "def if if for with try"
-    let l:ak = "None else elif None None except"
+    let l:bra = "def if for with try"
+    let l:ak = ", else,elif , , except"
+
+    function! s:match_bak_python(bak_list)
+        for i in a:bak_list
+            let i .= " "
+            let l:idx = stridx(getline('.'), i)
+            if l:idx != -1
+                return l:idx
+            endif
+        endfor
+        return -1
+    endfunction
 
     if &expandtab
         let l:tab = " "
@@ -245,13 +256,11 @@ function! <SID>chk_braket_python()
     for i in range(0, len(l:braList)-1)
         let b = l:braList[i]
         let a = l:akList[i]
-        let l:bidx = stridx(getline('.'), b)
-        let l:aidx = stridx(getline('.'), a)
-        if a == "None"
-            let l:aidx = -1
-        endif
-        if (l:bidx != -1) || (l:aidx != -1)
-            let l:idx = (l:bidx!=-1) ? l:bidx : l:aidx
+        let b = [b]
+        let a = split(a, ',')
+        let l:idx = s:match_bak_python(b + a)
+
+        if l:idx != -1
             if l:idx == 0
                 let l:lnspace = ''
             else
@@ -265,6 +274,9 @@ function! <SID>chk_braket_python()
             endfor
         endif
     endfor
+
+    " current lineが空で、next lineに文字があれば
+    " next lineと同じインデントを上方検索してjump
     let l:nidx = match(getline(line('.')+1), '\w')
     if (getline('.') == '') && (l:nidx != -1)
         for l_tmp in range(1, line('.')-1)
@@ -275,6 +287,27 @@ function! <SID>chk_braket_python()
             endif
         endfor
     endif
+
+    " next lineがcurrent lineよりインデントが小さければ
+    " next lineと同じインデントを上方検索してjump
+    let l:cidx = match(getline(line('.')), '\w')
+    let l:nidx = match(getline(line('.')+1), '\w')
+    if (l:cidx != -1) && (l:nidx != -1) && (l:nidx < l:cidx)
+        let l:iniword = split(getline("."), l:tab)[0][0]
+        "doesn't work if current line is comment line
+        if (l:iniword == "#") || (l:iniword == '"') || (l:iniword == "'")
+            return ""
+        endif
+
+        for l_tmp in range(1, line('.')-1)
+            let l = line('.') - l_tmp
+            let l:linestr = getline(l)
+            if (match(l:linestr, '\w') != -1) && (match(l:linestr, '\w') < l:cidx)
+                return l . "gg"
+            endif
+        endfor
+    endif
+
     return ""
 endfunction
 
