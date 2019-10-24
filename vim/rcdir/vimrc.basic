@@ -20,6 +20,12 @@ scriptencoding utf-8
 " command       ... Show all user commands.
 " ##### other topics
 " about command args... <f-args>=string, <args>=value
+" about equation operator ...  (sorry for Japanese)
+"   ==#, !=#, ># etc..    ：大文字小文字を区別する
+"   ==?, !=?, >? etc..    ：大文字小文字を区別しない
+"   =~, =~#, =~?          ：正規表現マッチ
+"   !~, !~#, !~?          ：正規表現非マッチ
+" 正規表現については :h pattern-overview or https://vim-jp.org/vimdoc-ja/pattern.html#pattern-overview
 "" }}}
 
 ""##########基本設定 "{{{
