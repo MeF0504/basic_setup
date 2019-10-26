@@ -13,6 +13,8 @@ esac
 
 export XDG_CONFIG_HOME=~/.config
 
+export GLOBAL_IP=`curl https://ifconfig.io 2> /dev/null`
+
 #}}}
 
 ##{{{ Default shell configuration
