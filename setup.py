@@ -1,6 +1,7 @@
 
 import os
 import os.path as op
+import sys
 import argparse
 import shutil
 import subprocess
@@ -22,19 +23,19 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             eval(cmd)
             print(comment)
         else:
-            print('cmd check:: '+cmd+'\n')
+            print('cmd check:: '+cmd)
 
     file1 = op.expanduser(file1)
     file2 = op.expanduser(file2)
     name1 = op.basename(file1)
     name2 = op.basename(file2)
 
-    if kwargs.has_key('test'):
+    if 'test' in kwargs:
         test = kwargs['test']
     else:
         test = False
 
-    if kwargs.has_key('condition'):
+    if 'condition' in kwargs:
         condition = kwargs['condition']
     else:
         condition = True
@@ -57,18 +58,21 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
 
     else:       #copy
         cmd = 'shutil.copy("%s", "%s")' % (file1, file2)
-        comment = 'copy %s --> %s\n' % (name1,file2)
+        comment = 'copy %s --> %s' % (name1,file2)
 
         if not condition:
             print( "condition doesn't match" )
         elif force:
             fcopy_main(cmd, comment, test)
         elif exist:
-            yn = raw_input('[  %s  ] is already exist, are you realy overwite? [y,n]' % name2)
+            if sys.version[0] == 2:
+                yn = raw_input('[  %s  ] is already exist, are you realy overwite? [y,n]' % name2)
+            else:
+                yn = input('[  %s  ] is already exist, are you realy overwite? [y,n]' % name2)
             if (yn == 'y') or (yn == 'yes'):
                 fcopy_main(cmd, comment, test)
             else:
-                print('Do not copy '+name2+'\n')
+                print('Do not copy '+name2)
         else:
             fcopy_main(cmd, comment, test)
 
@@ -92,7 +96,7 @@ if __name__ == "__main__":
     mkdir(binpath)
     os.chdir(fpath)
 
-    if os.environ.has_key('XDG_CONFIG_HOME'):
+    if 'XDG_CONFIG_HOME' in os.environ:
         conf_home = os.environ['XDG_CONFIG_HOME']
     else:
         conf_home = op.expanduser('~/.config')
