@@ -40,7 +40,7 @@ function ip_color() {
     echo -n "\e[48;05;${ip2}m "
     echo -n "\e[48;05;${ip3}m "
     echo -n "\e[48;05;${ip4}m "
-    echo "\e[m "
+    echo -n "\e[m "
 }
 case ${UID} in
 0)
@@ -63,7 +63,7 @@ case ${UID} in
     else
         PROMPT="%{${fg[green]}%}%T%{${reset_color}%} ${PROMPT}"
     fi
-    PROMPT=$(ip_color)$PROMPT
+    #PROMPT=$(ip_color)$PROMPT
     ;;
 esac
 
