@@ -21,6 +21,27 @@ export XDG_CONFIG_HOME=~/.config
 #
 autoload colors
 colors
+
+function ip_color() {
+    local ip=`curl https://ifconfig.io 2> /dev/null`
+    if [[ $ip != "" ]]; then
+        ip1=$(echo $ip | cut -f 1 -d ".")
+        ip2=$(echo $ip | cut -f 2 -d ".")
+        ip3=$(echo $ip | cut -f 3 -d ".")
+        ip4=$(echo $ip | cut -f 4 -d ".")
+    else
+        ip1=16 # black
+        ip2=16 # black
+        ip3=16 # black
+        ip4=16 # black
+    fi
+
+    echo -n "\e[48;05;${ip1}m "
+    echo -n "\e[48;05;${ip2}m "
+    echo -n "\e[48;05;${ip3}m "
+    echo -n "\e[48;05;${ip4}m "
+    echo "\e[m "
+}
 case ${UID} in
 0)
     PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') %B%{${fg[red]}%}%/#%{${reset_color}%}%b "
@@ -42,6 +63,7 @@ case ${UID} in
     else
         PROMPT="%{${fg[green]}%}%T%{${reset_color}%} ${PROMPT}"
     fi
+    PROMPT=$(ip_color)$PROMPT
     ;;
 esac
 
