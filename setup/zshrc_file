@@ -13,8 +13,6 @@ esac
 
 export XDG_CONFIG_HOME=~/.config
 
-export GLOBAL_IP=`curl https://ifconfig.io 2> /dev/null`
-
 #}}}
 
 ##{{{ Default shell configuration
@@ -209,6 +207,8 @@ if [[ ${SSH_CLIENT} != "" ]]; then
     alias su=''
     alias sudo=''
 fi
+
+alias global_ip="curl https://ifconfig.io 2> /dev/null"
 #}}}
 
 ##{{{ hook function setting
