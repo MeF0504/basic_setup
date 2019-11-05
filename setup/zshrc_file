@@ -42,6 +42,7 @@ function ip_color() {
     ret=$ret"%K{$ip2} %k"
     ret=$ret"%K{$ip3} %k"
     ret=$ret"%K{$ip4} %k"
+    ret=$ret" "
     echo $ret
 }
 case ${UID} in
