@@ -36,11 +36,13 @@ function ip_color() {
         ip4=16 # black
     fi
 
-    echo -n "\e[48;05;${ip1}m "
-    echo -n "\e[48;05;${ip2}m "
-    echo -n "\e[48;05;${ip3}m "
-    echo -n "\e[48;05;${ip4}m "
-    echo -n "\e[m "
+    ### display colorfully: https://qiita.com/butaosuinu/items/770a040bc9cfe22c71f4
+    local ret=""
+    ret=$ret"%K{$ip1} %k"
+    ret=$ret"%K{$ip2} %k"
+    ret=$ret"%K{$ip3} %k"
+    ret=$ret"%K{$ip4} %k"
+    echo $ret
 }
 case ${UID} in
 0)
@@ -63,7 +65,7 @@ case ${UID} in
     else
         PROMPT="%{${fg[green]}%}%T%{${reset_color}%} ${PROMPT}"
     fi
-    #PROMPT=$(ip_color)$PROMPT
+    PROMPT=$(ip_color)$PROMPT
     ;;
 esac
 
