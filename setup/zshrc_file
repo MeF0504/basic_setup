@@ -23,7 +23,7 @@ autoload colors
 colors
 
 function ip_color() {
-    local ip=`curl https://ifconfig.io 2> /dev/null`
+    local ip=`curl --connect-timeout 0.5 https://ifconfig.io 2> /dev/null`
     if [[ $ip != "" ]]; then
         ip1=$(echo $ip | cut -f 1 -d ".")
         ip2=$(echo $ip | cut -f 2 -d ".")
@@ -66,7 +66,8 @@ case ${UID} in
     else
         PROMPT="%{${fg[green]}%}%T%{${reset_color}%} ${PROMPT}"
     fi
-    PROMPT=$(ip_color)$PROMPT
+    PROMPT_ORI=$PROMPT
+    PROMPT=$(ip_color)$PROMPT_ORI
     ;;
 esac
 
@@ -141,6 +142,41 @@ bindkey "\\en" history-beginning-search-forward-end
 # reverse menu completion binded to Shift-Tab
 #
 bindkey "\e[Z" reverse-menu-complete
+
+# Enter key bind
+# key bind:: https://qiita.com/yuku_t/items/e58cbecf13407446bd50
+# Enter key bind:: https://qiita.com/yut-kt/items/267ce4648b801c1c1bca
+# auto ls
+function auto_ls() {
+    echo 
+    case "${OSTYPE}" in
+    freebsd*|darwin*)
+        ls -G -w
+        ;;
+    linux*)
+        ls --color -F
+        ;;
+    esac
+}
+# update PROMPT
+function update_prompt() {
+    PROMPT=$(ip_color)$PROMPT_ORI
+    return 0
+}
+function do_enter() {
+    if [ -n "$BUFFER" ]; then
+        zle accept-line
+        return 0
+    fi
+    #auto_ls
+    update_prompt
+    # zle reset-prompt  # 上の処理で表示があるとこっち?
+    zle accept-line   # 上の処理で表示がないとこっち?
+    return 0
+}
+
+zle -N do_enter     # do_enterをwidgetとして登録
+bindkey '^M' do_enter 
 #}}}
 
 ##{{{ Command history configuration
