@@ -17,6 +17,7 @@ def mkdir(path):
         os.makedirs(path, mode=0o755)
         #os.chmod(path,0755)
 
+### copy func {{{
 def fcopy(file1,file2,link=False,force=False,**kwargs):
     def fcopy_main(cmd,comment,test):
         if not test:
@@ -65,16 +66,17 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         elif force:
             fcopy_main(cmd, comment, test)
         elif exist:
-            if sys.version[0] == 2:
-                yn = raw_input('[  %s  ] is already exist, are you realy overwite? [y,n]' % name2)
+            if sys.version_info[0] == 2:
+                yn = raw_input('[  %s  ] is already exist, are you realy overwite? [y,n] ' % name2)
             else:
-                yn = input('[  %s  ] is already exist, are you realy overwite? [y,n]' % name2)
+                yn = input('[  %s  ] is already exist, are you realy overwite? [y,n] ' % name2)
             if (yn == 'y') or (yn == 'yes'):
                 fcopy_main(cmd, comment, test)
             else:
                 print('Do not copy '+name2)
         else:
             fcopy_main(cmd, comment, test)
+#}}}
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -101,7 +103,7 @@ if __name__ == "__main__":
     else:
         conf_home = op.expanduser('~/.config')
 
-    ############### script directory ###############
+    ############### script directory ############### {{{
     codedir = op.join(fpath,'codes')
     print('\n@ '+codedir+'\n')
     codefiles = []
@@ -116,8 +118,9 @@ if __name__ == "__main__":
     for p in codefiles:
         fname = op.basename(p)
         fcopy(p,op.join(binpath,fname),link=args.link,force=args.force,test=args.test)
+    # }}}
 
-    ############### basic setup directory ###############
+    ############### basic setup directory ############### {{{
     setdir = op.join(fpath,'setup')
     print('\n@ '+setdir+'\n')
     files_mac = {\
@@ -149,9 +152,12 @@ if __name__ == "__main__":
             f.write('## PC dependent zshrc\n')
             f.write('#\n')
             f.write('\n')
+            f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
+            f.write('\n')
 
+    # }}}
 
-    ############### vim setup directory ###############
+    ############### vim setup directory ############### {{{
     vimdir = op.join(fpath,'vim')
     print('\n@ '+vimdir+'\n')
 
@@ -238,4 +244,6 @@ if __name__ == "__main__":
     if not op.exists(dst):
         print("link " + src + " -> " + dst)
         os.symlink(src, dst)
+
+    # }}}
 
