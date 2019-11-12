@@ -4,6 +4,10 @@ if &compatible
   set nocompatible               " Be iMproved
 endif
 
+augroup deinLocal
+    autocmd!
+augroup END
+
 if !exists("$XDG_CONFIG_HOME")
     let $XDG_CONFIG_HOME = expand("~/.config")
 endif

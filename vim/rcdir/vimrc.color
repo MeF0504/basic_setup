@@ -1,7 +1,10 @@
 "vim script encording setting
 scriptencoding utf-8
 "" vim color setting
-"
+
+augroup colorLocal
+    autocmd!
+augroup END
 
 function! <SID>my_color_set()
     if g:colors_name == "inkpot"
@@ -17,7 +20,7 @@ function! <SID>my_color_set()
     endif
 endfunction
 
-autocmd local ColorScheme * call <SID>my_color_set()
+autocmd colorLocal ColorScheme * call <SID>my_color_set()
 
 try
     colorscheme inkpot
@@ -27,12 +30,12 @@ endtry
 
 " corsor line 
 highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
-autocmd local InsertLeave * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
-autocmd local InsertEnter * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=97
+autocmd colorLocal InsertLeave * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
+autocmd colorLocal InsertEnter * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=97
 
 "全角スペース表示
 highlight ZenkakuSpace ctermbg=241
-autocmd local BufEnter * match ZenkakuSpace /　/
+autocmd colorLocal BufEnter * match ZenkakuSpace /　/
 
 "statusline color setting
 let s:month = str2nr(strftime("%b"))

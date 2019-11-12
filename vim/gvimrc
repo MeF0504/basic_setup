@@ -1,5 +1,11 @@
 "vim script encording setting
+set encoding=utf-8
 scriptencoding utf-8
+
+augroup gLocal
+    autocmd!
+augroup END
+
 "GUI系基本設定 {{{
 "colorscheme darkblue
 "clipboard共有
@@ -40,8 +46,8 @@ endif
 set cursorline
 highlight CursorLine gui=underline guifg=NONE guibg=NONE
 highlight CursorLineNr term=Bold guifg=NavyBlue guibg=White
-autocmd local InsertLeave * highlight CursorLineNr term=Bold guifg=NavyBlue guibg=White
-autocmd local InsertEnter * highlight CursorLineNr term=Bold guifg=NavyBlue guibg=MediumPurple3
+autocmd gLocal InsertLeave * highlight CursorLineNr term=Bold guifg=NavyBlue guibg=White
+autocmd gLocal InsertEnter * highlight CursorLineNr term=Bold guifg=NavyBlue guibg=MediumPurple3
 
 "必要ならneocompleteの補完リストの色設定
 "highlight Pmenu guibg=LightBlue
@@ -50,7 +56,7 @@ autocmd local InsertEnter * highlight CursorLineNr term=Bold guifg=NavyBlue guib
 
 "全角スペース表示
 highlight ZenkakuSpace guibg=darkgray
-autocmd local BufEnter * match ZenkakuSpace /　/
+autocmd gLocal BufEnter * match ZenkakuSpace /　/
 
 let s:month = str2nr(strftime("%b"))
 let s:day = str2nr(strftime("%d"))
@@ -85,7 +91,7 @@ endif
 
 "その他 GUI 設定 {{{
 "透過
-autocmd local GUIEnter * set transparency=240 "0~255?
+autocmd gLocal GUIEnter * set transparency=240 "0~255?
 
 function! Hide(...)
     let l:tra = &transparency

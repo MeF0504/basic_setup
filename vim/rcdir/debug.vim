@@ -1,4 +1,8 @@
 
+augroup debugLocal
+    autocmd!
+augroup END
+
 let g:l_log_files = []
 
 function! s:rm_log()
@@ -23,7 +27,7 @@ function! LocalDebug(string) abort
     redir end
 
     " set auto command that remove log file(s) when vim closed.
-    autocmd local VimLeavePre * call s:rm_log()
+    autocmd debugLocal VimLeavePre * call s:rm_log()
 
     " open log file
     let l:winnum = bufwinnr(l:logfile)

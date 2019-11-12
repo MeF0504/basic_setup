@@ -27,8 +27,8 @@ highlight NERDTreeBookmarksLeader ctermfg=32 guifg=DeepSkyBlue3
 highlight NERDTreeBookmark ctermfg=107 guifg=DarkOliveGreen3
 
 "]でnerdtreeから抜け
-"autocmd local FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
-"autocmd local FileType nerdtree nnoremap <buffer> ] <c-w>l <c-w>k
+"autocmd deinLocal FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
+"autocmd deinLocal FileType nerdtree nnoremap <buffer> ] <c-w>l <c-w>k
 "}}}
 '''
 
@@ -167,7 +167,7 @@ let g:mftag_auto_close = 1
 let g:mftag_dir_auto_set = 1
 let g:mftag_python_default = "cfv"
 "]でfunction listから抜ける
-"autocmd local FileType FuncList nnoremap <buffer> ] <c-w>l <c-w>k
+"autocmd deinLocal FileType FuncList nnoremap <buffer> ] <c-w>l <c-w>k
 
 nnoremap <silent> <Leader>m :MFfunclist<CR>
 
@@ -226,7 +226,7 @@ command! -nargs=? Gregrep call s:Mygrep(<f-args>)
 
 "command! -nargs=1 Gregrep execute "grep /" . <f-args> . "/j " . MFsearch_dir(g:mftag_dir) . '**/*.' . expand('%:e')
 
-"autocmd BufRead * execute "set path+=" . b:mftag_save_dir . "**/include"
+"autocmd deinLocal BufRead * execute "set path+=" . b:mftag_save_dir . "**/include"
 function! s:AddPath()
     if exists("b:mftag_save_dir")
         if b:mftag_save_dir != "/"
@@ -235,7 +235,7 @@ function! s:AddPath()
         endif
     endif
 endfunction
-autocmd BufRead * call s:AddPath()
+autocmd deinLocal BufRead * call s:AddPath()
 "}}}
 '''
 
@@ -282,7 +282,7 @@ function! <SID>add_cfi_sl()
     endfor
 endfunction
 
-autocmd local BufEnter * call <SID>add_cfi_sl()
+autocmd deinLocal BufEnter * call <SID>add_cfi_sl()
 " }}}
 '''
 
@@ -295,7 +295,7 @@ if ((exists("g:l_bd_month") && (str2nr(strftime("%b")) == g:l_bd_month))
     \&& (exists("g:l_bd_day") && (str2nr(strftime("%d")) == g:l_bd_day)) )
     "" Birthday
     if s:sushi == 1
-        autocmd local BufWinEnter *
+        autocmd deinLocal BufWinEnter *
                 \ highlight StatusLine ctermfg=233 ctermbg=246 guifg=Grey7 guibg=Grey58
                 \ | highlight WildMenu ctermfg=246 ctermbg=233 guifg=Grey58 guibg=Grey7
                 \ |  Sushibar
@@ -323,7 +323,7 @@ nmap <ESC><ESC> <Plug>(anzu-clear-search-status)
 repo = 'tpope/vim-endwise'
 hook_add = '''
 """ endwise {{{
-autocmd local FileType html
+autocmd deinLocal FileType html
         \ let b:endwise_addition = '\=submatch(0)=="html" ? "\</html\>" : submatch(0)=="head" ? "\</head\>" : submatch(0)=="body" ? "\</body\>" : submatch(0)=="script" ? "\</script\>" : "\</style\>"' |
         \ let b:endwise_words = 'html,head,body,script,style' |
         \ let b:endwise_syngroups = 'htmlTagName,htmlSpecialTagName'

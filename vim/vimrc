@@ -343,9 +343,9 @@ autocmd local WinLeave ?* setlocal statusline=%!Set_statusline(g:l_statusline_of
 " conflict commentを検索
 command! SearchConf /<<<<<<<\|=======\|>>>>>>>
 
-" self-made functionファイル読み込み
-if filereadable(g:vimdir . "rcdir/vimrc.func")
-    execute "source " . g:vimdir . "rcdir/vimrc.func"
+" self-made plugin/functionファイル読み込み
+if filereadable(g:vimdir . "rcdir/vimrc.plugin")
+    execute "source " . g:vimdir . "rcdir/vimrc.plugin"
 endif
 
 " }}}
@@ -372,13 +372,6 @@ endif
 let s:dein_file = g:vimdir . "rcdir/vimrc.dein"
 if isdirectory(g:vimdir . 'dein') && filereadable(s:dein_file)
     execute "source " . s:dein_file
-endif
-
-"pluginの設定読み込み
-let s:plugin_file = g:vimdir . "rcdir/vimrc.plugin"
-if (isdirectory(g:vimdir . 'plugin') || isdirectory(g:vimdir . 'dein'))
-\ && filereadable(s:plugin_file)
-    execute "source " . s:plugin_file
 endif
 
 "カラーの変更

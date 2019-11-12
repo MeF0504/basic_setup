@@ -70,11 +70,11 @@ inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
 
 " Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+autocmd deinLocal FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd deinLocal FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd deinLocal FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd deinLocal FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd deinLocal FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 " Enable heavy omni completion.
 if !exists('g:neocomplete#sources#omni#input_patterns')
@@ -107,13 +107,13 @@ inoremap <expr><tab> pumvisible() ? "\<C-n>" :
         \    "\<Plug>(neosnippet_expand_or_jump)" : "\<tab>"
 
 """ test
-autocmd local FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd local FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd local FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd local FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd local FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+autocmd deinLocal FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd deinLocal FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd deinLocal FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd deinLocal FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd deinLocal FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 " auto close preview window.
-autocmd local CompleteDone * silent! pclose!
+autocmd deinLocal CompleteDone * silent! pclose!
 
 "}}}
 '''
