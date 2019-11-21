@@ -24,24 +24,44 @@ colors
 
 function ip_color() {
     local ip=`curl --connect-timeout 0.5 https://ifconfig.io 2> /dev/null`
-    if [[ $ip != "" ]]; then
-        ip1=$(echo $ip | cut -f 1 -d ".")
-        ip2=$(echo $ip | cut -f 2 -d ".")
-        ip3=$(echo $ip | cut -f 3 -d ".")
-        ip4=$(echo $ip | cut -f 4 -d ".")
+    if [[ $ip == *.* ]]; then   # IPv4
+        ip11=$(echo $ip | cut -f 1 -d ".")
+        ip12=$ip11
+        ip21=$(echo $ip | cut -f 2 -d ".")
+        ip22=$ip21
+        ip31=$(echo $ip | cut -f 3 -d ".")
+        ip32=$ip31
+        ip41=$(echo $ip | cut -f 4 -d ".")
+        ip42=$ip41
+        ipv=4
+    elif [[ $ip == *:* ]]; then     # IPv6
+        ip11=$(( 0x$(echo $ip | cut -f 1 -d ":") >> 8))
+        ip12=$(( 0x$(echo $ip | cut -f 1 -d ":") & 0xFF))
+        ip21=$(( 0x$(echo $ip | cut -f 2 -d ":") >> 8))
+        ip22=$(( 0x$(echo $ip | cut -f 2 -d ":") & 0xFF))
+        ip31=$(( 0x$(echo $ip | cut -f 3 -d ":") >> 8))
+        ip32=$(( 0x$(echo $ip | cut -f 3 -d ":") & 0xFF))
+        ip41=$(( 0x$(echo $ip | cut -f 4 -d ":") >> 8))
+        ip42=$(( 0x$(echo $ip | cut -f 4 -d ":") & 0xFF))
+        ipv=6
     else
-        ip1=16 # black
-        ip2=16 # black
-        ip3=16 # black
-        ip4=16 # black
+        ip11=16 # black
+        ip12=16 # black
+        ip21=16 # black
+        ip22=16 # black
+        ip31=16 # black
+        ip32=16 # black
+        ip41=16 # black
+        ip42=16 # black
+        ipv="-"
     fi
 
     ### display colorfully: https://qiita.com/butaosuinu/items/770a040bc9cfe22c71f4
     local ret=""
-    ret=$ret"%K{$ip1} %k"
-    ret=$ret"%K{$ip2} %k"
-    ret=$ret"%K{$ip3} %k"
-    ret=$ret"%K{$ip4} %k"
+    ret=$ret"%F{$ip11}%K{$ip12}I%f%k"
+    ret=$ret"%F{$ip21}%K{$ip22}P%f%k"
+    ret=$ret"%F{$ip31}%K{$ip32}v%f%k"
+    ret=$ret"%F{$ip41}%K{$ip42}${ipv}%f%k"
     ret=$ret" "
     echo $ret
 }
