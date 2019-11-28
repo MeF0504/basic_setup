@@ -374,6 +374,43 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color)
     }
     ;;
 esac
+
+# change tab color
+# https://gist.github.com/wadey/1140259
+if [[ -n $ITERM_SESSION_ID ]]; then
+    tab_color() {
+        echo -ne "\033]6;1;bg;red;brightness;$1\a"
+        echo -ne "\033]6;1;bg;green;brightness;$2\a"
+        echo -ne "\033]6;1;bg;blue;brightness;$3\a"
+    }
+
+    tab_reset() {echo -ne "\033]6;1;bg;*;default\a" }
+
+    function iterm2_tab_precmd() {
+        tab_reset
+    }
+    
+    function iterm2_tab_preexec() {
+        # if [[ "$1" =~ "^ssh " ]]; then
+        if [[ -n $TAB1 ]]; then
+            if [[ "$1" =~ "$TAB1$" ]]; then
+                tab_color 0 231 96
+            fi
+        elif [[ -n $TAB2 ]]; then
+            if [[ "$1" =~ "$TAB2$" ]]; then
+                tab_color 176 0 231
+            fi
+        elif [[ -n $TAB3 ]]; then
+            if [[ "$1" =~ "$TAB3$" ]]; then
+                tab_color 95 0 255
+            fi
+        fi
+    }
+
+    add-zsh-hook precmd iterm2_tab_precmd
+    add-zsh-hook preexec iterm2_tab_preexec
+
+fi
 #}}}
 
 ## {{{added functions
