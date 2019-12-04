@@ -166,18 +166,7 @@ bindkey "\e[Z" reverse-menu-complete
 # Enter key bind
 # key bind:: https://qiita.com/yuku_t/items/e58cbecf13407446bd50
 # Enter key bind:: https://qiita.com/yut-kt/items/267ce4648b801c1c1bca
-# auto ls
-function auto_ls() {
-    echo 
-    case "${OSTYPE}" in
-    freebsd*|darwin*)
-        ls -G -w
-        ;;
-    linux*)
-        ls --color -F
-        ;;
-    esac
-}
+
 # update PROMPT
 function update_prompt() {
     PROMPT=$(ip_color)$PROMPT_ORI
@@ -188,10 +177,14 @@ function do_enter() {
         zle accept-line
         return 0
     fi
-    #auto_ls
     update_prompt
-    # zle reset-prompt  # 上の処理で表示があるとこっち?
-    zle accept-line   # 上の処理で表示がないとこっち?
+    if [[ -f $HOME/.zsh/enter.zsh ]]; then
+        echo
+        source $HOME/.zsh/enter.zsh
+        zle reset-prompt  # 上の処理で表示があるとこっち?
+    else
+        zle accept-line   # 上の処理で表示がないとこっち?
+    fi
     return 0
 }
 

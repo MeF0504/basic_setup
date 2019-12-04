@@ -18,6 +18,7 @@ def mkdir(path):
         #os.chmod(path,0755)
 
 ### copy func {{{
+# copy file1 -> file2
 def fcopy(file1,file2,link=False,force=False,**kwargs):
     def fcopy_main(cmd,comment,test):
         if not test:
@@ -30,6 +31,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
     file2 = op.expanduser(file2)
     name1 = op.basename(file1)
     name2 = op.basename(file2)
+    mkdir(op.dirname(file2))
 
     if 'test' in kwargs:
         test = kwargs['test']
@@ -95,7 +97,6 @@ if __name__ == "__main__":
 
     fpath = op.dirname(op.abspath(__file__))
     binpath = op.join(args.prefix,'bin')
-    mkdir(binpath)
     os.chdir(fpath)
 
     if 'XDG_CONFIG_HOME' in os.environ:
@@ -146,7 +147,8 @@ if __name__ == "__main__":
         if op.exists(spath) and op.exists(fy_dir):
             fcopy(spath,files[fy], link=bool(args.link), force=args.force,test=args.test)
 
-    zshrc_mine = op.expanduser('~/.zshrc.mine')
+    zshrc_mine = op.expanduser('~/.zsh/zshrc.mine')
+    mkdir(op.dirname(zshrc_mine))
     if not op.exists(zshrc_mine):
         with open(zshrc_mine,'a') as f:
             f.write('## PC dependent zshrc\n')
@@ -165,9 +167,6 @@ if __name__ == "__main__":
     rcdir = op.join(vim_config_dir, 'rcdir')
     ftdir = op.join(vim_config_dir, 'ftplugin')
     tmdir = op.join(vim_config_dir, 'toml')
-    mkdir(rcdir)
-    mkdir(ftdir)
-    mkdir(tmdir)
     mkdir(op.join(vim_config_dir, "swp"))
 
     if args.download:
