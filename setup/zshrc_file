@@ -425,6 +425,37 @@ function git_grep() {
         git grep $1 $(git branch -a --format='%(objectname) %(refname:short)' | sort | uniq -w 40 | cut -c 42-)
     fi
 }
+
+function add_env() {
+    if [[ $1 == "" ]] || [[ $1 =~ ^\- ]]; then
+        echo "
+    usage: add_env dir 
+
+    add dir/*/bin to PATH
+    add dir/*/lib and path/*/lib64 to LD_LIBRARY_PATH
+
+    positional arguments:
+        dir    : path to the target directory
+        "
+        return
+    fi
+
+    for d in `find $1/* -maxdepth 0`;
+    do
+        #echo $d
+        #echo "---"
+        if [[ -d $d/bin ]]; then
+            export PATH=$d/bin:$PATH
+        fi
+        if [[ -d $d/lib ]]; then
+            export LD_LIBRARY_PATH=$d/lib:$LD_LIBRARY_PATH
+        fi
+        if [[ -d $d/lib64 ]]; then
+            export LD_LIBRARY_PATH=$d/lib64:$LD_LIBRARY_PATH
+        fi
+    done
+}
+
 #}}}
 
 ## {{{ OS dependent settings
