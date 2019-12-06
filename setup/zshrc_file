@@ -190,6 +190,11 @@ function do_enter() {
 
 zle -N do_enter     # do_enterをwidgetとして登録
 bindkey '^M' do_enter 
+
+# ctrl-b,f で前後の単語に移動
+bindkey "^b" backward-word
+bindkey "^f" forward-word
+
 #}}}
 
 ##{{{ Command history configuration
@@ -207,6 +212,9 @@ setopt share_history        # share command history data
 fpath=(${HOME}/.zsh/functions/Completion ${fpath})
 autoload -U compinit
 compinit
+
+#大文字と小文字を無視して補完
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 #}}}
 
 ##{{{ zsh editor
