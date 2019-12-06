@@ -21,7 +21,6 @@ export XDG_CONFIG_HOME=~/.config
 
 ##{{{ Alias configuration
 
-echo alias
 alias where="command -v"
 
 alias j="jobs -l"
