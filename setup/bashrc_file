@@ -1,0 +1,19 @@
+
+
+# read shell-independent Run Command file.
+# maybe update to set the path dynamically.
+if [[ -f ${HOME}/.posixShellRC ]]; then
+    source $HOME/.posixShellRC
+else
+    echo "[posix shell rc] not found!"
+fi
+
+# prompt
+# SP1='\$'
+
+# key bind
+# ctrl-b,f で前後の単語に移動
+# https://qiita.com/yamamoto_hiroya/items/2f5c549c2da25cb9eb78
+bind '"\C-f": forward-word'
+bind '"\C-b": backward-word'
+
