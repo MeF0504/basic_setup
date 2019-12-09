@@ -343,6 +343,9 @@ autocmd local WinLeave ?* setlocal statusline=%!Set_statusline(g:l_statusline_of
 " conflict commentを検索
 command! SearchConf /<<<<<<<\|=======\|>>>>>>>
 
+" expandを打つのがめんどくさい
+command! -nargs=1 Echopand echo expand(<f-args>)
+
 " self-made plugin/functionファイル読み込み
 if filereadable(g:vimdir . "rcdir/vimrc.plugin")
     execute "source " . g:vimdir . "rcdir/vimrc.plugin"
