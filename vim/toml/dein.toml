@@ -163,7 +163,6 @@ endfunction
 
 let g:mftag_auto_close = 1
 let g:mftag_dir_auto_set = 1
-let g:mftag_python_default = "cfv"
 let g:mftag_c_setting = {'syntax':'cdfgstu', 'func':'cdfgstu'}
 let g:mftag_python_setting = {'tag':'cfv'}
 
