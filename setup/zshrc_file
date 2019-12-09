@@ -326,11 +326,11 @@ if [[ -n $ITERM_SESSION_ID ]]; then
     }
     
     function iterm2_tab_preexec() {
-        if [[ -n $TAB1 ]] && [[ "$1" =~ "$TAB1$" ]]; then
+        if [[ -n $TAB1 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB1$" ]]; then
             tab_color 0 231 96
-        elif [[ -n $TAB2 ]] && [[ "$1" =~ "$TAB2$" ]]; then
+        elif [[ -n $TAB2 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB2$" ]]; then
             tab_color 176 0 231
-        elif [[ -n $TAB3 ]] && [[ "$1" =~ "$TAB3$" ]]; then
+        elif [[ -n $TAB3 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB3$" ]]; then
             tab_color 95 0 255
         fi
     }
