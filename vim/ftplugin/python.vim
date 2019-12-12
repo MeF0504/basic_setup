@@ -22,8 +22,17 @@ function! s:get_import_path(...)
         let cmd = 'import ' . a:1
         let module = a:1
     endif
-    let l:res = execute("python " . cmd)
-    let l:pypath = execute("python print " . module . ".__file__")
+
+    if has('python')
+        let l:py = 'python'
+    elseif has('python3')
+        let l:py = 'python3'
+    else
+        return
+    endif
+
+    let l:res = execute(l:py . " " . cmd)
+    let l:pypath = execute(l:py . " print " . module . ".__file__")
     let l:pypath = substitute(l:pypath, "\n", "", "g")
     let l:pypath = substitute(l:pypath, ".pyc", ".py", "g")
     if filereadable(l:pypath)
