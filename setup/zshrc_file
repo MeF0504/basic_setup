@@ -10,7 +10,8 @@ fi
 
 ##{{{ Environment variable configuration
 #
-
+# <c-w>で消す際に/単位で削除
+export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 #}}}
 
 ##{{{ Default shell configuration
@@ -71,11 +72,9 @@ case ${UID} in
     ;;
 *)
     local short="%{${fg[red]}%}%/ S%{${reset_color}%} "
-    #local long="%F{red}%(5~,%-1~/.../%2~,%~)%%%f "
     local long="%{${fg[red]}%}%(4/,%-1/.../%2/,%/) L%{${reset_color}%} "
     PROMPT="%4(/|$long|$short)"
     ## from http://0xcc.net/blog/archives/000032.html
-    #PROMPT="%{${fg[red]}%}%~%%%{${reset_color}%} "
     PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
     SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
     if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
