@@ -266,6 +266,7 @@ command! FileInfo execute "!" . s:ls . expand('%')
 function! <SID>Tab_Jump()
     let l:ctabnr = tabpagenr()
     let l:cword = expand('<cword>')
+    cd %:h
     tabnew
     " tag listを初期化
     try
@@ -277,6 +278,7 @@ function! <SID>Tab_Jump()
         quit
         execute "normal! " . l:ctabnr . "gt"
     endif
+    cd -
 endfunction
 
 "jump先をnew tabで開く
