@@ -1,4 +1,4 @@
-
+# vim: set filetype=sh:
 
 # read shell-independent Run Command file.
 # maybe update to set the path dynamically.
@@ -8,12 +8,27 @@ else
     echo "[posix shell rc] not found!"
 fi
 
-# prompt
-# SP1='\$'
+##{{{ prompt
+# useful: https://qiita.com/hmmrjn/items/60d2a64c9e5bf7c0fe60
+export PS1='\[\e[46m\]\w\[\e[0m\]\n\[\e[32m\]\t\[\e[0m\] \[\e[1m\e[31m\]\u\[\e[0m\] \$ '
+# }}}
 
-# key bind
+##{{{ key bind
 # ctrl-b,f で前後の単語に移動
 # https://qiita.com/yamamoto_hiroya/items/2f5c549c2da25cb9eb78
 bind '"\C-f": forward-word'
 bind '"\C-b": backward-word'
+
+# <c-w>で消す際に/単位で削除
+# https://qiita.com/yamamoto_hiroya/items/9d569010cf0be4719b6c
+stty werase undef
+bind '"\C-w": unix-filename-rubout'
+
+# }}}
+
+
+##{{{ load user .bashrc configuration file
+#
+[ -f $HOME/.bash/bashrc.mine ] && source $HOME/.bash/bashrc.mine
+# }}}
 
