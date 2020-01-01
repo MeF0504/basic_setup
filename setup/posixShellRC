@@ -69,7 +69,7 @@ if [ "$SSH_CLIENT" != "" ]; then
     alias sudo=''
 fi
 
-alias global_ip="curl https://ifconfig.io 2> /dev/null"
+alias global_ip="curl ifconfig.io 2> /dev/null"
 
 #}}}
 

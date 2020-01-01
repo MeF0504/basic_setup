@@ -22,7 +22,17 @@ autoload colors
 colors
 
 function ip_color() {
-    local ip=`curl --connect-timeout 0.5 https://ifconfig.io 2> /dev/null`
+    local ip=`curl --connect-timeout 0.5 ifconfig.io 2> /dev/null`
+    if [[ $(echo $ip | wc -l) -ne 1 ]]; then
+        local ret=""
+        ret=$ret"%F{15}%K{16}m%f%k"
+        ret=$ret"%F{15}%K{16}i%f%k"
+        ret=$ret"%F{15}%K{16}s%f%k"
+        ret=$ret"%F{15}%K{16}s%f%k"
+        ret=$ret" "
+        echo $ret
+        return 0
+    fi
     if [[ $ip == *.* ]]; then   # IPv4
         ip11=$(echo $ip | cut -f 1 -d ".")
         ip12=$ip11
@@ -166,7 +176,7 @@ bindkey "\e[Z" reverse-menu-complete
 
 # update PROMPT
 function update_prompt() {
-    PROMPT=$(ip_color)$PROMPT_ORI
+    # PROMPT=$(ip_color)$PROMPT_ORI
     return 0
 }
 function do_enter() {
