@@ -48,7 +48,7 @@ export HISTFILESIZE=10000
 # export HISTCONTROL=ignorespace:ignoredups
 # 上の2つを同時に適用
 export HISTCONTROL=ignoreboth
-# pwdとhistoryを記録に残さない
+# 特定のコマンドを記録に残さない
 export HISTIGNORE=pwd:history:ls
 
 # }}}
