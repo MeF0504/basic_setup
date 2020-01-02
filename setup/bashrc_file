@@ -10,7 +10,13 @@ fi
 
 ##{{{ prompt
 # useful: https://qiita.com/hmmrjn/items/60d2a64c9e5bf7c0fe60
-export PS1='\[\e[46m\]\w\[\e[0m\]\n\[\e[32m\]\t\[\e[0m\] \[\e[1m\e[31m\]\u\[\e[0m\] \$ '
+export PS1='\[\e[46m\]\w\[\e[0m\]\n'
+if [[ ${SSH_CLIENT} == "" ]]; then
+    export PS1=$PS1'\[\e[32m\]\t\[\e[0m\]'
+else
+    export PS1=$PS1'\[\e[36m\]${HOSTNAME%%.*}\[\e[0m\]'
+fi
+export PS1=$PS1' \[\e[1m\e[31m\]\u\[\e[0m\] \$ '
 # }}}
 
 ##{{{ key bind
@@ -24,8 +30,28 @@ bind '"\C-b": backward-word'
 stty werase undef
 bind '"\C-w": unix-filename-rubout'
 
+# ctrl-p, nでhistoryの一致検索
+bind '"\C-p": history-search-backward'
+bind '"\C-n": history-search-forward'
+
 # }}}
 
+## {{{ history
+# https://www.na3.jp/entry/20100727/p1
+# historyの保存ファイル
+export HISTFILE=~/.bash_history
+# historyの保存数?
+export HISTSIZE=10000
+# HISTFILEに保存する行数
+export HISTFILESIZE=10000
+# 直前と同じコマンドは残さない:spaceで始まるコマンドは残さない
+# export HISTCONTROL=ignorespace:ignoredups
+# 上の2つを同時に適用
+export HISTCONTROL=ignoreboth
+# pwdとhistoryを記録に残さない
+export HISTIGNORE=pwd:history:ls
+
+# }}}
 
 ##{{{ load user .bashrc configuration file
 #
