@@ -248,16 +248,31 @@ hook_add = '''
 """" current-func-info.vim {{{
 let s:cfi_st = "[%{cfi#get_func_name()}] "
 function! <SID>add_cfi_sl()
+
+    function! s:clear_cfi_sl()
+        let l:st_tmp = g:l_statusline
+        let g:l_statusline = []
+        for i in range(len(l:st_tmp))
+            if i!=2
+                let g:l_statusline += [l:st_tmp[i]]
+            endif
+        endfor
+    endfunction
+
+    " support file type: c, pc++, ython, 
+    if ((&filetype != 'c') &&
+       \(&filetype != 'cpp') &&
+       \(&filetype != 'python')
+       \)
+        if g:l_statusline[2] == s:cfi_st
+            call s:clear_cfi_sl()
+        endif
+        return
+    endif
     " if file is long enough, don't show in statusline.
     if line('$') > 10000
         if g:l_statusline[2] == s:cfi_st
-            let l:st_tmp = g:l_statusline
-            let g:l_statusline = []
-            for i in range(len(l:st_tmp))
-                if i!=2
-                    let g:l_statusline += [l:st_tmp[i]]
-                endif
-            endfor
+            call s:clear_cfi_sl()
         endif
         return
     endif
