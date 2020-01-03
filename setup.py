@@ -6,6 +6,7 @@ import argparse
 import shutil
 import subprocess
 import glob
+import filecmp
 #if float(sys.version[:3]) < 2.7:
     #import commands
 
@@ -45,8 +46,14 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
 
     if op.exists(file2):
         exist = True
+        if op.islink(file2):
+            islink = True
+        else:
+            islink = False
     else:
         exist = False
+        islink = False
+
 
     if link:    #link
         cmd = 'os.symlink("%s", "%s")' % (file1, file2)
@@ -55,7 +62,10 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         if not condition:
             print( "condition doesn't match" )
         elif exist:
-            print('[  %s  ] is already exist, cannot link!' % name2)
+            if islink and filecmp.cmp(file1, file2):
+                print('[ %s ] is already linked.' % name2)
+            else:
+                print('[  %s  ] is already exist, cannot link!' % name2)
         else:
             fcopy_main(cmd,comment,test)
 
@@ -66,16 +76,26 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         if not condition:
             print( "condition doesn't match" )
         elif force:
-            fcopy_main(cmd, comment, test)
-        elif exist:
-            if sys.version_info[0] == 2:
-                yn = raw_input('[  %s  ] is already exist, are you realy overwite? [y,n] ' % name2)
+            if islink:
+                print('[ %s ] is a link file, cannot copy!' % name2)
             else:
-                yn = input('[  %s  ] is already exist, are you realy overwite? [y,n] ' % name2)
-            if (yn == 'y') or (yn == 'yes'):
                 fcopy_main(cmd, comment, test)
+        elif exist:
+            if filecmp.cmp(file1, file2) and islink:
+                print('[ %s ] is linked.' % name2)
+            elif filecmp.cmp(file1, file2):
+                print('[ %s ] is already copied.' % name2)
+            elif islink:
+                print('[ %s ] is a link file, cannot copy!' % name2)
             else:
-                print('Do not copy '+name2)
+                if sys.version_info[0] == 2:
+                    yn = raw_input('[  %s  ] is already exist, are you realy overwite? [y,n] ' % name2)
+                else:
+                    yn = input('[  %s  ] is already exist, are you realy overwite? [y,n] ' % name2)
+                if (yn == 'y') or (yn == 'yes'):
+                    fcopy_main(cmd, comment, test)
+                else:
+                    print('Do not copy '+name2)
         else:
             fcopy_main(cmd, comment, test)
 #}}}
