@@ -31,7 +31,7 @@ def main():
         dt = datetime.datetime.fromtimestamp(os.stat(fy).st_ctime)
         # 更新日時はこっち
         # dt = datetime.datetime.fromtimestamp(os.stat(fy).st_mtime)
-        dir_name = "%d-%d-%d" % (dt.year, dt.month, dt.day)
+        dir_name = "%4d-%02d-%02d" % (dt.year, dt.month, dt.day)
         dir_name = op.join(t_dir, dir_name)
         if not op.exists(dir_name):
             os.makedirs(dir_name)
@@ -39,7 +39,7 @@ def main():
         t_file = op.join(dir_name, op.basename(fy))
         if not op.exists(t_file):
             print("copy %s" % t_file)
-            # shutil.copy(fy,t_file)
+            shutil.copy(fy,t_file)
     
 if __name__ == "__main__":
     main()
