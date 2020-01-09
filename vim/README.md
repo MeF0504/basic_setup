@@ -4,6 +4,11 @@ vim help in Japanese is at here: https://github.com/vim-jp/vimdoc-ja/archive/mas
 
 using plugins, colors, etc..:
 
+ This doc is **not** the latest information.
+
+ Please see 'toml/dein.toml' or 'toml/dein_lazy.toml'
+ to check the latest plugins.
+
 1. [dein](https://github.com/Shougo/dein.vim)
 1. [neocomplete](https://github.com/Shougo/neocomplete.vim)
 1. [inkpot](https://github.com/ciaranm/inkpot)

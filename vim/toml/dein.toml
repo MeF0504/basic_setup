@@ -342,3 +342,14 @@ autocmd deinLocal FileType html
 "}}}
 '''
 
+[[plugins]]
+repo = 'simeji/winresizer'
+hook_add = '''
+""" sinresizer {{{
+let g:winresizer_finish_with_escape = 0
+let g:winresizer_start_key = '<leader>w'
+let g:winresizer_vert_resize = 5
+let g:winresizer_horiz_resize = 2
+""" }}}
+'''
+
