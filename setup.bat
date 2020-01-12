@@ -8,6 +8,9 @@ if exist %vimcon%\dein\repos\github.com\Shougo\dein.vim (
     mkdir %vimcon%\dein\repos\github.com\Shougo\dein.vim\
     git clone https://github.com/Shougo/dein.vim %vimcon%\dein\repos\github.com\Shougo\dein.vim\
 )
+echo which "git" and "sh";
+which git
+which sh
 
 if exist %vimcon%\swp (
     echo swp exist.
