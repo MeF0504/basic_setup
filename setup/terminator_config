@@ -1,6 +1,5 @@
 [global_config]
   enabled_plugins = CustomCommandsMenu, TestPlugin, ActivityWatch, LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
-  window_state = maximise
 [keybindings]
   next_tab = <Primary>Right
   split_horiz = <Primary><Shift>h
