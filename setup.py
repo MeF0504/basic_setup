@@ -117,6 +117,7 @@ if __name__ == "__main__":
 
     fpath = op.dirname(op.abspath(__file__))
     binpath = op.join(args.prefix,'bin')
+    libpath = op.join(args.prefix,'lib')
     os.chdir(fpath)
 
     if 'XDG_CONFIG_HOME' in os.environ:
@@ -125,24 +126,31 @@ if __name__ == "__main__":
         conf_home = op.expanduser('~/.config')
 
     ############### script directory ############### {{{
-    codedir = op.join(fpath,'codes')
-    print('\n@ '+codedir+'\n')
-    codefiles = []
-    for cfy in glob.glob(op.join(codedir,'*')):
-        if os.access(cfy,os.X_OK):
-            if (op.basename(cfy) == 'pdf2jpg'):
-                if (os.uname()[0] == 'Darwin'):
-                    codefiles.append(cfy)
-            else:
-                codefiles.append(cfy)
+    optdir = op.join(fpath,'opt')
+    print('\n@ '+optdir+'\n')
 
-    for p in codefiles:
+    bindir = op.join(optdir,'bin')
+    optfiles = []
+    for bfy in glob.glob(op.join(bindir,'*')):
+        if os.access(bfy,os.X_OK):
+            if (op.basename(bfy) == 'pdf2jpg'):
+                if (os.uname()[0] == 'Darwin'):
+                    optfiles.append(bfy)
+            else:
+                optfiles.append(bfy)
+    for p in optfiles:
         fname = op.basename(p)
         fcopy(p,op.join(binpath,fname),link=args.link,force=args.force,test=args.test)
+
+    libdir = op.join(optdir, 'lib')
+    for lfy in glob.glob(op.join(libdir,'*')):
+        fname = op.basename(lfy)
+        fcopy(lfy,op.join(libpath,fname),link=args.link,force=args.force,test=args.test)
+
     # }}}
 
-    ############### basic setup directory ############### {{{
-    setdir = op.join(fpath,'setup')
+    ############### basic config directory ############### {{{
+    setdir = op.join(fpath,'config')
     print('\n@ '+setdir+'\n')
     files_mac = {\
                 'zshrc_file':'~/.zshrc', \
