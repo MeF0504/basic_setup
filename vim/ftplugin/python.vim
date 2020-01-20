@@ -6,12 +6,12 @@ if exists("$PYTHONPATH")
     set path+=$PYTHONPATH
 endif
 
-"Execute python script Ctrl-P
-function! g:ExecPy()
-    exe "!" . &ft . " %"
-endfunction
-command! Exec call ExecPy()
-nnoremap <silent><buffer> <C-P> :call ExecPy()<CR>
+" "Execute python script Ctrl-P
+" function! g:ExecPy()
+"     exe "!" . &ft . " %"
+" endfunction
+" command! Exec call ExecPy()
+" nnoremap <silent><buffer> <C-P> :call ExecPy()<CR>
 
 function! s:get_import_path(...)
 
