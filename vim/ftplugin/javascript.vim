@@ -1,5 +1,7 @@
 
-setlocal tabstop=2
-setlocal shiftwidth=2
-setlocal softtabstop=2
+if &filetype != 'markdown'
+    setlocal tabstop=2
+    setlocal shiftwidth=2
+    setlocal softtabstop=2
+endif
 
