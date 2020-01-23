@@ -176,7 +176,10 @@ bindkey "\e[Z" reverse-menu-complete
 
 # update PROMPT
 function update_prompt() {
-    PROMPT=$(ip_color)$PROMPT_ORI
+    # check that PROMPT is not changed.
+    if [[ $PROMPT = $(ip_color)$PROMPT_ORI ]]; then
+        PROMPT=$(ip_color)$PROMPT_ORI
+    fi
     return 0
 }
 function do_enter() {
