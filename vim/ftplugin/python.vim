@@ -23,16 +23,17 @@ function! s:get_import_path(...)
         let module = a:1
     endif
 
-    if has('python')
-        let l:py = 'python'
-    elseif has('python3')
+    if has('python3')
         let l:py = 'python3'
+    elseif has('python')
+        let l:py = 'python'
+        python from __future__ import print_function
     else
         return
     endif
 
     let l:res = execute(l:py . " " . cmd)
-    let l:pypath = execute(l:py . " print " . module . ".__file__")
+    let l:pypath = execute(l:py . " print(" . module . ".__file__)")
     let l:pypath = substitute(l:pypath, "\n", "", "g")
     let l:pypath = substitute(l:pypath, ".pyc", ".py", "g")
     if filereadable(l:pypath)
