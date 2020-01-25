@@ -177,7 +177,8 @@ bindkey "\e[Z" reverse-menu-complete
 # update PROMPT
 function update_prompt() {
     # check that PROMPT is not changed.
-    if [[ $PROMPT = $(ip_color)$PROMPT_ORI ]]; then
+    local reg_col=%F{.*}%K{.*}I%f%k%F{.*}%K{.*}P%f%k%F{.*}%K{.*}v%f%k%F{.*}%K{.*}.%f%k
+    if [[ $PROMPT =~ '^'$reg_col ]]; then
         PROMPT=$(ip_color)$PROMPT_ORI
     fi
     return 0
