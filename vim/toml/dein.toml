@@ -52,15 +52,17 @@ if system('uname') == "Darwin\n"
                 \ 'exec' : ['%c -l %s', 'open %s:r.pdf']
                 \ }
     " make prezantation by markdown [https://github.com/marp-team/marp-cli]
-    " need to download marp and pass path(?)
     let g:quickrun_config.markdown = {
-                \ 'command' : 'marp',
-                \ 'exec' : ['%c %s --html']
+                \ 'command' : 'npx',
+                \ 'exec' : ['%c \@marp-team/marp-cli %s --html'],
                 \ }
     if has('terminal') " || has('nvim')
-        let g:quickrun_config.markdown['exec'] = ['%c %s --preview']
-        let g:quickrun_config.markdown['runner'] = 'terminal'
-        let g:quickrun_config.markdown['runner/opener'] = 'botright new'
+        let g:quickrun_config.markdown = {
+                    \ 'command' : 'npx',
+                    \ 'exec' : ['%c \@marp-team/marp-cli %s --preview'],
+                    \ 'runner' : 'terminal',
+                    \ 'runner/opener' : 'botright new',
+                    \ }
     endif
 endif
 " }}}
