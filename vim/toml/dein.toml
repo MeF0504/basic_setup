@@ -41,8 +41,8 @@ nnoremap <silent> <Leader>q :QuickRun<CR>
 
 " macOSでlatex (ptex2pdf)を使う場合
 " https://texwiki.texjp.org/?quickrun
+let g:quickrun_config = get(g:, 'quickrun_config', {})  " 変数がなければ初期化
 if system('uname') == "Darwin\n"
-    let g:quickrun_config = get(g:, 'quickrun_config', {})  " 変数がなければ初期化
     "let g:quickrun_config.tex = {
     "            \ 'command' : 'ptex2pdf',
     "            \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" %s', 'open %s:r.pdf']
@@ -57,6 +57,11 @@ if system('uname') == "Darwin\n"
                 \ 'command' : 'marp',
                 \ 'exec' : ['%c %s --html']
                 \ }
+    if has('terminal') " || has('nvim')
+        let g:quickrun_config.markdown['exec'] = ['%c %s --preview']
+        let g:quickrun_config.markdown['runner'] = 'terminal'
+        let g:quickrun_config.markdown['runner/opener'] = 'botright new'
+    endif
 endif
 " }}}
 '''
