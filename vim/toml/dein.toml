@@ -39,10 +39,25 @@ hook_add = '''
 let g:quickrun_no_default_key_mappings = 1
 nnoremap <silent> <Leader>q :QuickRun<CR>
 
-" macOSでlatex (ptex2pdf)を使う場合
-" https://texwiki.texjp.org/?quickrun
 let g:quickrun_config = get(g:, 'quickrun_config', {})  " 変数がなければ初期化
+
+" make prezantation by markdown [https://github.com/marp-team/marp-cli]
+let g:quickrun_config.markdown = {
+            \ 'command' : 'npx',
+            \ 'exec' : ['%c \@marp-team/marp-cli %s --html'],
+            \ }
+if has('terminal') " || has('nvim')
+    let g:quickrun_config.markdown = {
+                \ 'command' : 'npx',
+                \ 'exec' : ['%c \@marp-team/marp-cli %s --preview'],
+                \ 'runner' : 'terminal',
+                \ 'runner/opener' : 'botright new',
+                \ }
+endif
+
 if system('uname') == "Darwin\n"
+    " macOSでlatex (ptex2pdf)を使う場合
+    " https://texwiki.texjp.org/?quickrun
     "let g:quickrun_config.tex = {
     "            \ 'command' : 'ptex2pdf',
     "            \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" %s', 'open %s:r.pdf']
@@ -51,19 +66,6 @@ if system('uname') == "Darwin\n"
                 \ 'command' : 'ptex2pdf',
                 \ 'exec' : ['%c -l %s', 'open %s:r.pdf']
                 \ }
-    " make prezantation by markdown [https://github.com/marp-team/marp-cli]
-    let g:quickrun_config.markdown = {
-                \ 'command' : 'npx',
-                \ 'exec' : ['%c \@marp-team/marp-cli %s --html'],
-                \ }
-    if has('terminal') " || has('nvim')
-        let g:quickrun_config.markdown = {
-                    \ 'command' : 'npx',
-                    \ 'exec' : ['%c \@marp-team/marp-cli %s --preview'],
-                    \ 'runner' : 'terminal',
-                    \ 'runner/opener' : 'botright new',
-                    \ }
-    endif
 endif
 " }}}
 '''
