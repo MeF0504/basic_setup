@@ -55,8 +55,6 @@ alias su="su -l"
 alias grep="grep --color -n"
 
 alias del="mv_Trash.py"
-## pseudo-tree http://osxdaily.com/2016/09/09/view-folder-tree-terminal-mac-os-tree-equivalent/
-alias tree="find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'"
 
 ## if use terminology [https://www.enlightenment.org/about-terminology.md]
 if [ "$TERMINOLOGY" = 1 ]; then
@@ -131,6 +129,16 @@ add_env() {
             export LD_LIBRARY_PATH=$d/lib64:$LD_LIBRARY_PATH
         fi
     done
+}
+
+## pseudo-tree http://osxdaily.com/2016/09/09/view-folder-tree-terminal-mac-os-tree-equivalent/
+tree() {
+    if [[ $1 = "" ]]; then
+        dir='.'
+    else
+        dir=$1
+    fi
+    find $dir -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 }
 
 #}}}
