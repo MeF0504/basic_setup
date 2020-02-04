@@ -260,7 +260,7 @@ alias -g T='| tail'
 alias -g W='| wc'
 alias -g G='| grep'
 alias -g L='| less -R'
-alias -g TE='| tee '
+alias -g TE=' 2>&1 | tee '
 
 alias zshhistory="vi -R ~/.zsh_history"
 
