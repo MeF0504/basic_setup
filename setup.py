@@ -155,14 +155,14 @@ if __name__ == "__main__":
     files_mac = {\
                 'zshrc_file':'~/.zshrc', \
                 'posixShellRC':'~/.posixShellRC',\
-                'bashrc_file':'~/.bash_profile',\
+                'bashrc_file':'~/.bashrc',\
                 'matplotlibrc':'~/.matplotlib/matplotlibrc', \
                 }
 
     files_linux = {\
                   'zshrc_file':'~/.zshrc', \
                   'posixShellRC':'~/.posixShellRC',\
-                  'bashrc_file':'~/.bash_profile',\
+                  'bashrc_file':'~/.bashrc',\
                   'terminator_config':op.join(conf_home,'terminator/config'), \
                   'matplotlibrc':op.join(conf_home, 'matplotlib/matplotlibrc'), \
                 }
