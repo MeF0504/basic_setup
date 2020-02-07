@@ -354,7 +354,7 @@ if [[ -n $ITERM_SESSION_ID ]]; then
         elif [[ -n $TAB2 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB2$" ]]; then
             tab_color 176 0 231
         elif [[ -n $TAB3 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB3$" ]]; then
-            tab_color 95 0 255
+            tab_color 200 200 0
         fi
     }
 
