@@ -132,13 +132,46 @@ add_env() {
 }
 
 ## pseudo-tree http://osxdaily.com/2016/09/09/view-folder-tree-terminal-mac-os-tree-equivalent/
-tree() {
-    if [[ $1 = "" ]]; then
-        dir='.'
-    else
-        dir=$1
-    fi
-    find $dir -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
+## argument analysis https://qiita.com/b4b4r07/items/dcd6be0bb9c9185475bb
+ki() {
+    echo_usage="
+    usage: ki [-ah] [dir]
+
+    pseudo-tree (ki).
+    list contents of directories in a tree-like format.
+
+    positional arguments:
+        dir     : root directory
+    optional arguments:
+        -a      : do not ignore entries starting with .
+        -h      : print this help message and exit.
+    "
+
+    local dot_opt=' -name ".?*" -prune -or '
+    local dir='.'
+
+    for OPT in "$@"
+    do
+        case $OPT in
+            -*)
+                if [[ "$1" =~ 'a' ]]; then
+                    local dot_opt=""
+                fi
+                if [[ "$1" =~ 'h' ]]; then
+                    echo $echo_usage
+                    unset OPT
+                    return
+                fi
+                ;;
+            ?*)
+                # remove slash; https://ozuma.hatenablog.jp/entry/20130928/1380380390
+                local dir=${OPT%/}
+                ;;
+        esac
+    done
+    unset OPT
+
+    eval find $dir "$dot_opt" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 }
 
 #}}}
