@@ -158,7 +158,7 @@ ki() {
                     local dot_opt=""
                 fi
                 if [[ "$1" =~ 'h' ]]; then
-                    echo $echo_usage
+                    echo "$echo_usage"
                     unset OPT
                     return
                 fi
@@ -166,12 +166,15 @@ ki() {
             ?*)
                 # remove slash; https://ozuma.hatenablog.jp/entry/20130928/1380380390
                 local dir=${OPT%/}
+                if [[ "$dir" =~ .*/.* ]]; then
+                    echo "${dir%/*}"
+                fi
                 ;;
         esac
     done
     unset OPT
 
-    eval find $dir "$dot_opt" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
+    eval find "$dir" "$dot_opt" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 }
 
 #}}}
