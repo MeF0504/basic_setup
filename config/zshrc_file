@@ -349,12 +349,22 @@ if [[ -n $ITERM_SESSION_ID ]]; then
     }
     
     function iterm2_tab_preexec() {
-        if [[ -n $TAB1 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB1$" ]]; then
-            tab_color 0 231 96
-        elif [[ -n $TAB2 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB2$" ]]; then
-            tab_color 176 0 231
-        elif [[ -n $TAB3 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB3$" ]]; then
-            tab_color 200 200 0
+        if [[ -n $TAB1 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB1.*$" ]]; then
+            tab_color 255 0 0       # Red
+        elif [[ -n $TAB2 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB2.*$" ]]; then
+            tab_color 0 255 0       # Lime
+        elif [[ -n $TAB3 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB3.*$" ]]; then
+            tab_color 255 255 0     # Yellow
+        elif [[ -n $TAB4 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB4.*$" ]]; then
+            tab_color 0 0 255       # Blue
+        elif [[ -n $TAB5 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB5.*$" ]]; then
+            tab_color 255 0 255     # Fuchsia
+        elif [[ -n $TAB6 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB6.*$" ]]; then
+            tab_color 0 255 255     # Aqua
+        elif [[ -n $TAB7 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB7.*$" ]]; then
+            tab_color 0 128 0       # Green
+        elif [[ -n $TAB8 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB8.*$" ]]; then
+            tab_color 128 0 128     # Purple
         fi
     }
 
