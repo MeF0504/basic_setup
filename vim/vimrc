@@ -353,6 +353,11 @@ if filereadable(g:vimdir . "rcdir/vimrc.plugin")
     execute "source " . g:vimdir . "rcdir/vimrc.plugin"
 endif
 
+" nnoremap <Leader><Leader> :map mapleader<CR>
+function! <SID>leader_map()
+    map <Leader>
+endfunction
+nnoremap <silent> <Leader><Leader> :call <SID>leader_map()<CR>
 " }}}
 
 ""##########file, directory変数 "{{{
