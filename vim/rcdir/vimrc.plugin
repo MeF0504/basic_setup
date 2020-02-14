@@ -632,4 +632,47 @@ command! -nargs=? WordColor call s:set_color(<f-args>)
 nnoremap // :WordColor<space>
 " }}}
 
+" ファイルの存在チェック {{{
+function! <SID>ChkFileExist(...) abort
+    function! s:get_v_area()
+        "" https://nanasi.jp/articles/code/screen/visual.html
+        let l:tmp = @@
+        silent normal gvy
+        let l:selected = @@
+        let @@ = l:tmp
+        return l:selected
+    endfunction
+
+    if a:0 == 0
+        let l:path = s:get_v_area()
+    else
+        let l:path = ''
+        for i in range(a:0)
+            let l:path = l:path . a:[i+1] . ' '
+            let l:path = l:path[:-2]
+        endfor
+    endif
+
+    let l:path = expand(l:path)
+    if isdirectory(l:path)
+        echo '"' . l:path . '" exists: directory.'
+        let l:yn = input('open this directory in new tab? (y/[n])')
+    elseif filereadable(l:path)
+        echo '"' . l:path . '" exists: file.'
+        let l:yn = input('open this file in new tab? (y/[n])')
+    else
+        echo l:path . ' not exists.'
+        return
+    endif
+
+    if (l:yn == 'y') || (l:yn == 'yes')
+        execute 'tabnew ' . l:path
+    endif
+
+endfunction
+
+command -nargs=? ChkExist call <SID>ChkFileExist(<f-args>)
+vnoremap <Leader>f v:ChkExist<CR>
+" }}}
+
 
