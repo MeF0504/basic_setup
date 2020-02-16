@@ -196,7 +196,7 @@ function! s:Mygrep(...)
     endif
     if a:0 == '0'
         let l:word = expand('<cword>')
-        let l:ft = expand('%:e')
+        let l:ft = '.' . expand('%:e')
         let l:dir = MFsearch_dir(g:mftag_dir)
     else
         let arg = s:analythis_args(a:1)
@@ -216,6 +216,10 @@ function! s:Mygrep(...)
         let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : MFsearch_dir(g:mftag_dir)
     endif
 
+    if !isdirectory(l:dir)
+        echo 'input directory "' . l:dir . '" does not exist.'
+        return
+    endif
     if &grepprg == "internal"
         execute 'grep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
     elseif &grepprg == "grep\ -nriI"
