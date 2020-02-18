@@ -189,59 +189,72 @@ function! s:SID_PREFIX()
 endfunction
 
 " Set tabline.
-" total tab number
-let g:l_AllTabNo = 10
 function! s:my_tabline() 
-    "let endplus = 3
-    "if g:l_AllTabNo < 6
-        let endplus = g:l_AllTabNo/2
-    "endif
-    let st = 1
-    let en = tabpagenr('$')
     let beginstr = ''
     let laststr = ''
     let is_edit = ''
-    "  以降の例は all no = 10 end plus = 3
-    if g:l_AllTabNo < en  "tabが指定数より多い場合 例では全ファイル数は13
-        if tabpagenr()+endplus > g:l_AllTabNo " 現在 8とか
-            let en = tabpagenr()+endplus
-            let laststr = '...'
-            if en >= tabpagenr('$')  " 現在11とか。足すと余る場合
-                let en = tabpagenr('$')
-                let laststr = ''
-            endif
-            let st = en - (g:l_AllTabNo-1)
-        else    " 現在 6とか。
-            let en = g:l_AllTabNo
-            let laststr = '...'
-        endif
-    endif
-    if st > 1
-        let beginstr = '..'
-    endif
-    let s = ''
-    for i in range(1,tabpagenr('$'))
-        let bufnrs = tabpagebuflist(i)
-        let bufnr = bufnrs[tabpagewinnr(i) - 1]
-        if getbufvar(bufnr, '&modified') == 1
-            let is_edit = '_*_'
-        endif
-    endfor
-    let s .= is_edit
-    let s .= beginstr
-    for i in range(st, en)
+
+    let titles = []
+    for i in range(1, tabpagenr('$'))
+        let no = i  " display 0-origin tabpagenr.
         let bufnrs = tabpagebuflist(i)
         let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
-        let no = i  " display 0-origin tabpagenr.
         let mod = getbufvar(bufnr, '&modified') ? '[+]' : ''
         let title = fnamemodify(bufname(bufnr), ':t')
         if getbufvar(bufnr, '&filetype') == 'qf'
             let title = "QuickFix"
         endif
         let title = '[' . title . ']'
+        let title = no . ':' . title
+        call add(titles, title)
+
+        if getbufvar(bufnr, '&modified') == 1
+            let is_edit = '_*_'
+        endif
+    endfor
+
+    let width = &columns
+    let cur_tab_no = tabpagenr()
+    let st = cur_tab_no
+    let en = cur_tab_no
+    let tab_len = len(titles[cur_tab_no-1]) + 5   " 5 ... (max) len(beginstr+laststr) + 1
+    let tab_len += len(is_edit)
+    for i in range(1, tabpagenr('$'))
+        let ctn_p = en+1
+        if ctn_p <= tabpagenr('$')
+            let tab_len += len(titles[ctn_p-1])+1
+            if tab_len <= width
+                let en = ctn_p
+            else
+                break
+            endif
+        endif
+
+        let ctn_m = st-1
+        if ctn_m >= 1
+            let tab_len += len(titles[ctn_m-1])+1
+            if tab_len <= width
+                let st = ctn_m
+            else
+                break
+            endif
+        endif
+    endfor
+
+    if st > 1
+        let beginstr = '..'
+    endif
+    if en < tabpagenr('$')
+        let laststr = '..'
+    endif
+
+    let s = ''
+    let s .= is_edit
+    let s .= beginstr
+    for i in range(st, en)
         let s .= '%'.i.'T'
         let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
-        let s .= no . ':' . title . mod
+        let s .= titles[i-1]
         "let s .= mod
         let s .= '%#TabLineFill# '
     endfor
@@ -249,6 +262,7 @@ function! s:my_tabline()
     let s .= '%#TabLineFill#%T%=%#TabLine#'
     return s
 endfunction
+
 let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
 set showtabline=2 " 常にタブラインを表示
 " }}}
