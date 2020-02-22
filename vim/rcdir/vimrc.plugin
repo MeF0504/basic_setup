@@ -541,57 +541,109 @@ vnoremap <expr> # <SID>chk_braket()
 " }}}
 
 " termonal commandを快適に使えるようにする {{{
-function! s:Terminal(vertical)
-    " https://qiita.com/shiena/items/1dcb20e99f43c9383783
-    if has('win32')
-        if a:vertical == 1
-            botright vertical split
-        else
-            botright split
-        endif
-        " 日本語Windowsの場合`ja`が設定されるので、入力ロケールに合わせたUTF-8に設定しなおす
-        " コマンドの存在確認はあとで考える
-        let l:env = {
-                    \ 'LANG': systemlist('"locale.exe" -iU')[0],
-                    \ }
+"" http://koturn.hatenablog.com/entry/2018/02/12/140000
+function! s:complete_term(arglead, cmdline, cursorpos) abort
+    let arglead = tolower(a:arglead)
+    let ret = ['V', 'F']
+    if exists('*term_list')
+        let ret = filter(map(term_list(), 'bufname(v:val)'), '!stridx(tolower(v:val), arglead)') + ret
+    endif
+    return ret
+endfunction
 
-        " remote連携のための設定
-        if has('clientserver')
-            call extend(l:env, {
-                        \ 'GVIM': $VIMRUNTIME,
-                        \ 'VIM_SERVERNAME': v:servername,
-                        \ })
-        endif
+function! s:open_term(bufname) abort
+    let bufn = bufnr(a:bufname)
+    if bufn == -1
+        throw 'E94: No matching buffer for ' . a:1
+    elseif exists('*term_list') && index(term_list(), bufn) == -1
+        throw a:1 . 'is not a terminal buffer'
+    endif
+    let winids = win_findbuf(bufn)
+    if empty(winids)
+        execute term_getsize(bufn)[0] 'new'
+        execute 'buffer' bufn
+    else
+        call win_gotoid(winids[0])
+    endif
+endfunction
 
-        " term_startでgit for windowsのbashを実行する
-        call term_start(['bash.exe', '-l'], {
-                    \ 'term_name': 'Git',
-                    \ 'term_finish': 'close',
-                    \ 'curwin': v:true,
-                    \ 'cwd': $USERPROFILE,
-                    \ 'env': l:env,
+" https://qiita.com/shiena/items/1dcb20e99f43c9383783
+function! s:open_term_win()
+    " 日本語Windowsの場合`ja`が設定されるので、入力ロケールに合わせたUTF-8に設定しなおす
+    " コマンドの存在確認はあとで考える
+    let l:env = {
+                \ 'LANG': systemlist('"locale.exe" -iU')[0],
+                \ }
+
+    " remote連携のための設定
+    if has('clientserver')
+        call extend(l:env, {
+                    \ 'GVIM': $VIMRUNTIME,
+                    \ 'VIM_SERVERNAME': v:servername,
                     \ })
+    endif
+
+    " term_startでgit for windowsのbashを実行する
+    call term_start(['bash.exe', '-l'], {
+                \ 'term_name': 'Git',
+                \ 'term_finish': 'close',
+                \ 'curwin': v:true,
+                \ 'cwd': $USERPROFILE,
+                \ 'env': l:env,
+                \ })
+endfunction
+
+function! s:Terminal(...) abort
+    if !has('terminal') && !has('nvim')
+        echo "this vim doesn't support terminal!!"
+        return
+    endif
+    
+    if a:0 == 0
+        let opt = ''
+    else
+        let opt = a:1
+    endif
+    if has('win32')
+        if opt == ''
+            botright split
+        elseif opt == 'V'
+            botright vertical split
+        elseif opt == 'F'
+            tabnew
+        endif
+        call s:open_term_win()
     else
         if has('nvim')
-            if a:vertical == 1
-                botright vertical split
-            else
+            if opt == ''
                 botright split
+                terminal
+            elseif opt == 'V'
+                botright vertical split
+                terminal
+            elseif opt == 'F'
+                tabnew
+                terminal
+            else
+                call s:open_term(opt)
             endif
-            terminal
             startinsert
         else
-            if a:vertical == 1
-                botright vertical terminal
-            else
+            if opt == ''
                 botright terminal
+            elseif opt == 'V'
+                botright vertical terminal
+            elseif opt == 'F'
+                tabnew
+                terminal ++curwin
+            else
+                call s:open_term(opt)
             endif
         endif
     endif
 endfunction
 
-command! Terminal call s:Terminal(0)
-command! TerminalV call s:Terminal(1)
+command! -nargs=? -complete=customlist,s:complete_term  Terminal call s:Terminal(<f-args>)
 
 
 " }}}
