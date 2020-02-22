@@ -98,6 +98,9 @@ function! s:file_list() abort
         " move to previous tab
         elseif l:tabnr == "p"
             let l:tabnr = win_id2tabwin(g:l_cur_winID)[0]
+        " check l:tabnr is number
+        elseif str2nr(l:tabnr) != 0
+            let l:tabnr = str2nr(l:tabnr)
         " set search word
         else
             let l:search_name = l:tabnr
