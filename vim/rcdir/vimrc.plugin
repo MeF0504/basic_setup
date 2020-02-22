@@ -90,18 +90,18 @@ function! s:file_list() abort
                 echohl Comment | echo l:tab_files | echohl None
             endif
         endfor
-        let l:tabnr = input("Tab No. / 'q'uit / 'p'revious / 's'earch [FileName] :>> ")
+        let l:tabnr = input("'#' :jump to tab / 'q' :wuit / 'p' :previous tab / 'FileName' :search file :>> ")
         " quit
         if l:tabnr == "q"
             redraw!
             return
-        " set search word
-        elseif l:tabnr[0] == "s"
-            let l:search_name = l:tabnr[2:]
-            continue
         " move to previous tab
         elseif l:tabnr == "p"
             let l:tabnr = win_id2tabwin(g:l_cur_winID)[0]
+        " set search word
+        else
+            let l:search_name = l:tabnr
+            continue
         endif
         if (1 <= l:tabnr ) && (l:tabnr <= tabpagenr("$") )
             " get current page number
