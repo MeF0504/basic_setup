@@ -207,7 +207,12 @@ nnoremap <silent> <c-l> :execute("ptjump " . expand("<cword>"))<CR>
 nnoremap <silent> \ :nohlsearch<CR>
 
 " preview windowはqで閉じる
-nnoremap <expr> <silent> q &previewwindow==0 ? 'q' : ':quit<CR>'
+nnoremap <expr> <silent> q 
+            \ &previewwindow==1
+            \ ? ':quit<CR>'
+            \ : &buftype=='nofile'
+            \ ? ':quit<CR>'
+            \ : 'q'
 
 "terminal mode設定
 if has('terminal') || has('nvim')
