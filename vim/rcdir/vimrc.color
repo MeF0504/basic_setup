@@ -12,7 +12,7 @@ function! <SID>my_color_set()
         highlight Number ctermfg=9
         highlight Type ctermfg=149
         highlight String ctermbg=None ctermfg=222
-        highlight Comment ctermfg=60
+        highlight Comment ctermfg=62
         highlight LineNr ctermfg=239
         "highlight Comment ctermfg=212
         highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
