@@ -372,3 +372,11 @@ let g:winresizer_horiz_resize = 2
 """ }}}
 '''
 
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+# https://qiita.com/tashua314/items/35521f9bada5fe00cca7
+hook_add = '''
+""" fugitive {{{
+autocmd deinLocal FileType fugitive* nnoremap <silent> <buffer> q :quit<CR>
+""" }}}
+'''
