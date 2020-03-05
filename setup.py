@@ -179,8 +179,9 @@ if __name__ == "__main__":
         if op.exists(spath) and op.exists(fy_dir):
             fcopy(spath,files[fy], link=bool(args.link), force=args.force,test=args.test)
 
-    zshrc_mine = op.expanduser('~/.zsh/zshrc.mine')
-    mkdir(op.dirname(zshrc_mine))
+    zshdir = op.expanduser('~/.zsh')
+    zshrc_mine = op.join(zshdir, 'zshrc.mine')
+    mkdir(zshdir)
     if not op.exists(zshrc_mine):
         with open(zshrc_mine,'a') as f:
             f.write('## PC dependent zshrc\n')
@@ -188,6 +189,9 @@ if __name__ == "__main__":
             f.write('\n')
             f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
             f.write('\n')
+
+    for fy in glob.glob(op.join(setdir, 'zsh', '*')):
+        fcopy(fy, op.join(zshdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
 
     # }}}
 

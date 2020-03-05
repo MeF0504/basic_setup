@@ -236,6 +236,9 @@ compinit
 
 #大文字と小文字を無視して補完
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# 補完用ファイル読み込み
+[ -f ${HOME}/.zsh/complete.zsh ] && source ${HOME}/.zsh/complete.zsh
 #}}}
 
 ##{{{ zsh editor
