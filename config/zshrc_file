@@ -221,8 +221,8 @@ setopt share_history        # share command history data
 zshaddhistory() {
     local line=${1%%$'\n'}
     [[ ${line} != (l|l[sal])
-    && ${line} != (c|cd)
-    && ${line} != *history
+    # && ${line} != (c|cd)
+    && ! ${line} =~ ".*history"
     ]]
 }
 
