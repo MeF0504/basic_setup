@@ -169,7 +169,7 @@ endfunction
 
 function! s:echo_gregrep_help()
     echo "usage..."
-    echo ":Gregrep [wd=word] [dir=dir_path] [ex=extention]"
+    echo ":GREgrep [wd=word] [dir=dir_path] [ex=extention]"
     echo "wd ... search word."
     echo "dir ... path to root directory for search."
     echo "ex ... file extention of target files."
@@ -188,8 +188,8 @@ function! s:Mygrep(...)
     "wd  ... search word.
     "ex  ... file extention.
     "dir ... search directory.
-    "e.g. :Gregrep wd=hoge ex=.vim dir=%:h../../
-    "e.g. :Gregrep wd=fuga ex=.py
+    "e.g. :GREgrep wd=hoge ex=.vim dir=%:h../../
+    "e.g. :GREgrep wd=fuga ex=.py
     if &modified == 1
         echo "file not saved!"
         return
@@ -238,9 +238,9 @@ function! s:Mygrep(...)
         echo "not supported grepprg"
     endif
 endfunction
-command! -nargs=? Gregrep call s:Mygrep(<f-args>)
+command! -nargs=? GREgrep call s:Mygrep(<f-args>)
 
-"command! -nargs=1 Gregrep execute "grep /" . <f-args> . "/j " . MFsearch_dir(g:mftag_dir) . '**/*.' . expand('%:e')
+"command! -nargs=1 GREgrep execute "grep /" . <f-args> . "/j " . MFsearch_dir(g:mftag_dir) . '**/*.' . expand('%:e')
 
 "autocmd deinLocal BufRead * execute "set path+=" . b:mftag_save_dir . "**/include"
 function! s:AddPath()
