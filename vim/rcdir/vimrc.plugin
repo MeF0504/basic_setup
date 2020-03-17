@@ -795,9 +795,8 @@ for i in range(len(line1)):
     d = difflib.Differ()
     l1 = line1[i]
     l2 = line2[i]
-    print(i)
     ret += '\n'.join(d.compare([l1], [l2])).split('\n')
-    print('\n'.join(d.compare([l1], [l2])))
+    # print('\n'.join(d.compare([l1], [l2])))
 
 # print(ret)
 for r in ret:
