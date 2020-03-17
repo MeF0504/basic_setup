@@ -735,20 +735,22 @@ vnoremap <Leader>f v:ChkExist<CR>
 
 function! <SID>diff_line(...) abort
     " http://t2y.hatenablog.jp/entry/20110210/1297338263
-    if a:0 < 2
-        echo 'this command requires 2 line numbers.'
+    if (a:0 != 2) && (a:0 != 4)
+        echo "illegal input.\n:DiffLine line1 line2\n or \n:Diffline start1 end1 start2 end2"
         return
     endif
 
-    if (str2nr(a:1)==0) || (str2nr(a:1)==0)
-        echo 'please input numbers'
-        return
-    endif
+    for i in range(a:0)
+        if str2nr(a:[i+1]) == 0
+            echo 'please input numbers'
+            return
+        endif
+        if a:[i+1] > line('$')
+            echo 'input number is larger than EOF.'
+            return
+        endif
+    endfor
 
-    if (a:1 > line('$')) || (a:2 > line('$'))
-        echo 'input number is larger than EOF.'
-        return
-    endif
 
     if has('python3')
         command! -nargs=1 Python python3 <args>
@@ -759,8 +761,17 @@ function! <SID>diff_line(...) abort
         return
     endif
 
-    let l1 = getline(a:1) 
-    let l2 = getline(a:2)
+    if a:0 == 2
+        let l1 = [getline(a:1)]
+        let l2 = [getline(a:2)]
+    else
+        let l1 = getline(a:1, a:2)
+        let l2 = getline(a:3, a:4)
+        if len(l1) != len(l2)
+            echo 'please input the same number of lines'
+            return
+        endif
+    endif
 
     pclose
     silent 5split DiffLine
@@ -775,10 +786,19 @@ function! <SID>diff_line(...) abort
     Python << EOF
 import vim
 import difflib
-l1 = vim.eval('l1')
-l2 = vim.eval('l2')
-d = difflib.Differ()
-ret = '\n'.join(d.compare([l1], [l2])).split('\n')
+
+line1 = vim.eval('l1')
+line2 = vim.eval('l2')
+
+ret = []
+for i in range(len(line1)):
+    d = difflib.Differ()
+    l1 = line1[i]
+    l2 = line2[i]
+    print(i)
+    ret += '\n'.join(d.compare([l1], [l2])).split('\n')
+    print('\n'.join(d.compare([l1], [l2])))
+
 # print(ret)
 for r in ret:
     if r != '':
