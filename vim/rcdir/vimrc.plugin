@@ -767,10 +767,6 @@ function! <SID>diff_line(...) abort
     else
         let l1 = getline(a:1, a:2)
         let l2 = getline(a:3, a:4)
-        if len(l1) != len(l2)
-            echo 'please input the same number of lines'
-            return
-        endif
     endif
 
     pclose
@@ -790,13 +786,8 @@ import difflib
 line1 = vim.eval('l1')
 line2 = vim.eval('l2')
 
-ret = []
-for i in range(len(line1)):
-    d = difflib.Differ()
-    l1 = line1[i]
-    l2 = line2[i]
-    ret += '\n'.join(d.compare([l1], [l2])).split('\n')
-    # print('\n'.join(d.compare([l1], [l2])))
+d = difflib.Differ()
+ret = '\n'.join(d.compare(line1, line2)).split('\n')
 
 # print(ret)
 for r in ret:
