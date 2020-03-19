@@ -134,6 +134,7 @@ function! Open_taglist()
     endif
     TlistToggle
     let g:Tlist_Use_Right_Window = l:tlist_right_old
+    wincmd p
 endfunction
 nnoremap <silent> <Leader>t :call Open_taglist()<CR>
 "}}}
