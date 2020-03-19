@@ -188,7 +188,10 @@ if __name__ == "__main__":
             f.write('#\n')
             f.write('\n')
             f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
-            f.write('\n')
+            f.write('\n\n')
+            f.write('alias update_setup="cd ' + fpath + ' && git pull && cd -"')
+            f.write('\n\n')
+        print('made zshrc.mine')
 
     for fy in glob.glob(op.join(setdir, 'zsh', '*')):
         fcopy(fy, op.join(zshdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
