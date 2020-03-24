@@ -183,13 +183,18 @@ if __name__ == "__main__":
     zshrc_mine = op.join(zshdir, 'zshrc.mine')
     mkdir(zshdir)
     if not op.exists(zshrc_mine):
+        pyopt = ' --prefix ' + args.prefix
+        if args.link:
+            pyopt += ' --link '
+        if args.force:
+            pyopt += ' --force '
         with open(zshrc_mine,'a') as f:
             f.write('## PC dependent zshrc\n')
             f.write('#\n')
             f.write('\n')
             f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
             f.write('\n\n')
-            f.write('alias update_setup="cd ' + fpath + ' && git pull && cd -"')
+            f.write('alias update_setup="cd ' + fpath + ' && git pull && python setup.py ' + pyopt + ' && cd -"')
             f.write('\n\n')
         print('made zshrc.mine')
 
