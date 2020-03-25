@@ -194,7 +194,13 @@ if __name__ == "__main__":
             f.write('\n')
             f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
             f.write('\n\n')
-            f.write('alias update_setup="cd ' + fpath + ' && git pull && python setup.py ' + pyopt + ' && cd -"')
+            f.write("alias update_setup='cd " + fpath +\
+                    " && git pull " +\
+                    " && echo \"update? (y/[n])\" " +\
+                    " && read YN " +\
+                    " && [[ $YN = \"y\" ]] " +\
+                    " && python setup.py " + pyopt +\
+                    " ; cd -'")
             f.write('\n\n')
         print('made zshrc.mine')
 
