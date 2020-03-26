@@ -63,9 +63,9 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             print( "condition doesn't match" )
         elif exist:
             if islink and filecmp.cmp(file1, file2):
-                print('[ %s ] is already linked.' % name2)
+                print('  [ %s ] is already linked.' % name2)
             else:
-                print('[  %s  ] is already exist, cannot link!' % name2)
+                print('  [  %s  ] is already exist, cannot link!' % name2)
         else:
             fcopy_main(cmd,comment,test)
 
@@ -77,16 +77,16 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             print( "condition doesn't match" )
         elif force:
             if islink:
-                print('[ %s ] is a link file, cannot copy!' % name2)
+                print('  [ %s ] is a link file, cannot copy!' % name2)
             else:
                 fcopy_main(cmd, comment, test)
         elif exist:
             if filecmp.cmp(file1, file2) and islink:
-                print('[ %s ] is linked.' % name2)
+                print('  [ %s ] is linked.' % name2)
             elif filecmp.cmp(file1, file2):
-                print('[ %s ] is already copied.' % name2)
+                print('  [ %s ] is already copied.' % name2)
             elif islink:
-                print('[ %s ] is a link file, cannot copy!' % name2)
+                print('  [ %s ] is a link file, cannot copy!' % name2)
             else:
                 if sys.version_info[0] == 2:
                     yn = raw_input('[  %s  ] is already exist, are you realy overwite? [y,n] ' % name2)
