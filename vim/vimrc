@@ -35,7 +35,7 @@ if filereadable(s:initrc)
 endif
 
 " basic setup (set, map系) 読み込み
-let s:basicrc = g:vimdir . 'rcdir/vimrc.basic'
+let s:basicrc = g:vimdir . 'rcdir/vimrc_basic.vim'
 if filereadable(s:basicrc)
     execute "source " . s:basicrc
 else
@@ -363,8 +363,9 @@ command! SearchConf /<<<<<<<\|=======\|>>>>>>>
 command! -nargs=1 Echopand echo expand(<f-args>)
 
 " self-made plugin/functionファイル読み込み
-if filereadable(g:vimdir . "rcdir/vimrc.plugin")
-    execute "source " . g:vimdir . "rcdir/vimrc.plugin"
+let s:plugin_file = g:vimdir . "rcdir/vimrc_plugin.vim"
+if filereadable(s:plugin_file)
+    execute "source " . s:plugin_file
 endif
 
 " nnoremap <Leader><Leader> :map mapleader<CR>
@@ -393,13 +394,13 @@ endif
 
 ""##########ファイル読み込み "{{{
 "dein directoryがあれば読み込み
-let s:dein_file = g:vimdir . "rcdir/vimrc.dein"
+let s:dein_file = g:vimdir . "rcdir/vimrc_dein.vim"
 if isdirectory(g:vimdir . 'dein') && filereadable(s:dein_file)
     execute "source " . s:dein_file
 endif
 
 "カラーの変更
-let s:color_file = g:vimdir . "rcdir/vimrc.color"
+let s:color_file = g:vimdir . "rcdir/vimrc_color.vim"
 if !has('gui_running')
     if filereadable(s:color_file)
         execute "source " . s:color_file
