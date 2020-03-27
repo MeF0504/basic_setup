@@ -43,6 +43,10 @@
 # referring to the module name (which must be in the PYTHONPATH) as
 # 'module://my_backend'.
 backend      : tkagg
+# If TkAgg doesn't work, or show only white display, try Qt5Agg.
+# required?: $ pip3 install PyQt5
+# maybe following are also required:  PyQt5-sip QtAwesome qtconsole QtPy
+# backend      : Qt5Agg
 
 # If you are using the Qt4Agg backend, you can choose here
 # to use the PyQt4 bindings or the newer PySide bindings to
