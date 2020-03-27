@@ -44,16 +44,16 @@ let g:quickrun_config = get(g:, 'quickrun_config', {})  " 変数がなければ�
 " make prezantation by markdown [https://github.com/marp-team/marp-cli]
 let g:quickrun_config.markdown = {
             \ 'command' : 'npx',
-            \ 'exec' : ['%c \@marp-team/marp-cli %s --html'],
+            \ 'exec' : ['%c \@marp-team/marp-cli %s --html', 'open -n -a Google\ Chrome --args -incognito %s:r.html'],
             \ }
-if has('terminal') " || has('nvim')
-    let g:quickrun_config.markdown = {
-                \ 'command' : 'npx',
-                \ 'exec' : ['%c \@marp-team/marp-cli %s --preview'],
-                \ 'runner' : 'terminal',
-                \ 'runner/opener' : 'botright new',
-                \ }
-endif
+" if has('terminal') " || has('nvim')
+"     let g:quickrun_config.markdown = {
+"                 \ 'command' : 'npx',
+"                 \ 'exec' : ['%c \@marp-team/marp-cli %s --preview'],
+"                 \ 'runner' : 'terminal',
+"                 \ 'runner/opener' : 'botright new',
+"                 \ }
+" endif
 
 if system('uname') == "Darwin\n"
     " macOSでlatex (ptex2pdf)を使う場合
