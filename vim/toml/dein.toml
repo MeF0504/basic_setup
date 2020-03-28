@@ -42,18 +42,27 @@ nnoremap <silent> <Leader>q :QuickRun<CR>
 let g:quickrun_config = get(g:, 'quickrun_config', {})  " 変数がなければ初期化
 
 " make prezantation by markdown [https://github.com/marp-team/marp-cli]
+if system('uname') == "Darwin\n"
+    let s:open_chrome = 'open -n -a Google\ Chrome --args -incognito %s:r.html'
+elseif has('win32')
+    let s:open_chrome = 'start chrome -new -incognito %s:r.html'
+else
+    let s:open_chrome = 'firefox %s:r.html'
+endif
 let g:quickrun_config.markdown = {
             \ 'command' : 'npx',
-            \ 'exec' : ['%c \@marp-team/marp-cli %s --html', 'open -n -a Google\ Chrome --args -incognito %s:r.html'],
+            \ 'exec' : ['%c \@marp-team/marp-cli %s --html',s:open_chrome ],
             \ }
-" if has('terminal') " || has('nvim')
-"     let g:quickrun_config.markdown = {
-"                 \ 'command' : 'npx',
-"                 \ 'exec' : ['%c \@marp-team/marp-cli %s --preview'],
-"                 \ 'runner' : 'terminal',
-"                 \ 'runner/opener' : 'botright new',
-"                 \ }
-" endif
+
+" --preview may not be supported anymore.
+if has('terminal') " || has('nvim')
+    let g:quickrun_config.markdown = {
+                \ 'command' : 'npx',
+                \ 'exec' : ['%c \@marp-team/marp-cli %s --preview'],
+                \ 'runner' : 'terminal',
+                \ 'runner/opener' : 'botright new',
+                \ }
+endif
 
 if system('uname') == "Darwin\n"
     " macOSでlatex (ptex2pdf)を使う場合
