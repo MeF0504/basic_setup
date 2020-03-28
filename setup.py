@@ -1,4 +1,5 @@
 
+from __future__ import print_function
 import os
 import os.path as op
 import sys
@@ -7,6 +8,8 @@ import shutil
 import subprocess
 import glob
 import filecmp
+import difflib
+import datetime
 #if float(sys.version[:3]) < 2.7:
     #import commands
 
@@ -27,6 +30,24 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             print(comment)
         else:
             print('cmd check:: '+cmd)
+
+
+    def fcopy_diff(file1, file2):
+        # https://it-ojisan.tokyo/python-difflib/#keni_toc_2
+        fname1 = op.basename(file1)
+        fname2 = op.basename(file2)
+        dt1 = datetime.datetime.fromtimestamp(os.stat(file1).st_mtime)
+        dt2 = datetime.datetime.fromtimestamp(os.stat(file2).st_mtime)
+
+        with open(file1, 'r') as f:
+            str1 = f.readlines()
+        with open(file2, 'r') as f:
+            str2 = f.readlines()
+
+        for line in difflib.unified_diff(str1, str2, n=1, \
+                fromfile=fname1, tofile=fname2, \
+                fromfiledate=dt1.strftime('%m %d (%Y) %H:%M:%S'), tofiledate=dt1.strftime('%m %d (%Y) %H:%M:%S')):
+            print(line, end='')
 
     file1 = op.expanduser(file1)
     file2 = op.expanduser(file2)
@@ -88,12 +109,18 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             elif islink:
                 print('  [ %s ] is a link file, cannot copy!' % name2)
             else:
+                input_str = '  [  %s  ] is already exist, are you realy overwrite? [y(yes), n(no), d(diff)] ' % name2
                 if sys.version_info[0] == 2:
-                    yn = raw_input('[  %s  ] is already exist, are you realy overwite? [y,n] ' % name2)
+                    yn = raw_input(input_str)
                 else:
-                    yn = input('[  %s  ] is already exist, are you realy overwite? [y,n] ' % name2)
+                    yn = input(input_str)
                 if (yn == 'y') or (yn == 'yes'):
                     fcopy_main(cmd, comment, test)
+                elif (yn == 'd') or (yn == 'diff'):
+                    print('Do not copy '+name2)
+                    print('')
+                    fcopy_diff(file1, file2)
+                    print('')
                 else:
                     print('Do not copy '+name2)
         else:
