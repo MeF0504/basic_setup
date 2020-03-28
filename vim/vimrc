@@ -375,7 +375,7 @@ endfunction
 nnoremap <silent> <Leader><Leader> :call <SID>leader_map()<CR>
 " }}}
 
-""##########file, directory変数 "{{{
+""##########file, directory関連 "{{{
 autocmd local BufRead * let b:cfile = expand("%:p")
 autocmd local BufRead * let b:cdir = expand("%:p:h")
 
@@ -390,6 +390,13 @@ set path+=../include
 if exists("$LD_LIBRARY_PATH")
     set path+=$LD_LIBRARY_PATH
 endif
+
+" test用directoryを追加
+let s:test_vim_dir = g:vimdir . 'test'
+if !isdirectory(s:test_vim_dir)
+    call mkdir(s:test_vim_dir)
+endif
+execute 'set runtimepath^=' . s:test_vim_dir
 "}}}
 
 ""##########ファイル読み込み "{{{
