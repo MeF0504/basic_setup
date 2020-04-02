@@ -26,8 +26,23 @@ function! s:python_help(module) abort
     setlocal previewwindow
 
     if has('python3')
-        execute 'python3 import ' . a:module
-        python3 << EOF
+        command! -nargs=1 TmpPython python3 <args>
+    elseif has('python')
+        command! -nargs=1 TmpPython python <args>
+    else
+        echo "This vim doesn't support python and python3."
+        pclose
+    endif
+    try
+        execute "TmpPython import " . a:module
+        echo "import " . a:module
+    catch
+        echo "module '" . a:module . "' doesn't found."
+        pclose
+        return
+    endtry
+
+    TmpPython << EOF
 import inspect
 import vim
 mod = vim.eval('a:module')
@@ -37,30 +52,15 @@ try:
     exec('source = inspect.getsource(%s)' % mod)
     for s in source.split('\n'):
         vim.current.buffer.append(s)
-except:
+except Exception as e:
+    if 0:
+        print(e)
     vim.current.buffer.append("Not available for this object.")
 EOF
 
-    elseif has('python')
-        execute 'python import ' . a:module
-        python << EOF
-import inspect
-import vim
-mod = vim.eval('a:module')
-try:
-    exec('vim.current.buffer.append("In file: " + inspect.getsourcefile(%s))' % mod)
-    vim.current.buffer.append('\n')
-    exec('source = inspect.getsource(%s)' % mod)
-    for s in source.split('\n'):
-        vim.current.buffer.append(s)
-except:
-    vim.current.buffer.append("Not available for this object.")
-EOF
-    else
-        echo 'python not supported!'
-        pclose
-    endif
+delcommand TmpPython
 endfunction
+
 command! -nargs=1 PyHelp call s:python_help(<f-args>)
 
 function! s:py_templete()

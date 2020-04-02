@@ -753,9 +753,9 @@ function! <SID>diff_line(...) abort
 
 
     if has('python3')
-        command! -nargs=1 Python python3 <args>
+        command! -nargs=1 TmpPython python3 <args>
     elseif has('python')
-        command! -nargs=1 Python python <args>
+        command! -nargs=1 TmpPython python <args>
     else
         echo 'this command requires python or python3.'
         return
@@ -770,7 +770,12 @@ function! <SID>diff_line(...) abort
     endif
 
     pclose
-    silent 5split DiffLine
+    echo a:0
+    if a:0 == 2
+        silent 5split DiffLine
+    else
+        silent 10split DiffLine
+    endif
     setlocal noswapfile
     setlocal nobackup
     setlocal noundofile
@@ -779,7 +784,7 @@ function! <SID>diff_line(...) abort
     setlocal nobuflisted
     setlocal previewwindow
 
-    Python << EOF
+    TmpPython << EOF
 import vim
 import difflib
 
@@ -796,7 +801,7 @@ for r in ret:
 EOF
 
     wincmd p
-    delcommand Python
+    delcommand TmpPython
 endfunction
 
 command! -nargs=* DiffLine call <SID>diff_line(<f-args>)
