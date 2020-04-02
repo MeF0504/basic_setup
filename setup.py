@@ -46,7 +46,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
 
         for line in difflib.unified_diff(str1, str2, n=1, \
                 fromfile=fname1, tofile=fname2, \
-                fromfiledate=dt1.strftime('%m %d (%Y) %H:%M:%S'), tofiledate=dt1.strftime('%m %d (%Y) %H:%M:%S')):
+                fromfiledate=dt1.strftime('%m %d (%Y) %H:%M:%S'), tofiledate=dt2.strftime('%m %d (%Y) %H:%M:%S')):
             print(line, end='')
 
     file1 = op.expanduser(file1)
