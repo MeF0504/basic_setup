@@ -332,7 +332,7 @@ endif
 
 "macでinsert modeから抜けるときにIME off
 "参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
-if has('mac')
+if has('mac') && 0  " 0/1 ... off/on
     let g:l_imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
     autocmd local InsertLeave * :call system(g:l_imeoff)
 endif
