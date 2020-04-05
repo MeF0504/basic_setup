@@ -74,27 +74,39 @@ function ip_color() {
     ret=$ret" "
     echo $ret
 }
+OLD_PROMPT=1
 case ${UID} in
 0)
-    PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') %B%{${fg[red]}%}%/#%{${reset_color}%}%b "
+    PROMPT="%{${fg[yellow]}%}ROOT@%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') %B%{${fg[red]}%}%/#%{${reset_color}%}%b "
     PROMPT2="%B%{${fg[red]}%}%_#%{${reset_color}%}%b "
     SPROMPT="%B%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
     ;;
 *)
-    local short="%{${fg[red]}%}%/ S%{${reset_color}%} "
-    local long="%{${fg[red]}%}%(4/,%-1/.../%2/,%/) L%{${reset_color}%} "
-    PROMPT="%4(/|$long|$short)"
-    ## from http://0xcc.net/blog/archives/000032.html
-    PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
-    SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
-    if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
-        PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') ${PROMPT}"
-        #PROMPT="%F{cyan}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%f ${PROMPT}"
+    if [[ -n $OLD_PROMPT ]]; then
+        local short="%{${fg[red]}%}%/ S%{${reset_color}%} "
+        local long="%{${fg[red]}%}%(4/,%-1/.../%2/,%/) L%{${reset_color}%} "
+        PROMPT="%4(/|$long|$short)"
+        ## from http://0xcc.net/blog/archives/000032.html
+        if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+            PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') ${PROMPT}"
+            #PROMPT="%F{cyan}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%f ${PROMPT}"
+        else
+            PROMPT="%{${fg[green]}%}%T%{${reset_color}%} ${PROMPT}"
+        fi
     else
-        PROMPT="%{${fg[green]}%}%T%{${reset_color}%} ${PROMPT}"
+        PROMPT="%{${bg[cyan]}%}%d%{${reset_color}%}"$'\n'
+        if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+            PROMPT=$PROMPT"%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%{${reset_color}%}"
+        else
+            PROMPT=$PROMPT"%{${fg[green]}%}%T%{${reset_color}%}"
+        fi
+        PROMPT=$PROMPT" %{${fg[red]}%}%B%n%b%{${reset_color}%} >"
     fi
     PROMPT_ORI=$PROMPT
     PROMPT=$(ip_color)$PROMPT_ORI
+
+    PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
+    SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
     ;;
 esac
 
@@ -275,7 +287,9 @@ alias zshhistory="vi -R ~/.zsh_history"
 #function chpwd() {pwd; echo -ne "\033]0;${USER}@${HOST}\007"}
 IGNORE_FETCH= 
 function chpwd() {
-    pwd
+    if [ -n $OLD_PROMPT ]; then
+        pwd
+    fi
     if [[ -e .git ]]; then
         #echo "%{${fg[yellow]}%}check git repo is up-to-date%{${reset_color}%}"
         #echo "\033[33mcheck git repo is up-to-date  (---> git fetch) \033[0m"
