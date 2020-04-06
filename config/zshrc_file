@@ -100,7 +100,7 @@ case ${UID} in
         else
             PROMPT=$PROMPT"%{${fg[green]}%}%T%{${reset_color}%}"
         fi
-        PROMPT=$PROMPT" %{${fg[red]}%}%B%n%b%{${reset_color}%} >"
+        PROMPT=$PROMPT" %{${fg[red]}%}%B%n%b%{${reset_color}%} > "
     fi
     PROMPT_ORI=$PROMPT
     PROMPT='$(ip_color)'$PROMPT_ORI
@@ -287,7 +287,7 @@ alias zshhistory="vi -R ~/.zsh_history"
 #function chpwd() {pwd; echo -ne "\033]0;${USER}@${HOST}\007"}
 IGNORE_FETCH= 
 function chpwd() {
-    if [ -n $OLD_PROMPT ]; then
+    if [[ -n $OLD_PROMPT ]]; then
         pwd
     fi
     if [[ -e .git ]]; then
