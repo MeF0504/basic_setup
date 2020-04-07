@@ -213,13 +213,13 @@ bindkey "\e[Z" reverse-menu-complete
 # Enter key bind:: https://qiita.com/yut-kt/items/267ce4648b801c1c1bca
 
 # update PROMPT
-function update_prompt() {
-    # check that PROMPT is not changed.
-    if [[ $PROMPT =~ ^%F.* ]]; then
-        PROMPT=$(ip_color)$PROMPT_ORI
-    fi
-    return 0
-}
+# function update_prompt() {
+#     # check that PROMPT is not changed.
+#     if [[ $PROMPT =~ ^%F.* ]]; then
+#         PROMPT=$(ip_color)$PROMPT_ORI
+#     fi
+#     return 0
+# }
 function do_enter() {
     if [ -n "$BUFFER" ]; then
         zle accept-line
@@ -227,6 +227,7 @@ function do_enter() {
     fi
     # update_prompt
     if [[ -f $HOME/.zsh/enter.zsh ]]; then
+        echo
         source $HOME/.zsh/enter.zsh
         echo '\n'
         zle reset-prompt  # 上の処理で表示があるとこっち?
