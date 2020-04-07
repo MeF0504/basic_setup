@@ -74,6 +74,31 @@ function ip_color() {
     ret=$ret" "
     echo $ret
 }
+function ip_color2() {
+    # only for IPv6
+    local ip=`curl --connect-timeout 0.5 ifconfig.io 2> /dev/null`
+    if [[ $(echo $ip | wc -l) -ne 1 ]]; then
+        return 0
+    fi
+    if [[ $ip == *:* ]]; then
+        ip11=$(( 0x$(echo $ip | cut -f 5 -d ":") >> 8))
+        ip12=$(( 0x$(echo $ip | cut -f 5 -d ":") & 0xFF))
+        ip21=$(( 0x$(echo $ip | cut -f 6 -d ":") >> 8))
+        ip22=$(( 0x$(echo $ip | cut -f 6 -d ":") & 0xFF))
+        ip31=$(( 0x$(echo $ip | cut -f 7 -d ":") >> 8))
+        ip32=$(( 0x$(echo $ip | cut -f 7 -d ":") & 0xFF))
+        ip41=$(( 0x$(echo $ip | cut -f 8 -d ":") >> 8))
+        ip42=$(( 0x$(echo $ip | cut -f 8 -d ":") & 0xFF))
+        local ret=""
+        ret=$ret"%F{$ip11}%K{$ip12}I%f%k"
+        ret=$ret"%F{$ip21}%K{$ip22}P%f%k"
+        ret=$ret"%F{$ip31}%K{$ip32}v%f%k"
+        ret=$ret"%F{$ip41}%K{$ip42}6%f%k"
+        ret=$ret" "
+        echo $ret
+    fi
+}
+
 # OLD_PROMPT=1
 case ${UID} in
 0)
@@ -95,6 +120,7 @@ case ${UID} in
         fi
     else
         PROMPT="%{${bg[cyan]}%}%d%{${reset_color}%}"$'\n'
+        PROMPT=$PROMPT'$(ip_color2)'
         if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
             PROMPT=$PROMPT"%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%{${reset_color}%}"
         else
