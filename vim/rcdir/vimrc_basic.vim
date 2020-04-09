@@ -71,8 +71,8 @@ set ignorecase
 "検索文字に大文字があると区別する
 set smartcase
 "タブとかを可視化?
-"set list
-set listchars=tab:».,trail:~,extends:»,precedes:«,nbsp:% ",eol:↲
+set list
+set listchars=tab:».,trail:\ ,extends:»,precedes:«,nbsp:% ",eol:↲
 "clipboardとyankを共有 (+clipboardが条件)
 set clipboard+=unnamed
 "検索のときに移動しない

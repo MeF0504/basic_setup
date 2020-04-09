@@ -17,6 +17,7 @@ function! <SID>my_color_set()
         "highlight Comment ctermfg=212
         highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
         highlight StatusLineTermNC ctermfg=233 ctermbg=249
+        highlight SpecialKey ctermfg=None ctermbg=236
     else
         echo "color scheme: " . g:colors_name
     endif
