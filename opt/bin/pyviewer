@@ -1,0 +1,75 @@
+#! /usr/bin/env python3
+# vim: set filetype=python:
+
+from __future__ import print_function
+
+import os
+import argparse
+
+#function to show the constitution of hdf5 file.
+def main_hdf5(fpath, args):
+    import h5py
+    def print_data(name, obj):
+        if isinstance(obj, h5py.Dataset):
+            print(name)
+            if args.verbose:
+                with h5py.File(args.file, 'r') as f:
+                    print(" >>>  {}".format(f[name][()]))
+
+    with h5py.File(fpath, 'r') as f:
+        # https://qiita.com/skotaro/items/873507dc8f8f967bbc03
+        f.visititems(print_data)
+
+def main_pickle(fpath, args):
+    import pickle
+    with open(fpath, 'rb') as f:
+        data = pickle.load(f)
+
+    if type(data) == type(dict()):
+        for key in data:
+            print(key)
+            if args.verbose:
+                print(' >>> {}'.format(data[key]))
+    else:
+        print(data)
+
+def main_numpy(fpath, args):
+    import numpy as np
+    print(np.load(fpath))
+
+def main(args):
+
+    fpath = os.path.expanduser(args.file)
+    if not os.path.exists(fpath):
+        print("file doesn't exists!")
+        return
+
+    if not hasattr(args, 'type') or (args.type is None):
+        ext = fpath[fpath.rfind('.')+1:]
+        if ext == 'hdf5':
+            args.type = 'hdf5'
+        elif ext == 'pkl' or ext == 'pickle':
+            args.type = 'pickle'
+        elif ext == 'npy':
+            args.type = 'numpy'
+
+    if args.type == 'hdf5':
+        main_hdf5(fpath, args)
+    elif args.type == 'pickle':
+        main_pickle(fpath, args)
+    elif args.type == 'numpy':
+        main_numpy(fpath, args)
+    else:
+        print('this file is not supported,')
+
+    return
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="show the constitution of file. supported file types ... hdf5, pickle, npy")
+    parser.add_argument('file', help='imput hdf5 file')
+    parser.add_argument('-v', dest='verbose', action='store_true', help='show details')
+    parser.add_argument('-t', '--type', dest='type', help='file type', choices='hdf5 pickle numpy'.split(' '))
+    args = parser.parse_args()
+
+    main(args)
+
