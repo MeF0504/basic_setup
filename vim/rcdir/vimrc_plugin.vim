@@ -602,7 +602,7 @@ function! s:Terminal(...) abort
         echo "this vim doesn't support terminal!!"
         return
     endif
-    
+
     if a:0 == 0
         let opt = ''
     else
@@ -645,6 +645,9 @@ function! s:Terminal(...) abort
             endif
         endif
     endif
+    setlocal nolist
+    setlocal foldlevel=0
+    setlocal nonumber
 endfunction
 
 command! -nargs=? -complete=customlist,s:complete_term  Terminal call s:Terminal(<f-args>)
