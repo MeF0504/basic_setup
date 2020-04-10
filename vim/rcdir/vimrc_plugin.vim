@@ -646,7 +646,7 @@ function! s:Terminal(...) abort
         endif
     endif
     setlocal nolist
-    setlocal foldlevel=0
+    setlocal foldcolumn=0
     setlocal nonumber
 endfunction
 
