@@ -17,19 +17,28 @@ def main_hdf5(fpath, args):
                     print(" >>>  {}".format(f[name][()]))
 
     with h5py.File(fpath, 'r') as f:
-        # https://qiita.com/skotaro/items/873507dc8f8f967bbc03
-        f.visititems(print_data)
+        if hasattr(args, 'key') and args.key is not None:
+            print(f[args.key][()])
+        else:
+            # https://qiita.com/skotaro/items/873507dc8f8f967bbc03
+            f.visititems(print_data)
 
 def main_pickle(fpath, args):
     import pickle
     with open(fpath, 'rb') as f:
-        data = pickle.load(f)
+        try:
+            data = pickle.load(f)
+        except UnicodeDecodeError:
+            data = pickle.load(f, encoding='latin1')
 
     if type(data) == type(dict()):
-        for key in data:
-            print(key)
-            if args.verbose:
-                print(' >>> {}'.format(data[key]))
+        if hasattr(args, 'key') and args.key is not None:
+            print(data[args.key])
+        else:
+            for key in data:
+                print(key)
+                if args.verbose:
+                    print(' >>> {}'.format(data[key]))
     else:
         print(data)
 
@@ -69,6 +78,7 @@ if __name__ == "__main__":
     parser.add_argument('file', help='imput hdf5 file')
     parser.add_argument('-v', dest='verbose', action='store_true', help='show details')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices='hdf5 pickle numpy'.split(' '))
+    parser.add_argument('-k', '--key', dest='key', help='key name (for pickle, if object type is dictionary or for hdf5')
     args = parser.parse_args()
 
     main(args)
