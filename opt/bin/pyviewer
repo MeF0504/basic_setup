@@ -35,7 +35,7 @@ def main_pickle(fpath, args):
         if hasattr(args, 'key') and args.key is not None:
             print(data[args.key])
         else:
-            for key in data:
+            for key in sorted(data.items()):
                 print(key)
                 if args.verbose:
                     print(' >>> {}'.format(data[key]))
