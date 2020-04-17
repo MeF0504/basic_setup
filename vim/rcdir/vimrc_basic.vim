@@ -33,22 +33,28 @@ scriptencoding utf-8
 set number
 "常にステータスラインを表示
 set laststatus=2
-"カーソルの位置を表示
-set ruler
 "コマンドラインの画面上の行数
 set cmdheight=2
+"カーソルの位置を表示
+set ruler
 "文の折り返し
 set wrap
 "タイトルを非表示
 set notitle
 "viとの互換性をとらない
 set nocompatible
+"タブをスペースに変換
+set expandtab
 "タブの幅
 set tabstop=4
+"オートインデントの幅
+set shiftwidth=0    " 0 ... tabstopの値を使う
+"連続した空白でtabやback spaceが動く幅
+set softtabstop=-1  " 0 ... off, -1 ... shiftwidthの値を使う
 "自動でインデントを挿入
 set autoindent
-"オートインデントの幅
-set shiftwidth=4
+"末尾の文字に応じて自動でindentを増減
+set smartindent
 "文字の色づけ ... onだと現状の設定を破棄する。詳しくは:h :syntax-on
 syntax enable
 "検索したときにハイライト
@@ -62,10 +68,6 @@ set backspace=start,indent
 set mouse=i
 "全モードでのマウスの有効化
 "set mouse=a
-"タブをスペースに変換
-set expandtab
-"連続した空白でtabやback spaceが動く幅
-set softtabstop=4
 "大文字、小文字を区別しない
 set ignorecase
 "検索文字に大文字があると区別する
