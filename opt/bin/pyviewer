@@ -1,10 +1,12 @@
 #! /usr/bin/env python3
+# -*- coding: utf-8 -*-
 # vim: set filetype=python:
 
 from __future__ import print_function
 
 import os
 import argparse
+import tarfile
 
 #function to show the constitution of hdf5 file.
 def main_hdf5(fpath, args):
@@ -46,6 +48,23 @@ def main_numpy(fpath, args):
     import numpy as np
     print(np.load(fpath))
 
+def main_tar(fpath, args):
+    if not tarfile.is_tarfile(fpath):
+        print('{} is not a tar file.'.format(fpath))
+        return
+    with tarfile.open(fpath, 'r:*') as tar:
+        for tarinfo in tar:
+            print(tarinfo.name)
+
+def main_zip(fpath, args):
+    import zipfile
+    with zipfile.ZipFile(fpath, 'r') as zip_files:
+        if args.verbose:
+            zip_files.printdir()
+        else:
+            for zfile in zip_files.namelist():
+                print(zfile)
+
 def main(args):
 
     fpath = os.path.expanduser(args.file)
@@ -61,24 +80,41 @@ def main(args):
             args.type = 'pickle'
         elif ext == 'npy':
             args.type = 'numpy'
+        elif tarfile.is_tarfile(fpath):
+            args.type = 'tar'
+        elif ext == 'zip':
+            args.type = 'zip'
+        elif ext == 'py':
+            if 'ja_JP' in os.environ['LANG']:
+                print('vimでも使ってろ！')
+            else:
+                print("Why Don't you use vim???")
+            return
 
+    # exec('tmp_main = main_' + args.type)
+    # tmp_main(fpath, args)
     if args.type == 'hdf5':
         main_hdf5(fpath, args)
     elif args.type == 'pickle':
         main_pickle(fpath, args)
     elif args.type == 'numpy':
         main_numpy(fpath, args)
+    elif args.type == 'tar':
+        main_tar(fpath, args)
+    elif args.type == 'zip':
+        main_zip(fpath, args)
     else:
-        print('this file is not supported,')
+        print('this file is not supported.')
 
     return
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="show the constitution of file. supported file types ... hdf5, pickle, npy")
+    supported_type = 'hdf5 pickle numpy tar zip'
+    parser = argparse.ArgumentParser(description="show the constitution of file. supported file types ... " + supported_type.replace(' ', ', '))
     parser.add_argument('file', help='imput hdf5 file')
     parser.add_argument('-v', dest='verbose', action='store_true', help='show details')
-    parser.add_argument('-t', '--type', dest='type', help='file type', choices='hdf5 pickle numpy'.split(' '))
-    parser.add_argument('-k', '--key', dest='key', help='key name (for pickle, if object type is dictionary or for hdf5')
+    parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(' '))
+    parser.add_argument('-k', '--key', dest='key', help='A key name for dictionary in pickle, or a Dataset name for hdf5')
     args = parser.parse_args()
 
     main(args)
