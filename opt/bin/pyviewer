@@ -37,7 +37,11 @@ def main_pickle(fpath, args):
         if hasattr(args, 'key') and args.key is not None:
             print(data[args.key])
         else:
-            for key in sorted(data.keys()):
+            try:
+                tmp_keys = sorted(data.keys())
+            except TypeError:
+                tmp_keys = data.keys()
+            for key in tmp_keys:
                 print(key)
                 if args.verbose:
                     print(' >>> {}'.format(data[key]))
@@ -90,8 +94,6 @@ def main(args):
                 print("Why Don't you use vim???")
             return
 
-    # exec('tmp_main = main_' + args.type)
-    # tmp_main(fpath, args)
     if args.type == 'hdf5':
         main_hdf5(fpath, args)
     elif args.type == 'pickle':
