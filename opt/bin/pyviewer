@@ -53,8 +53,7 @@ def main_tar(fpath, args):
         print('{} is not a tar file.'.format(fpath))
         return
     with tarfile.open(fpath, 'r:*') as tar:
-        for tarinfo in tar:
-            print(tarinfo.name)
+        tar.list(verbose=args.verbose)
 
 def main_zip(fpath, args):
     import zipfile
