@@ -56,9 +56,16 @@ let g:quickrun_config.markdown = {
 
 " --preview may not be supported anymore.
 if has('terminal') " || has('nvim')
+    if system('uname') == "Darwin\n"
+        let s:open_server = 'open -n -a Google\ Chrome --args -incognito http://localhost:8080/'
+    elseif has('win32')
+        let s:open_server = 'start http://localhost:8080/'
+    else
+        let s:open_server = 'firefox http://localhost:8080/'
+    endif
     let g:quickrun_config.markdown = {
                 \ 'command' : 'npx',
-                \ 'exec' : ['%c \@marp-team/marp-cli %s --preview'],
+                \ 'exec' : [s:open_server, '%c \@marp-team/marp-cli --server %s:h'],
                 \ 'runner' : 'terminal',
                 \ 'runner/opener' : 'botright new',
                 \ }
