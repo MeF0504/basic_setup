@@ -1,5 +1,10 @@
 @echo off
 
+echo which "git", "sh" and "python";
+which git
+which sh
+which python
+
 set curdir=%~dp0
 set vimcon=%homedrive%%homepath%\vimfiles\
 if exist %vimcon%\dein\repos\github.com\Shougo\dein.vim (
@@ -8,10 +13,6 @@ if exist %vimcon%\dein\repos\github.com\Shougo\dein.vim (
     mkdir %vimcon%\dein\repos\github.com\Shougo\dein.vim\
     git clone https://github.com/Shougo/dein.vim %vimcon%\dein\repos\github.com\Shougo\dein.vim\
 )
-echo which "git" and "sh";
-which git
-which sh
-
 if exist %vimcon%\swp (
     echo swp exist.
 ) else (
@@ -30,6 +31,9 @@ if exist %vimcon%\rcdir (
     mkdir %vimcon%\rcdir
 )
 copy %curdir%\vim\rcdir\* %vimcon%\rcdir\
+
+echo make gvim color file
+python %curdir%\opt\win\cvt_color_vim_gvim.py %curdir%\vim\rcdir\vimrc_color.vim %vimcon%\rcdir\gvimrc_color.vim
 
 echo ftplugin
 if exist %vimcon%\ftplugin (

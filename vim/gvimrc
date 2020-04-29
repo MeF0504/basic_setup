@@ -7,7 +7,6 @@ augroup gLocal
 augroup END
 
 "GUI系基本設定 {{{
-"colorscheme darkblue
 "clipboard共有
 set guioptions+=a
 "tab名いじったのでtabのgui表示をoff
@@ -23,71 +22,11 @@ set visualbell t_vb=
 
 "}}}
 
-"色設定 {{{
-try
-    colorscheme inkpot
-catch
-    colorscheme desert
-endtry
-
-if colors_name == "inkpot"
-    highlight Identifier guifg=LightSkyBlue3
-    highlight Number guifg=Red
-    highlight Type guifg=DarkOliveGreen3
-    highlight String guibg=NONE guifg=LightGoldenrod2
-    highlight Comment guifg=MediumPurple4
-    highlight LineNr guifg=Grey30 guibg=NONE
-    highlight Normal guifg=LightGray
-else
-    echo "color scheme: " . color_name
+" "色設定
+let s:color_file = g:vimdir . "rcdir/gvimrc_color.vim"
+if filereadable(s:color_file)
+    execute "source " . s:color_file
 endif
-
-"下線設定
-set cursorline
-highlight CursorLine gui=underline guifg=NONE guibg=NONE
-highlight CursorLineNr term=Bold guifg=NavyBlue guibg=White
-autocmd gLocal InsertLeave * highlight CursorLineNr term=Bold guifg=NavyBlue guibg=White
-autocmd gLocal InsertEnter * highlight CursorLineNr term=Bold guifg=NavyBlue guibg=MediumPurple3
-
-"必要ならneocompleteの補完リストの色設定
-"highlight Pmenu guibg=LightBlue
-"highlight PmenuSel guibg=red
-"highlight PmenuSbar guibg=LightBlue
-
-"全角スペース表示
-highlight ZenkakuSpace guibg=darkgray
-autocmd gLocal BufEnter * match ZenkakuSpace /　/
-
-let s:month = str2nr(strftime("%b"))
-let s:day = str2nr(strftime("%d"))
-if ((exists("g:l_bd_month") && (s:month == g:l_bd_month))
-    \&& (exists("g:l_bd_day") && (s:day == g:l_bd_day)) )
-    "" Birthday
-    highlight StatusLine guifg=Khaki3 guibg=DarkGoldenrod
-    highlight WildMenu guifg=DarkGoldenrod guibg=Khaki3
-elseif (s:month == 3) || (s:month == 4 ) || (s:month == 5)
-    "" Spring
-    highlight StatusLine guifg=Pink1 guibg=DarkMagenta
-    highlight WildMenu guifg=DarkMagenta guibg=Pink1
-elseif (s:month == 6) || (s:month == 7 ) || (s:month == 8)
-    "" Summer
-    highlight StatusLine guifg=GreenYellow guibg=DodgerBlue2
-    highlight WildMenu guifg=DodgerBlue2 guibg=GreenYellow
-elseif (s:month == 9) || (s:month == 10 ) || (s:month == 11)
-    "" Fall
-    highlight StatusLine guifg=Yellow3 guibg=DarkRed
-    highlight WildMenu guifg=DarkRed guibg=Yellow3
-elseif (s:month == 12) || (s:month == 1 ) || (s:month == 2)
-    "" Winter
-    highlight StatusLine guifg=LightSkyBlue3 guibg=NavyBlue
-    highlight WildMenu guifg=NavyBlue guibg=LightSkyBlue3
-else
-    highlight StatusLine guifg=Grey62 guibg=Grey15
-    highlight WildMenu guifg=Grey15 guibg=Grey62
-endif
-"default ... highlight StatusLine ??
-
-"}}}
 
 "その他 GUI 設定 {{{
 "透過

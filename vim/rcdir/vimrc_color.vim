@@ -32,6 +32,7 @@ catch
 endtry
 
 " corsor line 
+highlight CursorLine cterm=underline guifg=None guibg=None
 highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
 autocmd colorLocal InsertLeave * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
 autocmd colorLocal InsertEnter * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=97
