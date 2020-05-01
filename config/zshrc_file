@@ -74,6 +74,7 @@ function ip_color() {
     ret=$ret" "
     echo $ret
 }
+
 function ip_color2() {
     # only for IPv6
     local ip=`curl --connect-timeout 0.5 ifconfig.io 2> /dev/null`
@@ -90,10 +91,10 @@ function ip_color2() {
         ip41=$(( 0x$(echo $ip | cut -f 8 -d ":") >> 8))
         ip42=$(( 0x$(echo $ip | cut -f 8 -d ":") & 0xFF))
         local ret=""
-        ret=$ret"%F{$ip11}%K{$ip12}I%f%k"
-        ret=$ret"%F{$ip21}%K{$ip22}P%f%k"
-        ret=$ret"%F{$ip31}%K{$ip32}v%f%k"
-        ret=$ret"%F{$ip41}%K{$ip42}6%f%k"
+        ret=$ret"%F{$ip11}%K{$ip12}c%f%k"
+        ret=$ret"%F{$ip21}%K{$ip22}n%f%k"
+        ret=$ret"%F{$ip31}%K{$ip32}c%f%k"
+        ret=$ret"%F{$ip41}%K{$ip42}t%f%k"
         ret=$ret" "
         echo $ret
     fi
