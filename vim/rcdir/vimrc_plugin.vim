@@ -732,7 +732,14 @@ endfunction
 
 command! -nargs=? ChkExist call <SID>ChkFileExist(<f-args>)
 vnoremap <Leader>f v:ChkExist<CR>
+nnoremap <expr> <Leader>f ':ChkExist ' . expand('<cfile>') . '<CR>'
 " }}}
+
+"diff系command {{{
+
+command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
+command! -nargs=1 -complete=file Diff vertical diffsplit <args>
+"}}}
 
 " 行単位で差分を取る {{{
 
@@ -773,7 +780,6 @@ function! <SID>diff_line(...) abort
     endif
 
     pclose
-    echo a:0
     if a:0 == 2
         silent 5split DiffLine
     else
