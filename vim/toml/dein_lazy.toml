@@ -53,7 +53,8 @@ function! s:my_cr_function()
   "return pumvisible() ? "\<C-y>" : "\<CR>"
 endfunction
 " <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr><tab>  pumvisible() ? "\<C-n>" : "\<tab>"
+inoremap <expr><S-tab>  pumvisible() ? "\<C-p>" : "\<S-tab>"
 " <C-h>, <BS>: close popup and delete backword char.
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
@@ -67,7 +68,7 @@ inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 "set completeopt+=longest
 "let g:neocomplete#enable_auto_select = 1
 "let g:neocomplete#disable_auto_complete = 1
-"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+"inoremap <expr><tab>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
 
 " Enable omni completion.
 autocmd deinLocal FileType css setlocal omnifunc=csscomplete#CompleteCSS
@@ -105,6 +106,9 @@ let g:deoplete#enable_at_startup = 1
 inoremap <expr><tab> pumvisible() ? "\<C-n>" :
         \ neosnippet#expandable_or_jumpable() ?
         \    "\<Plug>(neosnippet_expand_or_jump)" : "\<tab>"
+inoremap <expr><S-tab> pumvisible() ? "\<C-p>" :
+        \ neosnippet#expandable_or_jumpable() ?
+        \    "\<Plug>(neosnippet_expand_or_jump)" : "\<S-tab>"
 
 """ test
 autocmd deinLocal FileType css setlocal omnifunc=csscomplete#CompleteCSS
