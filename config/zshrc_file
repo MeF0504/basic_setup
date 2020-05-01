@@ -92,9 +92,9 @@ function ip_color2() {
         ip42=$(( 0x$(echo $ip | cut -f 8 -d ":") & 0xFF))
         local ret=""
         ret=$ret"%F{$ip11}%K{$ip12}c%f%k"
-        ret=$ret"%F{$ip21}%K{$ip22}n%f%k"
-        ret=$ret"%F{$ip31}%K{$ip32}c%f%k"
-        ret=$ret"%F{$ip41}%K{$ip42}t%f%k"
+        ret=$ret"%F{$ip21}%K{$ip22}o%f%k"
+        ret=$ret"%F{$ip31}%K{$ip32}n%f%k"
+        ret=$ret"%F{$ip41}%K{$ip42}n%f%k"
         ret=$ret" "
         echo $ret
     fi
