@@ -3,15 +3,9 @@ scriptencoding utf-8
 
 "gfの検索にPYTHON PATHを追加
 if exists("$PYTHONPATH")
-    set path+=$PYTHONPATH
+    execute 'set path+=' . substitute(expand($PYTHONPATH), ':', ',', 'g')
 endif
-
-" "Execute python script Ctrl-P
-" function! g:ExecPy()
-"     exe "!" . &ft . " %"
-" endfunction
-" command! Exec call ExecPy()
-" nnoremap <silent><buffer> <C-P> :call ExecPy()<CR>
+set suffixesadd+=.py
 
 function! s:python_help(module) abort
 
