@@ -147,3 +147,12 @@ repo = 'deoplete-plugins/deoplete-jedi'
 on_source = ['deoplete.nvim']
 on_ft = 'python'
 
+[[plugins]]
+repo = 'sjl/gundo.vim'
+on_i = 1
+hook_source = '''
+" {{{ "Gundo
+nnoremap <silent> <Leader>u :GundoToggle<CR>
+" }}}
+'''
+
