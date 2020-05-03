@@ -25,14 +25,12 @@ def main():
                 tmp_gline = line[:line.find('cterm')-1]
                 for cterm in ['cterm=', 'ctermfg=', 'ctermbg=']:
                     if cterm in line:
-                        # print(cterm+'--'+str(len(line)))
                         bias = len(cterm)
                         st = line.find(cterm) + bias
                         end = line[st:].find(' ') + st
                         if st > end:
                             end = -1
                         opt = line[st:end]
-                        # print('---'+str(st)+'-'+opt+'-'+str(end)+'----')
                         tmp_gline += ' ' + cterm.replace('cterm', 'gui') + cvt_256_fc(opt)
                 gline.append(tmp_gline)
             else:
@@ -47,4 +45,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # print(cvt_256_fc(235))
