@@ -208,13 +208,14 @@ nnoremap <silent> <c-l> :execute("ptjump " . expand("<cword>"))<CR>
 "\で検索のハイライトを消す
 nnoremap <silent> \ :nohlsearch<CR>
 
-" preview windowはqで閉じる
-nnoremap <expr> <silent> q 
-            \ &previewwindow==1
-            \ ? ':quit<CR>'
-            \ : &buftype=='nofile'
-            \ ? ':quit<CR>'
-            \ : 'q'
+" preview , nofile, quickfix windowはqで閉じる
+function! <SID>close_con()
+    return
+            \ (&previewwindow==1)
+            \ || (&buftype=='nofile')
+            \ || (&filetype=='qf')
+endfunction
+nnoremap <silent> <expr> q <SID>close_con()==1 ? ':quit<CR>' : 'q'
 
 "terminal mode設定
 if has('terminal') || has('nvim')
