@@ -32,8 +32,12 @@ if exist %vimcon%\rcdir (
 )
 copy %curdir%\vim\rcdir\* %vimcon%\rcdir\
 
-echo make gvim color file
 python %curdir%\opt\win\cvt_color_vim_gvim.py %curdir%\vim\rcdir\vimrc_color.vim %vimcon%\rcdir\gvimrc_color.vim
+if exist %vimcon%\rcdir\gvimrc_color.vim (
+    echo make gvim color file
+) else (
+    echo Warning! ### making gvim color file failed.
+)
 
 echo ftplugin
 if exist %vimcon%\ftplugin (
