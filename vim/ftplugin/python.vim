@@ -7,8 +7,10 @@ if exists("$PYTHONPATH")
 endif
 set suffixesadd+=.py
 
-function! s:python_help(module) abort
+command! PySyntax !python -m py_compile %
 
+function! s:python_help(module) abort
+    " {{{
     pclose
     silent split PythonHelp
     setlocal noswapfile
@@ -53,11 +55,12 @@ except Exception as e:
 EOF
 
 delcommand TmpPython
+    " }}}
 endfunction
-
 command! -nargs=1 PyHelp call s:python_help(<f-args>)
 
 function! s:py_templete()
+    " {{{
     append
 import os
 
@@ -68,6 +71,7 @@ if __name__ == '__main__':
     main()
 
 .
+    " }}}
 endfunction
 command! Templete :call s:py_templete()
 
