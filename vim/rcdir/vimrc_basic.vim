@@ -176,6 +176,11 @@ nnoremap gh gT
 nnoremap <silent> 0gt :tablast<CR>
 nnoremap <silent> g> :tabmove +1<CR>
 nnoremap <silent> g< :tabmove -1<CR>
+
+" commandlineでも<c-a>で最初に戻りたい
+cnoremap <c-a> <c-b>
+
+" fold関連
 "大文字にするとファイル全体に適用
 nnoremap zO zR
 nnoremap zC zM
