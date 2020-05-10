@@ -200,15 +200,22 @@ if __name__ == "__main__":
     else:
         files = {}
 
+    zshdir = op.expanduser('~/.zsh')
+    mkdir(zshdir)
+    bashdir = op.expanduser('~/.bash')
+    mkdir(bashdir)
+
+    if args.download:
+        print('download git-prompt for bash')
+        subprocess.call('curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh > ~/.bash/git-prompt.sh', shell=True)
+
     for fy in files:
         spath = op.join(setdir,fy)
         fy_dir = op.dirname(op.expanduser(files[fy]))
         if op.exists(spath) and op.exists(fy_dir):
             fcopy(spath,files[fy], link=bool(args.link), force=args.force,test=args.test)
 
-    zshdir = op.expanduser('~/.zsh')
     zshrc_mine = op.join(zshdir, 'zshrc.mine')
-    mkdir(zshdir)
     if not op.exists(zshrc_mine):
         pyopt = ' --prefix ' + args.prefix
         if args.link:
