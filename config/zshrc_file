@@ -316,11 +316,6 @@ alias -g TE=' 2>&1 | tee '
 
 alias zshhistory="vi -R ~/.zsh_history"
 
-if [[ ${VIM_TERMINAL}  != "" ]]; then
-    alias vim="echo already opened vim. "
-    alias vi="echo already opened vim. "
-fi
-
 #}}}
 
 ##{{{ hook function setting

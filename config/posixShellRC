@@ -67,6 +67,11 @@ if [ "$SSH_CLIENT" != "" ]; then
     alias sudo=''
 fi
 
+if [[ ${VIM_TERMINAL}  != "" ]]; then
+    alias vim="echo already opened vim. "
+    alias vi="echo already opened vim. "
+fi
+
 alias global_ip="curl ifconfig.io 2> /dev/null"
 
 #}}}
