@@ -50,7 +50,16 @@ def main_pickle(fpath, args):
 
 def main_numpy(fpath, args):
     import numpy as np
-    print(np.load(fpath))
+    data = np.load(fpath)
+    if args.verbose:
+        print(data)
+    else:
+        print('''
+shape : {}
+mean : {}
+max : {}
+min : {}
+        '''.format(data.shape, np.mean(data), np.max(data), np.min(data)))
 
 def main_tar(fpath, args):
     if not tarfile.is_tarfile(fpath):
