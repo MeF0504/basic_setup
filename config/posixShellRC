@@ -182,5 +182,10 @@ ki() {
     eval find "$dir" "$dot_opt" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 }
 
+weather() {
+    # Tokyo, Sapporo, SanFrancisco, moon, etc..
+    curl wttr.in/"$1"
+}
+
 #}}}
 
