@@ -138,8 +138,7 @@ case ${UID} in
         PROMPT=$PROMPT"%(?. >> . %{${fg[red]}%}!!%{${reset_color}%} "
     fi
     # ip_color
-    PROMPT_ORI=$PROMPT
-    PROMPT='$(ip_color)'$PROMPT_ORI
+    PROMPT='$(ip_color)'$PROMPT
 
     PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
     SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
@@ -221,34 +220,22 @@ bindkey "\e[Z" reverse-menu-complete
 # Enter key bind
 # key bind:: https://qiita.com/yuku_t/items/e58cbecf13407446bd50
 # Enter key bind:: https://qiita.com/yut-kt/items/267ce4648b801c1c1bca
-
-# update PROMPT
-# function update_prompt() {
-#     # check that PROMPT is not changed.
-#     if [[ $PROMPT =~ ^%F.* ]]; then
-#         PROMPT=$(ip_color)$PROMPT_ORI
-#     fi
-#     return 0
-# }
 function do_enter() {
     if [ -n "$BUFFER" ]; then
-        zle accept-line
+        zle accept-line   # 処理で表示がないとこっち?
         return 0
     fi
-    # update_prompt
-    if [[ -f $HOME/.zsh/enter.zsh ]]; then
-        echo
-        source $HOME/.zsh/enter.zsh
-        echo '\n'
-        zle reset-prompt  # 上の処理で表示があるとこっち?
-    else
-        zle accept-line   # 上の処理で表示がないとこっち?
-    fi
+    echo
+    source $HOME/.zsh/enter.zsh
+    echo '\n'
+    zle reset-prompt  # 上の処理で表示があるとこっち?
     return 0
 }
 
-zle -N do_enter     # do_enterをwidgetとして登録
-bindkey '^M' do_enter 
+if [[ -f $HOME/.zsh/enter.zsh ]]; then
+    zle -N do_enter     # do_enterをwidgetとして登録
+    bindkey '^M' do_enter
+fi
 
 # ctrl-b,f で前後の単語に移動
 bindkey "^b" backward-word
