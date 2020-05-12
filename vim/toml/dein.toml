@@ -375,6 +375,12 @@ autocmd deinLocal FileType html
         \ let b:endwise_addition = '\=submatch(0)=="html" ? "\</html\>" : submatch(0)=="head" ? "\</head\>" : submatch(0)=="body" ? "\</body\>" : submatch(0)=="script" ? "\</script\>" : "\</style\>"' |
         \ let b:endwise_words = 'html,head,body,script,style' |
         \ let b:endwise_syngroups = 'htmlTagName,htmlSpecialTagName'
+" https://github.com/tpope/vim-endwise/issues/83
+autocmd deinLocal FileType tex
+        \ let b:endwise_addition = '\="\\end" . matchstr(submatch(0), "{.\\{-}}")' |
+        \ let b:endwise_words = 'begin' |
+        \ let b:endwise_pattern = '\\begin{.\{-}}' |
+        \ let b:endwise_syngroups = 'texSection,texBeginEnd,texBeginEndName,texStatement'
 "}}}
 '''
 
