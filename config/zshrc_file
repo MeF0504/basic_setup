@@ -385,11 +385,25 @@ if [[ -n $ITERM_SESSION_ID ]]; then
 
     tab_reset() {echo -ne "\033]6;1;bg;*;default\a" }
 
+    cvt_str_int() {
+        hex=$(for x in $(echo $1 | \grep -o '.');do printf "%03u" \"$x; done)
+        if [[ $hex = "" ]]; then
+            echo 0
+        else
+            echo $hex
+        fi
+    }
+
     function iterm2_tab_precmd() {
         tab_reset
     }
-    
+
     function iterm2_tab_preexec() {
+        # if [[ "$1" =~ "^ ?ssh" ]]; then
+        #     local sshhost=$(for x in $(echo $1 | tr ' ' '\n'); do if [ $x != 'ssh' ] && [ ${x:0:1} != '-' ]; then; echo $x; fi; done)
+        #     local st=$((${#sshhost}/3))
+        #     tab_color $( cvt_str_int ${sshhost:0:1}) $( cvt_str_int ${sshhost:$st:1}) $(cvt_str_int ${sshhost:$((st*2)):1})
+        # fi
         if [[ -n $TAB1 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB1.*$" ]]; then
             tab_color 255 0 0       # Red
         elif [[ -n $TAB2 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB2.*$" ]]; then
