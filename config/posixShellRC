@@ -73,6 +73,7 @@ if [[ ${VIM_TERMINAL}  != "" ]]; then
 fi
 
 alias global_ip="curl ifconfig.io 2> /dev/null"
+alias iv='for i in {4..1}; do; echo -n $i..\ ;sleep 1;done; echo'
 
 #}}}
 
