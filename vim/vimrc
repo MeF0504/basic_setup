@@ -189,9 +189,10 @@ function! s:SID_PREFIX()
 endfunction
 
 " Set tabline.
-function! s:my_tabline() 
+function! s:my_tabline()
     let beginstr = ''
     let laststr = ''
+    let all_files = 0
     let is_edit = 0
 
     let titles = []
@@ -199,6 +200,7 @@ function! s:my_tabline()
         let no = i  " display 0-origin tabpagenr.
         let bufnrs = tabpagebuflist(i)
         for bn in bufnrs
+            let all_files += 1
             if getbufvar(bn, '&modified')
                 let is_edit += 1
             endif
@@ -214,14 +216,14 @@ function! s:my_tabline()
         call add(titles, title)
 
     endfor
-    let is_edit = '_' . is_edit . '_'
+    let edit_str = '_' . is_edit . '/' . all_files . '_'
 
     let width = &columns
     let cur_tab_no = tabpagenr()
     let st = cur_tab_no
     let en = cur_tab_no
     let tab_len = len(titles[cur_tab_no-1]) + 5   " 5 ... (max) len(beginstr+laststr) + 1
-    let tab_len += len(is_edit)
+    let tab_len += len(edit_str)
     for i in range(1, tabpagenr('$'))
         let ctn_p = en+1
         if ctn_p <= tabpagenr('$')
@@ -252,7 +254,7 @@ function! s:my_tabline()
     endif
 
     let s = ''
-    let s .= is_edit
+    let s .= edit_str
     let s .= beginstr
     for i in range(st, en)
         let s .= '%'.i.'T'
