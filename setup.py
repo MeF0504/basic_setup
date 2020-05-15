@@ -117,10 +117,10 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
                 if (yn == 'y') or (yn == 'yes'):
                     fcopy_main(cmd, comment, test)
                 elif (yn == 'd') or (yn == 'diff'):
+                    print('')
+                    fcopy_diff(file2, file1)
+                    print('')
                     print('Do not copy '+name2)
-                    print('')
-                    fcopy_diff(file1, file2)
-                    print('')
                 else:
                     print('Do not copy '+name2)
         else:
