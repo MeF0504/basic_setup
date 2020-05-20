@@ -147,12 +147,13 @@ set statusline=%f%m%r%h%w%<%=%y\ %l/%L\ [%P]
 
 ""##########mapping設定 "{{{
 
-"誤って使うとまずいkeymapを削除
+" 誤って使うとまずいkeymapを削除
 nnoremap ZZ <Nop>
 nnoremap ZQ <Nop>
 nnoremap Q <Nop>
 
-"使いやすいようにmapping
+" 使いやすいようにmapping
+" window 移動
 nnoremap s <c-w>
 nnoremap sj <c-w>j
 nnoremap s<Down> <c-w>j
@@ -162,13 +163,17 @@ nnoremap sh <c-w>h
 nnoremap s<Left> <c-w>h
 nnoremap sl <c-w>l
 nnoremap s<Right> <c-w>l
+" new tab
 nnoremap T :tabnew<space>
+" quick fix window
 nnoremap <silent> co :botright copen<CR>
 nnoremap <silent> cc :cclose<CR>
 nnoremap <silent> cn :cnewer<CR>
 nnoremap <silent> cp :colder<CR>
+" search
 nnoremap / /\v
 nnoremap * /\v<<c-r><c-w>><CR>
+" tab 移動
 nnoremap g<Right> gt
 nnoremap g<Left> gT
 nnoremap gl gt
@@ -176,41 +181,45 @@ nnoremap gh gT
 nnoremap <silent> 0gt :tablast<CR>
 nnoremap <silent> g> :tabmove +1<CR>
 nnoremap <silent> g< :tabmove -1<CR>
+" 画面自体を左右に移動
+nnoremap H zh
+nnoremap l zl
 
 " commandlineでも<c-a>で最初に戻りたい
 cnoremap <c-a> <c-b>
 
 " fold関連
-"大文字にするとファイル全体に適用
+" 大文字にするとファイル全体に適用
 nnoremap zO zR
 nnoremap zC zM
-"Yで行末までヤンク
+" Yで行末までヤンク
 nnoremap Y y$
 vnoremap Y $y
-"右方向で再帰的に開く
+" 右方向で再帰的に開く
 nnoremap <expr> l foldclosed(line('.')) != -1 ? 'zO' : 'l'
 nnoremap <expr> <Right> foldclosed(line('.')) != -1 ? 'zO' : 'l'
-"Enterで１段開いたり閉じたりする
+" Enterで１段開いたり閉じたりする
 nnoremap <expr> <CR> foldlevel('.') != 0 ? 'za' : '<CR>'
 
-"shiftは逆動作だと思ってるので、単語移動をremap
+" shiftは逆動作だと思ってるので、単語移動をremap
 noremap W b
 noremap gw W
 noremap gW B
 noremap E ge
 noremap ge E
 
-"ヘッダーファイルをタブで開く
+" ヘッダーファイルをタブで開く
 nnoremap gf <c-w>gf
 
-"候補が複数ある場合にリストを表示
+" tag jump
+" 候補が複数ある場合にリストを表示
 nnoremap <c-]> g<c-]>
-"
+" 分割で表示
 nnoremap <silent> g<c-]> :vertical stjump<CR>
-"preview で開く
+" preview で開く
 nnoremap <silent> <c-l> :execute("ptjump " . expand("<cword>"))<CR>
 
-"\で検索のハイライトを消す
+" \で検索のハイライトを消す
 nnoremap <silent> \ :nohlsearch<CR>
 
 " preview , nofile, quickfix windowはqで閉じる
@@ -222,13 +231,12 @@ function! <SID>close_con()
 endfunction
 nnoremap <silent> <expr> q <SID>close_con()==1 ? ':quit<CR>' : 'q'
 
-"terminal mode設定
+" terminal mode設定
 if has('terminal') || has('nvim')
-    "terminal-job modeからterminal-normal modeへの移行をescape*2で行えるようにする
-    "(1回だと矢印を検知してしまうため2回にする)
+    " terminal-job modeからterminal-normal modeへの移行をescape*2で行えるようにする
+    " (1回だと矢印を検知してしまうため2回にする)
     tnoremap <ESC><ESC> <c-\><c-n>
 endif
 
 " }}}
-
 
