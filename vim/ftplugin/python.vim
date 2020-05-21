@@ -11,6 +11,11 @@ command! PySyntax !python -m py_compile %
 
 function! s:python_help(module) abort
     " {{{
+    if a:module == '-h'
+        echo '>>> usage :PyHelp module [function]'
+        return
+    endif
+
     pclose
     silent split PythonHelp
     setlocal noswapfile
@@ -29,25 +34,42 @@ function! s:python_help(module) abort
         echo "This vim doesn't support python and python3."
         pclose
     endif
+    let l:mod = split(a:module, ' ')
     try
-        execute "TmpPython import " . a:module
-        echo "import " . a:module
+        execute "TmpPython import " . l:mod[0]
+        echo "import " . l:mod[0]
     catch
-        echo "module '" . a:module . "' doesn't found."
+        echo "module '" . l:mod[0] . "' doesn't found."
         pclose
         return
     endtry
+    if len(l:mod) > 1
+        let l:func = l:mod[1]
+    else
+        let l:func = 'no_func'
+    endif
 
     TmpPython << EOF
 import inspect
 import vim
-mod = vim.eval('a:module')
+mod = vim.eval('l:mod[0]')
+func = vim.eval('l:func')
 try:
-    exec('vim.current.buffer.append("In file: " + inspect.getsourcefile(%s))' % mod)
-    vim.current.buffer.append('\n')
-    exec('source = inspect.getsource(%s)' % mod)
-    for s in source.split('\n'):
-        vim.current.buffer.append(s)
+    if func == 'no_func':
+        exec('vim.current.buffer.append("In file: " + inspect.getsourcefile(%s))' % mod)
+        vim.current.buffer.append('\n')
+        exec('source = inspect.getsource(%s)' % mod)
+        for s in source.split('\n'):
+            vim.current.buffer.append(s)
+    else:
+        exec('onoff = "%s" in %s.__dict__' % (func, mod))
+        if onoff:
+            exec('source = '+mod+'.'+func+'.__doc__')
+            for s in source.split('\n'):
+                vim.current.buffer.append(s)
+        else:
+            print('%s is not in %s' % (func, mod))
+            vim.command('pclose')
 except Exception as e:
     if 0:
         print(e)
