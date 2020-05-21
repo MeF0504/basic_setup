@@ -54,12 +54,23 @@ def main_numpy(fpath, args):
     if args.verbose:
         print(data)
     else:
-        print('''
+        d_mean = np.mean(data)
+        d_max = np.max(data)
+        d_min = np.min(data)
+        if np.isnan(d_mean):
+            d_mean = np.nanmean(data)
+            d_max = np.nanmax(data)
+            d_min = np.nanmin(data)
+            nan_rate = 1 - np.sum(data==data)/np.prod(data.shape)
+        prt_str = '''
 shape : {}
 mean : {}
 max : {}
-min : {}
-        '''.format(data.shape, np.mean(data), np.max(data), np.min(data)))
+min : {} '''.format(data.shape, d_mean, d_max, d_min)
+        if 'nan_rate' in locals():
+            prt_str += '\nnan rate : {:.1f}%'.format(nan_rate*100)
+
+        print(prt_str)
 
 def main_tar(fpath, args):
     if not tarfile.is_tarfile(fpath):
