@@ -75,8 +75,10 @@ set smartcase
 "タブとかを可視化?
 set list
 set listchars=tab:».,trail:\ ,extends:»,precedes:«,nbsp:% ",eol:↲
-"clipboardとyankを共有 (+clipboardが条件)
-set clipboard+=unnamed
+if !exists('$SSH_CONNECTION')   " localのときのみ
+    "clipboardとyankを共有 (+clipboardが条件)
+    set clipboard+=unnamed
+endif
 "検索のときに移動しない
 set noincsearch
 "カーソルが上下2行に行ったらスクロール
