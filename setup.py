@@ -31,7 +31,6 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         else:
             print('cmd check:: '+cmd)
 
-
     def fcopy_diff(file1, file2):
         # https://it-ojisan.tokyo/python-difflib/#keni_toc_2
         fname1 = op.basename(file1)
@@ -48,6 +47,13 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
                 fromfile=fname1, tofile=fname2, \
                 fromfiledate=dt1.strftime('%m %d (%Y) %H:%M:%S'), tofiledate=dt2.strftime('%m %d (%Y) %H:%M:%S')):
             print(line, end='')
+
+    def get_input(input_str):
+        if sys.version_info[0] == 2:
+            yn = raw_input(input_str)
+        else:
+            yn = input(input_str)
+        return yn
 
     file1 = op.expanduser(file1)
     file2 = op.expanduser(file2)
@@ -110,17 +116,18 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
                 print('  [ %s ] is a link file, cannot copy!' % name2)
             else:
                 input_str = '  [  %s  ] is already exist, are you realy overwrite? [y(yes), n(no), d(diff)] ' % name2
-                if sys.version_info[0] == 2:
-                    yn = raw_input(input_str)
-                else:
-                    yn = input(input_str)
+                yn = get_input(input_str)
                 if (yn == 'y') or (yn == 'yes'):
                     fcopy_main(cmd, comment, test)
                 elif (yn == 'd') or (yn == 'diff'):
                     print('')
                     fcopy_diff(file2, file1)
                     print('')
-                    print('Do not copy '+name2)
+                    yn = get_input(input_str)
+                    if (yn == 'y') or (yn == 'yes'):
+                        fcopy_main(cmd, comment, test)
+                    else:
+                        print('Do not copy '+name2)
                 else:
                     print('Do not copy '+name2)
         else:
