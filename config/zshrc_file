@@ -367,10 +367,21 @@ fi
 
 case "${TERM}" in
 xterm|xterm-color|kterm|kterm-color|xterm-256color)
-    precmd() {
-        #echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
-        echo -ne "\033]0;${USER}@${HOSTNAME}\007"
-    }
+    if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+        precmd() {
+            #echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
+            echo -ne "\033]0;${USER}@${HOSTNAME}\007"
+        }
+    else
+        precmd() {
+            if [[ $PWD = $HOME ]]; then
+                mypwd=home
+            else
+                mypwd=$(basename $PWD)
+            fi
+            echo -ne "\033]0;${USER}@$mypwd\007"
+        }
+    fi
     ;;
 esac
 
