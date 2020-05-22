@@ -10,9 +10,12 @@ import glob
 import filecmp
 import difflib
 import datetime
+if sys.version_info.major < 3:
+    import urllib as urlreq
+else:
+    import urllib.request as urlreq
 #if float(sys.version[:3]) < 2.7:
     #import commands
-
 
 def mkdir(path):
     path = op.expanduser(path)
@@ -135,7 +138,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             fcopy_main(cmd, comment, test)
 #}}}
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--prefix',help='install directory',default=op.expanduser('~/opt'))
     parser.add_argument('--download',help='download some files (from git)',action='store_true')
@@ -215,7 +218,7 @@ if __name__ == "__main__":
 
     if args.download:
         print('download git-prompt for bash')
-        subprocess.call('curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh > ~/.bash/git-prompt.sh', shell=True)
+        urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', op.expanduser('~/.bash/git-prompt.sh'))
 
     for fy in files:
         spath = op.join(setdir,fy)
@@ -265,36 +268,9 @@ if __name__ == "__main__":
         mkdir('tmp')
         os.chdir(op.join(fpath,'tmp'))
 
-        #print '\nclone neobundle'
-        #mkdir('~/.vim/bundle/')
-        #subprocess.call('git clone git://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim',shell=True)
-
         print('\nclone dein')
         mkdir(op.join(conf_home, 'nvim/dein'))
         subprocess.call('curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && chmod u+x installer.sh && ./installer.sh %s/nvim/dein' % conf_home, shell=True)
-
-        #print '\nclone inkpot'
-        #subprocess.call('git clone https://github.com/ciaranm/inkpot',shell=True)
-        #subprocess.call('cp -ri ./inkpot/colors ~/.config/nvim/',shell=True)
-
-        #print '\nclone seiya'
-        #subprocess.call('git clone https://github.com/miyakogi/seiya.vim',shell=True)
-        #subprocess.call('cp -ri ./seiya.vim/plugin ~/.vim',shell=True)
-
-        #print '\nclone quickrun'
-        #subprocess.call('git clone https://github.com/thinca/vim-quickrun.git',shell=True)
-        #subprocess.call('cp -ri ./vim-quickrun/plugin/quickrun.vim ~/.vim/plugin/',shell=True)
-
-        #print '\nclone taglist'
-        #subprocess.call('git clone https://github.com/vim-scripts/taglist.vim',shell=True)
-        #subprocess.call('cp -ri ./taglist.vim/plugin/taglist.vim ~/.vim/plugin/',shell=True)
-
-        #print '\nclone current-func-info'
-        #subprocess.call('git clone https://github.com/tyru/current-func-info.vim.git',shell=True)
-        #subprocess.call('cp -ri ./current-func-info.vim/autoload ~/.config/nvim/',shell=True)
-        #subprocess.call('cp -ri ./current-func-info.vim/doc ~/.config/nvim/',shell=True)
-        #subprocess.call('cp -ri ./current-func-info.vim/ftplugin ~/.config/nvim/',shell=True)
-        #subprocess.call('cp -ri ./current-func-info.vim/plugin ~/.config/nvim/',shell=True)
 
         print('\nremove download tmp files')
         os.chdir(fpath)
@@ -338,3 +314,6 @@ if __name__ == "__main__":
 
     # }}}
 
+
+if __name__ == "__main__":
+    main()
