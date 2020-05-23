@@ -45,6 +45,10 @@ def main_pickle(fpath, args):
                 print(key)
                 if args.verbose:
                     print(' >>> {}'.format(data[key]))
+                else:
+                    print('  type   : {}'.format(type(data[key]).__name__))
+                    if hasattr(data[key], '__len__'):
+                        print('  length : {}'.format(len(data[key])))
     else:
         print(data)
 
