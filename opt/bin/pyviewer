@@ -88,6 +88,50 @@ def main_zip(fpath, args):
             for zfile in zip_files.namelist():
                 print(zfile)
 
+def main_sqlite3(fpath, args):
+    import sqlite3
+
+    def table_info_simple(table):
+        cursor.execute("pragma table_info('%s')" % table)
+        table_info = cursor.fetchall()
+        for tinfo in table_info:
+            if tinfo[2] == '':
+                ctype = 'none'
+            else:
+                ctype = tinfo[2]
+            print('  | %s [ %s ]' % (tinfo[1], ctype))
+
+    def table_info_verbose(table):
+        cursor.execute("pragma table_info('%s')" % table)
+        table_info = cursor.fetchall()
+        print('  |', end='')
+        for tinfo in table_info:
+            print(' %s\t|' % tinfo[1], end='')
+        print('')
+        cursor.execute('select * from %s' % table)
+        column = cursor.fetchall()
+        for clm in column:
+            print('  |', end='')
+            for item in clm:
+                print(' %s\t|' % item, end='')
+            print('')
+
+    database = sqlite3.connect(fpath)
+    cursor = database.cursor()
+    cursor.execute("select name from sqlite_master where type='table'")
+    tables = cursor.fetchall()
+    if hasattr(args, 'key') and args.key is not None:
+        print(args.key)
+        table_info_verbose(args.key)
+        return
+    for tb in tables:
+        table = tb[0]
+        print(table)
+        if args.verbose:
+            table_info_verbose(table)
+        else:
+            table_info_simple(table)
+
 def main(args):
 
     fpath = os.path.expanduser(args.file)
@@ -107,6 +151,8 @@ def main(args):
             args.type = 'tar'
         elif ext == 'zip':
             args.type = 'zip'
+        elif ext in 'db db3 sql sql3 sqlite sqlite3'.split(' '):
+            args.type = 'sqlite3'
         elif ext == 'py':
             if 'ja_JP' in os.environ['LANG']:
                 print('vimでも使ってろ！')
@@ -124,18 +170,20 @@ def main(args):
         main_tar(fpath, args)
     elif args.type == 'zip':
         main_zip(fpath, args)
+    elif args.type == 'sqlite3':
+        main_sqlite3(fpath, args)
     else:
         print('this file is not supported.')
 
     return
 
 if __name__ == "__main__":
-    supported_type = 'hdf5 pickle numpy tar zip'
+    supported_type = 'hdf5 pickle numpy tar zip sqlite3'
     parser = argparse.ArgumentParser(description="show the constitution of file. supported file types ... " + supported_type.replace(' ', ', '))
     parser.add_argument('file', help='imput hdf5 file')
     parser.add_argument('-v', dest='verbose', action='store_true', help='show details')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(' '))
-    parser.add_argument('-k', '--key', dest='key', help='A key name for dictionary in pickle, or a Dataset name for hdf5')
+    parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, Dataset name in hdf5, or table name in sqlite3.')
     args = parser.parse_args()
 
     main(args)
