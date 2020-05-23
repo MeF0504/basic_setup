@@ -126,7 +126,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
                     print('')
                     fcopy_diff(file2, file1)
                     print('')
-                    input_str = ' are you realy overwrite? [y(yes), n(no)] ' % name2
+                    input_str = ' are you realy overwrite? [y(yes), n(no)] '
                     yn = get_input(input_str)
                     if (yn == 'y') or (yn == 'yes'):
                         fcopy_main(cmd, comment, test)
