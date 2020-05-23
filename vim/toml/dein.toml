@@ -88,7 +88,7 @@ function s:set_qrun_marp()
             let s:cmd = 'start'
             let s:exe = '%c chrome %s'
         else
-            let s:cmd = 'firefox'   # temporary
+            let s:cmd = 'firefox'   " temporary
             let s:exe = '%c %s'
         endif
         let g:quickrun_config.markdown = {
