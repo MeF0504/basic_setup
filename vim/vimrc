@@ -330,15 +330,11 @@ nnoremap <Leader>p :call Show_clipboard()<CR>
 "}}}
 
 " 関数じゃないけどInsertを抜けるときに日本語入力をoff {{{
-if !exists('$SSH_CONNECTION')   " ※ssh先ではhostのを変えるので意味なし
-    "Insert modeを抜けるときにIME off
-    if has("win32") && exists('g:l_auto_ime_off')
-        inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
-    endif
-
-    "macでinsert modeから抜けるときにIME off
-    "参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
-    if has('mac') && exists('g:l_auto_ime_off')
+if !exists('$SSH_CONNECTION') && exists('g:l_auto_ime_off')   " ※ssh先ではhostのを変えるので意味なし
+    if has('win32')
+        autocmd local InsertLeave * set iminsert=0
+    elseif has('mac')
+        "参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
         let g:l_imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
         autocmd local InsertLeave * :call system(g:l_imeoff)
     endif

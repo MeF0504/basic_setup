@@ -51,7 +51,7 @@ function s:set_qrun_marp()
     endfor
     if s:is_marp == 1
         " make prezantation by markdown [https://github.com/marp-team/marp-cli]
-        if system('uname') == "Darwin\n"
+        if has('mac')
             let s:open_pdf = 'open %s:r.pdf'
         elseif has('win32')
             let s:open_pdf = 'start %s:r.pdf'
@@ -66,7 +66,7 @@ function s:set_qrun_marp()
         " --preview may not be supported anymore.
         if has('terminal') " || has('nvim')
             " http://chrome.half-moon.org/43.html
-            if system('uname') == "Darwin\n"
+            if has('mac')
                 let s:open_server = 'open -n -a Google\ Chrome --args -incognito http://localhost:8080/'
             elseif has('win32')
                 let s:open_server = '"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --new-window --incognito http://localhost:8080/'
@@ -81,7 +81,7 @@ function s:set_qrun_marp()
                         \ }
         endif
     else
-        if system('uname') == "Darwin\n"
+        if has('mac')
             let s:cmd = 'open'
             let s:exe = '%c %s -a Google\ Chrome'
         elseif has('win32')
@@ -100,7 +100,7 @@ endfunction
 autocmd deinLocal FileType markdown call s:set_qrun_marp()
 
 
-if system('uname') == "Darwin\n"
+if has('mac')
     " macOSでlatex (ptex2pdf)を使う場合
     " https://texwiki.texjp.org/?quickrun
     "let g:quickrun_config.tex = {
