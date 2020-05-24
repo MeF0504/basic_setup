@@ -269,8 +269,9 @@ def main():
         os.chdir(op.join(fpath,'tmp'))
 
         print('\nclone dein')
-        mkdir(op.join(conf_home, 'nvim/dein'))
-        subprocess.call('curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && chmod u+x installer.sh && ./installer.sh %s/nvim/dein' % conf_home, shell=True)
+        mkdir(op.join(vim_config_dir, 'dein'))
+        urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
+        subprocess.call('sh installer.sh %s' % op.join(vim_config_dir, 'dein'), shell=True)
 
         print('\nremove download tmp files')
         os.chdir(fpath)
