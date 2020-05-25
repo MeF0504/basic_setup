@@ -94,6 +94,12 @@ def main_zip(fpath, args):
 
 def main_sqlite3(fpath, args):
     import sqlite3
+    try:
+        from tabulate import tabulate
+        is_tabulate = True
+    except ImportError:
+        print("I can't find tabulate library.")
+        is_tabulate = False
 
     def table_info_simple(table):
         cursor.execute("pragma table_info('%s')" % table)
@@ -108,17 +114,32 @@ def main_sqlite3(fpath, args):
     def table_info_verbose(table):
         cursor.execute("pragma table_info('%s')" % table)
         table_info = cursor.fetchall()
-        print('  |', end='')
+        headers = []
         for tinfo in table_info:
-            print(' %s\t|' % tinfo[1], end='')
-        print('')
+            headers.append(tinfo[1])
         cursor.execute('select * from %s' % table)
         column = cursor.fetchall()
+        table = []
         for clm in column:
-            print('  |', end='')
+            table.append([])
             for item in clm:
-                print(' %s\t|' % item, end='')
+                table[-1].append(item)
+
+        if is_tabulate:
+            shift = '  '
+            table_str = tabulate(table, headers, tablefmt='github')
+            table_str = table_str.replace('\n', '\n'+shift)
+            print(shift + table_str)
+        else:
+            print('  |', end='')
+            for hd in headers:
+                print(' %s |' % hd, end='')
             print('')
+            for itms in table:
+                print('  |', end='')
+                for itm in itms:
+                    print(' %s |' % itm, end='')
+                print('')
 
     database = sqlite3.connect(fpath)
     cursor = database.cursor()
