@@ -81,12 +81,30 @@ def main_tar(fpath, args):
         print('{} is not a tar file.'.format(fpath))
         return
     with tarfile.open(fpath, 'r:*') as tar:
-        tar.list(verbose=args.verbose)
+        if hasattr(args, 'key') and args.key is not None:
+            try:
+                for line in tar.extractfile(args.key):
+                    print(line.decode(), end='')
+            except Exception as e:
+                print('Error!! {}'.format(e))
+                print("{} can't open.".format(args.key))
+                return
+            print('')
+        else:
+            tar.list(verbose=args.verbose)
 
 def main_zip(fpath, args):
     import zipfile
     with zipfile.ZipFile(fpath, 'r') as zip_files:
-        if args.verbose:
+        if hasattr(args, 'key') and args.key is not None:
+            try:
+                for line in zip_files.open(args.key, 'r'):
+                    print(line.decode(), end='')
+            except Exception as e:
+                print('Error!! {}'.format(e))
+                print("{} can't open.".format(args.key))
+                return
+        elif args.verbose:
             zip_files.printdir()
         else:
             for zfile in zip_files.namelist():
@@ -208,7 +226,7 @@ if __name__ == "__main__":
     parser.add_argument('file', help='imput hdf5 file')
     parser.add_argument('-v', dest='verbose', action='store_true', help='show details')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(' '))
-    parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, Dataset name in hdf5, or table name in sqlite3.')
+    parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, Dataset name in hdf5, file name in tar/zip, or table name in sqlite3.')
     args = parser.parse_args()
 
     main(args)
