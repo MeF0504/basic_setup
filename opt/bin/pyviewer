@@ -5,6 +5,7 @@
 from __future__ import print_function
 
 import os
+import sys
 import argparse
 import tarfile
 
@@ -83,13 +84,22 @@ def main_tar(fpath, args):
     with tarfile.open(fpath, 'r:*') as tar:
         if hasattr(args, 'key') and args.key is not None:
             try:
-                for line in tar.extractfile(args.key):
-                    print(line.decode(), end='')
-            except Exception as e:
-                print('Error!! {}'.format(e))
-                print("cannot open {}.".format(args.key))
+                tarinfo = tar.getmember(args.key)
+            except KeyError as e:
+                print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
                 return
-            print('')
+            if tarinfo.isfile():
+                for line in tar.extractfile(args.key):
+                    try:
+                        print(line.decode(), end='')
+                    except UnicodeDecodeError as e:
+                        print('Error!! {}'.format(e), file=sys.stderr)
+                        return
+                print('')
+            elif tarinfo.isdir():
+                for tfile in tar.getnames():
+                    if tfile[:len(args.key)] == args.key:
+                        print(tfile)
         else:
             tar.list(verbose=args.verbose)
 
@@ -97,13 +107,23 @@ def main_zip(fpath, args):
     import zipfile
     with zipfile.ZipFile(fpath, 'r') as zip_files:
         if hasattr(args, 'key') and args.key is not None:
-            try:
-                for line in zip_files.open(args.key, 'r'):
-                    print(line.decode(), end='')
-            except Exception as e:
-                print('Error!! {}'.format(e))
-                print("cannot open {}.".format(args.key))
+            zpath = zipfile.Path(zip_files, args.key)
+            if not zpath.exists():
+                print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
                 return
+            if zpath.is_file():
+                for line in zip_files.open(args.key, 'r'):
+                    try:
+                        print(line.decode(), end='')
+                    except UnicodeDecodeError as e:
+                        print('Error!! {}'.format(e), file=sys.stderr)
+                        return
+            elif zpath.is_dir():
+                for zfile in zip_files.namelist():
+                    if zfile[:len(args.key)] == args.key:
+                        print(zfile)
+            else:
+                print('{} is a unknown filetype.'.format(args.key))
         elif args.verbose:
             zip_files.printdir()
         else:
