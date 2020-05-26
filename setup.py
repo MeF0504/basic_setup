@@ -36,8 +36,6 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
 
     def fcopy_diff(file1, file2):
         # https://it-ojisan.tokyo/python-difflib/#keni_toc_2
-        fname1 = op.basename(file1)
-        fname2 = op.basename(file2)
         dt1 = datetime.datetime.fromtimestamp(os.stat(file1).st_mtime)
         dt2 = datetime.datetime.fromtimestamp(os.stat(file2).st_mtime)
 
@@ -47,7 +45,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             str2 = f.readlines()
 
         for line in difflib.unified_diff(str1, str2, n=1, \
-                fromfile=fname1, tofile=fname2, \
+                fromfile=file1, tofile=file2, \
                 fromfiledate=dt1.strftime('%m %d (%Y) %H:%M:%S'), tofiledate=dt2.strftime('%m %d (%Y) %H:%M:%S')):
             print(line, end='')
 
