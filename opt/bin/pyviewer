@@ -87,7 +87,7 @@ def main_tar(fpath, args):
                     print(line.decode(), end='')
             except Exception as e:
                 print('Error!! {}'.format(e))
-                print("{} can't open.".format(args.key))
+                print("cannot open {}.".format(args.key))
                 return
             print('')
         else:
@@ -102,7 +102,7 @@ def main_zip(fpath, args):
                     print(line.decode(), end='')
             except Exception as e:
                 print('Error!! {}'.format(e))
-                print("{} can't open.".format(args.key))
+                print("cannot open {}.".format(args.key))
                 return
         elif args.verbose:
             zip_files.printdir()
