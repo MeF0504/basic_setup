@@ -44,10 +44,11 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         with open(file2, 'r') as f:
             str2 = f.readlines()
 
+        shift = '    '
         for line in difflib.unified_diff(str1, str2, n=1, \
                 fromfile=file1, tofile=file2, \
                 fromfiledate=dt1.strftime('%m %d (%Y) %H:%M:%S'), tofiledate=dt2.strftime('%m %d (%Y) %H:%M:%S')):
-            print(line, end='')
+            print(shift+line, end='')
 
     def get_input(input_str):
         if sys.version_info[0] == 2:
