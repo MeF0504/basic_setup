@@ -120,52 +120,6 @@ set statusline=%!Set_statusline()
 
 "}}}
 
-"vimでbinary fileを見る "{{{
-function! FT_Binary(on_off)
-    if a:on_off == 1
-        if exists("t:l_old_ft")
-            echo "already open as binary editor"
-            return
-        endif
-        "前の値を避難させる
-        let t:l_old_ft = &filetype
-        "let t:l_old_disp = &display
-        "binay modeで開く
-        if ! exists("t:l_pp_bin")
-            e ++bin
-            let t:l_pp_bin = 0
-        endif
-        "不可視文字をHexフォーマットで
-        "set display=uhex
-        "バイナリエディタっぽく
-        %!xxd
-        set filetype=xxd
-
-        "nnoremap :q :execute "%!xxd -r"<CR> :q
-        "nnoremap :wq :execute "%!xxd -r"<CR> :wq
-
-    else
-        if ! exists('t:l_old_ft')
-            echo "not opened as binary editor yet"
-            return
-        endif
-        %!xxd -r
-        "e ++nobin
-        "execute "set display=" . t:l_old_disp
-        execute "set filetype=" . t:l_old_ft
-
-        "unmap :wq
-        "unmap :q
-        unlet t:l_old_ft
-        "unlet t:l_old_disp
-
-    endif
-endfunction
-
-command! FTBinOn call FT_Binary(1)
-command! FTBinOff call FT_Binary(0)
-" }}}
-
 "ファイルが読み込めない事があるので、その時用にread onlyをつけてencodeし直して開く関数 "{{{
 
 function! s:noeol_reenc()

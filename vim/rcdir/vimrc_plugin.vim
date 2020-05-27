@@ -44,6 +44,54 @@ endfunction
 command! SyntaxInfo call s:get_syn_info()
 " }}}
 
+"vimでbinary fileを見る "{{{
+function! <SID>BinaryMode(on_off)
+    if a:on_off == 'on'
+        if exists("t:l_old_ft")
+            echo "already open as binary editor"
+            return
+        endif
+        "前の値を避難させる
+        let t:l_old_ft = &filetype
+        "let t:l_old_disp = &display
+        "binay modeで開く
+        if ! exists("t:l_pp_bin")
+            e ++bin
+            let t:l_pp_bin = 0
+        endif
+        "不可視文字をHexフォーマットで
+        "set display=uhex
+        "バイナリエディタっぽく
+        %!xxd
+        set filetype=xxd
+
+    elseif a:on_off == 'off'
+        if ! exists('t:l_old_ft')
+            echo "not opened as binary editor yet"
+            return
+        endif
+        if &modified == 1
+            if input('save this file? (y/[n]) ') != 'y'
+                return
+            endif
+        endif
+        %!xxd -r
+        write
+        e ++nobin
+        "execute "set display=" . t:l_old_disp
+        execute "set filetype=" . t:l_old_ft
+
+        unlet t:l_old_ft
+        "unlet t:l_old_disp
+
+    else
+        echo 'usage: BinMode on/off'
+    endif
+endfunction
+
+command! -nargs=1 BinMode call <SID>BinaryMode(<f-args>)
+" }}}
+
 " 開いているfile一覧 {{{
 let g:l_cur_winID = win_getid()
 
