@@ -3,23 +3,29 @@
 import os
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument('environ',help='environment value')
-args = parser.parse_args()
+def main(args):
+    sep = os.pathsep
 
-sep = os.pathsep
+    if sep in args.environ:
+        envars = args.environ
+        envars = envars.split(sep)
+        for envar in envars:
+            print(envar)
 
-if sep in args.environ:
-    envar = args.environ
-    envar = envar.replace(sep,sep+'\n')
-    print(envar)
+    elif args.environ in os.environ:    # key check
+        envars = os.environ[args.environ]
+        envars = envars.split(sep)
+        for envar in envars:
+            print(envar)
 
-elif args.environ in os.environ:    # key check
-    envar = os.environ[args.environ]
-    envar = envar.replace(sep,sep+'\n')
-    print(envar)
+    else:
+        #print('please input environmental variable')
+        print(args.environ)
 
-else:
-    #print('please input environmental variable')
-    print(args.environ)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('environ',help='environment value.')
+    args = parser.parse_args()
+
+    main(args)
 
