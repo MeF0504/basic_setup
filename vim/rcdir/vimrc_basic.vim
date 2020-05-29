@@ -66,8 +66,10 @@ set backspace=start,indent
 "set backspace=start,eol,indent
 "挿入モードでのマウスの有効化
 set mouse=i
-"全モードでのマウスの有効化
-"set mouse=a
+if !exists('$SSH_CONNECTION')   " localのときのみ
+    "全モードでのマウスの有効化
+    set mouse=a
+endif
 "大文字、小文字を区別しない
 set ignorecase
 "検索文字に大文字があると区別する
