@@ -37,6 +37,11 @@ highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
 autocmd colorLocal InsertLeave * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=15
 autocmd colorLocal InsertEnter * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=97
 
+" tab line
+highlight TabLine cterm=underline ctermfg=15 ctermbg=243
+highlight TabLineSel cterm=Bold ctermfg=15 ctermbg=0
+highlight TabLineFill cterm=Bold ctermfg=33 ctermbg=0
+
 "全角スペース表示
 highlight ZenkakuSpace ctermbg=241
 autocmd colorLocal BufEnter * match ZenkakuSpace /　/
