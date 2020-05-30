@@ -18,6 +18,7 @@ function! <SID>my_color_set()
         highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
         highlight StatusLineTermNC ctermfg=233 ctermbg=249
         highlight SpecialKey ctermfg=None ctermbg=236
+        highlight Normal ctermfg=255
     else
         echo "color scheme: " . g:colors_name
     endif
@@ -39,8 +40,8 @@ autocmd colorLocal InsertEnter * highlight CursorLineNr term=Bold ctermfg=17 cte
 
 " tab line
 highlight TabLine cterm=underline ctermfg=15 ctermbg=243
-highlight TabLineSel cterm=Bold ctermfg=15 ctermbg=0
-highlight TabLineFill cterm=Bold ctermfg=33 ctermbg=0
+highlight TabLineSel cterm=Bold ctermfg=15 ctermbg=16
+highlight TabLineFill cterm=Bold ctermfg=45 ctermbg=16
 
 "全角スペース表示
 highlight ZenkakuSpace ctermbg=241
