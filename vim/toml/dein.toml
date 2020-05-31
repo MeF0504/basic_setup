@@ -431,3 +431,13 @@ hook_add = '''
 autocmd deinLocal FileType fugitive* nnoremap <silent> <buffer> q :quit<CR>
 """ }}}
 '''
+
+[[plugins]]
+repo = 'vim-jp/vimdoc-ja'
+hook_add = '''
+" {{{
+" https://gorilla.netlify.app/articles/20190427-vim-help-jp.html
+" helpを日本語優先にする
+set helplang=ja
+" }}}
+'''
