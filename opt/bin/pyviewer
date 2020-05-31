@@ -138,6 +138,7 @@ def main_sqlite3(fpath, args):
     except ImportError:
         print("I can't find tabulate library.")
         is_tabulate = False
+    shift = '  '
 
     def table_info_simple(table):
         cursor.execute("pragma table_info('%s')" % table)
@@ -164,17 +165,16 @@ def main_sqlite3(fpath, args):
                 table[-1].append(item)
 
         if is_tabulate:
-            shift = '  '
-            table_str = tabulate(table, headers, tablefmt='github')
+            table_str = tabulate(table, headers, tablefmt='orgtbl')
             table_str = table_str.replace('\n', '\n'+shift)
             print(shift + table_str)
         else:
-            print('  |', end='')
+            print(shift+'|', end='')
             for hd in headers:
                 print(' %s |' % hd, end='')
             print('')
             for itms in table:
-                print('  |', end='')
+                print(shift+'|', end='')
                 for itm in itms:
                     print(' %s |' % itm, end='')
                 print('')
