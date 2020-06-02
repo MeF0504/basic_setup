@@ -170,13 +170,13 @@ function! s:my_tabline()
         call add(titles, title)
 
     endfor
-    let edit_str = '_' . is_edit . '/' . all_files . '_'
+    let edit_str = '_' . is_edit . '/' . all_files . '_ '
 
     let width = &columns
     let cur_tab_no = tabpagenr()
     let st = cur_tab_no
     let en = cur_tab_no
-    let tab_len = len(titles[cur_tab_no-1]) + 5   " 5 ... (max) len(beginstr+laststr) + 1
+    let tab_len = len(titles[cur_tab_no-1]) + 4   " 4 ... (max) len(beginstr+laststr)
     let tab_len += len(edit_str)
     for i in range(1, tabpagenr('$'))
         let ctn_p = en+1
@@ -215,7 +215,7 @@ function! s:my_tabline()
         let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
         let s .= titles[i-1]
         "let s .= mod
-        let s .= '%#TabLineFill# '
+        let s .= '%#TabLineFill#'
     endfor
     let s .= laststr
     let s .= '%#TabLineFill#%T%=%#TabLine#'

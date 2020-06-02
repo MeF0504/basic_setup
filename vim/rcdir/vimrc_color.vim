@@ -39,9 +39,9 @@ autocmd colorLocal InsertLeave * highlight CursorLineNr term=Bold ctermfg=17 cte
 autocmd colorLocal InsertEnter * highlight CursorLineNr term=Bold ctermfg=17 ctermbg=97
 
 " tab line
-highlight TabLine cterm=underline ctermfg=15 ctermbg=243
-highlight TabLineSel cterm=Bold ctermfg=15 ctermbg=16
-highlight TabLineFill cterm=Bold ctermfg=45 ctermbg=16
+highlight TabLine cterm=underline ctermfg=15 ctermbg=16
+highlight TabLineSel cterm=Bold ctermfg=15 ctermbg=243
+highlight TabLineFill cterm=Bold ctermfg=45 ctermbg=None
 
 "全角スペース表示
 highlight ZenkakuSpace ctermbg=241
