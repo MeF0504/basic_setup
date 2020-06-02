@@ -9,3 +9,28 @@ _envar() {
 }
 
 compdef _envar envar
+
+_pip() {
+    _values -w \
+        'Commands' \
+        "install" \
+        "download" \
+        "uninstall" \
+        "freeze" \
+        "list" \
+        "show" \
+        "check" \
+        "config" \
+        "search" \
+        "cache" \
+        "wheel" \
+        "hash" \
+        "completion" \
+        "debug" \
+        "help" \
+}
+
+compdef _pip pip
+compdef _pip pip2
+compdef _pip pip3
+
