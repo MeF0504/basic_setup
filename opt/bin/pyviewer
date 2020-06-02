@@ -195,6 +195,30 @@ def main_sqlite3(fpath, args):
         else:
             table_info_simple(table)
 
+def main_raw(fpath, args):
+    try:
+        import rawpy
+    except ImportError:
+        print("I can't find rawpy.")
+        return
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        print("I can't find matplotlib.")
+        return
+
+    with rawpy.imread(fpath) as raw:
+        rgb = raw.postprocess()
+
+    # full display
+    plt.axes((0,0,1,1))
+    plt.imshow(rgb)
+    # not display axes
+    ax = plt.gca()
+    ax.axes.xaxis.set_visible(False)
+    ax.axes.yaxis.set_visible(False)
+    plt.show()
+
 def main(args):
 
     fpath = os.path.expanduser(args.file)
@@ -203,7 +227,7 @@ def main(args):
         return
 
     if not hasattr(args, 'type') or (args.type is None):
-        ext = fpath[fpath.rfind('.')+1:]
+        ext = fpath[fpath.rfind('.')+1:].lower()
         if ext == 'hdf5':
             args.type = 'hdf5'
         elif ext == 'pkl' or ext == 'pickle':
@@ -216,6 +240,8 @@ def main(args):
             args.type = 'zip'
         elif ext in 'db db3 sql sql3 sqlite sqlite3'.split(' '):
             args.type = 'sqlite3'
+        elif ext in 'raw nef nrw cr3 cr2 crw tif arw'.split(' '):   # nikon, canon, sony
+            args.type = 'raw_image'
         elif ext == 'py':
             if 'ja_JP' in os.environ['LANG']:
                 print('vimでも使ってろ！')
@@ -235,13 +261,15 @@ def main(args):
         main_zip(fpath, args)
     elif args.type == 'sqlite3':
         main_sqlite3(fpath, args)
+    elif args.type == 'raw_image':
+        main_raw(fpath, args)
     else:
         print('this file is not supported.')
 
     return
 
 if __name__ == "__main__":
-    supported_type = 'hdf5 pickle numpy tar zip sqlite3'
+    supported_type = 'hdf5 pickle numpy tar zip sqlite3 raw_image'
     parser = argparse.ArgumentParser(description="show the constitution of file. supported file types ... " + supported_type.replace(' ', ', '))
     parser.add_argument('file', help='imput hdf5 file')
     parser.add_argument('-v', dest='verbose', action='store_true', help='show details')
