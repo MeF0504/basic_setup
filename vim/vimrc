@@ -360,7 +360,7 @@ endif
 "カラーの変更
 let s:color_file = g:vimdir . "rcdir/vimrc_color.vim"
 if !has('gui_running')
-    if filereadable(s:color_file)
+    if filereadable(s:color_file) && (&t_Co == 256)
         execute "source " . s:color_file
     endif
 endif
