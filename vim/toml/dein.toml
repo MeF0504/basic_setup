@@ -441,3 +441,7 @@ hook_add = '''
 set helplang=ja
 " }}}
 '''
+
+[[plugins]]
+repo = 'altercation/vim-colors-solarized'
+
