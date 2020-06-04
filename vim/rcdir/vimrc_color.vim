@@ -48,27 +48,29 @@ function! <SID>my_color_set()
     highlight ZenkakuSpace ctermbg=241
 
     "statusline color setting
-    let s:month = str2nr(strftime("%b"))
-    let s:day = str2nr(strftime("%d"))
-    let s:dow = str2nr(strftime("%w"))
-    if ((exists("g:l_bd_month") && (s:month == g:l_bd_month))
-        \&& (exists("g:l_bd_day") && (s:day == g:l_bd_day)) )
-        "" Birthday
-        highlight StatusLine cterm=None ctermfg=185 ctermbg=136
-        highlight WildMenu cterm=Bold ctermfg=136 ctermbg=185
-    else
-        let s:stl_r = (s:dow==6 ? 0 : s:dow) " 土日は0
-        let s:stl_g = (s:month-1)%6
-        let s:stl_b = (s:day-1)%6
-        let s:bg = <SID>get_bg(s:stl_r, s:stl_g, s:stl_b)
-        if s:isdark(s:stl_r, s:stl_g, s:stl_b) == 1
-            let s:fg = 255
-        else    " light background
-            let s:fg = 234
+    if exists('*strftime')
+        let s:month = str2nr(strftime("%b"))
+        let s:day = str2nr(strftime("%d"))
+        let s:dow = str2nr(strftime("%w"))
+        if ((exists("g:l_bd_month") && (s:month == g:l_bd_month))
+            \&& (exists("g:l_bd_day") && (s:day == g:l_bd_day)) )
+            "" Birthday
+            highlight StatusLine cterm=None ctermfg=185 ctermbg=136
+            highlight WildMenu cterm=Bold ctermfg=136 ctermbg=185
+        else
+            let s:stl_r = (s:dow==6 ? 0 : s:dow) " 土日は0
+            let s:stl_g = (s:month-1)%6
+            let s:stl_b = (s:day-1)%6
+            let s:bg = <SID>get_bg(s:stl_r, s:stl_g, s:stl_b)
+            if s:isdark(s:stl_r, s:stl_g, s:stl_b) == 1
+                let s:fg = 255
+            else    " light background
+                let s:fg = 234
+            endif
+            " echo 'color:' . s:stl_r . '=' . s:stl_g . '=' . s:stl_b . '=' . s:bg . '=' . s:fg
+            execute 'highlight StatusLine cterm=Bold ctermfg='.s:fg.' ctermbg='.s:bg
+            execute 'highlight WildMenu cterm=Bold ctermfg='.s:bg.' ctermbg='.s:fg
         endif
-        " echo 'color:' . s:stl_r . '=' . s:stl_g . '=' . s:stl_b . '=' . s:bg . '=' . s:fg
-        execute 'highlight StatusLine cterm=Bold ctermfg='.s:fg.' ctermbg='.s:bg
-        execute 'highlight WildMenu cterm=Bold ctermfg='.s:bg.' ctermbg='.s:fg
     endif
     "default ... highlight StatusLine term=bold,reverse cterm=bold ctermfg=247 ctermbg=235
 
