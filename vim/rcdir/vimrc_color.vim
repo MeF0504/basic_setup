@@ -4,7 +4,7 @@ scriptencoding utf-8
 
 function! <SID>get_bg(r, g, b)
     if has('gui_running')
-        return '#' . printf('%x', a:r*50) . printf('%x', a:g*50) . printf('%x', a:b*50)
+        return '#' . printf('%02x', a:r*50) . printf('%02x', a:g*50) . printf('%02x', a:b*50)
     else
         return (36*a:r)+(6*a:g)+a:b + 16
     endif
@@ -63,9 +63,9 @@ function! <SID>my_color_set()
             let s:stl_b = (s:day-1)%6
             let s:bg = <SID>get_bg(s:stl_r, s:stl_g, s:stl_b)
             if s:isdark(s:stl_r, s:stl_g, s:stl_b) == 1
-                let s:fg = 255
+                let s:fg = has('gui_running') ? '#eeeeee' : 255
             else    " light background
-                let s:fg = 234
+                let s:fg = has('gui_running') ? '#1c1c1c' : 234
             endif
             " echo 'color:' . s:stl_r . '=' . s:stl_g . '=' . s:stl_b . '=' . s:bg . '=' . s:fg
             execute 'highlight StatusLine cterm=Bold ctermfg='.s:fg.' ctermbg='.s:bg
