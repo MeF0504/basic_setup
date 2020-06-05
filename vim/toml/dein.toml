@@ -180,7 +180,25 @@ function! Open_taglist()
     else
         let g:Tlist_Use_Right_Window = 1
     endif
+
+    " 右側で表示して閉じた際にwinnrが変わる問題対応
+    let winnr = -1
+    if &filetype != 'taglist'
+        let winnr = winnr()
+        if getbufvar(tabpagebuflist()[0], '&filetype') == 'taglist'
+            let winnr -= 1
+        endif
+    endif
+
     TlistToggle
+
+    " when tablist is closed
+    if (getbufvar(tabpagebuflist()[0], '&filetype') != 'taglist') &&
+        \ (getbufvar(tabpagebuflist()[-1], '&filetype') != 'taglist')
+        if winnr != -1
+            execute winnr . 'wincmd w'
+        endif
+    endif
     let g:Tlist_Use_Right_Window = l:tlist_right_old
 endfunction
 nnoremap <silent> <Leader>t :call Open_taglist()<CR>
