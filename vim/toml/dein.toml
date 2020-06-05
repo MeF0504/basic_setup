@@ -218,30 +218,6 @@ let g:ctrlp_map = '<leader>s'
 repo = 'MeF0504/mftags'
 hook_add = '''
 """""mftags{{{
-function! s:analythis_args(arg)
-    let args = split(a:arg, ' ')
-    let ret = {'no_key':""}
-    for dic in args
-        let dic_sub = split(dic, "=")
-        if len(dic_sub) < 2
-            let ret["no_key"] .= ' ' . dic_sub[0]
-        else
-            let ret[dic_sub[0]] = dic_sub[1]
-        endif
-    endfor
-
-    return ret
-endfunction
-
-function! s:echo_gregrep_help()
-    echo "usage..."
-    echo ":GREgrep [wd=word] [dir=dir_path] [ex=extention]"
-    echo "wd ... search word."
-    echo "dir ... path to root directory for search."
-    echo "ex ... file extention of target files."
-    echo "       if ex=None, search all files."
-endfunction
-
 let g:mftag_auto_close = 1
 let g:mftag_dir_auto_set = 1
 let g:mftag_c_setting = {'syntax':'cdfgstu', 'func':'cdfgstu'}
@@ -249,66 +225,6 @@ let g:mftag_python_setting = {'tag':'cfv'}
 
 nnoremap <silent> <Leader>m :MFfunclist<CR>
 
-function! s:Mygrep(...)
-    "args keywords ... wd, ex, dir
-    "wd  ... search word.
-    "ex  ... file extention.
-    "dir ... search directory.
-    "e.g. :GREgrep wd=hoge ex=.vim dir=%:h../../
-    "e.g. :GREgrep wd=fuga ex=.py
-    if &modified == 1
-        echo "file not saved!"
-        return
-    endif
-    if a:0 == '0'
-        let l:word = expand('<cword>')
-        let l:ft = '.' . expand('%:e')
-        let l:dir = MFsearch_dir(g:mftag_dir)
-    else
-        let arg = s:analythis_args(a:1)
-
-        if !has_key(arg, "wd") && !has_key(arg, "ex") && !has_key(arg, "dir")
-            call s:echo_gregrep_help()
-            return
-        endif
-
-        if has_key(arg, "wd")
-            let l:word = arg["wd"]
-            let l:word .= arg["no_key"]
-        else
-            let l:word = expand('<cword>')
-        endif
-        let l:ft = has_key(arg, "ex") ? (arg["ex"]=="None" ? "" : arg["ex"]) : expand('%:e')
-        let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : MFsearch_dir(g:mftag_dir)
-    endif
-
-    if !isdirectory(l:dir)
-        echo 'input directory "' . l:dir . '" does not exist.'
-        return
-    endif
-    if &grepprg == "internal"
-        execute 'grep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
-    elseif &grepprg == "grep\ -nriI"
-        let l:tabnum = tabpagenr()
-        cclose
-        "wincmd b
-        "vsplit
-        tabnew
-        execute 'grep --include=\*' . l:ft . ' "' . l:word . '" ' .l:dir 
-        cclose
-        quit
-        execute "normal! " . l:tabnum . "gt"
-        botright copen
-        unlet l:tabnum
-    else
-        echo "not supported grepprg"
-    endif
-endfunction
-command! -nargs=? GREgrep call s:Mygrep(<f-args>)
-
-"command! -nargs=1 GREgrep execute "grep /" . <f-args> . "/j " . MFsearch_dir(g:mftag_dir) . '**/*.' . expand('%:e')
-
-"autocmd deinLocal BufRead * execute "set path+=" . b:mftag_save_dir . "**/include"
 function! s:AddPath()
     if exists("b:mftag_save_dir")
         if b:mftag_save_dir != "/"
@@ -318,6 +234,24 @@ function! s:AddPath()
     endif
 endfunction
 autocmd deinLocal BufRead * call s:AddPath()
+
+" GREgrep wrapper
+if exists('*Mygrep') == 1
+    function! s:gregrep_wrapper(...)
+        let res = ''
+        if a:0 == 1
+            let res = a:1
+            let st = match(a:1, 'dir=')
+            if st == -1
+                let res .= ' dir=' . MFsearch_dir(g:mftag_dir)
+            endif
+        endif
+        echo res
+        execute 'call ' . 'Mygrep("' . res . '")'
+    endfunction
+    command! -nargs=? GREgrep call s:gregrep_wrapper(<f-args>)
+endif
+
 "}}}
 '''
 

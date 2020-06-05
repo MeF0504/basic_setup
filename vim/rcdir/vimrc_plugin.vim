@@ -3,6 +3,24 @@ set encoding=utf-8
 scriptencoding utf-8
 
 " vim (almost) self-made function file
+
+" 関数の引数解析用関数 {{{
+function! s:analythis_args(arg)
+    let args = split(a:arg, ' ')
+    let ret = {'no_key':""}
+    for dic in args
+        let dic_sub = split(dic, "=")
+        if len(dic_sub) < 2
+            let ret["no_key"] .= ' ' . dic_sub[0]
+        else
+            let ret[dic_sub[0]] = dic_sub[1]
+        endif
+    endfor
+
+    return ret
+endfunction
+" }}}
+
 "単語のハイライト情報をget "{{{
 "from http://cohama.hateblo.jp/entry/2013/08/11/020849
 function! s:get_syn_id(transparent)
@@ -862,6 +880,76 @@ EOF
 endfunction
 
 command! -nargs=* DiffLine call <SID>diff_line(<f-args>)
+
+" }}}
+
+" 自作grep {{{
+function! <SID>echo_gregrep_help()
+    echo "usage..."
+    echo ":GREgrep [wd=word] [dir=dir_path] [ex=extention]"
+    echo "wd ... search word."
+    echo "dir ... path to root directory for search."
+    echo "ex ... file extention of target files."
+    echo "       if ex=None, search all files."
+endfunction
+
+function! Mygrep(...)
+    "args keywords ... wd, ex, dir
+    "wd  ... search word.
+    "ex  ... file extention.
+    "dir ... search directory.
+    "e.g. :GREgrep wd=hoge ex=.vim dir=%:h/../../
+    "e.g. :GREgrep wd=fuga ex=.py
+    if &modified == 1
+        echo "file not saved!"
+        return
+    endif
+    if a:0 == '0'
+        let l:word = expand('<cword>')
+        let l:ft = '.' . expand('%:e')
+        let l:dir = '.'
+    else
+        let arg = s:analythis_args(a:1)
+
+        if !has_key(arg, "wd") && !has_key(arg, "ex") && !has_key(arg, "dir")
+            call s:echo_gregrep_help()
+            return
+        endif
+
+        if has_key(arg, "wd")
+            let l:word = arg["wd"]
+            let l:word .= arg["no_key"]
+        else
+            let l:word = expand('<cword>')
+        endif
+        let l:ft = has_key(arg, "ex") ? (arg["ex"]=="None" ? "" : arg["ex"]) : expand('%:e')
+        let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : '.'
+    endif
+
+    if !isdirectory(l:dir)
+        echo 'input directory "' . l:dir . '" does not exist.'
+        return
+    endif
+    if &grepprg == "internal"
+        execute 'grep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
+    elseif &grepprg == "grep\ -nriI"
+        let l:tabnum = tabpagenr()
+        cclose
+        "wincmd b
+        "vsplit
+        tabnew
+        execute 'grep --include=\*' . l:ft . ' "' . l:word . '" ' .l:dir 
+        cclose
+        quit
+        execute "normal! " . l:tabnum . "gt"
+        botright copen
+        unlet l:tabnum
+    else
+        echo "not supported grepprg"
+    endif
+endfunction
+command! -nargs=? GREgrep call Mygrep(<f-args>)
+
 
 " }}}
 
