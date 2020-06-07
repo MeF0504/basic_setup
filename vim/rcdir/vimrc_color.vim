@@ -12,7 +12,7 @@ endfunction
 function! s:isdark(r, g, b)
     if (a:r < 3) && (a:g < 3) && (a:b < 3)
         return 1
-    elseif a:r+a:g+a:b < 7
+    elseif (a:r+a:g+a:b < 7) && (max([a:r, a:g, a:b]) < 4)
         return 1
     endif
 endfunction
