@@ -190,16 +190,16 @@ def main():
     setdir = op.join(fpath,'config')
     print('\n@ '+setdir+'\n')
     files_mac = {\
-                'zshrc_file':'~/.zshrc', \
+                'zshrc':'~/.zshrc', \
                 'posixShellRC':'~/.posixShellRC',\
-                'bashrc_file':'~/.bashrc',\
+                'bashrc':'~/.bashrc',\
                 'matplotlibrc':'~/.matplotlib/matplotlibrc', \
                 }
 
     files_linux = {\
-                  'zshrc_file':'~/.zshrc', \
+                  'zshrc':'~/.zshrc', \
                   'posixShellRC':'~/.posixShellRC',\
-                  'bashrc_file':'~/.bashrc',\
+                  'bashrc':'~/.bashrc',\
                   'terminator_config':op.join(conf_home,'terminator/config'), \
                   'matplotlibrc':op.join(conf_home, 'matplotlib/matplotlibrc'), \
                 }
