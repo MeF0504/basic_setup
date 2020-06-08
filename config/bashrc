@@ -12,13 +12,12 @@ fi
 # useful: https://qiita.com/hmmrjn/items/60d2a64c9e5bf7c0fe60
 # path
 export PS1='\[\e[46m\]\w\[\e[0m\]\n'
-if [[ ${SSH_CLIENT} == "" ]]; then
-    # time
-    export PS1=$PS1'\[\e[32m\]\t\[\e[0m\]'
-else
+if [[ ${SSH_CLIENT} != "" ]]; then
     # host name
-    export PS1=$PS1'\[\e[36m\]${HOSTNAME%%.*}\[\e[0m\]'
+    export PS1='\[\e[36m\]${HOSTNAME%%.*}\[\e[0m\] '$PS1
 fi
+# time
+export PS1=$PS1'\[\e[32m\]\t\[\e[0m\]'
 # user name (bold)
 export PS1=$PS1' \[\e[1m\e[31m\]\u\[\e[0m\]'
 

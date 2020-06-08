@@ -126,11 +126,10 @@ case ${UID} in
         PROMPT=$PROMPT'$(ip_color2)'
         if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
             # host name in ssh server
-            PROMPT=$PROMPT"%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%{${reset_color}%}"
-        else
-            # time
-            PROMPT=$PROMPT"%{${fg[green]}%}%T%{${reset_color}%}"
+            PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%{${reset_color}%} "$PROMPT
         fi
+        # time
+        PROMPT=$PROMPT"%{${fg[green]}%}%T%{${reset_color}%}"
         # user name (bold)
         PROMPT=$PROMPT" %{${fg[red]}%}%B%n%b%{${reset_color}%}"
         # change red if the previous command was failed.
