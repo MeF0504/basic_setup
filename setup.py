@@ -73,10 +73,17 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
     else:
         condition = True
 
-    if op.exists(file2):
+    if op.lexists(file2):
         exist = True
         if op.islink(file2):
             islink = True
+            linkpath = op.join(op.dirname(file2), os.readlink(file2))
+            if not op.exists(linkpath):
+                # broken link
+                os.unlink(file2)
+                print('{} is a broken link. unlink this.'.format(file2))
+                exist = False
+                islink = False
         else:
             islink = False
     else:
@@ -146,8 +153,6 @@ def main():
     parser.add_argument('-f','--force',help="Do not prompt for confirmation before overwriting the destination path",action='store_true')
     args = parser.parse_args()
 
-    #print dir(args)
-    #exit()
     if not op.exists(args.prefix):
         print("install path %s does not exit" % args.prefix)
         exit()
