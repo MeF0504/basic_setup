@@ -28,6 +28,10 @@ else
     endif
 endif
 
+if exists('$VIM_TERMINAL')
+    echo 'Warning!! vim is already opened!!'
+endif
+
 "local設定ファイル (1st)
 let s:initrc = g:vimdir . 'rcdir/init.vim.mine'
 if filereadable(s:initrc)
