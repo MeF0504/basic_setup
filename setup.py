@@ -81,7 +81,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             if not op.exists(linkpath):
                 # broken link
                 os.unlink(file2)
-                print('{} is a broken link. unlink this.'.format(file2))
+                print('{} -> {} is a broken link. unlink this.'.format(file2, linkpath))
                 exist = False
                 islink = False
         else:
