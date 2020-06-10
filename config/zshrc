@@ -22,7 +22,13 @@ autoload colors
 colors
 
 function ip_color() {
-    local ip="$(curl --max-time 0.5 ifconfig.io 2> /dev/null)"
+    if [[ $1 = '' ]]; then
+        local to=1
+    else
+        local to=$1
+    fi
+
+    local ip="$(curl --max-time $to ifconfig.io 2> /dev/null)"
     if [[ $(echo $ip | wc -l) -ne 1 ]]; then
         local ret=""
         ret=$ret"%F{15}%K{16}m%f%k"
@@ -77,7 +83,13 @@ function ip_color() {
 
 function ip_color2() {
     # only for IPv6
-    local ip="$(curl --max-time 0.5 ifconfig.io 2> /dev/null)"
+    if [[ $1 = '' ]]; then
+        local to=1
+    else
+        local to=$1
+    fi
+
+    local ip="$(curl --max-time $to ifconfig.io 2> /dev/null)"
     if [[ $(echo $ip | wc -l) -ne 1 ]]; then
         return 0
     fi
@@ -123,7 +135,7 @@ case ${UID} in
         # path
         PROMPT="%{${bg[cyan]}%}%d%{${reset_color}%}"$'\n'
         # ip_color for IPv6
-        PROMPT=$PROMPT'$(ip_color2)'
+        PROMPT=$PROMPT'$(ip_color2 $CURLTIMEOUT)'
         if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
             # host name in ssh server
             PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%{${reset_color}%} "$PROMPT
@@ -137,7 +149,7 @@ case ${UID} in
         PROMPT=$PROMPT"%(?. >> . %{${fg[red]}%}!!%{${reset_color}%} "
     fi
     # ip_color
-    PROMPT='$(ip_color)'$PROMPT
+    PROMPT='$(ip_color $CURLTIMEOUT)'$PROMPT
 
     PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
     SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
