@@ -16,6 +16,15 @@ def FG256(n):
     else:
         return ''
 
+# for vim color test
+def isdark(r,g,b):
+    if (r<3) and (g<3) and (b<3):
+        return True
+    elif (r+g+b<7) and (max([r,g,b])<4):
+        return True
+    else:
+        return False
+
 def main_test():
     print('system colors')
     for i in range(8):
