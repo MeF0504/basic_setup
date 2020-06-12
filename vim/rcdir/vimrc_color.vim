@@ -2,18 +2,11 @@
 scriptencoding utf-8
 "" vim color setting
 
-function! <SID>get_bg(r, g, b)
+function! <SID>get_colorid(r, g, b)
     if has('gui_running')
         return '#' . printf('%02x', a:r*50) . printf('%02x', a:g*50) . printf('%02x', a:b*50)
     else
         return (36*a:r)+(6*a:g)+a:b + 16
-    endif
-endfunction
-function! s:isdark(r, g, b)
-    if (a:r < 3) && (a:g < 3) && (a:b < 3)
-        return 1
-    elseif (a:r+a:g+a:b < 7) && (max([a:r, a:g, a:b]) < 4)
-        return 1
     endif
 endfunction
 
@@ -61,16 +54,19 @@ function! <SID>my_color_set()
             highlight StatusLine cterm=None ctermfg=185 ctermbg=136
             highlight WildMenu cterm=Bold ctermfg=136 ctermbg=185
         else
-            let s:stl_r = (s:dow==6 ? 0 : s:dow) " 土日は0
-            let s:stl_g = (s:month-1)%6
-            let s:stl_b = (s:day-1)%6
-            let s:bg = <SID>get_bg(s:stl_r, s:stl_g, s:stl_b)
-            if s:isdark(s:stl_r, s:stl_g, s:stl_b) == 1
-                let s:fg = has('gui_running') ? '#eeeeee' : 255
-            else    " light background
+            let s:stl_br = (s:dow==6 ? 0 : s:dow) " 土日は0
+            let s:stl_bg = (s:month-1)%6
+            let s:stl_bb = (s:day-1)%6
+            let s:stl_fr = (s:stl_br+3)%6
+            let s:stl_fg = (s:stl_bg+3)%6
+            let s:stl_fb = (s:stl_bb+3)%6
+            let s:bg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
+            let s:fg = <SID>get_colorid(s:stl_fr, s:stl_fg, s:stl_fb)
+            if (3<s:stl_br) && (3<s:stl_bg) && (3<s:stl_bb)
                 let s:fg = has('gui_running') ? '#1c1c1c' : 234
             endif
-            " echo 'color:' . s:stl_r . '=' . s:stl_g . '=' . s:stl_b . '=' . s:bg . '=' . s:fg
+            " echo 'bg:: color:' . s:stl_br . '=' . s:stl_bg . '=' . s:stl_bb . '=' . s:bg
+            " echo 'fg:: color:' . s:stl_fr . '=' . s:stl_fg . '=' . s:stl_fb . '=' . s:fg
             execute 'highlight StatusLine cterm=Bold ctermfg='.s:fg.' ctermbg='.s:bg
             execute 'highlight WildMenu cterm=Bold ctermfg='.s:bg.' ctermbg='.s:fg
         endif
