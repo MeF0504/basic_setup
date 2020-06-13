@@ -18,12 +18,14 @@ def FG256(n):
 
 # for vim color test
 def isdark(r,g,b):
-    if (r<3) and (g<3) and (b<3):
-        return True
-    elif (r+g+b<7) and (max([r,g,b])<4):
-        return True
+    # cond = (r+g+b<7) and (max([r,g,b])<4)
+    # cond = (r**2+g**2+b**2 < 5**2)
+    if r < 4:
+        cond = (g==0 or g*g+b*b < 3**2)
+        cond = (g<3 and g+b < 6)
     else:
-        return False
+        cond = g*g+b*b < (7-r)**2
+    return cond
 
 def main_test():
     print('system colors')
@@ -42,12 +44,15 @@ def main_test():
     for g in range(6):
         for r in range(6):
             for b in range(6):
+                i = 36*r+6*g+b+16
                 tmp_st = '  '
-                # tmp_st = '{:02x}'.format(36*r+6*g+b+16)
-                # tmp_st = '{}{:02x}{}'.format(FG256(36*((r+3)%6)+6*((g+3)%6)+(b+3)%6+16), 36*r+6*g+b+16, END)
-                # if (3<r) and (3<g) and (3<b):
-                #     tmp_st = '{}{}{}'.format(FG['k'], 'bk', END)
-                print('{}{}{}'.format(BG256(36*r+6*g+b+16), tmp_st, END), end='')
+                # tmp_st = '{:02x}'.format(i)
+                # tmp_st = '{}{:02x}{}'.format(FG256(36*((r+3)%6)+6*((g+3)%6)+(b+3)%6+16), i, END)
+                if isdark(r, g, b):
+                    tmp_st = '{}{:02x}{}'.format(FG256(255), i, END)
+                else:
+                    tmp_st = '{}{:02x}{}'.format(FG256(234), i, END)
+                print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
             print(' ', end='')
         print()
     print()

@@ -10,11 +10,12 @@ function! <SID>get_colorid(r, g, b)
     endif
 endfunction
 function! s:isdark(r, g, b)
-    if (a:r < 3) && (a:g < 3) && (a:b < 3)
-        return 1
-    elseif (a:r+a:g+a:b < 7) && (max([a:r, a:g, a:b]) < 4)
-        return 1
+    if a:r < 4
+        let cond = (a:g<3 && a:g+a:b < 6)
+    else
+        let cond = a:g*a:g+a:b*a:b < (7-a:r)*(7-a:r)
     endif
+    return cond
 endfunction
 
 function! <SID>my_color_set_inkpot()
