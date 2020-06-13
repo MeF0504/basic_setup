@@ -48,10 +48,10 @@ def main_test():
                 tmp_st = '  '
                 # tmp_st = '{:02x}'.format(i)
                 # tmp_st = '{}{:02x}{}'.format(FG256(36*((r+3)%6)+6*((g+3)%6)+(b+3)%6+16), i, END)
-                if isdark(r, g, b):
-                    tmp_st = '{}{:02x}{}'.format(FG256(255), i, END)
-                else:
-                    tmp_st = '{}{:02x}{}'.format(FG256(234), i, END)
+                # if isdark(r, g, b):
+                #     tmp_st = '{}{:02x}{}'.format(FG256(255), i, END)
+                # else:
+                #     tmp_st = '{}{:02x}{}'.format(FG256(234), i, END)
                 print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
             print(' ', end='')
         print()
