@@ -151,6 +151,7 @@ function! s:my_tabline()
     let beginstr = ''
     let laststr = ''
     let all_files = 0
+    let all_wins = 0
     let is_edit = 0
     let g:l_opened_bn = []
 
@@ -159,6 +160,7 @@ function! s:my_tabline()
         let no = i  " display 0-origin tabpagenr.
         let bufnrs = tabpagebuflist(i)
         for bn in bufnrs
+            let all_wins += 1
             if match(g:l_opened_bn, bn) == -1
                 let all_files += 1
                 call add(g:l_opened_bn, bn)
@@ -180,7 +182,7 @@ function! s:my_tabline()
             let is_edit += 1
         endif
     endfor
-    let edit_str = '_' . is_edit . '/' . all_files . '_ '
+    let edit_str = '_' . is_edit . '/' . all_files . '(' . all_wins . ')_ '
 
     let width = &columns
     let cur_tab_no = tabpagenr()
