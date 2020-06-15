@@ -52,7 +52,10 @@ alias du="du -h"
 alias df="df -h"
 
 alias su="su -l"
-alias grep="grep --color -n"
+alias grep="grep --color"
+
+# vim
+alias vi='vim -p'
 
 alias del="mv_Trash.py"
 
