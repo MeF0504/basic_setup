@@ -239,15 +239,15 @@ autocmd deinLocal BufRead * call s:AddPath()
 " GREgrep wrapper
 if exists('*Mygrep') == 1
     function! s:gregrep_wrapper(...)
-        let res = ''
         if a:0 == 1
             let res = a:1
             let st = match(a:1, 'dir=')
             if st == -1
                 let res .= ' dir=' . MFsearch_dir(g:mftag_dir)
             endif
+        else
+            let res = ' dir=' . MFsearch_dir(g:mftag_dir)
         endif
-        echo res
         execute 'call ' . 'Mygrep("' . res . '")'
     endfunction
     command! -nargs=? GREgrep call s:gregrep_wrapper(<f-args>)
