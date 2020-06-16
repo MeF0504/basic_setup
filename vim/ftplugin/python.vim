@@ -53,38 +53,40 @@ function! s:python_help(module) abort
         let l:func = 'no_func'
     endif
 
+    if has('python3')
+        python3 from io import StringIO
+    else
+        python from io import BytesIO as StringIO
+    endif
+
     pythonx << EOF
-import inspect
 import vim
+import sys
 mod = vim.eval('l:mod[0]')
 func = vim.eval('l:func')
-try:
-    if func == 'no_func':
-        vim.current.buffer.append("In file: "+inspect.getsourcefile(tmpmod))
-        vim.current.buffer.append('\n')
-        source = inspect.getsource(tmpmod)
-        for s in source.split('\n'):
-            vim.current.buffer.append(s)
-        del tmpmod
-    else:
-        if mod == 'None':
-            exec('source = '+func+'.__doc__')
-            for s in source.split('\n'):
-                vim.current.buffer.append(s)
+
+# https://teratail.com/questions/107044
+with StringIO() as f:
+    sys.stdout = f
+    try:
+        if func == 'no_func':
+            help(tmpmod)
         else:
-            exec('onoff = "%s" in tmpmod.__dict__' % (func))
-            if onoff:
-                exec('source = tmpmod.'+func+'.__doc__')
-                for s in source.split('\n'):
-                    vim.current.buffer.append(s)
+            if mod == 'None':
+                exec('help('+func+')')
             else:
-                print('%s is not in %s' % (func, mod))
-                vim.command('pclose')
-            del tmpmod
-except Exception as e:
-    if 0:
-        print(e)
-    vim.current.buffer.append("Not available for this object.")
+                exec('help(tmpmod.'+func+')')
+        source = f.getvalue()
+    except Exception as e:
+        source = e.__str__() + '\n\nNot available for this object.'
+
+for s in source.split('\n'):
+    vim.current.buffer.append(s)
+
+sys.stdout = sys.__stdout__
+if 'tmpmod' in locals():
+    del tmpmod
+
 EOF
 
     " }}}
