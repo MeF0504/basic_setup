@@ -186,8 +186,8 @@ nnoremap <silent> 0gt :tablast<CR>
 nnoremap <silent> g> :tabmove +1<CR>
 nnoremap <silent> g< :tabmove -1<CR>
 " 画面自体を左右に移動
-nnoremap H zh
-nnoremap L zl
+nnoremap H 5zh
+nnoremap L 5zl
 
 " commandlineでも<c-a>で最初に戻りたい
 cnoremap <c-a> <c-b>

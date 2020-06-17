@@ -23,7 +23,7 @@ function! s:python_help(module) abort
     setlocal nobackup
     setlocal noundofile
     setlocal buftype=nofile
-    setlocal nowrap
+    " setlocal nowrap
     setlocal nobuflisted
     setlocal previewwindow
 
