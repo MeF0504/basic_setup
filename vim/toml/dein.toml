@@ -240,6 +240,12 @@ autocmd deinLocal BufRead * call s:AddPath()
 if exists('*Mygrep') == 1
     function! s:gregrep_wrapper(...)
         if a:0 == 1
+            if (!(match(a:1, 'wd=')+1) && !(match(a:1, 'ex=')+1) && !(match(a:1, 'dir=')+1))
+                " no arguments
+                call Mygrep('-h')
+                return
+            endif
+
             let res = a:1
             let st = match(a:1, 'dir=')
             if st == -1
