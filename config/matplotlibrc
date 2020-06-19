@@ -15,6 +15,9 @@ backend      : tkagg
 ## maybe following are also required:  PyQt5-sip QtAwesome qtconsole QtPy
 ## backend      : Qt5Agg
 
+### LINES
+lines.markersize    : 4     ## markersize, in points
+
 ### AXES
 axes.labelsize      : large # fontsize of the x any y labels
 
