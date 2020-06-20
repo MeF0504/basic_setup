@@ -203,7 +203,8 @@ vnoremap Y $y
 nnoremap <expr> l foldclosed(line('.')) != -1 ? 'zO' : 'l'
 nnoremap <expr> <Right> foldclosed(line('.')) != -1 ? 'zO' : 'l'
 " Enterで１段開いたり閉じたりする
-nnoremap <expr> <CR> foldlevel('.') != 0 ? 'za' : '<CR>'
+nnoremap <expr> <CR> pumvisible() != 0 ? '<c-m>' :
+            \ foldlevel('.') != 0 ? 'za' : '<CR>'
 
 " shiftは逆動作だと思ってるので、単語移動をremap
 noremap W b
