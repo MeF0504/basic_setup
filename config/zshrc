@@ -12,6 +12,13 @@ fi
 #
 # <c-w>で消す際に/単位で削除
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+
+if [[ ${SSH_CLIENT} == "" ]]; then
+    MYHOST="local"
+else
+    MYHOST=${HOST%%.*}
+fi
+
 #}}}
 
 ##{{{ Default shell configuration
@@ -115,7 +122,7 @@ function ip_color2() {
 # OLD_PROMPT=1
 case ${UID} in
 0)
-    PROMPT="%{${fg[yellow]}%}ROOT@%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') %B%{${fg[red]}%}%/#%{${reset_color}%}%b "
+    PROMPT="%{${fg[yellow]}%}ROOT@%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]') %B%{${fg[red]}%}%/#%{${reset_color}%}%b "
     PROMPT2="%B%{${fg[red]}%}%_#%{${reset_color}%}%b "
     SPROMPT="%B%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
     ;;
@@ -126,7 +133,7 @@ case ${UID} in
         PROMPT="%4(/|$long|$short)"
         ## from http://0xcc.net/blog/archives/000032.html
         if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
-            PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]') ${PROMPT}"
+            PROMPT="%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]') ${PROMPT}"
             #PROMPT="%F{cyan}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%f ${PROMPT}"
         else
             PROMPT="%{${fg[green]}%}%T%{${reset_color}%} ${PROMPT}"
@@ -138,7 +145,7 @@ case ${UID} in
         PROMPT=$PROMPT'$(ip_color2 $CURLTIMEOUT)'
         if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
             # host name in ssh server
-            PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%{${reset_color}%} "$PROMPT
+            PROMPT="%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%{${reset_color}%} "$PROMPT
         fi
         # time
         PROMPT=$PROMPT"%{${fg[green]}%}%T%{${reset_color}%}"
@@ -367,21 +374,13 @@ jfbterm-color)
     ;;
 esac
 
-# set terminal title as username+HOSTNAME
+# set terminal title as username+MYHOST (in local PC, username+working dir)
 #
-
-if [[ ${SSH_CLIENT} == "" ]]; then
-    HOSTNAME="local"
-else
-    HOSTNAME=${HOST%%.*}
-fi
-
 case "${TERM}" in
 xterm|xterm-color|kterm|kterm-color|xterm-256color)
     if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
         precmd() {
-            #echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
-            echo -ne "\033]0;${USER}@${HOSTNAME}\007"
+            echo -ne "\033]0;${USER}@${MYHOST}\007"
         }
     else
         precmd() {
