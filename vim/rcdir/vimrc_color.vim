@@ -25,8 +25,6 @@ function! <SID>my_color_set_inkpot()
     highlight String ctermbg=None ctermfg=222
     highlight Comment ctermfg=31
     highlight LineNr ctermfg=239
-    highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
-    highlight StatusLineTermNC ctermfg=233 ctermbg=249
     highlight SpecialKey ctermfg=None ctermbg=236
     highlight Normal ctermfg=255
 endfunction
@@ -52,6 +50,11 @@ function! <SID>my_color_set()
     highlight ZenkakuSpace cterm=None ctermfg=None ctermbg=241
 
     "statusline color setting
+    highlight StatusLine cterm=bold ctermfg=234 ctermbg=75
+    highlight StatusLineNC cterm=None ctermfg=244 ctermbg=235
+    highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
+    highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249
+
     if exists('*strftime')
         let s:month = str2nr(strftime("%b"))
         let s:day = str2nr(strftime("%d"))
@@ -73,6 +76,7 @@ function! <SID>my_color_set()
             endif
             " echo 'color:' . s:stl_br . '=' . s:stl_bg . '=' . s:stl_bb . '=' . s:bg . '=' . s:fg
             execute 'highlight StatusLine cterm=Bold ctermfg='.s:fg.' ctermbg='.s:bg
+            execute 'highlight StatusLineTerm cterm=Bold ctermfg='.s:fg.' ctermbg='.s:bg
             execute 'highlight WildMenu cterm=Bold ctermfg='.s:bg.' ctermbg='.s:fg
         endif
     endif
