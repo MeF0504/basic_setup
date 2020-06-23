@@ -99,6 +99,8 @@ let mapleader = "\<space>"
 if exists('g:vimdir') && isdirectory(g:vimdir . 'doc')
     execute "helptags " . g:vimdir . "doc"
 endif
+" ファイル名に=は使わないよな...
+set isfname-==
 
 "カーソルの下に下線を表示
 set cursorline
