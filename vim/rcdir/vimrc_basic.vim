@@ -129,7 +129,8 @@ set foldcolumn=2
 " neovim specified config
 if has('nvim')
     " pop-up menuを半透明にする [0-100(%)]
-    set pumblend=20
+    " やっぱり見づらいので0にする...
+    set pumblend=0
     " 置換をinteractiveに行う
     set inccommand=split
 else
