@@ -119,8 +119,10 @@ function! s:file_list() abort
     for i in range(1,tabpagenr('$'))
         "buffer number of each window
         for j in tabpagebuflist(i)
-            " let l:fname = fnamemodify(bufname(j),':t')
             let l:fname = bufname(j)
+            if (len(l:fname) > 0) && (l:fname[0] == '/')
+                let l:fname = fnamemodify(l:fname,':~')
+            endif
             let l:fnames[i . "-" . j] = l:fname
         endfor
     endfor
