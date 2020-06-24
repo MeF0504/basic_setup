@@ -26,6 +26,9 @@ function! <SID>my_color_set_inkpot()
     highlight Comment ctermfg=31
     highlight LineNr ctermfg=239
     highlight SpecialKey ctermfg=None ctermbg=236
+    if has('nvim')
+        highlight link Whitespace SpecialKey
+    endif
     highlight Normal ctermfg=255
 endfunction
 
