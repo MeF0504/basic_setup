@@ -396,6 +396,7 @@ autocmd deinLocal FileType fugitive* nnoremap <silent> <buffer> q :quit<CR>
 
 [[plugins]]
 repo = 'vim-jp/vimdoc-ja'
+if = '''! has('nvim')'''
 hook_add = '''
 " {{{
 " https://gorilla.netlify.app/articles/20190427-vim-help-jp.html

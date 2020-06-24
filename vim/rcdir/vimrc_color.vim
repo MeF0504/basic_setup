@@ -55,8 +55,10 @@ function! <SID>my_color_set()
     "statusline color setting
     highlight StatusLine cterm=bold ctermfg=234 ctermbg=75
     highlight StatusLineNC cterm=None ctermfg=244 ctermbg=235
-    highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
-    highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249
+    if !has('nvim')
+        highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
+        highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249
+    endif
 
     if exists('*strftime')
         let s:month = str2nr(strftime("%b"))
@@ -80,7 +82,9 @@ function! <SID>my_color_set()
             " echo 'color:' . s:stl_br . '=' . s:stl_bg . '=' . s:stl_bb . '=' . s:bg . '=' . s:fg
             execute 'highlight StatusLine cterm=Bold ctermfg='.s:fg.' ctermbg='.s:bg
             execute 'highlight WildMenu cterm=Bold ctermfg='.s:bg.' ctermbg='.s:fg
-            highlight! link StatusLineTerm StatusLine
+            if !has('nvim')
+                highlight! link StatusLineTerm StatusLine
+            endif
         endif
     endif
     "default ... highlight StatusLine term=bold,reverse cterm=bold ctermfg=247 ctermbg=235
