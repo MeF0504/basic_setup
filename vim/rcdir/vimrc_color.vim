@@ -76,8 +76,8 @@ function! <SID>my_color_set()
             endif
             " echo 'color:' . s:stl_br . '=' . s:stl_bg . '=' . s:stl_bb . '=' . s:bg . '=' . s:fg
             execute 'highlight StatusLine cterm=Bold ctermfg='.s:fg.' ctermbg='.s:bg
-            execute 'highlight StatusLineTerm cterm=Bold ctermfg='.s:fg.' ctermbg='.s:bg
             execute 'highlight WildMenu cterm=Bold ctermfg='.s:bg.' ctermbg='.s:fg
+            highlight! link StatusLineTerm StatusLine
         endif
     endif
     "default ... highlight StatusLine term=bold,reverse cterm=bold ctermfg=247 ctermbg=235
