@@ -44,7 +44,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         with open(file2, 'r') as f:
             str2 = f.readlines()
 
-        shift = '    '
+        shift = '   |'
         for line in difflib.unified_diff(str1, str2, n=1, \
                 fromfile=file1, tofile=file2, \
                 fromfiledate=dt1.strftime('%m %d (%Y) %H:%M:%S'), tofiledate=dt2.strftime('%m %d (%Y) %H:%M:%S')):
@@ -91,17 +91,18 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         islink = False
 
 
+    shift = '  '
     if link:    #link
         cmd = 'os.symlink("%s", "%s")' % (file1, file2)
         comment = 'linked '+name1
 
         if not condition:
-            print( "condition doesn't match" )
+            print(shift+"condition doesn't match" )
         elif exist:
             if islink and filecmp.cmp(file1, file2):
-                print('  [ %s ] is already linked.' % name2)
+                print(shift+'[ %s ] is already linked.' % name2)
             else:
-                print('  [  %s  ] is already exist, cannot link!' % name2)
+                print(shift+'[  %s  ] is already exist, cannot link!' % name2)
         else:
             fcopy_main(cmd,comment,test)
 
@@ -110,21 +111,21 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         comment = 'copy %s --> %s' % (name1,file2)
 
         if not condition:
-            print( "condition doesn't match" )
+            print(shift+"condition doesn't match" )
         elif force:
             if islink:
-                print('  [ %s ] is a link file, cannot copy!' % name2)
+                print(shift+'[ %s ] is a link file, cannot copy!' % name2)
             else:
                 fcopy_main(cmd, comment, test)
         elif exist:
             if filecmp.cmp(file1, file2) and islink:
-                print('  [ %s ] is linked.' % name2)
+                print(shift+'[ %s ] is linked.' % name2)
             elif filecmp.cmp(file1, file2):
-                print('  [ %s ] is already copied.' % name2)
+                print(shift+'[ %s ] is already copied.' % name2)
             elif islink:
-                print('  [ %s ] is a link file, cannot copy!' % name2)
+                print(shift+'[ %s ] is a link file, cannot copy!' % name2)
             else:
-                input_str = '  [  %s  ] is already exist, are you realy overwrite? [y(yes), n(no), d(diff)] ' % name2
+                input_str = shift+'[  %s  ] is already exist, are you realy overwrite? [y(yes), n(no), d(diff)] ' % name2
                 yn = get_input(input_str)
                 if (yn == 'y') or (yn == 'yes'):
                     fcopy_main(cmd, comment, test)
@@ -132,7 +133,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
                     print('')
                     fcopy_diff(file2, file1)
                     print('')
-                    input_str = ' are you realy overwrite? [y(yes), n(no)] '
+                    input_str = shift+'are you realy overwrite? [y(yes), n(no)] '
                     yn = get_input(input_str)
                     if (yn == 'y') or (yn == 'yes'):
                         fcopy_main(cmd, comment, test)
