@@ -616,7 +616,7 @@ vnoremap <expr> # <SID>chk_braket()
 "" http://koturn.hatenablog.com/entry/2018/02/12/140000
 function! s:complete_term(arglead, cmdline, cursorpos) abort
     let arglead = tolower(a:arglead)
-    let ret = ['V', 'F']
+    let ret = ['S', 'V', 'F']
     if exists('*term_list')
         let ret = filter(map(term_list(), 'bufname(v:val)'), '!stridx(tolower(v:val), arglead)') + ret
     endif
@@ -626,9 +626,9 @@ endfunction
 function! s:open_term(bufname) abort
     let bufn = bufnr(a:bufname)
     if bufn == -1
-        throw 'E94: No matching buffer for ' . a:1
+        throw 'E94: No matching buffer for ' . a:bufname
     elseif exists('*term_list') && index(term_list(), bufn) == -1
-        throw a:1 . 'is not a terminal buffer'
+        throw a:bufname . 'is not a terminal buffer'
     endif
     let winids = win_findbuf(bufn)
     if empty(winids)
@@ -672,22 +672,28 @@ function! s:Terminal(...) abort
     endif
 
     if a:0 == 0
-        let opt = ''
+        if !exists('g:l_term_default')
+            let opt = 'S'
+        else
+            let opt = g:l_term_default
+        endif
     else
         let opt = a:1
     endif
     if has('win32')
-        if opt == ''
+        if opt == 'S'
             botright split
         elseif opt == 'V'
             botright vertical split
         elseif opt == 'F'
             tabnew
+        else
+            botright split
         endif
         call s:open_term_win()
     else
         if has('nvim')
-            if opt == ''
+            if opt == 'S'
                 botright split
                 terminal
             elseif opt == 'V'
@@ -701,7 +707,7 @@ function! s:Terminal(...) abort
             endif
             startinsert
         else
-            if opt == ''
+            if opt == 'S'
                 botright terminal
             elseif opt == 'V'
                 botright vertical terminal
