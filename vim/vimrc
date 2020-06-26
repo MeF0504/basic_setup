@@ -153,7 +153,7 @@ function! s:my_tabline()
     let all_files = 0
     let all_wins = 0
     let is_edit = 0
-    let g:l_opened_bn = []
+    let l_opened_bn = []
 
     let titles = []
     for i in range(1, tabpagenr('$'))
@@ -161,9 +161,9 @@ function! s:my_tabline()
         let bufnrs = tabpagebuflist(i)
         for bn in bufnrs
             let all_wins += 1
-            if match(g:l_opened_bn, bn) == -1
+            if match(l_opened_bn, bn) == -1
                 let all_files += 1
-                call add(g:l_opened_bn, bn)
+                call add(l_opened_bn, bn)
             endif
         endfor
         let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
@@ -177,7 +177,7 @@ function! s:my_tabline()
         call add(titles, title)
     endfor
 
-    for bn in g:l_opened_bn
+    for bn in l_opened_bn
         if getbufvar(bn, '&modified')
             let is_edit += 1
         endif
