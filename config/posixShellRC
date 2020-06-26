@@ -188,7 +188,11 @@ ki() {
 
 weather() {
     # Tokyo, Sapporo, SanFrancisco, moon, etc..
-    curl wttr.in/"$1"
+    local city=$1
+    for x in "${@:2}"; do
+        city=$city+$x
+    done
+    curl wttr.in/"$city"
 }
 
 #}}}
