@@ -658,6 +658,7 @@ function! s:open_term(bufname) abort
 endfunction
 
 " https://qiita.com/shiena/items/1dcb20e99f43c9383783
+let s:term_cnt = 1
 function! s:open_term_win()
     " 日本語Windowsの場合`ja`が設定されるので、入力ロケールに合わせたUTF-8に設定しなおす
     " コマンドの存在確認はあとで考える
@@ -675,12 +676,13 @@ function! s:open_term_win()
 
     " term_startでgit for windowsのbashを実行する
     call term_start(['bash.exe', '-l'], {
-                \ 'term_name': 'Git',
+                \ 'term_name': '!Git_'.s:term_cnt,
                 \ 'term_finish': 'close',
                 \ 'curwin': v:true,
                 \ 'cwd': $USERPROFILE,
                 \ 'env': l:env,
                 \ })
+    let s:term_cnt += 1
 endfunction
 
 function! s:Terminal(...) abort
@@ -706,7 +708,7 @@ function! s:Terminal(...) abort
         elseif opt == 'F'
             tabnew
         else
-            open_term()
+            call s:open_term(opt)
             normal! i
             return
         endif
