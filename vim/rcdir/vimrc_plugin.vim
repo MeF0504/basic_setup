@@ -706,7 +706,9 @@ function! s:Terminal(...) abort
         elseif opt == 'F'
             tabnew
         else
-            botright split
+            open_term()
+            normal! i
+            return
         endif
         call s:open_term_win()
     else
@@ -722,6 +724,8 @@ function! s:Terminal(...) abort
                 terminal
             else
                 call s:open_term(opt)
+                startinsert " neovimはstartinsertでTeminal modeになる
+                return
             endif
             startinsert
         else
@@ -734,6 +738,9 @@ function! s:Terminal(...) abort
                 terminal ++curwin
             else
                 call s:open_term(opt)
+                " startinsert は無効らしい
+                normal! i
+                return
             endif
         endif
     endif
