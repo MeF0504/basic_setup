@@ -101,6 +101,8 @@ if exists('g:vimdir') && isdirectory(g:vimdir . 'doc')
 endif
 " ファイル名に=は使わないよな...
 set isfname-==
+" pythonxで使うversionを指定
+" set pyxversion=3    " if needed
 
 "カーソルの下に下線を表示
 set cursorline
