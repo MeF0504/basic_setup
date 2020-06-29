@@ -24,6 +24,16 @@ def mkdir(path):
         os.makedirs(path, mode=0o755)
         #os.chmod(path,0755)
 
+def chk_cmd(cmd):   # check the command exists.
+    if not 'PATH' in os.environ:
+        print("PATH isn't found in environment values.")
+        return False
+    for path in os.environ['PATH'].split(os.pathsep):
+        cmd_path = op.join(path, cmd)
+        if op.isfile(cmd_path) and os.access(cmd_path, os.X_OK):
+            print(cmd_path)
+            return True
+
 ### copy func {{{
 # copy file1 -> file2
 def fcopy(file1,file2,link=False,force=False,**kwargs):
@@ -269,7 +279,7 @@ def main():
     tmdir = op.join(vim_config_dir, 'toml')
     mkdir(op.join(vim_config_dir, "swp"))
 
-    if args.download:
+    if args.download and chk_cmd('sh'):
         mkdir('tmp')
         os.chdir(op.join(fpath,'tmp'))
 
