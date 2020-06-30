@@ -614,9 +614,10 @@ vnoremap <expr> # <SID>chk_braket()
 
 " termonal commandを快適に使えるようにする {{{
 "" http://koturn.hatenablog.com/entry/2018/02/12/140000
+let s:term_opts = ['S', 'V', 'F']
 function! s:complete_term(arglead, cmdline, cursorpos) abort
     let arglead = tolower(a:arglead)
-    let ret = ['S', 'V', 'F']
+    let ret = s:term_opts
     if exists('*term_list')
         let ret = filter(map(term_list(), 'bufname(v:val)'), '!stridx(tolower(v:val), arglead)') + ret
     else
@@ -695,7 +696,11 @@ function! s:Terminal(...) abort
         if !exists('g:l_term_default')
             let opt = 'S'
         else
-            let opt = g:l_term_default
+            if match(s:term_opts, g:l_term_default) != -1
+                let opt = g:l_term_default
+            else
+                let opt = 'S'
+            endif
         endif
     else
         let opt = a:1
