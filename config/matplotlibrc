@@ -26,4 +26,5 @@ axes.grid           : True   ## display grid or not
 legend.numpoints     : 1      # the number of points in the legend line
 legend.frameon       : True   # whether or not to draw a frame around legend
 legend.framealpha    : 0.3  # opacity of of legend frame
+legend.loc           : best
 
