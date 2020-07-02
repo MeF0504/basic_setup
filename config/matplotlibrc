@@ -20,6 +20,7 @@ lines.markersize    : 4     ## markersize, in points
 
 ### AXES
 axes.labelsize      : large # fontsize of the x any y labels
+axes.grid           : True   ## display grid or not
 
 ### LEGEND
 legend.numpoints     : 1      # the number of points in the legend line
