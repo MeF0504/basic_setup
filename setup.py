@@ -56,7 +56,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
 
         shift = '   |'
         for line in difflib.unified_diff(str1, str2, n=1, \
-                fromfile=file1, tofile=file2, \
+                fromfile=home_cut(file1), tofile=home_cut(file2), \
                 fromfiledate=dt1.strftime('%m %d (%Y) %H:%M:%S'), tofiledate=dt2.strftime('%m %d (%Y) %H:%M:%S')):
             print(shift+line, end='')
 
@@ -66,6 +66,12 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         else:
             yn = input(input_str)
         return yn
+
+    def home_cut(path):
+        home = op.expandvars('$HOME')
+        if home in path:
+            path = path.replace(home, '~')
+        return path
 
     file1 = op.expanduser(file1)
     file2 = op.expanduser(file2)
@@ -91,7 +97,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             if not op.exists(linkpath):
                 # broken link
                 os.unlink(file2)
-                print('{} -> {} is a broken link. unlink this.'.format(file2, linkpath))
+                print('{} -> {} is a broken link. unlink this.'.format(home_cut(file2), home_cut(linkpath)))
                 exist = False
                 islink = False
         else:
@@ -103,39 +109,39 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
 
     shift = '  '
     if link:    #link
-        cmd = 'os.symlink("%s", "%s")' % (file1, file2)
+        cmd = 'os.symlink("{}", "{}")'.format(file1, file2)
         comment = 'linked '+name1
 
         if not condition:
             print(shift+"condition doesn't match" )
         elif exist:
             if islink and filecmp.cmp(file1, file2):
-                print(shift+'[ %s ] is already linked.' % name2)
+                print(shift+'[ {} ] is already linked.'.format(name2))
             else:
-                print(shift+'[  %s  ] is already exist, cannot link!' % name2)
+                print(shift+'[ {} ] is already exist, cannot link!'.format(name2))
         else:
             fcopy_main(cmd,comment,test)
 
     else:       #copy
-        cmd = 'shutil.copy("%s", "%s")' % (file1, file2)
-        comment = 'copy %s --> %s' % (name1,file2)
+        cmd = 'shutil.copy("{}", "{}")'.format(file1, file2)
+        comment = 'copy {} --> {}'.format(name1, home_cut(file2))
 
         if not condition:
             print(shift+"condition doesn't match" )
         elif force:
             if islink:
-                print(shift+'[ %s ] is a link file, cannot copy!' % name2)
+                print(shift+'[ {} ] is a link file, cannot copy!'.format(name2))
             else:
                 fcopy_main(cmd, comment, test)
         elif exist:
             if filecmp.cmp(file1, file2) and islink:
-                print(shift+'[ %s ] is linked.' % name2)
+                print(shift+'[ {} ] is linked.'.format(name2))
             elif filecmp.cmp(file1, file2):
-                print(shift+'[ %s ] is already copied.' % name2)
+                print(shift+'[ {} ] is already copied.'.format(name2))
             elif islink:
-                print(shift+'[ %s ] is a link file, cannot copy!' % name2)
+                print(shift+'[ {} ] is a link file, cannot copy!'.format(name2))
             else:
-                input_str = shift+'[  %s  ] is already exist, are you realy overwrite? [y(yes), n(no), d(diff)] ' % name2
+                input_str = shift+'[ {} ] is already exist, are you realy overwrite? [y(yes), n(no), d(diff)] '.format(name2)
                 yn = get_input(input_str)
                 if (yn == 'y') or (yn == 'yes'):
                     fcopy_main(cmd, comment, test)
@@ -165,7 +171,7 @@ def main():
     args = parser.parse_args()
 
     if not op.exists(args.prefix):
-        print("install path %s does not exit" % args.prefix)
+        print("install path {} does not exit".format(args.prefix))
         exit()
 
     fpath = op.dirname(op.abspath(__file__))
@@ -286,7 +292,7 @@ def main():
         print('\nclone dein')
         mkdir(op.join(vim_config_dir, 'dein'))
         urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
-        subprocess.call('sh installer.sh %s' % op.join(vim_config_dir, 'dein'), shell=True)
+        subprocess.call('sh installer.sh {}'.format(op.join(vim_config_dir, 'dein')), shell=True)
 
         print('\nremove download tmp files')
         os.chdir(fpath)
