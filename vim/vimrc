@@ -147,89 +147,100 @@ function! s:SID_PREFIX()
 endfunction
 
 " Set tabline.
+function! s:get_title(tabnr)
+    let bufnrs = tabpagebuflist(a:tabnr)
+    let bufnr = bufnrs[tabpagewinnr(a:tabnr)-1]
+    let mod = getbufvar(bufnr, '&modified') ? '[+]' : ''
+    let title = fnamemodify(bufname(bufnr), ':t')
+    if getbufvar(bufnr, '&filetype') == 'qf'
+        let title = "QuickFix"
+    endif
+    let title = '[' . title . ']'
+    let title = a:tabnr . ':' . title . mod
+    return title
+endfunction
+
 function! s:my_tabline()
-    let beginstr = ''
-    let laststr = ''
+    let width = &columns
+    let s = ''
+    let cur_tab_no = tabpagenr()
+    let header = '..'
+    let footer = '..'
     let all_files = 0
     let all_wins = 0
     let is_edit = 0
     let l_opened_bn = []
+    let tab_len = 16 " max(header + footer) = 12+2+2
 
-    let titles = []
     for i in range(1, tabpagenr('$'))
-        let no = i  " display 0-origin tabpagenr.
-        let bufnrs = tabpagebuflist(i)
-        for bn in bufnrs
-            let all_wins += 1
-            if match(l_opened_bn, bn) == -1
-                let all_files += 1
-                call add(l_opened_bn, bn)
-            endif
-        endfor
-        let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
-        let mod = getbufvar(bufnr, '&modified') ? '[+]' : ''
-        let title = fnamemodify(bufname(bufnr), ':t')
-        if getbufvar(bufnr, '&filetype') == 'qf'
-            let title = "QuickFix"
-        endif
-        let title = '[' . title . ']'
-        let title = no . ':' . title . mod
-        call add(titles, title)
-    endfor
-
-    for bn in l_opened_bn
-        if getbufvar(bn, '&modified')
-            let is_edit += 1
-        endif
-    endfor
-    let edit_str = '_' . is_edit . '/' . all_files . '(' . all_wins . ')_ '
-
-    let width = &columns
-    let cur_tab_no = tabpagenr()
-    let st = cur_tab_no
-    let en = cur_tab_no
-    let tab_len = len(titles[cur_tab_no-1]) + 5   " 5 ... (max) len(beginstr+laststr) +1
-    let tab_len += len(edit_str)
-    for i in range(1, tabpagenr('$'))
-        let ctn_p = en+1
-        if ctn_p <= tabpagenr('$')
-            let tab_len += len(titles[ctn_p-1])+1
-            if tab_len <= width
-                let en = ctn_p
-            else
-                break
+        " left side of current tab page (include current tab page).
+        let ctn_l = cur_tab_no - (i-1)
+        if ctn_l > 0
+            " count all / edited files
+            let bufnrs = tabpagebuflist(ctn_l)
+            for bn in bufnrs
+                let all_wins += 1
+                if match(l_opened_bn, bn) == -1
+                    let all_files += 1
+                    call add(l_opened_bn, bn)
+                    if getbufvar(bn, '&modified')
+                        let is_edit += 1
+                    endif
+                endif
+            endfor
+            " add title to tabline if possible
+            let title = s:get_title(ctn_l)
+            if tab_len+len(title)+1 < width || ctn_l == cur_tab_no
+                let tab_len += len(title)+1
+                let tmp_s = '%'.ctn_l.'T'
+                let tmp_s .= '%#' . (ctn_l == cur_tab_no ? 'TabLineSel' : 'TabLine') . '#'
+                let tmp_s .= title
+                let tmp_s .= '%#TabLineFill# '
+                let s = tmp_s.s
+                " set header & footer
+                if ctn_l == 1
+                    let header = ''
+                endif
+                if ctn_l == tabpagenr('$')
+                    let footer = ''
+                endif
             endif
         endif
 
-        let ctn_m = st-1
-        if ctn_m >= 1
-            let tab_len += len(titles[ctn_m-1])+1
-            if tab_len <= width
-                let st = ctn_m
-            else
-                break
+        " right side if current tab page.
+        let ctn_r = cur_tab_no + i
+        if ctn_r <= tabpagenr('$')
+            " count all / edited files
+            let bufnrs = tabpagebuflist(ctn_r)
+            for bn in bufnrs
+                let all_wins += 1
+                if match(l_opened_bn, bn) == -1
+                    let all_files += 1
+                    call add(l_opened_bn, bn)
+                    if getbufvar(bn, '&modified')
+                        let is_edit += 1
+                    endif
+                endif
+            endfor
+            " add title to tabline if possible
+            let title = s:get_title(ctn_r)
+            if tab_len+len(title)+1 < width
+                let tab_len += len(title)+1
+                let tmp_s = '%'.ctn_r.'T'
+                " let tmp_s = '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
+                let tmp_s .= '%#TabLine#'
+                let tmp_s .= title
+                let tmp_s .= '%#TabLineFill# '
+                let s .= tmp_s
+                " set footer
+                if ctn_r == tabpagenr('$')
+                    let footer = ''
+                endif
             endif
         endif
     endfor
-
-    if st > 1
-        let beginstr = '..'
-    endif
-    if en < tabpagenr('$')
-        let laststr = '..'
-    endif
-
-    let s = ''
-    let s .= edit_str
-    let s .= beginstr
-    for i in range(st, en)
-        let s .= '%'.i.'T'
-        let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
-        let s .= titles[i-1]
-        "let s .= mod
-        let s .= '%#TabLineFill# '
-    endfor
-    let s .= laststr
+    let header = '_'.is_edit.'/'.all_files.'('.all_wins.')_ ' . header
+    let s = header.s.footer
     let s .= '%#TabLineFill#%T%=%#TabLine#'
     return s
 endfunction
