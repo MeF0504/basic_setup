@@ -111,6 +111,7 @@ esac
 ## {{{added functions
 
 add_env() {
+    # {{{
     if [[ "$1" = "" ]] || [[ "$1" =~ ^\- ]]; then
         echo "
     usage: add_env dir 
@@ -138,11 +139,13 @@ add_env() {
             export LD_LIBRARY_PATH=$d/lib64:$LD_LIBRARY_PATH
         fi
     done
+# }}}
 }
 
 ## pseudo-tree http://osxdaily.com/2016/09/09/view-folder-tree-terminal-mac-os-tree-equivalent/
 ## argument analysis https://qiita.com/b4b4r07/items/dcd6be0bb9c9185475bb
 ki() {
+    # {{{
     echo_usage="
     usage: ki [-ah] [dir]
 
@@ -184,18 +187,22 @@ ki() {
     unset OPT
 
     eval find "$dir" "$dot_opt" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
+# }}}
 }
 
 weather() {
+    # {{{
     # Tokyo, Sapporo, SanFrancisco, moon, etc..
     local city=$1
     for x in "${@:2}"; do
         city=$city+$x
     done
     curl wttr.in/"$city"
+# }}}
 }
 
 function del_func() {
+    # {{{
     del_trash=${del_trash:-$HOME/.Trash}
     # https://qiita.com/tdrk/items/cc2995fd74e659ea948f
     if [[ ! -d "${del_trash}" ]]; then
@@ -211,9 +218,17 @@ function del_func() {
             \mv "$fp" "${del_trash}"
         fi
     done
+# }}}
 }
 # I recommend using mv_Trash.py if possible.
 # alias del=del_func
+
+function mkcd() {
+    if [[ ! -d "$1" ]]; then
+        mkdir -p "$1"
+    fi
+    \cd "$1"
+}
 
 #}}}
 
