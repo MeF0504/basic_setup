@@ -27,16 +27,20 @@ def isdark(r,g,b):
         cond = g*g+b*b < (7-r)**2
     return cond
 
-def main_test():
+def main_test(num):
     print('system colors')
     for i in range(8):
-        tmp_st = '  '
-        # tmp_st = '{:02x}'.format(i)
+        if num == 1:
+            tmp_st = '{:02x}'.format(i)
+        else:
+            tmp_st = '  '
         print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
     print()
     for i in range(8,16):
-        tmp_st = '  '
-        # tmp_st = '{:02x}'.format(i)
+        if num == 1:
+            tmp_st = '{:02x}'.format(i)
+        else:
+            tmp_st = '  '
         print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
     print('\n')
 
@@ -45,13 +49,16 @@ def main_test():
         for r in range(6):
             for b in range(6):
                 i = 36*r+6*g+b+16
-                tmp_st = '  '
-                # tmp_st = '{:02x}'.format(i)
-                # tmp_st = '{}{:02x}{}'.format(FG256(36*((r+3)%6)+6*((g+3)%6)+(b+3)%6+16), i, END)
-                # if isdark(r, g, b):
-                #     tmp_st = '{}{:02x}{}'.format(FG256(255), i, END)
-                # else:
-                #     tmp_st = '{}{:02x}{}'.format(FG256(234), i, END)
+                if num == 0:
+                    tmp_st = '  '
+                elif num == 1:
+                    tmp_st = '{:02x}'.format(i)
+                else:
+                    # tmp_st = '{}{:02x}{}'.format(FG256(36*((r+3)%6)+6*((g+3)%6)+(b+3)%6+16), i, END)
+                    if isdark(r, g, b):
+                        tmp_st = '{}{:02x}{}'.format(FG256(255), i, END)
+                    else:
+                        tmp_st = '{}{:02x}{}'.format(FG256(234), i, END)
                 print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
             print(' ', end='')
         print()
@@ -60,11 +67,22 @@ def main_test():
     print('gray scales')
     st = 6*6*6+16
     for i in range(st, 256):
-        tmp_st = '  '
-        # tmp_st = '{:02x}'.format(i)
+        if num == 1:
+            tmp_st = '{:02x}'.format(i)
+        else:
+            tmp_st = '  '
         print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
     print('\n')
 
 if __name__ == '__main__':
-    main_test()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--num', help='0... no fg, 1... show number, 2... is_dark', choices=[0,1,2], type=int)
+    args = parser.parse_args()
+
+    if hasattr(args, 'num') and (args.num is not None):
+        num = args.num
+    else:
+        num = 0
+    main_test(num)
 
