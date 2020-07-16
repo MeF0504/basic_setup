@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import os
 import subprocess
@@ -7,45 +7,51 @@ import argparse
 
 def linux(files,force=False):
     if not force:
-        yn = raw_input('open files: %d\tOK? {y n}' % len(files))
+        yn = input('open files: %d\tOK? (y/[n])' % len(files))
         if yn == 'y': ok=True
         else: return 0
-    else: ok = True
-    for f in files:
-        """
-        if f[f.rfind('.'):] in ('.png','.jpg','.PNG','.JPG','.MIFF','pdf','.PDF'):
-            if not force:
-                yn = raw_input('file ls %s. OK? {y n}' % f)
-                if yn=='y': ok = True
-                else: ok = False
-            else:
-                ok = True
-        """
+    else:
+        ok = True
 
-        if (f[f.rfind('.'):] in ('.png','.jpg','.PNG','.JPG','.MIFF')) and ok:
-            judge = subprocess.call('display %s &' % f,shell=True)
-        elif (f.endswith('.pdf') or f.endswith('.PDF')) and ok:
-            judge = subprocess.call('evince %s &' % f,shell=True)
+    img_files = []
+    pdf_files = []
+    for f in files:
+        ext = f[f.rfind('.')+1:].lower()
+        if (ext in 'png jpg jpeg miff'.split(' ')) and ok:
+            img_files.append(f)
+        elif (ext in 'pdf'.split(' ')) and ok:
+            pdf_files.append(f)
         else:
             continue
 
+    for fy in img_files:
+        judge = subprocess.call('display {} &'.format(fy), shell=True)
+        if judge != 0:
+            break
+
+    for fy in pdf_files:
+        judge = subprocess.call('evince {} &'.format(f), shell=True)
         if judge != 0:
             break
 
 def mac(files):
     f2 = ''
+    cnt = 0
     for f in files:
-        if f[f.rfind('.'):] in ('.png','.jpg','.PNG','.JPG','.MIFF','pdf','.PDF'):
+        ext = f[f.rfind('.')+1:].lower()
+        if ext in 'png jpg jpeg miff pdf'.split(' '):
             f = f.replace(' ','\ ')
             f2 += ' '+f
+            cnt += 1
 
     #print f2
+    print('all files: {}'.format(cnt))
     subprocess.call('open -a Preview '+f2,shell=True)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('figs',help="figures: file type=('.png','.jpg','.PNG','.JPG','.MIFF','pdf','.PDF')",nargs='*')
+    parser.add_argument('figs',help="figures: file type=('png','jpg','jpeg','MIFF','pdf')",nargs='*')
     parser.add_argument('-f','--force',help='show images w/o no check',action='store_true')
     parser.add_argument('-n',dest='num',help='number of showing figures',type=int)
     args = parser.parse_args()
@@ -54,11 +60,9 @@ if __name__ == '__main__':
         files = glob.glob('./*')
     elif os.path.isdir(args.figs[0]):
         files = glob.glob(os.path.join(args.figs[0],'*'))
-    print 'all files:',len(files)
+    # print 'all files:',len(files)
     if hasattr(args,'num'):
         files = files[:args.num]
-    #print files,'\n'
-    #exit()
 
     if os.uname()[0] == 'Linux': linux(files,args.force)
     if os.uname()[0] == 'Darwin': mac(files)
