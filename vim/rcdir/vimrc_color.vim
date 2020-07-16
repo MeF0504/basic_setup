@@ -62,27 +62,27 @@ function! <SID>my_color_set()
     endif
 
     if exists('*strftime')
-        let s:month = str2nr(strftime("%b"))
-        let s:day = str2nr(strftime("%d"))
-        let s:dow = str2nr(strftime("%w"))
-        if ((exists("g:l_bd_month") && (s:month == g:l_bd_month))
-            \&& (exists("g:l_bd_day") && (s:day == g:l_bd_day)) )
+        let month = str2nr(strftime("%b"))
+        let day = str2nr(strftime("%d"))
+        let dow = str2nr(strftime("%w"))
+        if ((exists("g:l_bd_month") && (month == g:l_bd_month))
+            \&& (exists("g:l_bd_day") && (day == g:l_bd_day)) )
             "" Birthday
             highlight StatusLine cterm=None ctermfg=185 ctermbg=136
             highlight WildMenu cterm=Bold ctermfg=136 ctermbg=185
         else
-            let s:stl_br = (s:dow==6 ? 0 : s:dow) " 土日は0
-            let s:stl_bg = (s:month-1)%6
-            let s:stl_bb = (s:day-1)%6
-            let s:bg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
+            let s:stl_br = (dow==6 ? 0 : dow) " 土日は0
+            let s:stl_bg = (month-1)%6
+            let s:stl_bb = (day-1)%6
+            let bg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
             if s:isdark(s:stl_br, s:stl_bg, s:stl_bb) == 1
-                let s:fg = has('gui_running') ? '#eeeeee' : 255
+                let fg = has('gui_running') ? '#eeeeee' : 255
             else    " light background
-                let s:fg = has('gui_running') ? '#1c1c1c' : 234
+                let fg = has('gui_running') ? '#1c1c1c' : 234
             endif
-            " echo 'color:' . s:stl_br . '=' . s:stl_bg . '=' . s:stl_bb . '=' . s:bg . '=' . s:fg
-            execute 'highlight StatusLine cterm=Bold ctermfg='.s:fg.' ctermbg='.s:bg
-            execute 'highlight WildMenu cterm=Bold ctermfg='.s:bg.' ctermbg='.s:fg
+            " echo 'color:' . s:stl_br . '=' . s:stl_bg . '=' . s:stl_bb . '=' . bg . '=' . fg
+            execute 'highlight StatusLine cterm=Bold ctermfg='.fg.' ctermbg='.bg
+            execute 'highlight WildMenu cterm=Bold ctermfg='.bg.' ctermbg='.fg
             if !has('nvim')
                 highlight! link StatusLineTerm StatusLine
             endif
@@ -90,6 +90,14 @@ function! <SID>my_color_set()
     endif
     "default ... highlight StatusLine term=bold,reverse cterm=bold ctermfg=247 ctermbg=235
 
+endfunction
+
+function! ShowBG()
+    let echo_str  = 'red:'.s:stl_br
+    let echo_str .= ' green:'.s:stl_bg
+    let echo_str .= ' blue:'.s:stl_bb
+    let echo_str .= ' => bg:'.<SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
+    echo echo_str
 endfunction
 
 augroup colorLocal
