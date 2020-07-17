@@ -19,18 +19,18 @@ function! s:isdark(r, g, b)
 endfunction
 
 function! <SID>my_color_set_inkpot()
-    highlight Identifier cterm=None ctermfg=110 ctermbg=None
-    highlight Number cterm=None ctermfg=9 ctermbg=None
-    highlight Type cterm=None ctermfg=149 ctermbg=None
-    highlight String cterm=None ctermfg=222 ctermbg=None
-    highlight Comment cterm=None ctermfg=31 ctermbg=None
-    highlight LineNr cterm=None ctermfg=239 ctermbg=None
-    highlight Title cterm=bold ctermfg=197 ctermbg=None
+    highlight Identifier ctermfg=110
+    highlight Number ctermfg=9
+    highlight Type ctermfg=149
+    highlight String ctermfg=222 ctermbg=None
+    highlight Comment ctermfg=31
+    highlight LineNr ctermfg=239
+    highlight Title ctermfg=197
     highlight SpecialKey cterm=bold ctermfg=None ctermbg=236
     if has('nvim')
         highlight link Whitespace SpecialKey
     endif
-    highlight Normal cterm=None ctermfg=255 ctermbg=None
+    highlight Normal ctermfg=255
 endfunction
 
 function! <SID>my_color_set()
