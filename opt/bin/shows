@@ -6,23 +6,26 @@ import glob
 import argparse
 
 def linux(files,force=False):
-    if not force:
-        yn = input('open files: %d\tOK? (y/[n])' % len(files))
-        if yn == 'y': ok=True
-        else: return 0
-    else:
-        ok = True
-
     img_files = []
     pdf_files = []
     for f in files:
         ext = f[f.rfind('.')+1:].lower()
-        if (ext in 'png jpg jpeg miff'.split(' ')) and ok:
+        if (ext in 'png jpg jpeg miff'.split(' ')):
             img_files.append(f)
-        elif (ext in 'pdf'.split(' ')) and ok:
+        elif (ext in 'pdf'.split(' ')):
             pdf_files.append(f)
         else:
             continue
+
+    fnum = len(img_files)+len(pdf_files)
+    if fnum == 0:
+        print('open 0 files')
+        return
+
+    if not force:
+        yn = input('open files: {}\tOK? (y/[n])'.format(fnum))
+        if yn != 'y':
+            return
 
     for fy in img_files:
         judge = subprocess.call('display {} &'.format(fy), shell=True)
