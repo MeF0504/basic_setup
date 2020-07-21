@@ -898,6 +898,7 @@ function! <SID>diff_line(...) abort
     setlocal nowrap
     setlocal nobuflisted
     setlocal previewwindow
+    setlocal nofoldenable
 
     TmpPython << EOF
 import vim
