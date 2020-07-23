@@ -9,6 +9,8 @@ import sys
 import argparse
 import tarfile
 
+inter_str = "'q':quit, '..':go back 1 tree, key_name:select a key >> "
+
 #function to show the constitution of hdf5 file.
 def main_hdf5(fpath, args):
     import h5py
@@ -38,6 +40,37 @@ def main_pickle(fpath, args):
     if type(data) == type(dict()):
         if hasattr(args, 'key') and args.key is not None:
             print(data[args.key])
+        elif hasattr(args, 'interactive') and args.interactive:
+            selected_keys = []
+            tmp_data = data
+            while(True):
+                cpath = '/'+'/'.join(selected_keys)
+                print('current path:{}'.format(cpath))
+                print('contents in this dict: ', end='')
+                for i,k in enumerate(tmp_data.keys()):
+                    # print('|{} {}\n (type:{})'.format(i, k, type(tmp_data[k]).__name__), end=' ')
+                    print(k, end='  ')
+                print('\n')
+                key_name = input(inter_str)
+                if key_name == 'q':
+                    break
+                elif key_name == '..':
+                    if len(selected_keys) >= 1:
+                        selected_keys = selected_keys[:-1]
+                        tmp_data = data
+                        for sk in selected_keys:
+                            tmp_data = tmp_data[sk]
+                    else:
+                        print('you are in root.')
+                else:
+                    if key_name in tmp_data:
+                        if type(tmp_data[key_name]) == dict:
+                            tmp_data = tmp_data[key_name]
+                            selected_keys.append(key_name)
+                        else:
+                            print('\noutput::\n{}\n'.format(tmp_data[key_name]))
+                    else:
+                        print('{} is not a correct name'.format(key_name))
         else:
             try:
                 tmp_keys = sorted(data.keys())
@@ -276,6 +309,7 @@ if __name__ == "__main__":
     parser.add_argument('-v', dest='verbose', action='store_true', help='show details')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(' '))
     parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, Dataset name in hdf5, file name in tar/zip, or table name in sqlite3.')
+    parser.add_argument('-i', '--interactive', dest='interactive', help='(beta ver.) open a file with interactive mode. now only supports pickle.', action='store_true')
     args = parser.parse_args()
 
     main(args)
