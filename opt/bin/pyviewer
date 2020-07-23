@@ -28,10 +28,11 @@ def main_hdf5(fpath, args):
 
 def main_pickle(fpath, args):
     import pickle
-    with open(fpath, 'rb') as f:
-        try:
+    try:
+        with open(fpath, 'rb') as f:
             data = pickle.load(f)
-        except UnicodeDecodeError:
+    except UnicodeDecodeError:
+        with open(fpath, 'rb') as f:
             data = pickle.load(f, encoding='latin1')
 
     if type(data) == type(dict()):
