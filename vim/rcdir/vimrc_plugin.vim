@@ -877,11 +877,11 @@ function! <SID>diff_line(...) abort
         else
             " file name
              if !filereadable(expand(a:[i+1]))
-                 echo 'unable to read '.a:[i+1].'\n'.help_str
+                 echo "unable to read ".a:[i+1]."\n".help_str
                  return
              endif
              if (bufname(a:[i+1])=='')
-                 echo a:[i+1].' is not in buffer. please open that.\n'.help_str
+                 echo a:[i+1]." is not in buffer. please open that.\n".help_str
                  return
              endif
              if i == 0
@@ -916,10 +916,12 @@ function! <SID>diff_line(...) abort
         let file2 = '%'
     endif
     if end1 > line('$', win_findbuf(bufnr(file1))[0])
-        echo 'input number is larger than EOF.\n'.help_str
+        echo "input number is larger than EOF.\n".help_str
+        return
     endif
     if end2 > line('$', win_findbuf(bufnr(file2))[0])
-        echo 'input number is larger than EOF.\n'.help_str
+        echo "input number is larger than EOF.\n".help_str
+        return
     endif
     " echo file1.' '.st1.' '.end1.' '.file2.' '.st2.' '.end2
     let l1 = getbufline(file1, st1, end1)
