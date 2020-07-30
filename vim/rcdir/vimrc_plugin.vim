@@ -851,23 +851,48 @@ command! -nargs=1 -complete=file Diff vertical diffsplit <args>
 
 function! <SID>diff_line(...) abort
     " http://t2y.hatenablog.jp/entry/20110210/1297338263
-    if (a:0 != 2) && (a:0 != 4)
-        echo "illegal input.\n:DiffLine line1 line2\n or \n:Diffline start1 end1 start2 end2"
+    let help_str = ":DiffLine [file1] start1 [end1] [file2] start2 [end2]\n"
+                \."if file is not specified, use current file.\n"
+                \."if you specified end2, please specified end1 too."
+
+    if (a:0 < 2) || (a:0 > 6)
+        echo "illegal input.\n".help_str
         return
     endif
 
+    " check arguments
     for i in range(a:0)
-        if str2nr(a:[i+1]) == 0
-            echo 'please input numbers'
-            return
-        endif
-        if a:[i+1] > line('$')
-            echo 'input number is larger than EOF.'
-            return
-        endif
-    endfor
+        if str2nr(a:[i+1]) != 0
+             " number
+             if !has_key(l:, 'st1')
+                 let st1 = a:[i+1]
+             elseif !has_key(l:, 'st2')
+                 let st2 = a:[i+1]
+             elseif !has_key(l:, 'end1')
+                 let end1 = st2
+                 let st2 = a:[i+1]
+             elseif !has_key(l:, 'end2')
+                 let end2 = a:[i+1]
+             endif
+        else
+            " file name
+             if !filereadable(expand(a:[i+1]))
+                 echo 'unable to read '.a:[i+1].'\n'.help_str
+                 return
+             endif
+             if (bufname(a:[i+1])=='')
+                 echo a:[i+1].' is not in buffer. please open that.\n'.help_str
+                 return
+             endif
+             if i == 0
+                 let file1 = a:[i+1]
+             elseif i > 0
+                 let file2 = a:[i+1]
+             endif
+         endif
+     endfor
 
-
+    " set python command
     if has('python3')
         command! -nargs=1 TmpPython python3 <args>
     elseif has('python')
@@ -877,13 +902,28 @@ function! <SID>diff_line(...) abort
         return
     endif
 
-    if a:0 == 2
-        let l1 = [getline(a:1)]
-        let l2 = [getline(a:2)]
-    else
-        let l1 = getline(a:1, a:2)
-        let l2 = getline(a:3, a:4)
+    " set lines
+    if !has_key(l:, 'end1')
+        let end1 = st1
     endif
+    if !has_key(l:, 'end2')
+        let end2 = st2
+    endif
+    if !has_key(l:, 'file1')
+        let file1 = '%'
+    endif
+    if !has_key(l:, 'file2')
+        let file2 = '%'
+    endif
+    if end1 > line('$', win_findbuf(bufnr(file1))[0])
+        echo 'input number is larger than EOF.\n'.help_str
+    endif
+    if end2 > line('$', win_findbuf(bufnr(file2))[0])
+        echo 'input number is larger than EOF.\n'.help_str
+    endif
+    " echo file1.' '.st1.' '.end1.' '.file2.' '.st2.' '.end2
+    let l1 = getbufline(file1, st1, end1)
+    let l2 = getbufline(file2, st2, end2)
 
     pclose
     if a:0 == 2
