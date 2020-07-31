@@ -93,7 +93,7 @@ EOF
 endfunction
 command! -nargs=1 PyHelp call s:python_help(<f-args>)
 
-function! s:py_templete()
+function! s:py_template()
     " {{{
     append
 import os
@@ -107,5 +107,5 @@ if __name__ == '__main__':
 .
     " }}}
 endfunction
-command! Templete :call s:py_templete()
+command! Template :call s:py_template()
 
