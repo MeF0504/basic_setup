@@ -5,20 +5,23 @@ import os.path as op
 import argparse
 from argparse import RawTextHelpFormatter
 from pathlib import Path
+import datetime
+dt = datetime.datetime.today()
+tdy = dt.strftime('%Y/%m/%d %H:%M:%S')
 
 log_txt = ""
 
 def mkdir(path):
     global log_txt
     if not op.exists(path):
-        log_txt += ('mkdir '+path) + "\n"
+        log_txt += "mkdir {}\n".format(path)
         os.makedirs(path, mode=0o755)
 
 def rmdir(path):
     global log_txt
     if op.exists(path):
         if os.listdir(path) == []:
-            log_txt += ('rmdir ' + path) + "\n"
+            log_txt += "rmdir {}\n".format(path)
             os.removedirs(path)
 
 def symlnk(s_file, t_file):
@@ -27,39 +30,28 @@ def symlnk(s_file, t_file):
         # check if t_file is link or not
         if str(Path(t_file).resolve()) == t_file:
             # t_file is not symbolic link
-            log_txt += ("%s is already exist. %s isn't linked" % (t_file, s_file) ) + "\n"
+            log_txt += "{} is already exist. {} isn't linked\n".format(t_file, s_file)
         else:
             # t_file is symbolic link
-            log_txt += ("unlink %s -> %s and link %s" % (t_file, str(Path(t_file).resolve()), s_file)) + "\n"
+            log_txt += "unlink {} -> {} and link {}\n".format(t_file, str(Path(t_file).resolve()), s_file)
 
             os.unlink(t_file)
             os.symlink(s_file, t_file)
 
     else:
-        log_txt += ("link %s -> %s" % (s_file, t_file)) + "\n"
+        log_txt += "link {} -> {}\n".format(s_file, t_file)
         os.symlink(s_file, t_file)
 
-def unlnk(s_file, t_file):
-    global log_txt
-    if op.exists(t_file):
-        # check if t_file is link or not
-        if str(Path(t_file).resolve()) == t_file:
-            # t_file is not symbolic link
-            log_txt += ("%s is already exist. Doesn't unlink." % t_file) + "\n"
-        elif os.readlink(t_file) == s_file: # check the first target of link
-            # t_file is symbolic link
-            log_txt += ("unlink %s -> %s" % (t_file, s_file)) + "\n"
-
-            os.unlink(t_file)
 
 
 def main_link(args):
     global log_txt
     sdir = op.abspath(args.source_dir)
     tdir = op.abspath(args.target_dir)
+    log_txt += "\nmake time : {}".format(tdy)
 
     for cur, dirs, files in os.walk(sdir):
-        log_txt += "\n" + ('current: ' + cur) + "\n"
+        log_txt += "\ncurrent: {}\n".format(cur)
         for fy in files:
             if args.log_name in fy:
                 # don't link log file
@@ -73,27 +65,25 @@ def main_link(args):
             mkdir(op.join(t_curdir, di))
 
 
+
 def main_unlink(args):
     global log_txt
-    sdir = op.abspath(args.source_dir)
     tdir = op.abspath(args.target_dir)
+    log_txt += "\nmake time : {}".format(tdy)
 
-    for cur, dirs, files in os.walk(sdir, topdown=False):
-        log_txt += "\n" + ('current: ' + cur) + "\n"
+    for cur, dirs, files in os.walk(tdir, topdown=False):
         for fy in files:
-            s_file = op.join(cur, fy)
-            t_file = s_file.replace(sdir, tdir)
-            unlnk(s_file, t_file)
-
-        for di in dirs:
-            t_curdir = cur.replace(sdir, tdir)
-            rmdir(op.join(t_curdir, di))
+            t_file = op.join(cur, fy)
+            if not op.exists(t_file):
+                log_txt += "\ncurrent: {}\n".format(cur)
+                os.unlink(t_file)
+                log_txt += "{} -> {} is a broken link. unlink this.\n".format(t_file, str(Path(t_file).resolve()))
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""
 this command support to link files from installed in source_dir
-to user independent optional directory (target_dir). 
+to user independent optional directory (target_dir).
 example::
 $ optlink ~/softwares/python3 ~/opt
 then link ~/opt/bin/python3 -> ~/softwares/python3/bin/python3 
@@ -102,7 +92,7 @@ and other bins, libs and so on.
     parser.add_argument('source_dir', help='source directory')
     parser.add_argument('target_dir', help='target directory')
     parser.add_argument('--log_name', help="log file name. if set 'None', don't save log file.", default='optlink.log')
-    parser.add_argument('-u', '--unlink', help="unlink files in source_dir linked to these in target_dir.\nit is usefull to uninsatll software.", action='store_true')
+    parser.add_argument('-u', '--unlink', help="unlink all broken links in target_dir. source_dir doesn't have a meaning with this option.", action='store_true')
     args = parser.parse_args()
 
     if not args.unlink:
@@ -111,7 +101,8 @@ and other bins, libs and so on.
         main_unlink(args)
 
     if args.log_name != "None":
-        sdir = op.abspath(args.source_dir)
-        log_file = op.join(sdir, args.log_name)
-        with open(log_file, 'w') as f:
+        tdir = op.abspath(args.target_dir)
+        log_file = op.join(tdir, args.log_name)
+        with open(log_file, 'a') as f:
             f.write(log_txt)
+        print('make log file @ {}'.format(log_file))
