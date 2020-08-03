@@ -865,14 +865,14 @@ function! <SID>diff_line(...) abort
         if str2nr(a:[i+1]) != 0
              " number
              if !has_key(l:, 'st1')
-                 let st1 = a:[i+1]
+                 let st1 = str2nr(a:[i+1])
              elseif !has_key(l:, 'st2')
-                 let st2 = a:[i+1]
+                 let st2 = str2nr(a:[i+1])
              elseif !has_key(l:, 'end1')
                  let end1 = st2
-                 let st2 = a:[i+1]
+                 let st2 = str2nr(a:[i+1])
              elseif !has_key(l:, 'end2')
-                 let end2 = a:[i+1]
+                 let end2 = str2nr(a:[i+1])
              endif
         else
             " file name
@@ -915,14 +915,20 @@ function! <SID>diff_line(...) abort
     if !has_key(l:, 'file2')
         let file2 = '%'
     endif
-    if end1 > line('$', win_findbuf(bufnr(file1))[0])
-        echo "input number is larger than EOF.\n".help_str
-        return
+
+    " condition check
+    if (st1 > end1) || (st2 > end2)
+        echo "start is larger than end.\n".help_str
     endif
-    if end2 > line('$', win_findbuf(bufnr(file2))[0])
-        echo "input number is larger than EOF.\n".help_str
-        return
-    endif
+    " if end1 > line('$', win_findbuf(bufnr(file1))[0])
+    "     echo "input number is larger than EOF.\n".help_str
+    "     return
+    " endif
+    " if end2 > line('$', win_findbuf(bufnr(file2))[0])
+    "     echo "input number is larger than EOF.\n".help_str
+    "     return
+    " endif
+
     " echo file1.' '.st1.' '.end1.' '.file2.' '.st2.' '.end2
     let l1 = getbufline(file1, st1, end1)
     let l2 = getbufline(file2, st2, end2)
