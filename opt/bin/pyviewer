@@ -9,7 +9,25 @@ import sys
 import argparse
 import tarfile
 
+try:
+    from color_test import BG, FG, END
+    print_color = True
+except ImportError:
+    print_color = False
+
 inter_str = "'q':quit, '..':go back 1 tree, key_name:select a key >> "
+
+def cprint(str1, str2, fg=None, bg=None, **kwargs):
+    print_str = str1
+    if print_color:
+        if fg is not None:
+            print_str = FG[fg]+print_str
+        if bg is not None:
+            print_str = BG[bg]+print_str
+        if (fg is not None) or (bg is not None):
+            print_str += END
+    print_str += str2
+    print(print_str, **kwargs)
 
 #function to show the constitution of hdf5 file.
 def main_hdf5(fpath, args):
@@ -45,8 +63,8 @@ def main_pickle(fpath, args):
             tmp_data = data
             while(True):
                 cpath = '/'+'/'.join(selected_keys)
-                print('current path:{}'.format(cpath))
-                print('contents in this dict: ', end='')
+                cprint('current path:', ' {}'.format(cpath), bg='c')
+                cprint('contents in this dict:', ' ', bg='g', end='')
                 for i,k in enumerate(tmp_data.keys()):
                     # print('|{} {}\n (type:{})'.format(i, k, type(tmp_data[k]).__name__), end=' ')
                     print(k, end='  ')
@@ -68,7 +86,9 @@ def main_pickle(fpath, args):
                             tmp_data = tmp_data[key_name]
                             selected_keys.append(key_name)
                         else:
-                            print('\noutput::\n{}\n'.format(tmp_data[key_name]))
+                            cprint('output::', '\n{}\n'.format(tmp_data[key_name]), bg='r')
+                    elif key_name == '':
+                        continue
                     else:
                         print('{} is not a correct name'.format(key_name))
         else:
