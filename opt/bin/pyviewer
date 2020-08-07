@@ -65,7 +65,7 @@ def main_pickle(fpath, args):
             tmp_data = data
             while(True):
                 key_strs = [str(k) for k in selected_keys]
-                cpath = '/'+'/'.join(key_strs)
+                cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(key_strs))
                 cprint('current path:', ' {}'.format(cpath), bg='c')
                 cprint('contents in this dict:', ' ', bg='g', end='')
                 for i,k in enumerate(tmp_data.keys()):
