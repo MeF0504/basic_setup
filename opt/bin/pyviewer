@@ -68,7 +68,11 @@ def main_pickle(fpath, args):
                 cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(key_strs))
                 cprint('current path:', ' {}'.format(cpath), bg='c')
                 cprint('contents in this dict:', ' ', bg='g', end='')
-                for i,k in enumerate(tmp_data.keys()):
+                try:
+                    tmp_keys = sorted(tmp_data.keys())
+                except TypeError:
+                    tmp_keys = tmp_data.keys()
+                for i,k in enumerate(tmp_keys):
                     # print('|{} {}\n (type:{})'.format(i, k, type(tmp_data[k]).__name__), end=' ')
                     print('{},'.format(k), end='  ')
                 print('\n')
