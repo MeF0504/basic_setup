@@ -57,7 +57,9 @@ def main_pickle(fpath, args):
 
     if type(data) == type(dict()):
         if hasattr(args, 'key') and args.key is not None:
-            print(data[args.key])
+            for k in data:
+                if str(k) == args.key:
+                    print(data[k])
         elif hasattr(args, 'interactive') and args.interactive:
             selected_keys = []
             tmp_data = data
@@ -67,11 +69,13 @@ def main_pickle(fpath, args):
                 cprint('contents in this dict:', ' ', bg='g', end='')
                 for i,k in enumerate(tmp_data.keys()):
                     # print('|{} {}\n (type:{})'.format(i, k, type(tmp_data[k]).__name__), end=' ')
-                    print(k, end='  ')
+                    print('{},'.format(k), end='  ')
                 print('\n')
                 key_name = input(inter_str)
                 if key_name == 'q':
                     break
+                elif key_name == '':
+                    continue
                 elif key_name == '..':
                     if len(selected_keys) >= 1:
                         selected_keys = selected_keys[:-1]
@@ -81,16 +85,17 @@ def main_pickle(fpath, args):
                     else:
                         print('you are in root.')
                 else:
-                    if key_name in tmp_data:
-                        if type(tmp_data[key_name]) == dict:
-                            tmp_data = tmp_data[key_name]
-                            selected_keys.append(key_name)
-                        else:
-                            cprint('output::', '\n{}\n'.format(tmp_data[key_name]), bg='r')
-                    elif key_name == '':
-                        continue
-                    else:
-                        print('{} is not a correct name'.format(key_name))
+                    find_key = False
+                    for k in tmp_data:
+                        if str(k) == key_name:
+                            find_key = True
+                            if type(tmp_data[k]) == dict:
+                                tmp_data = tmp_data[k]
+                                selected_keys.append(k)
+                            else:
+                                cprint('output::', '\n{}\n'.format(tmp_data[k]), bg='r')
+                    if not find_key:
+                        cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
         else:
             try:
                 tmp_keys = sorted(data.keys())
