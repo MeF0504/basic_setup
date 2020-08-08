@@ -88,7 +88,7 @@ def main_pickle(fpath, args):
                         for sk in selected_keys:
                             tmp_data = tmp_data[sk]
                     else:
-                        print('you are in root.')
+                        cprint('you are in root.', '', fg='r')
                 else:
                     find_key = False
                     for k in tmp_data:
@@ -205,22 +205,22 @@ def main_sqlite3(fpath, args):
     shift = '  '
 
     def table_info_simple(table):
-        cursor.execute("pragma table_info('%s')" % table)
+        cursor.execute("pragma table_info('{}')".format(table))
         table_info = cursor.fetchall()
         for tinfo in table_info:
             if tinfo[2] == '':
                 ctype = 'none'
             else:
                 ctype = tinfo[2]
-            print('  | %s [ %s ]' % (tinfo[1], ctype))
+            print('  | {} [ {} ]'.format(tinfo[1], ctype))
 
     def table_info_verbose(table):
-        cursor.execute("pragma table_info('%s')" % table)
+        cursor.execute("pragma table_info('{}')".format(table))
         table_info = cursor.fetchall()
         headers = []
         for tinfo in table_info:
             headers.append(tinfo[1])
-        cursor.execute('select * from %s' % table)
+        cursor.execute('select * from {}'.format(table))
         column = cursor.fetchall()
         table = []
         for clm in column:
@@ -235,12 +235,12 @@ def main_sqlite3(fpath, args):
         else:
             print(shift+'|', end='')
             for hd in headers:
-                print(' %s |' % hd, end='')
+                print(' {} |'.format(hd), end='')
             print('')
             for itms in table:
                 print(shift+'|', end='')
                 for itm in itms:
-                    print(' %s |' % itm, end='')
+                    print(' {} |'.format(itm), end='')
                 print('')
 
     database = sqlite3.connect(fpath)
@@ -258,6 +258,7 @@ def main_sqlite3(fpath, args):
             table_info_verbose(table)
         else:
             table_info_simple(table)
+    database.close()
 
 def main_raw(fpath, args):
     try:
