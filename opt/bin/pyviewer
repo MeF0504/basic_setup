@@ -243,11 +243,61 @@ def main_sqlite3(fpath, args):
                     print(' {} |'.format(itm), end='')
                 print('')
 
+    def table_iinfo_inter():
+        keys = []
+        for tb in tables:
+            keys.append(tb[0])
+        selected_keys = []
+        while(True):
+            key_strs = [str(k) for k in selected_keys]
+            cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(key_strs))
+            cprint('current path:', ' {}'.format(cpath), bg='c')
+            cprint('contents in this dict:', ' ', bg='g', end='')
+            for k in keys:
+                print('{},'.format(k), end='  ')
+            print('\n')
+            key_name = input(inter_str)
+            if key_name == 'q':
+                break
+            elif key_name == '':
+                continue
+            elif key_name == '..':
+                if len(selected_keys) >= 1:
+                    selected_keys = selected_keys[:-1]
+                    keys = []
+                    for tb in tables:
+                        keys.append(tb[0])
+                else:
+                    cprint('you are in root.', '', fg='r')
+            else:
+                if key_name not in keys:
+                    cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
+                    continue
+                if len(selected_keys) == 0:     # select tables
+                    selected_keys.append(key_name)
+                    cursor.execute("pragma table_info('{}')".format(key_name))
+                    table_info = cursor.fetchall()
+                    keys = []
+                    for tinfo in table_info:
+                        keys.append(tinfo[1])
+                elif len(selected_keys) == 1:   # select columns
+                    cursor.execute('select {} from {}'.format(key_name, selected_keys[0]))
+                    column = cursor.fetchall()
+                    output = []
+                    for clm in column:
+                        output.append(clm[0])
+                    cprint('output::', '\n{}\n'.format(output), bg='r')
+                else:
+                    cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
+
     database = sqlite3.connect(fpath)
     cursor = database.cursor()
     cursor.execute("select name from sqlite_master where type='table'")
     tables = cursor.fetchall()
-    if hasattr(args, 'key') and args.key is not None:
+    if hasattr(args, 'interactive') and args.interactive:
+        table_iinfo_inter()
+        return
+    elif hasattr(args, 'key') and args.key is not None:
         print(args.key)
         table_info_verbose(args.key)
         return
