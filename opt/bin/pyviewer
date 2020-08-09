@@ -284,30 +284,87 @@ def main_tar(fpath, args):
 
 def main_zip(fpath, args):
     import zipfile
-    with zipfile.ZipFile(fpath, 'r') as zip_files:
-        if hasattr(args, 'key') and args.key is not None:
-            zpath = zipfile.Path(zip_files, args.key)
-            if not zpath.exists():
-                print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
-                return
-            if zpath.is_file():
-                for line in zip_files.open(args.key, 'r'):
-                    try:
-                        print(line.decode(), end='')
-                    except UnicodeDecodeError as e:
-                        print('Error!! {}'.format(e), file=sys.stderr)
-                        return
-            elif zpath.is_dir():
-                for zfile in zip_files.namelist():
-                    if zfile[:len(args.key)] == args.key:
-                        print(zfile)
+    zip_files = zipfile.ZipFile(fpath, 'r')
+    # with zipfile.ZipFile(fpath, 'r') as zip_files:
+    if hasattr(args, 'interactive') and args.interactive:
+        zlist = zip_files.namelist()
+        selected_keys = []
+        keys = get_dir_items('/', zlist)
+        while(True):
+            cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(selected_keys))
+            cprint('current path:', ' {}'.format(cpath), bg='c')
+            cprint('contents in this dict:', ' ', bg='g', end='')
+            for k in keys:
+                print('{},'.format(k), end='  ')
+            print('\n')
+            key_name = input(inter_str)
+            if key_name == 'q':
+                break
+            elif key_name == '':
+                continue
+            elif key_name == '..':
+                if len(selected_keys) >= 1:
+                    selected_keys = selected_keys[:-1]
+                    cpath = '/'.join(selected_keys)
+                    if cpath == '':
+                        cpath = '/'
+                    keys = get_dir_items(cpath, zlist)
+                else:
+                    cprint('you are in root.\n', '', fg='r')
             else:
-                print('{} is a unknown filetype.'.format(args.key))
-        elif args.verbose:
-            zip_files.printdir()
+                if key_name not in keys:
+                    cprint('"{}" is not a correct name.\n'.format(key_name), '', fg='r')
+                    continue
+                cpath = '/'.join(selected_keys+[key_name])
+                zpath = zipfile.Path(zip_files, cpath)
+                if not zpath.exists():
+                    cpath += '/'
+                    zpath = zipfile.Path(zip_files, cpath)
+                    if not zpath.exists():
+                        cprint('"{}" is not a correct name.\n'.format(key_name), '', fg='r')
+                        continue
+                if zpath.is_dir():
+                    keys = get_dir_items(cpath, zlist)
+                    selected_keys.append(key_name)
+                elif zpath.is_file():
+                    cprint('output::', '', bg='r')
+                    for line in zip_files.open(cpath, 'r'):
+                        try:
+                            print(line.decode(), end='')
+                        except UnicodeDecodeError as e:
+                            # print('Error!! {}'.format(e), file=sys.stderr)
+                            break
+                    print()
+                else:
+                    cprint('sorry, I can\'t show information.\n', '', fg='r')
+
+    elif hasattr(args, 'key') and args.key is not None:
+        zpath = zipfile.Path(zip_files, args.key)
+        if not zpath.exists():
+            print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
+            zip_files.close()
+            return
+        if zpath.is_file():
+            for line in zip_files.open(args.key, 'r'):
+                try:
+                    print(line.decode(), end='')
+                except UnicodeDecodeError as e:
+                    print('Error!! {}'.format(e), file=sys.stderr)
+                    zip_files.close()
+                    return
+        elif zpath.is_dir():
+            l_key = len(args.key)   # args.key[-1] == '/'
+            for zfile in get_dir_items(args.key, zip_files.namelist()):
+                print(os.path.join(args.key, zfile))
         else:
-            for zfile in zip_files.namelist():
-                print(zfile)
+            print('{} is a unknown filetype.'.format(args.key))
+    elif args.verbose:
+        zip_files.printdir()
+    else:
+        for zfile in zip_files.namelist():
+            print(zfile)
+
+    zip_files.close()
 
 def main_sqlite3(fpath, args):
     import sqlite3
@@ -410,18 +467,17 @@ def main_sqlite3(fpath, args):
     tables = cursor.fetchall()
     if hasattr(args, 'interactive') and args.interactive:
         table_iinfo_inter()
-        return
     elif hasattr(args, 'key') and args.key is not None:
         print(args.key)
         table_info_verbose(args.key)
-        return
-    for tb in tables:
-        table = tb[0]
-        print(table)
-        if args.verbose:
-            table_info_verbose(table)
-        else:
-            table_info_simple(table)
+    else:
+        for tb in tables:
+            table = tb[0]
+            print(table)
+            if args.verbose:
+                table_info_verbose(table)
+            else:
+                table_info_simple(table)
     database.close()
 
 def main_raw(fpath, args):
@@ -504,7 +560,7 @@ if __name__ == "__main__":
     parser.add_argument('-v', dest='verbose', action='store_true', help='show details')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(' '))
     parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, Dataset name in hdf5, file name in tar/zip, or table name in sqlite3.')
-    parser.add_argument('-i', '--interactive', dest='interactive', help='(beta ver.) open a file with interactive mode. now only supports pickle.', action='store_true')
+    parser.add_argument('-i', '--interactive', dest='interactive', help='(beta ver.) open a file with interactive mode. support pickle, hdf5, tar, zip, sqlite3.', action='store_true')
     args = parser.parse_args()
 
     main(args)
