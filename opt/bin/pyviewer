@@ -36,15 +36,54 @@ def main_hdf5(fpath, args):
         if isinstance(obj, h5py.Dataset):
             print(name)
             if args.verbose:
-                with h5py.File(args.file, 'r') as f:
-                    print(" >>>  {}".format(f[name][()]))
+                print(" >>>  {}".format(h5_file[name][()]))
 
-    with h5py.File(fpath, 'r') as f:
-        if hasattr(args, 'key') and args.key is not None:
-            print(f[args.key][()])
-        else:
-            # https://qiita.com/skotaro/items/873507dc8f8f967bbc03
-            f.visititems(print_data)
+    h5_file = h5py.File(fpath, 'r')
+    if hasattr(args, 'interactive') and args.interactive:
+        selected_keys = []
+        keys = h5_file['/'].keys()
+        while(True):
+            cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(selected_keys))
+            cprint('current path:', ' {}'.format(cpath), bg='c')
+            cprint('contents in this dict:', ' ', bg='g', end='')
+            for k in keys:
+                print('{},'.format(k), end='  ')
+            print('\n')
+            key_name = input(inter_str)
+            if key_name == 'q':
+                break
+            elif key_name == '':
+                continue
+            elif key_name == '..':
+                if len(selected_keys) >= 1:
+                    selected_keys = selected_keys[:-1]
+                    cpath = '/'
+                    cpath += '/'.join(selected_keys)
+                    keys = h5_file[cpath].keys()
+                else:
+                    cprint('you are in root.\n', '', fg='r')
+            else:
+                if key_name not in keys:
+                    cprint('"{}" is not a correct name.\n'.format(key_name), '', fg='r')
+                    continue
+                cpath = '/'.join(selected_keys+[key_name])
+                data = h5_file[cpath]
+                if isinstance(data, h5py.Group):
+                    keys = data.keys()
+                    selected_keys.append(key_name)
+                elif isinstance(data, h5py.Dataset):
+                    cprint('output::', '\n{}\n'.format(data[()]), bg='r')
+                else:
+                    cprint('"{}" is not a database or a group (currently attribute is not suppoted).\n'.format(key_name), '', fg='r')
+                    continue
+
+    elif hasattr(args, 'key') and args.key is not None:
+        print(h5_file[args.key][()])
+    else:
+        # https://qiita.com/skotaro/items/873507dc8f8f967bbc03
+        h5_file.visititems(print_data)
+
+    h5_file.close()
 
 def main_pickle(fpath, args):
     import pickle
@@ -88,7 +127,7 @@ def main_pickle(fpath, args):
                         for sk in selected_keys:
                             tmp_data = tmp_data[sk]
                     else:
-                        cprint('you are in root.', '', fg='r')
+                        cprint('you are in root.\n', '', fg='r')
                 else:
                     find_key = False
                     for k in tmp_data:
@@ -249,8 +288,7 @@ def main_sqlite3(fpath, args):
             keys.append(tb[0])
         selected_keys = []
         while(True):
-            key_strs = [str(k) for k in selected_keys]
-            cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(key_strs))
+            cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(selected_keys))
             cprint('current path:', ' {}'.format(cpath), bg='c')
             cprint('contents in this dict:', ' ', bg='g', end='')
             for k in keys:
@@ -268,7 +306,7 @@ def main_sqlite3(fpath, args):
                     for tb in tables:
                         keys.append(tb[0])
                 else:
-                    cprint('you are in root.', '', fg='r')
+                    cprint('you are in root.\n', '', fg='r')
             else:
                 if key_name not in keys:
                     cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
