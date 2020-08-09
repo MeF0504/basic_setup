@@ -29,6 +29,26 @@ def cprint(str1, str2, fg=None, bg=None, **kwargs):
     print_str += str2
     print(print_str, **kwargs)
 
+def get_dir_items(path, flist):
+    if path[-1] != '/':
+        path += '/'
+    if path[0] != '/':
+        path = '/'+path
+    l_path = len(path)
+
+    res = []
+    for ffile in flist:
+        if ffile[0] != '/':
+            ffile = '/'+ffile
+        if (ffile[:l_path] == path) and ('/' not in ffile[l_path:]):
+            res.append(os.path.basename(ffile))
+        elif ffile[:l_path] == path:
+            tmp_path = ffile[l_path:]
+            tmp_dir = tmp_path[:tmp_path.find('/')]
+            if tmp_dir not in res:
+                res.append(tmp_dir)
+    return res
+
 #function to show the constitution of hdf5 file.
 def main_hdf5(fpath, args):
     import h5py
@@ -184,27 +204,83 @@ def main_tar(fpath, args):
     if not tarfile.is_tarfile(fpath):
         print('{} is not a tar file.'.format(fpath))
         return
-    with tarfile.open(fpath, 'r:*') as tar:
-        if hasattr(args, 'key') and args.key is not None:
-            try:
-                tarinfo = tar.getmember(args.key)
-            except KeyError as e:
-                print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
-                return
-            if tarinfo.isfile():
-                for line in tar.extractfile(args.key):
-                    try:
-                        print(line.decode(), end='')
-                    except UnicodeDecodeError as e:
-                        print('Error!! {}'.format(e), file=sys.stderr)
-                        return
-                print('')
-            elif tarinfo.isdir():
-                for tfile in tar.getnames():
-                    if tfile[:len(args.key)] == args.key:
-                        print(tfile)
+    tar = tarfile.open(fpath, 'r:*')
+
+    if hasattr(args, 'interactive') and args.interactive:
+        tlist = tar.getnames()
+        root = tlist[0]
+        selected_keys = [root]
+        keys = get_dir_items(root, tlist)
+        while(True):
+            cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(selected_keys))
+            cprint('current path:', ' {}'.format(cpath), bg='c')
+            cprint('contents in this dict:', ' ', bg='g', end='')
+            for k in keys:
+                print('{},'.format(k), end='  ')
+            print('\n')
+            key_name = input(inter_str)
+            if key_name == 'q':
+                break
+            elif key_name == '':
+                continue
+            elif key_name == '..':
+                if len(selected_keys) >= 2:
+                    selected_keys = selected_keys[:-1]
+                    cpath = '/'.join(selected_keys)
+                    keys = get_dir_items(cpath, tlist)
+                else:
+                    cprint('you are in root.\n', '', fg='r')
+            else:
+                if key_name not in keys:
+                    cprint('"{}" is not a correct name.\n'.format(key_name), '', fg='r')
+                    continue
+                cpath = '/'.join(selected_keys+[key_name])
+                tarinfo = tar.getmember(cpath)
+                if tarinfo.isdir():
+                    keys = get_dir_items(cpath, tlist)
+                    selected_keys.append(key_name)
+                elif tarinfo.isfile():
+                    cprint('output::', '', bg='r')
+                    for line in tar.extractfile(cpath):
+                        try:
+                            print(line.decode(), end='')
+                        except UnicodeDecodeError as e:
+                            # print('Error!! {}'.format(e), file=sys.stderr)
+                            break
+                    print()
+                else:
+                    cprint('sorry, I can\'t show information.\n', '', fg='r')
+
+    elif hasattr(args, 'key') and args.key is not None:
+        try:
+            if args.key[-1] == '/':
+                key_name = args.key[:-1]
+            else:
+                key_name = args.key
+            tarinfo = tar.getmember(key_name)
+        except KeyError as e:
+            print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
+            tar.close()
+            return
+        if tarinfo.isfile():
+            for line in tar.extractfile(args.key):
+                try:
+                    print(line.decode(), end='')
+                except UnicodeDecodeError as e:
+                    print('Error!! {}'.format(e), file=sys.stderr)
+                    tar.close()
+                    return
+            print('')
+        elif tarinfo.isdir():
+            key_name += '/'
+            for tfile in get_dir_items(key_name, tar.getnames()):
+                print(os.path.join(key_name, tfile))
         else:
-            tar.list(verbose=args.verbose)
+            cprint('sorry, I can\'t show information.\n', '', fg='r')
+    else:
+        tar.list(verbose=args.verbose)
+
+    tar.close()
 
 def main_zip(fpath, args):
     import zipfile
