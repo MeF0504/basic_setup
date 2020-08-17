@@ -5,8 +5,10 @@ which git
 which sh
 which python
 
+echo;
 set curdir=%~dp0
 set vimcon=%homedrive%%homepath%\vimfiles\
+
 if exist %vimcon%\dein\repos\github.com\Shougo\dein.vim (
     echo dein already exists.
 ) else (
@@ -43,6 +45,8 @@ if exist %gvim_color% (
 ) else (
     echo Warning! ### making gvim color file failed.
 )
+
+echo;
 
 echo ftplugin
 if exist %vimcon%\ftplugin (
