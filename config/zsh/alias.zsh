@@ -8,6 +8,7 @@ alias -g W='| wc'
 alias -g G='| grep -i'
 alias -g L='| less -R'
 alias -g TE=' 2>&1 | tee '
+alias -g S='| sort'
 
 alias zshhistory="vi -R ~/.zsh_history"
 
