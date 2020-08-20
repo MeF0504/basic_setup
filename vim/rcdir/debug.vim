@@ -2,11 +2,7 @@
 " http://webtech-walker.com/archive/2010/04/27173007.html
 let g:l_log = ''
 function! LocalDebug(string) abort
-    redir => result
-    silent echo a:string
-    redir END
-
-    let g:l_log .= result
+    let g:l_log .= a:string."\n"
 
     let ld_exist = 0
     for bn in tabpagebuflist()
@@ -29,5 +25,5 @@ function! LocalDebug(string) abort
 
     1,$delete _
     silent put =g:l_log
-    1,2delete _
+    1,1delete _
 endfunction
