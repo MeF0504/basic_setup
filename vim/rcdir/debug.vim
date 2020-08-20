@@ -1,51 +1,33 @@
 
-augroup debugLocal
-    autocmd!
-augroup END
+" http://webtech-walker.com/archive/2010/04/27173007.html
+let g:l_log = ''
+function! LocalDebug(string) abort
+    redir => result
+    silent echo a:string
+    redir END
 
-let g:l_log_files = []
+    let g:l_log .= result
 
-function! s:rm_log()
-    for fy in g:l_log_files
-        if filereadable(fy)
-            call delete(fy)
+    let ld_exist = 0
+    for bn in tabpagebuflist()
+        if bufname(bn) == 'LocalDebug'
+            let wids = win_findbuf(bn)
+            call win_gotoid(wids[0])
+            let ld_exist = 1
         endif
     endfor
-endfunction
 
-function! LocalDebug(string) abort
-    " set log file to operating list
-    let l:logfile = expand("%:h") . "/log_buffer"
-    if match(g:l_log_files, l:logfile) == -1
-        let g:l_log_files += [l:logfile]
+    if ld_exist == 0
+        vertical split LocalDebug
+        setlocal noswapfile
+        setlocal nobackup
+        setlocal noundofile
+        setlocal buftype=nofile
+        setlocal nobuflisted
+        setlocal nofoldenable
     endif
 
-    " write log
-    redir! >> %:h/log_buffer
-    silent echo a:string
-    silent echo ""
-    redir end
-
-    " set auto command that remove log file(s) when vim closed.
-    autocmd debugLocal VimLeavePre * call s:rm_log()
-
-    " open log file
-    let l:winnum = bufwinnr(l:logfile)
-    if l:winnum != -1
-        if l:winnum == bufnr('%')
-            close
-        else
-            let curbufnr = bufnr('%')
-            exe winnum . 'wincmd w'
-            close
-            let winnum = bufwinnr(curbufnr)
-            if winnr() != winnum
-                exe winnum . 'wincmd w'
-            endif
-        endif
-    endif
-    execute "botright vertical split " . l:logfile
-    wincmd p
-
+    1,$delete _
+    silent put =g:l_log
+    1,2delete _
 endfunction
-
