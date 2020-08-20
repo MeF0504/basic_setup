@@ -26,4 +26,6 @@ function! LocalDebug(string) abort
     1,$delete _
     silent put =g:l_log
     1,1delete _
+
+    wincmd p
 endfunction
