@@ -1015,11 +1015,18 @@ function! Mygrep(...)
         let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : '.'
     endif
 
-    if !isdirectory(l:dir)
+    let is_file = 0
+    if filereadable(l:dir)
+        let is_file = 1
+    elseif !isdirectory(l:dir)
         echo 'input directory "' . l:dir . '" does not exist.'
         return
     endif
     if &grepprg == "internal"
+        if is_file == 1
+            echo 'searching file is not supported for grepprg=internal'
+            return
+        endif
         execute 'grep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
     elseif &grepprg == "grep\ -nriI"
         let l:tabnum = tabpagenr()
