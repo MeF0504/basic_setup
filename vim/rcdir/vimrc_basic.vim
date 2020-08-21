@@ -160,6 +160,8 @@ set statusline=%f%m%r%h%w%<%=%y\ %l/%L\ [%P]
 nnoremap ZZ <Nop>
 nnoremap ZQ <Nop>
 nnoremap Q <Nop>
+nnoremap <c-w>q <Nop>
+nnoremap sq <Nop>
 
 " 使いやすいようにmapping
 " window 移動
