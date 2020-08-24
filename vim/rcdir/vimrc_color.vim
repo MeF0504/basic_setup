@@ -9,6 +9,7 @@ function! <SID>get_colorid(r, g, b)
         return (36*a:r)+(6*a:g)+a:b + 16
     endif
 endfunction
+
 function! s:isdark(r, g, b)
     if a:r < 4
         let cond = (a:g<3 && a:g+a:b < 6)
@@ -73,7 +74,7 @@ function! <SID>my_color_set()
         else
             let s:stl_br = (dow==6 ? 0 : dow) " 土日は0
             let s:stl_bg = (month-1)%6
-            let s:stl_bb = (day-1)%6
+            let s:stl_bb =  abs((day+5)%10-5)    " 0 1 2 3 4 5 4 3 2 1 0 ...
             let bg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
             if s:isdark(s:stl_br, s:stl_bg, s:stl_bb) == 1
                 let fg = has('gui_running') ? '#eeeeee' : 255
