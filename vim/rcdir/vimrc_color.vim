@@ -25,7 +25,7 @@ function! <SID>my_color_set_inkpot()
     highlight Type ctermfg=149
     highlight String ctermfg=222 ctermbg=None
     highlight Comment ctermfg=31
-    highlight LineNr ctermfg=239
+    highlight LineNr ctermfg=243
     highlight Title ctermfg=197
     highlight SpecialKey cterm=bold ctermfg=255 ctermbg=236
     if has('nvim')
