@@ -820,16 +820,17 @@ function! <SID>ChkFileExist(...) abort
 
     let l:path = expand(l:path)
     if isdirectory(l:path)
-        echo '"' . l:path . '" exists: directory.'
-        let l:yn = input('open this directory in new tab? (y/[n])')
+        let ec_str = '"' . l:path . '" exists: directory.'
+        let ec_str .= ' open this directory in new tab? (y/[n])'
     elseif filereadable(l:path)
-        echo '"' . l:path . '" exists: file.'
-        let l:yn = input('open this file in new tab? (y/[n])')
+        let ec_str = '"' . l:path . '" exists: file.'
+        let ec_str .= ' open this file in new tab? (y/[n])'
     else
         echo l:path . ' not exists.'
         return
     endif
 
+    let l:yn = input(ec_str)
     if (l:yn == 'y') || (l:yn == 'yes')
         execute 'tabnew ' . l:path
     endif
