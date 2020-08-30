@@ -438,3 +438,6 @@ repo = 'NLKNguyen/papercolor-theme'
 [[plugins]]
 repo = 'google/vim-colorscheme-primary'
 
+[[plugins]]
+repo = 'fxn/vim-monochrome'
+
