@@ -322,9 +322,12 @@ if !exists('$SSH_CONNECTION') && exists('g:l_auto_ime_off')   " ※ssh先ではh
     if has('win32')
         autocmd local InsertLeave * set iminsert=0
     elseif has('mac')
-        "参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
-        let g:l_imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
-        autocmd local InsertLeave * :call system(g:l_imeoff)
+        " 参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
+        " 参考2: https://moyapro.com/2019/04/14/disable-ime-on-mac-vim/
+        " 非同期で動かせるらしい
+        autocmd local InsertLeave * call job_start(
+                    \ ['osascript', '-e', 'tell application "System Events" to key code {102}'],
+                    \ #{in_io: 'null', out_io: 'null', err_io: 'null'})
     endif
     set ttimeoutlen=1
 endif
