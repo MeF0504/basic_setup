@@ -19,12 +19,18 @@ def FG256(n):
 # for vim color test
 def isdark(r,g,b):
     # cond = (r+g+b<7) and (max([r,g,b])<4)
+
     # cond = (r**2+g**2+b**2 < 5**2)
-    if r < 4:
-        cond = (g==0 or g*g+b*b < 3**2)
-        cond = (g<3 and g+b < 6)
-    else:
-        cond = g*g+b*b < (7-r)**2
+
+    # if r < 4:
+    #     cond = (g==0 or g*g+b*b < 3**2)
+    #     cond = (g<3 and g+b < 6)
+    # else:
+    #     cond = g*g+b*b < (7-r)**2
+
+    w_r, w_g, w_b = (2,2,1)
+    cond = (r*w_r+g*w_g+b*w_b)/(w_r+w_g+w_b) < 1.5
+
     return cond
 
 def main_test(num):

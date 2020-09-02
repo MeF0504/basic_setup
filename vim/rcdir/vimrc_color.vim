@@ -11,11 +11,10 @@ function! <SID>get_colorid(r, g, b)
 endfunction
 
 function! s:isdark(r, g, b)
-    if a:r < 4
-        let cond = (a:g<3 && a:g+a:b < 6)
-    else
-        let cond = a:g*a:g+a:b*a:b < (7-a:r)*(7-a:r)
-    endif
+    let w_r = 2
+    let w_g = 2
+    let w_b = 1
+    let cond = (a:r*w_r+a:g*w_g+a:b*w_b)/(w_r+w_g+w_b) < 1.5
     return cond
 endfunction
 
