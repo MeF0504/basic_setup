@@ -441,3 +441,13 @@ repo = 'google/vim-colorscheme-primary'
 [[plugins]]
 repo = 'fxn/vim-monochrome'
 
+# for deoplete
+[[plugins]]
+repo = 'roxma/nvim-yarp'
+if = '''!has('nvim')'''
+
+# for deoplete
+[[plugins]]
+repo = 'roxma/vim-hug-neovim-rpc'
+if = '''!has('nvim')'''
+
