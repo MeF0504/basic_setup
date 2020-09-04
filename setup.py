@@ -247,28 +247,46 @@ def main():
         if op.exists(spath) and op.exists(fy_dir):
             fcopy(spath,files[fy], link=bool(args.link), force=args.force,test=args.test)
 
+    pyopt = '--prefix ' + args.prefix
+    if args.link:
+        pyopt += ' --link'
+    if args.force:
+        pyopt += ' --force'
+    up_stup = \
+            "alias update_setup='cd {}".format(fpath) +\
+            " && git pull" +\
+            " && echo \"update? (y/[n])\"" +\
+            " && read YN" +\
+            " && [[ $YN = \"y\" ]]" +\
+            " && python setup.py {}".format(pyopt) +\
+            " ; cd -'"
     zshrc_mine = op.join(zshdir, 'zshrc.mine')
+    bashrc_mine = op.join(bashdir, 'bashrc.mine')
+    mine_exist = True
     if not op.exists(zshrc_mine):
-        pyopt = ' --prefix ' + args.prefix
-        if args.link:
-            pyopt += ' --link '
-        if args.force:
-            pyopt += ' --force '
         with open(zshrc_mine,'a') as f:
             f.write('## PC dependent zshrc\n')
             f.write('#\n')
             f.write('\n')
             f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
             f.write('\n\n')
-            f.write("alias update_setup='cd " + fpath +\
-                    " && git pull " +\
-                    " && echo \"update? (y/[n])\" " +\
-                    " && read YN " +\
-                    " && [[ $YN = \"y\" ]] " +\
-                    " && python setup.py " + pyopt +\
-                    " ; cd -'")
+            f.write(up_stup)
             f.write('\n\n')
         print('made zshrc.mine')
+        mine_exist = False
+    if not op.exists(bashrc_mine):
+        with open(bashrc_mine,'a') as f:
+            f.write('## PC dependent bashrc\n')
+            f.write('#\n')
+            f.write('\n')
+            f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
+            f.write('\n\n')
+            f.write(up_stup)
+            f.write('\n\n')
+        print('made bashrc.mine')
+        mine_exist = False
+    if mine_exist:
+        print('update alias is\n{}'.format(up_stup))
 
     for fy in glob.glob(op.join(setdir, 'zsh', '*')):
         fcopy(fy, op.join(zshdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
