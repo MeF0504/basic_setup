@@ -118,6 +118,7 @@ add_env() {
 
     add dir/*/bin to PATH
     add dir/*/lib and path/*/lib64 to LD_LIBRARY_PATH
+    add dir/*/share/man to MANPATH
 
     positional arguments:
         dir    : path to the target directory
@@ -137,6 +138,9 @@ add_env() {
         fi
         if [ -d "$d"/lib64 ]; then
             export LD_LIBRARY_PATH=$d/lib64:$LD_LIBRARY_PATH
+        fi
+        if [ -d "$d"/share/man ]; then
+            export MANPATH=$d/share/man:$MANPATH
         fi
     done
 # }}}
