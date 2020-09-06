@@ -278,6 +278,9 @@ repo = 'MeF0504/sl.vim'
 repo = 'ciaranm/inkpot'
 
 [[plugins]]
+repo = 'MeF0504/vim-monoTone'
+
+[[plugins]]
 repo = 'tyru/current-func-info.vim'
 hook_add = '''
 """" current-func-info.vim {{{
