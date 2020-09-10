@@ -137,7 +137,11 @@ case ${UID} in
         PROMPT=$PROMPT"%(?. >> . %{${fg[red]}%}!!%{${reset_color}%} "
     fi
     # ip_color
-    PROMPT='$(ip_color $CURLTIMEOUT)'$PROMPT
+    if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+        PROMPT="$(ip_color $CURLTIMEOUT)"$PROMPT
+    else
+        PROMPT='$(ip_color $CURLTIMEOUT)'$PROMPT
+    fi
 
     PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
     SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
