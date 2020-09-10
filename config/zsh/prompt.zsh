@@ -6,7 +6,12 @@ colors
 function ip_color() {
     # {{{
     if [[ $1 = '' ]]; then
-        local to=1
+        if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+            # wait long time in ssh server since it works only once.
+            local to=3
+        else
+            local to=1
+        fi
     else
         local to=$1
     fi
@@ -69,7 +74,12 @@ function ip_color2() {
     # {{{
     # only for IPv6
     if [[ $1 = '' ]]; then
-        local to=1
+        if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+            # wait long time in ssh server since it works only once.
+            local to=3
+        else
+            local to=1
+        fi
     else
         local to=$1
     fi
