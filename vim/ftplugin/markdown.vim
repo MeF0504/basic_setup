@@ -14,8 +14,13 @@ theme: gaia
 <!-- _class: lead -->
 # Title
 ### 20xx/xx/xx
-### last first
+### first_name last_name
 
+---
+## title 1
+
+- aaa
+- bbb
 .
     " }}}
 endfunction
