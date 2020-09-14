@@ -1,101 +1,10 @@
 
+# toml 用 syntax
 [[plugins]]
 repo = 'cespare/vim-toml'
 on_ft = 'toml'
 
-# complete setting
-
-# [[plugins]]
-# repo = 'Shougo/neocomplete.vim'
-# on_i = 1
-# if = '''! has('nvim')'''
-# hook_add = '''
-# ""{{{
-# "--------------------------------------------------------------------------
-# "neocomplete
-# "Note: This option must be set in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
-# " Disable AutoComplPop.
-# let g:acp_enableAtStartup = 0
-# " Use neocomplete.
-# let g:neocomplete#enable_at_startup = 1
-# " Use smartcase.
-# let g:neocomplete#enable_smart_case = 1
-# " Set minimum syntax keyword length.
-# " let g:neocomplete#sources#syntax#min_keyword_length = 3
-# let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-# "
-# " preview window を閉じる
-#   let g:neocomplete#enable_auto_close_preview = 1
-# 
-# " Define dictionary.
-# let g:neocomplete#sources#dictionary#dictionaries = {
-#     \ 'default' : '',
-#     \ 'vimshell' : $HOME.'/.vimshell_hist',
-#     \ 'scheme' : $HOME.'/.gosh_completions'
-#         \ }
-# 
-# " Define keyword.
-# if !exists('g:neocomplete#keyword_patterns')
-#     let g:neocomplete#keyword_patterns = {}
-# endif
-# let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-# 
-# " Plugin key-mappings.
-# inoremap <expr><C-g>     neocomplete#undo_completion()
-# inoremap <expr><C-l>     neocomplete#complete_common_string()
-# 
-# " Recommended key-mappings.
-# " <CR>: close popup and save indent.
-# inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-# function! s:my_cr_function()
-#   return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-#   " For no inserting <CR> key.
-#   "return pumvisible() ? "\<C-y>" : "\<CR>"
-# endfunction
-# " <TAB>: completion.
-# inoremap <expr><tab>  pumvisible() ? "\<C-n>" : "\<tab>"
-# inoremap <expr><S-tab>  pumvisible() ? "\<C-p>" : "\<S-tab>"
-# " <C-h>, <BS>: close popup and delete backword char.
-# inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-# inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-# " Close popup by <Space>.
-# "inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
-# 
-# " AutoComplPop like behavior.
-# "let g:neocomplete#enable_auto_select = 1
-# 
-# " Shell like behavior(not recommended).
-# "set completeopt+=longest
-# "let g:neocomplete#enable_auto_select = 1
-# "let g:neocomplete#disable_auto_complete = 1
-# "inoremap <expr><tab>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-# 
-# " Enable omni completion.
-# autocmd deinLocal FileType css setlocal omnifunc=csscomplete#CompleteCSS
-# autocmd deinLocal FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-# autocmd deinLocal FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-# autocmd deinLocal FileType python setlocal omnifunc=pythoncomplete#Complete
-# autocmd deinLocal FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-# 
-# " Enable heavy omni completion.
-# if !exists('g:neocomplete#sources#omni#input_patterns')
-#   let g:neocomplete#sources#omni#input_patterns = {}
-# endif
-# "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-# "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-# "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-# 
-# " For perlomni.vim setting.
-# " https://github.com/c9s/perlomni.vim
-# let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-# 
-# ""(候補とかの)色の設定
-# hi Pmenu ctermbg=4
-# hi PmenuSel ctermbg=1
-# hi PMenuSbar ctermbg=4
-# "}}}
-# '''
-
+# dark powered 補完plugin
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
 on_i = 1
@@ -121,31 +30,37 @@ autocmd deinLocal CompleteDone * silent! pclose!
 "}}}
 '''
 
+# vim でsnippet を使う用の plugin (framework?)
 [[plugins]]
 repo = 'Shougo/neosnippet.vim'
 on_ft = 'snippet'
 
+# vim script 用補完 plugin
 [[plugins]]
 repo = 'Shougo/neco-vim'
 on_i = 1
 on_ft = 'vim'
 
+# syntax file から補完候補を作成
 [[plugins]]
 repo = 'Shougo/neco-syntax'
 on_i = 1
 
 # https://github.com/Shougo/deoplete.nvim/wiki/Completion-Sources
 
+# c言語用補完 plugin
 [[plugins]]
 repo = 'Shougo/deoplete-clangx'
 on_source = ['deoplete.nvim']
 on_ft = 'c'
 
+# python 用補完 plugin
 [[plugins]]
 repo = 'deoplete-plugins/deoplete-jedi'
 on_source = ['deoplete.nvim']
 on_ft = 'python'
 
+# vimの編集履歴を表示／適用してくれる plugin
 [[plugins]]
 repo = 'sjl/gundo.vim'
 on_i = 1

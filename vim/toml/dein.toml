@@ -1,10 +1,13 @@
 
+# package 管理
 [[plugins]]
 repo = 'Shougo/dein.vim'
 
+# neosnippet用のsnipets
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
 
+# file tree
 [[plugins]]
 repo = 'scrooloose/nerdtree'
 hook_add = '''
@@ -32,6 +35,7 @@ highlight NERDTreeBookmark ctermfg=107 guifg=DarkOliveGreen3
 "}}}
 '''
 
+# コード実行plugin
 [[plugins]]
 repo = 'thinca/vim-quickrun'
 hook_add = '''
@@ -126,6 +130,7 @@ endif
 " }}}
 '''
 
+# 背景透過
 [[plugins]]
 repo = 'miyakogi/seiya.vim'
 hook_add = '''
@@ -135,6 +140,7 @@ let g:seiya_auto_enable=1
 "}}}
 '''
 
+# 関数一覧を表示
 [[plugins]]
 repo = 'vim-scripts/taglist.vim'
 hook_add = '''
@@ -213,6 +219,7 @@ nnoremap <silent> <Leader>t :call Open_taglist()<CR>
 "}}}
 '''
 
+# project内のファイル検索
 [[plugins]]
 repo = 'ctrlpvim/ctrlp.vim'
 hook_add = '''
@@ -222,6 +229,7 @@ let g:ctrlp_map = '<leader>s'
 "}}}
 '''
 
+# project内の関数検索
 [[plugins]]
 repo = 'MeF0504/mftags'
 hook_add = '''
@@ -271,15 +279,19 @@ endif
 "}}}
 '''
 
+# joke command
 [[plugins]]
 repo = 'MeF0504/sl.vim'
 
+# colorscheme
 [[plugins]]
 repo = 'ciaranm/inkpot'
 
+# colorscheme
 [[plugins]]
 repo = 'MeF0504/vim-monoTone'
 
+# current lineの関数表示用plugin (StatusLine用)
 [[plugins]]
 repo = 'tyru/current-func-info.vim'
 hook_add = '''
@@ -336,6 +348,7 @@ autocmd deinLocal BufEnter * call <SID>add_cfi_sl()
 " }}}
 '''
 
+# StatusLineにお寿司を流すplugin
 [[plugins]]
 repo = 'pocke/sushibar.vim'
 hook_add = '''
@@ -354,6 +367,7 @@ endif
 """ }}}
 '''
 
+# 検索時にhit数をcountしてくれるplugin
 [[plugins]]
 repo = 'osyo-manga/vim-anzu'
 hook_add = '''
@@ -369,6 +383,7 @@ nmap <ESC><ESC> <Plug>(anzu-clear-search-status)
 " }}}
 '''
 
+# if - endif 等を補完してくれるplugin
 [[plugins]]
 repo = 'tpope/vim-endwise'
 hook_add = '''
@@ -386,6 +401,7 @@ autocmd deinLocal FileType tex
 "}}}
 '''
 
+# window のresize, 移動用plugin
 [[plugins]]
 repo = 'simeji/winresizer'
 hook_add = '''
@@ -397,6 +413,7 @@ let g:winresizer_horiz_resize = 2
 """ }}}
 '''
 
+# git 操作用plugin
 [[plugins]]
 repo = 'tpope/vim-fugitive'
 # https://qiita.com/tashua314/items/35521f9bada5fe00cca7
@@ -406,6 +423,7 @@ autocmd deinLocal FileType fugitive* nnoremap <silent> <buffer> q :quit<CR>
 """ }}}
 '''
 
+# vim の document
 [[plugins]]
 repo = 'vim-jp/vimdoc-ja'
 if = '''! has('nvim')'''
@@ -417,9 +435,11 @@ set helplang=ja
 " }}}
 '''
 
+# colorscheme
 [[plugins]]
 repo = 'altercation/vim-colors-solarized'
 
+# command line と検索時に補完してくれるplugin
 [[plugins]]
 repo = 'gelguy/wilder.nvim'
 hook_add = '''
@@ -435,21 +455,26 @@ call wilder#set_option('modes', ['/', '?', ':'])
 " }}}
 '''
 
+# colorscheme
 [[plugins]]
 repo = 'NLKNguyen/papercolor-theme'
 
+# colorscheme
 [[plugins]]
 repo = 'google/vim-colorscheme-primary'
 
+# colorscheme
 [[plugins]]
 repo = 'fxn/vim-monochrome'
 
 # for deoplete
+# vim でneovim 用 pluginを動かすためのplugin
 [[plugins]]
 repo = 'roxma/nvim-yarp'
 if = '''!has('nvim')'''
 
 # for deoplete
+# vim でneovim 用 pluginを動かすためのplugin
 [[plugins]]
 repo = 'roxma/vim-hug-neovim-rpc'
 if = '''!has('nvim')'''
