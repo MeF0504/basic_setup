@@ -168,6 +168,7 @@ def main():
     parser.add_argument('--link',help="link files instead of copy",action='store_true')
     parser.add_argument('--test',help="don't copy, just show command",action='store_true')
     parser.add_argument('-f','--force',help="Do not prompt for confirmation before overwriting the destination path",action='store_true')
+    parser.add_argument('--min', help='Minimum install. only copy *shrc, posixShellRC, and vimrc_basic.vim.', action='store_true')
     args = parser.parse_args()
 
     if not op.exists(args.prefix):
@@ -197,14 +198,17 @@ def main():
                     optfiles.append(bfy)
             else:
                 optfiles.append(bfy)
-    for p in optfiles:
-        fname = op.basename(p)
-        fcopy(p,op.join(binpath,fname),link=args.link,force=args.force,test=args.test)
 
-    libdir = op.join(optdir, 'lib')
-    for lfy in glob.glob(op.join(libdir,'*')):
-        fname = op.basename(lfy)
-        fcopy(lfy,op.join(libpath,fname),link=args.link,force=args.force,test=args.test)
+    if not args.min:
+        # Do not copy any files in ./opt if this script runs with --min.
+        for p in optfiles:
+            fname = op.basename(p)
+            fcopy(p,op.join(binpath,fname),link=args.link,force=args.force,test=args.test)
+
+        libdir = op.join(optdir, 'lib')
+        for lfy in glob.glob(op.join(libdir,'*')):
+            fname = op.basename(lfy)
+            fcopy(lfy,op.join(libpath,fname),link=args.link,force=args.force,test=args.test)
 
     # }}}
 
@@ -225,10 +229,23 @@ def main():
                   'terminator_config':op.join(conf_home,'terminator/config'), \
                   'matplotlibrc':op.join(conf_home, 'matplotlib/matplotlibrc'), \
                 }
+
+    files_min = {\
+                  'zshrc':'~/.zshrc', \
+                  'posixShellRC':'~/.posixShellRC',\
+                  'bashrc':'~/.bashrc',\
+                }
+
     if os.uname()[0] == 'Darwin':
-        files = files_mac
+        if args.min:
+            files = files_min
+        else:
+            files = files_mac
     elif os.uname()[0] == 'Linux':
-        files = files_linux
+        if args.min:
+            files = files_min
+        else:
+            files = files_linux
     else:
         files = {}
 
@@ -288,8 +305,9 @@ def main():
     if mine_exist:
         print('update alias is\n{}'.format(up_stup))
 
-    for fy in glob.glob(op.join(setdir, 'zsh', '*')):
-        fcopy(fy, op.join(zshdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
+    if not args.min:
+        for fy in glob.glob(op.join(setdir, 'zsh', '*')):
+            fcopy(fy, op.join(zshdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
 
     # }}}
 
@@ -303,42 +321,45 @@ def main():
     tmdir = op.join(vim_config_dir, 'toml')
     mkdir(op.join(vim_config_dir, "swp"))
 
-    if args.download and chk_cmd('sh'):
-        mkdir('tmp')
-        os.chdir(op.join(fpath,'tmp'))
+    if args.min:
+        fcopy(op.join(vimdir, "rcdir", 'vimrc_basic.vim'), op.join(vim_config_dir, "init.vim"), link=bool(args.link), force=args.force, test=args.test)
+    else:
+        if args.download and chk_cmd('sh'):
+            mkdir('tmp')
+            os.chdir(op.join(fpath,'tmp'))
 
-        print('\nclone dein')
-        mkdir(op.join(vim_config_dir, 'dein'))
-        urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
-        subprocess.call('sh installer.sh {}'.format(op.join(vim_config_dir, 'dein')), shell=True)
+            print('\nclone dein')
+            mkdir(op.join(vim_config_dir, 'dein'))
+            urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
+            subprocess.call('sh installer.sh {}'.format(op.join(vim_config_dir, 'dein')), shell=True)
 
-        print('\nremove download tmp files')
-        os.chdir(fpath)
-        shutil.rmtree(op.join(fpath, 'tmp'))
+            print('\nremove download tmp files')
+            os.chdir(fpath)
+            shutil.rmtree(op.join(fpath, 'tmp'))
 
-    fcopy(op.join(vimdir, "vimrc"), op.join(vim_config_dir, "init.vim"), link=bool(args.link), force=args.force, test=args.test)
-    for fy in glob.glob(op.join(vimdir, 'rcdir', "*")):
-        fcopy(fy, op.join(rcdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
+        fcopy(op.join(vimdir, "vimrc"), op.join(vim_config_dir, "init.vim"), link=bool(args.link), force=args.force, test=args.test)
+        for fy in glob.glob(op.join(vimdir, 'rcdir', "*")):
+            fcopy(fy, op.join(rcdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
 
-    for fy in glob.glob(op.join(vimdir, 'ftplugin', "*")):
-        fcopy(fy, op.join(ftdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
+        for fy in glob.glob(op.join(vimdir, 'ftplugin', "*")):
+            fcopy(fy, op.join(ftdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
 
-    for fy in glob.glob(op.join(vimdir, 'toml', "*")):
-        fcopy(fy, op.join(tmdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
+        for fy in glob.glob(op.join(vimdir, 'toml', "*")):
+            fcopy(fy, op.join(tmdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
 
-    vim_mine = op.expanduser('~/.config/nvim/rcdir/vimrc.mine')
-    if not op.exists(vim_mine):
-        with open(vim_mine,'a') as f:
-            f.write('"" PC dependent vimrc\n')
-            f.write('"\n')
-            f.write('\n')
+        vim_mine = op.expanduser('~/.config/nvim/rcdir/vimrc.mine')
+        if not op.exists(vim_mine):
+            with open(vim_mine,'a') as f:
+                f.write('"" PC dependent vimrc\n')
+                f.write('"\n')
+                f.write('\n')
 
-    vim_init = op.expanduser('~/.config/nvim/rcdir/init.vim.mine')
-    if not op.exists(vim_init):
-        with open(vim_init,'a') as f:
-            f.write('"" init setting file for vim\n')
-            f.write('"\n')
-            f.write('\n')
+        vim_init = op.expanduser('~/.config/nvim/rcdir/init.vim.mine')
+        if not op.exists(vim_init):
+            with open(vim_init,'a') as f:
+                f.write('"" init setting file for vim\n')
+                f.write('"\n')
+                f.write('\n')
 
     src = op.join(vim_config_dir, "init.vim")
     dst = op.expanduser('~/.vimrc')
