@@ -269,6 +269,8 @@ def main():
         pyopt += ' --link'
     if args.force:
         pyopt += ' --force'
+    if args.min:
+        pyopt += ' --min'
     up_stup = \
             "alias update_setup='cd {}".format(fpath) +\
             " && git pull" +\
