@@ -109,54 +109,61 @@ function ip_color2() {
 }
 
 # OLD_PROMPT=1
-case ${UID} in
-0)
-    PROMPT="%{${fg[yellow]}%}ROOT@%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]') %B%{${fg[red]}%}%/#%{${reset_color}%}%b "
-    PROMPT2="%B%{${fg[red]}%}%_#%{${reset_color}%}%b "
-    SPROMPT="%B%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
-    ;;
-*)
-    if [[ -n $OLD_PROMPT ]]; then
-        # {{{
-        local short="%{${fg[red]}%}%/ S%{${reset_color}%} "
-        local long="%{${fg[red]}%}%(4/,%-1/.../%2/,%/) L%{${reset_color}%} "
-        PROMPT="%4(/|$long|$short)"
-        ## from http://0xcc.net/blog/archives/000032.html
-        if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
-            PROMPT="%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]') ${PROMPT}"
-            #PROMPT="%F{cyan}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%f ${PROMPT}"
+set_prompt() {
+    case ${UID} in
+    0)
+        PROMPT="%{${fg[yellow]}%}ROOT@%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]') %B%{${fg[red]}%}%/#%{${reset_color}%}%b "
+        PROMPT2="%B%{${fg[red]}%}%_#%{${reset_color}%}%b "
+        SPROMPT="%B%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
+        ;;
+    *)
+        if [[ -n $OLD_PROMPT ]]; then
+            # {{{
+            local short="%{${fg[red]}%}%/ S%{${reset_color}%} "
+            local long="%{${fg[red]}%}%(4/,%-1/.../%2/,%/) L%{${reset_color}%} "
+            PROMPT="%4(/|$long|$short)"
+            ## from http://0xcc.net/blog/archives/000032.html
+            if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+                PROMPT="%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]') ${PROMPT}"
+                #PROMPT="%F{cyan}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%f ${PROMPT}"
+            else
+                PROMPT="%{${fg[green]}%}%T%{${reset_color}%} ${PROMPT}"
+            fi
+            # }}}
         else
-            PROMPT="%{${fg[green]}%}%T%{${reset_color}%} ${PROMPT}"
+            # path
+            PROMPT="%{${bg[cyan]}%}%d%{${reset_color}%}"$'\n'
+            # ip_color for IPv6
+            if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+                PROMPT=$PROMPT"$(ip_color2 $CURLTIMEOUT)"
+            else
+                PROMPT=$PROMPT'$(ip_color2 $CURLTIMEOUT)'
+            fi
+            if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+                # host name in ssh server
+                PROMPT="%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%{${reset_color}%} "$PROMPT
+            fi
+            # time
+            PROMPT=$PROMPT"%{${fg[green]}%}%T%{${reset_color}%}"
+            # user name (bold)
+            PROMPT=$PROMPT" %{${fg[red]}%}%B%n%b%{${reset_color}%}"
+            # change red if the previous command was failed.
+            # https://blog.8-p.info/2009/01/red-prompt
+            PROMPT=$PROMPT"%(?. >> . %{${fg[red]}%}!!%{${reset_color}%} "
         fi
-        # }}}
-    else
-        # path
-        PROMPT="%{${bg[cyan]}%}%d%{${reset_color}%}"$'\n'
-        # ip_color for IPv6
-        PROMPT=$PROMPT'$(ip_color2 $CURLTIMEOUT)'
+        # ip_color
         if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
-            # host name in ssh server
-            PROMPT="%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%{${reset_color}%} "$PROMPT
+            PROMPT="$(ip_color $CURLTIMEOUT)"$PROMPT
+        else
+            PROMPT='$(ip_color $CURLTIMEOUT)'$PROMPT
         fi
-        # time
-        PROMPT=$PROMPT"%{${fg[green]}%}%T%{${reset_color}%}"
-        # user name (bold)
-        PROMPT=$PROMPT" %{${fg[red]}%}%B%n%b%{${reset_color}%}"
-        # change red if the previous command was failed.
-        # https://blog.8-p.info/2009/01/red-prompt
-        PROMPT=$PROMPT"%(?. >> . %{${fg[red]}%}!!%{${reset_color}%} "
-    fi
-    # ip_color
-    if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
-        PROMPT="$(ip_color $CURLTIMEOUT)"$PROMPT
-    else
-        PROMPT='$(ip_color $CURLTIMEOUT)'$PROMPT
-    fi
 
-    PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
-    SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
-    ;;
-esac
+        PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
+        SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
+        ;;
+    esac
+}
+set_prompt
 
 # show git status in right prompt
 #
