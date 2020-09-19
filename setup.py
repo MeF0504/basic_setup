@@ -220,6 +220,7 @@ def main():
                 'posixShellRC':'~/.posixShellRC',\
                 'bashrc':'~/.bashrc',\
                 'matplotlibrc':'~/.matplotlib/matplotlibrc', \
+                'gitignore_global':'~/.gitignore_global', \
                 }
 
     files_linux = {\
@@ -228,12 +229,14 @@ def main():
                   'bashrc':'~/.bashrc',\
                   'terminator_config':op.join(conf_home,'terminator/config'), \
                   'matplotlibrc':op.join(conf_home, 'matplotlib/matplotlibrc'), \
+                  'gitignore_global':'~/.gitignore_global', \
                 }
 
     files_min = {\
                   'zshrc':'~/.zshrc', \
                   'posixShellRC':'~/.posixShellRC',\
                   'bashrc':'~/.bashrc',\
+                  'gitignore_global':'~/.gitignore_global', \
                 }
 
     if os.uname()[0] == 'Darwin':
