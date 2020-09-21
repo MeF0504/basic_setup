@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+// comment
 typedef struct {
     int var;
     char is_one;

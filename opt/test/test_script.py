@@ -1,6 +1,7 @@
 
 import os
 
+# comment
 class TestClass():
     def __init__(self):
         self.var = 1.3

@@ -1,5 +1,6 @@
 set number
 
+" comment
 function! s:test_func(val)
     let val = a:val
 
