@@ -276,6 +276,10 @@ repo = 'ciaranm/inkpot'
 [[plugins]]
 repo = 'MeF0504/vim-monoTone'
 
+# colorscheme
+[[plugins]]
+repo = 'MeF0504/vim-shiki'
+
 # current lineの関数表示用plugin (StatusLine用)
 [[plugins]]
 repo = 'tyru/current-func-info.vim'
