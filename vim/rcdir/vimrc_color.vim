@@ -37,6 +37,8 @@ endfunction
 function! <SID>my_color_set()
     if g:colors_name == "inkpot"
         call <SID>my_color_set_inkpot()
+    elseif g:colors_name == 'shiki'
+        " Do nothing
     else
         echo "color scheme: " . g:colors_name
     endif
