@@ -31,6 +31,7 @@ function! <SID>my_color_set_inkpot()
         highlight link Whitespace SpecialKey
     endif
     highlight Normal ctermfg=255
+    highlight PmenuThumb ctermbg=55
 endfunction
 
 function! <SID>my_color_set()
