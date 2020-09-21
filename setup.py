@@ -233,7 +233,6 @@ def main():
                 }
 
     files_min = {\
-                  'zshrc':'~/.zshrc', \
                   'posixShellRC':'~/.posixShellRC',\
                   'bashrc':'~/.bashrc',\
                   'gitignore_global':'~/.gitignore_global', \
@@ -285,17 +284,18 @@ def main():
     zshrc_mine = op.join(zshdir, 'zshrc.mine')
     bashrc_mine = op.join(bashdir, 'bashrc.mine')
     mine_exist = True
-    if not op.exists(zshrc_mine):
-        with open(zshrc_mine,'a') as f:
-            f.write('## PC dependent zshrc\n')
-            f.write('#\n')
-            f.write('\n')
-            f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
-            f.write('\n\n')
-            f.write(up_stup)
-            f.write('\n\n')
-        print('made zshrc.mine')
-        mine_exist = False
+    if not args.min:
+        if not op.exists(zshrc_mine):
+            with open(zshrc_mine,'a') as f:
+                f.write('## PC dependent zshrc\n')
+                f.write('#\n')
+                f.write('\n')
+                f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
+                f.write('\n\n')
+                f.write(up_stup)
+                f.write('\n\n')
+            print('made zshrc.mine')
+            mine_exist = False
     if not op.exists(bashrc_mine):
         with open(bashrc_mine,'a') as f:
             f.write('## PC dependent bashrc\n')
@@ -308,7 +308,7 @@ def main():
         print('made bashrc.mine')
         mine_exist = False
     if mine_exist:
-        print('update alias is\n{}'.format(up_stup))
+        print('  update alias is\n{}'.format(up_stup))
 
     if not args.min:
         for fy in glob.glob(op.join(setdir, 'zsh', '*')):
