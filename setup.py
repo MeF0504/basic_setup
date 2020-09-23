@@ -17,6 +17,12 @@ else:
 #if float(sys.version[:3]) < 2.7:
     #import commands
 
+try:
+    from color_test import FG256, END
+    is_color = True
+except ImportError:
+    is_color = False
+
 def mkdir(path):
     path = op.expanduser(path)
     if not op.exists(path):
@@ -58,7 +64,17 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         for line in difflib.unified_diff(str1, str2, n=1, \
                 fromfile=home_cut(file1), tofile=home_cut(file2), \
                 fromfiledate=dt1.strftime('%m %d (%Y) %H:%M:%S'), tofiledate=dt2.strftime('%m %d (%Y) %H:%M:%S')):
-            print(shift+line, end='')
+            line = line.replace('\n', '')
+            if is_color and (line[0] == '+'):
+                col = FG256(12)
+                end = END
+            elif is_color and (line[0] == '-'):
+                col = FG256(1)
+                end = END
+            else:
+                col = ''
+                end = ''
+            print(shift+col+line+end)
 
     def get_input(input_str):
         if sys.version_info[0] == 2:
