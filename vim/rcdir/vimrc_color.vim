@@ -10,11 +10,12 @@ function! <SID>get_colorid(r, g, b)
     endif
 endfunction
 
+let s:w_r = 2
+let s:w_g = 2
+let s:w_b = 1
+let s:thsd = 1.5
 function! s:isdark(r, g, b)
-    let w_r = 2
-    let w_g = 2
-    let w_b = 1
-    let cond = (a:r*w_r+a:g*w_g+a:b*w_b)/(w_r+w_g+w_b) < 1.5
+    let cond = (a:r*s:w_r+a:g*s:w_g+a:b*s:w_b)/(s:w_r+s:w_g+s:w_b) < s:thsd
     return cond
 endfunction
 
@@ -100,6 +101,11 @@ function! ShowBG()
     let echo_str .= ' green:'.s:stl_bg
     let echo_str .= ' blue:'.s:stl_bb
     let echo_str .= ' => bg:'.<SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
+    let echo_str .= '   is_dark:'
+    let echo_str .= ' '.s:stl_br.'/'.s:w_r
+    let echo_str .= '+'.s:stl_bg.'/'.s:w_g
+    let echo_str .= '+'.s:stl_bb.'/'.s:w_b
+    let echo_str .= ' < '.printf('%.2f', s:thsd)
     echo echo_str
 endfunction
 
