@@ -5,18 +5,22 @@ colors
 
 function ip_color() {
     # {{{
-    if [[ $1 = '' ]]; then
+    if [ -n "$CURLTIMEOUT" ]; then
+        local to=$CURLTIMEOUT
+    else
         if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
             # wait long time in ssh server since it works only once.
             local to=3
         else
             local to=1
         fi
-    else
-        local to=$1
     fi
 
-    local ip="$(curl --max-time $to ifconfig.io 2> /dev/null)"
+    if [ -n "$1" ]; then
+        local ip=$1
+    else
+        local ip="$(curl --max-time $to ifconfig.io 2> /dev/null)"
+    fi
     if [[ $(echo $ip | wc -l) -ne 1 ]]; then
         local ret=""
         ret=$ret"%F{15}%K{16}m%f%k"
@@ -73,18 +77,22 @@ function ip_color() {
 function ip_color2() {
     # {{{
     # only for IPv6
-    if [[ $1 = '' ]]; then
+    if [ -n "$CURLTIMEOUT" ]; then
+        local to=$CURLTIMEOUT
+    else
         if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
             # wait long time in ssh server since it works only once.
             local to=3
         else
             local to=1
         fi
-    else
-        local to=$1
     fi
 
-    local ip="$(curl --max-time $to ifconfig.io 2> /dev/null)"
+    if [ -n "$1" ]; then
+        local ip=$1
+    else
+        local ip="$(curl --max-time $to ifconfig.io 2> /dev/null)"
+    fi
     if [[ $(echo $ip | wc -l) -ne 1 ]]; then
         return 0
     fi
@@ -117,7 +125,7 @@ set_prompt() {
         SPROMPT="%B%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
         ;;
     *)
-        if [[ -n $OLD_PROMPT ]]; then
+        if [[ -n "$OLD_PROMPT" ]]; then
             # {{{
             local short="%{${fg[red]}%}%/ S%{${reset_color}%} "
             local long="%{${fg[red]}%}%(4/,%-1/.../%2/,%/) L%{${reset_color}%} "
@@ -131,14 +139,14 @@ set_prompt() {
             fi
             # }}}
         else
+            # get ip address in ssh server
+            if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+                local ip="$(curl ifconfig.io 2> /dev/null)"
+            fi
             # path
             PROMPT="%{${bg[cyan]}%}%d%{${reset_color}%}"$'\n'
             # ip_color for IPv6
-            if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
-                PROMPT=$PROMPT"$(ip_color2 $CURLTIMEOUT)"
-            else
-                PROMPT=$PROMPT'$(ip_color2 $CURLTIMEOUT)'
-            fi
+            PROMPT=$PROMPT'$(ip_color2 $ip)'
             if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
                 # host name in ssh server
                 PROMPT="%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%{${reset_color}%} "$PROMPT
@@ -152,11 +160,7 @@ set_prompt() {
             PROMPT=$PROMPT"%(?. >> . %{${fg[red]}%}!!%{${reset_color}%} "
         fi
         # ip_color
-        if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
-            PROMPT="$(ip_color $CURLTIMEOUT)"$PROMPT
-        else
-            PROMPT='$(ip_color $CURLTIMEOUT)'$PROMPT
-        fi
+        PROMPT='$(ip_color $ip)'$PROMPT
 
         PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
         SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
