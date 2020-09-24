@@ -10,10 +10,10 @@ function! <SID>get_colorid(r, g, b)
     endif
 endfunction
 
-let s:w_r = 2
-let s:w_g = 2
-let s:w_b = 1
-let s:thsd = 1.5
+let s:w_r = 2.0
+let s:w_g = 2.0
+let s:w_b = 1.0
+let s:thsd = 2.0
 function! s:isdark(r, g, b)
     let cond = (a:r*s:w_r+a:g*s:w_g+a:b*s:w_b)/(s:w_r+s:w_g+s:w_b) < s:thsd
     return cond
@@ -75,9 +75,9 @@ function! <SID>my_color_set()
             highlight StatusLine cterm=None ctermfg=185 ctermbg=136
             highlight WildMenu cterm=Bold ctermfg=136 ctermbg=185
         else
-            let s:stl_br = (dow==6 ? 0 : dow) " 土日は0
+            let s:stl_br = (dow==6 ? 0 : dow)   " 土日は0
             let s:stl_bg = (month-1)%6
-            let s:stl_bb =  abs((day+4)%10-5)    " 0 1 2 3 4 5 4 3 2 1 0 ...
+            let s:stl_bb = abs((day+4)%10-5)    " 0 1 2 3 4 5 4 3 2 1 0 ...
             let bg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
             if s:isdark(s:stl_br, s:stl_bg, s:stl_bb) == 1
                 let fg = has('gui_running') ? '#eeeeee' : 255
@@ -102,9 +102,11 @@ function! ShowBG()
     let echo_str .= ' blue:'.s:stl_bb
     let echo_str .= ' => bg:'.<SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
     let echo_str .= '   is_dark:'
-    let echo_str .= ' '.s:stl_br.'/'.s:w_r
-    let echo_str .= '+'.s:stl_bg.'/'.s:w_g
-    let echo_str .= '+'.s:stl_bb.'/'.s:w_b
+    let echo_str .= ' ('.s:stl_br.'*'.printf('%.1f', s:w_r)
+    let echo_str .= '+'.s:stl_bg.'*'.printf('%.1f', s:w_g)
+    let echo_str .= '+'.s:stl_bb.'*'.printf('%.1f', s:w_b).')'
+    let echo_str .= printf('%s%.1f%s%.1f%s%.1f%s', '/(', s:w_r, '+', s:w_g, '+', s:w_b, ')')
+    let echo_str .= ' = '.printf('%.1f', (s:stl_br*s:w_r+s:stl_bg*s:w_g+s:stl_bb*s:w_b)/(s:w_r+s:w_g+s:w_b))
     let echo_str .= ' < '.printf('%.2f', s:thsd)
     echo echo_str
 endfunction
