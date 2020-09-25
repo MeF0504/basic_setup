@@ -85,7 +85,10 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
 
     def home_cut(path):
         home = op.expandvars('$HOME')
-        if home in path:
+        home2 = op.realpath(home)   # if home is symbolic link.
+        if home2 in path:
+            path = path.replace(home2, '~')
+        elif home in path:
             path = path.replace(home, '~')
         return path
 
