@@ -99,7 +99,7 @@ let mapleader = "\<space>"
 if exists('g:vimdir') && isdirectory(g:vimdir . 'doc')
     execute "helptags " . g:vimdir . "doc"
 endif
-" ファイル名に=は使わないよな...
+" ファイル名が=で切られないようにする (ファイル名に=は使わないよな...)
 set isfname-==
 " pythonxで使うversionを指定
 " set pyxversion=3    " if needed
