@@ -37,27 +37,60 @@ function! s:get_syn_attr(synid)
   let ctermbg = synIDattr(a:synid, "bg", "cterm")
   let guifg = synIDattr(a:synid, "fg", "gui")
   let guibg = synIDattr(a:synid, "bg", "gui")
+  let ctermopt = ''
+  let guiopt = ''
+  let termopts = ['bold', 'italic', 'reverse', 'inverse', 'standout', 'underline', 'undercurl', 'strike']
+  for termopt in termopts
+      if synIDattr(a:synid, termopt, 'cterm') == 1
+          let ctermopt .= termopt.','
+      endif
+      if synIDattr(a:synid, termopt, 'gui') == 1
+          let guiopt .= termopt.','
+      endif
+  endfor
+  if len(ctermopt) > 0
+      let ctermopt = ctermopt[:-2]
+  endif
+  if len(guiopt) > 0
+      let guiopt = guiopt[:-2]
+  endif
   return {
         \ "name": name,
         \ "ctermfg": ctermfg,
         \ "ctermbg": ctermbg,
+        \ 'ctermopt': ctermopt,
         \ "guifg": guifg,
-        \ "guibg": guibg}
+        \ "guibg": guibg,
+        \ 'guiopt': guiopt,
+        \ }
 endfunction
+
 function! s:get_syn_info()
   let baseSyn = s:get_syn_attr(s:get_syn_id(0))
-  echo "name: " . baseSyn.name .
-        \ " ctermfg: " . baseSyn.ctermfg .
-        \ " ctermbg: " . baseSyn.ctermbg .
-        \ " guifg: " . baseSyn.guifg .
-        \ " guibg: " . baseSyn.guibg
+  let s_info = "name: " . baseSyn.name
+  if has('gui_running')
+      let s_info .= "  guifg: " . baseSyn.guifg
+      let s_info .= "  guibg: " . baseSyn.guibg
+      let s_info .= "  gui: " . baseSyn.guiopt
+  else
+      let s_info .= "  ctermfg: " . baseSyn.ctermfg
+      let s_info .= "  ctermbg: " . baseSyn.ctermbg
+      let s_info .= "  cterm: ". baseSyn.ctermopt
+  endif
+  echo s_info
   let linkedSyn = s:get_syn_attr(s:get_syn_id(1))
   echo "link to"
-  echo "name: " . linkedSyn.name .
-        \ " ctermfg: " . linkedSyn.ctermfg .
-        \ " ctermbg: " . linkedSyn.ctermbg .
-        \ " guifg: " . linkedSyn.guifg .
-        \ " guibg: " . linkedSyn.guibg
+  let s_info = "name: " . linkedSyn.name
+  if has('gui_running')
+      let s_info .= "  guifg: " . linkedSyn.guifg
+      let s_info .= "  guibg: " . linkedSyn.guibg
+      let s_info .= "  gui: " . linkedSyn.guiopt
+  else
+      let s_info .= "  ctermfg: " . linkedSyn.ctermfg
+      let s_info .= "  ctermbg: " . linkedSyn.ctermbg
+      let s_info .= "  cterm: " . linkedSyn.ctermopt
+  endif
+  echo s_info
 endfunction
 command! SyntaxInfo call s:get_syn_info()
 " }}}
