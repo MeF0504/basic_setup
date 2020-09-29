@@ -221,7 +221,7 @@ function! s:my_tabline()
             let bufnrs = tabpagebuflist(ctn_r)
             for bn in bufnrs
                 let all_wins += 1
-                if match(l_opened_bn, bn) == -1
+                if (match(l_opened_bn, bn) == -1) && (getbufvar(bn, '&buftype') == '')
                     let all_files += 1
                     call add(l_opened_bn, bn)
                     if getbufvar(bn, '&modified')
