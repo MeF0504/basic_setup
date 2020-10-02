@@ -52,6 +52,11 @@ def get_dir_items(path, flist):
 #function to show the constitution of hdf5 file.
 def main_hdf5(fpath, args):
     import h5py
+    try:
+        import numpy as np
+        imp_np = True
+    except ImportError:
+        imp_np = False
     def print_data(name, obj):
         if isinstance(obj, h5py.Dataset):
             print(name)
@@ -92,7 +97,12 @@ def main_hdf5(fpath, args):
                     keys = data.keys()
                     selected_keys.append(key_name)
                 elif isinstance(data, h5py.Dataset):
-                    cprint('output::', '\n{}\n'.format(data[()]), bg='r')
+                    cprint('output::', '\n{}'.format(data[()]), bg='r')
+                    if imp_np:
+                        tmp_data = data[()]
+                        if type(tmp_data)==np.ndarray:
+                            print('>> shape: {}, mean: {:.2e}, median: {:.2e}, std: {:.2e}'.format(tmp_data.shape, np.mean(tmp_data), np.median(tmp_data), np.std(tmp_data)))
+                    print('')
                 else:
                     cprint('"{}" is not a database or a group (currently attribute is not suppoted).\n'.format(key_name), '', fg='r')
                     continue
@@ -107,6 +117,11 @@ def main_hdf5(fpath, args):
 
 def main_pickle(fpath, args):
     import pickle
+    try:
+        import numpy as np
+        imp_np = True
+    except ImportError:
+        imp_np = False
     try:
         with open(fpath, 'rb') as f:
             data = pickle.load(f)
@@ -157,7 +172,11 @@ def main_pickle(fpath, args):
                                 tmp_data = tmp_data[k]
                                 selected_keys.append(k)
                             else:
-                                cprint('output::', '\n{}\n'.format(tmp_data[k]), bg='r')
+                                cprint('output::', '\n{}'.format(tmp_data[k]), bg='r')
+                                if imp_np:
+                                    if type(tmp_data[k])==np.ndarray:
+                                        print('>> shape: {}, mean: {:.2e}, median: {:.2e}, std: {:.2e}'.format(tmp_data[k].shape, np.mean(tmp_data[k]), np.median(tmp_data[k]), np.std(tmp_data[k])))
+                                print('')
                     if not find_key:
                         cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
         else:
