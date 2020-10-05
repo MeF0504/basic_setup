@@ -33,6 +33,7 @@ function! <SID>my_color_set_inkpot()
     endif
     highlight Normal ctermfg=255
     highlight PmenuThumb ctermbg=55
+    highlight MatchParen ctermfg=14 ctermbg=18 cterm=Bold
 endfunction
 
 function! <SID>my_color_set()
