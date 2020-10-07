@@ -86,10 +86,13 @@ let g:l_st_fileformat = {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRL
 let g:l_statusline = [
             \"%f%m%{&readonly?'[RO]':''}%h%w  ",
             \"%<%=",
-            \"%y ",
-            \"[%{g:l_st_fileformat[&fileformat]}:%{&fileencoding}] ",
-            \"%l/%L [%P]"
+            \"%#StatusLineFT# %Y ",
+            \"%#StatusLineFF# %{g:l_st_fileformat[&fileformat]}:%{&fileencoding} ",
+            \"%#StatusLineLN# %l/%L %#StatusLine#[%P]"
             \]
+            " \"%y ",
+            " \"[%{g:l_st_fileformat[&fileformat]}:%{&fileencoding}] ",
+            " \"%l/%L [%P]"
 
 let g:l_statusline_off = ["%t%m%{&readonly?'[RO]':''}%h%w"]
 """ control statusline showing

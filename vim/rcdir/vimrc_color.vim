@@ -65,6 +65,9 @@ function! <SID>my_color_set()
         highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
         highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249
     endif
+    highlight StatusLineFT cterm=bold ctermfg=253 ctermbg=17
+    highlight StatusLineFF cterm=bold ctermfg=253 ctermbg=88
+    highlight StatusLineLN cterm=bold ctermfg=253 ctermbg=6
 
     if exists('*strftime')
         let month = str2nr(strftime("%b"))
