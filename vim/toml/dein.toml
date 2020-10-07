@@ -285,7 +285,8 @@ repo = 'MeF0504/vim-shiki'
 repo = 'tyru/current-func-info.vim'
 hook_add = '''
 """" current-func-info.vim {{{
-let s:cfi_st = "[%{cfi#get_func_name()}] "
+" let s:cfi_st = "[%{cfi#get_func_name()}] "
+let s:cfi_st = "%#StatusLineCFI# %{cfi#get_func_name()} "
 function! <SID>add_cfi_sl()
 
     function! s:clear_cfi_sl()
