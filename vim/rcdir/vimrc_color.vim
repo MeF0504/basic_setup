@@ -54,6 +54,7 @@ function! <SID>my_color_set()
     highlight TabLine cterm=None ctermfg=15 ctermbg=16
     highlight TabLineSel cterm=Bold,underline ctermfg=15 ctermbg=243
     highlight TabLineFill cterm=Bold ctermfg=45 ctermbg=16
+    highlight TabLineDir cterm=Bold ctermfg=24 ctermbg=250
 
     "全角スペース表示
     highlight ZenkakuSpace cterm=None ctermfg=None ctermbg=241

@@ -201,7 +201,7 @@ function! s:my_tabline()
     let tab_fin_l = 0
     let tab_fin_r = 0
 
-    let cdir = '@'.s:get_cwd_path()
+    let cdir = ' @'.s:get_cwd_path()
     let tab_len += len(cdir)
 
     for i in range(1, tabpagenr('$'))
@@ -286,7 +286,7 @@ function! s:my_tabline()
     " color setting
     let footer = '%#TabLineFill#'.footer
     " 右寄せしてディレクトリ表示
-    let footer .= '%=%#TabLineFill#'.cdir.'%#TabLine#'
+    let footer .= '%=%#TabLineDir#'.cdir.'%#TabLine#'
     let s = header.s.footer
     let s .= '%#TabLineFill#%T%=%#TabLine#'
     return s
