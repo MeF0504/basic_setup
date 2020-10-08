@@ -112,21 +112,31 @@ esac
 
 add_env() {
     # {{{
-    if [[ "$1" = "" ]] || [[ "$1" =~ ^\- ]]; then
+    if [[ "$1" = "-d" ]]; then
+        local dyn=1
+        local in_dir="$2"
+    elif [[ "$1" = "" ]] || [[ "$1" =~ ^\- ]]; then
         echo "
-    usage: add_env dir 
+    usage: [-h] [-d] add_env dir
 
     add dir/*/bin to PATH
-    add dir/*/lib and path/*/lib64 to LD_LIBRARY_PATH and DYLD_LIBRARY_PATH
+    add dir/*/lib and dir/*/lib64 to LD_LIBRARY_PATH
     add dir/*/share/man to MANPATH
 
     positional arguments:
         dir    : path to the target directory
+
+    optional arguments:
+        -h, --help   show this help message and exit
+        -d           also add dir/*/lib and dir/*/lib64 to DYLD_LIBRARY_PATH
         "
         return
+    else
+        local dyn=0
+        local in_dir="$1"
     fi
 
-    for d in $(find "$1"/* -maxdepth 0);
+    for d in $(find "$in_dir"/* -maxdepth 0);
     do
         #echo $d
         #echo "---"
@@ -135,11 +145,15 @@ add_env() {
         fi
         if [ -d "$d"/lib ]; then
             export LD_LIBRARY_PATH=$d/lib:$LD_LIBRARY_PATH
-            export DYLD_LIBRARY_PATH=$d/lib:$DYLD_LIBRARY_PATH
+            if [ "$dyn" = "1" ]; then
+                export DYLD_LIBRARY_PATH=$d/lib:$DYLD_LIBRARY_PATH
+            fi
         fi
         if [ -d "$d"/lib64 ]; then
             export LD_LIBRARY_PATH=$d/lib64:$LD_LIBRARY_PATH
-            export DYLD_LIBRARY_PATH=$d/lib64:$DYLD_LIBRARY_PATH
+            if [ "$dyn" = "1" ]; then
+                export DYLD_LIBRARY_PATH=$d/lib64:$DYLD_LIBRARY_PATH
+            fi
         fi
         if [ -d "$d"/share/man ]; then
             export MANPATH=$d/share/man:$MANPATH
