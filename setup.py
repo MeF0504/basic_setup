@@ -245,7 +245,7 @@ def main():
 
     files_linux = {\
                   'zshrc':'~/.zshrc', \
-                    'zlogin':'~/.zlogin', \
+                  'zlogin':'~/.zlogin', \
                   'posixShellRC':'~/.posixShellRC',\
                   'bashrc':'~/.bashrc',\
                   'terminator_config':op.join(conf_home,'terminator/config'), \
