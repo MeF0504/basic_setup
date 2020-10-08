@@ -58,12 +58,17 @@ if __name__ == '__main__':
     parser.add_argument('-f','--force',help='show images w/o no check',action='store_true')
     parser.add_argument('-n',dest='num',help='number of showing figures',type=int)
     args = parser.parse_args()
-    files = args.figs
     if len(args.figs)==0:
         files = glob.glob('./*')
-    elif os.path.isdir(args.figs[0]):
-        files = glob.glob(os.path.join(args.figs[0],'*'))
-    # print 'all files:',len(files)
+    else:
+        files = []
+        for fig in args.figs:
+            if os.path.isdir(fig):
+                files += glob.glob(os.path.join(fig,'*'))
+            elif os.path.isfile(fig):
+                files.append(fig)
+    # for fy in files: print(fy)
+    # print(len(files))
     if hasattr(args,'num'):
         files = files[:args.num]
 
