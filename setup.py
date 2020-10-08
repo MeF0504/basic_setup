@@ -236,6 +236,7 @@ def main():
     print('\n@ '+setdir+'\n')
     files_mac = {\
                 'zshrc':'~/.zshrc', \
+                'zlogin':'~/.zlogin', \
                 'posixShellRC':'~/.posixShellRC',\
                 'bashrc':'~/.bashrc',\
                 'matplotlibrc':'~/.matplotlib/matplotlibrc', \
@@ -244,6 +245,7 @@ def main():
 
     files_linux = {\
                   'zshrc':'~/.zshrc', \
+                    'zlogin':'~/.zlogin', \
                   'posixShellRC':'~/.posixShellRC',\
                   'bashrc':'~/.bashrc',\
                   'terminator_config':op.join(conf_home,'terminator/config'), \

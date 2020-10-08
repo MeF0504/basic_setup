@@ -1,0 +1,15 @@
+
+if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+    # don't save the date time if I logined recenty.
+    if [ -f $HOME/.cache/date.txt ] && [ $(date "+%Y%m%d") != $(cat $HOME/.cache/date.txt) ]; then
+        TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z" >> $HISTFILE
+    fi
+    # save last login time
+    TZ=Asia/Tokyo date "+%Y%m%d" > $HOME/.cache/date.txt
+fi
+
+if [[ -n $(ls $HOME/.vim/swp/) ]]; then
+    ls $HOME/.vim/swp/
+fi
+
+[ -f $HOME/.zsh/zlogin.mine ] && source $HOME/.zsh/zlogin.mine
