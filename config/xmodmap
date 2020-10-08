@@ -1,5 +1,0 @@
-remove mod4 = Super_L
-keysym Super_L = Control_L
-add Control = Control_L
-
-keycode  97 = underscore backslash underscore backslash
