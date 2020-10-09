@@ -470,3 +470,7 @@ if = '''!has('nvim')'''
 repo = 'roxma/vim-hug-neovim-rpc'
 if = '''!has('nvim')'''
 
+# visual modeで選択した範囲をgcでコメントアウトしてくれるplugin
+[[plugins]]
+repo = 'tpope/vim-commentary'
+
