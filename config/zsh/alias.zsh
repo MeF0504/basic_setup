@@ -1,7 +1,5 @@
-# expand aliases before completing
-#
-setopt complete_aliases     # aliased ls needs if file/dir completions work
 
+# -gをつけるとpipe や redirect のようなaliasも作れる
 alias -g H='| head'
 alias -g T='| tail'
 alias -g W='| wc'

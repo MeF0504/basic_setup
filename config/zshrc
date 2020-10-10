@@ -8,7 +8,8 @@ else
     echo "[posix shell rc] not found!"
 fi
 
-##{{{ Environment variable configuration
+# 基本設定 {{{
+# {{{ Environment variable
 #
 # <c-w>で消す際に/単位で削除
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
@@ -21,161 +22,68 @@ fi
 
 #}}}
 
-##{{{ Default shell configuration
-#
+# basic autoload {{{
+### 関数ファイル?のload
+### ファイルは$FPATH を参照するらしい
+### -U ... aliasによる上書きを防ぐ？
+### -z ... zshの形式で読み込む
 
-# auto change directory
-#
-setopt auto_cd
+# 色を使用できるようにする
+autoload -Uz colors && colors
+# 自動補完
+autoload -Uz compinit && compinit
+# }}}
 
-# auto directory pushd that you can get dirs list by cd -[tab]
-#
-setopt auto_pushd
+# setopt {{{
+### option setting
+### $ setopt で現在の設定を確認できるらしい
+### 大文字／小文字，_は無視されるらしい; autocd = AUTOCD = auto_cd
 
-# command correct edition before each completion attempt
-#
+# 日本語など8bitを通す
+setopt print_eight_bit
+# typoを補正してくれる
 setopt correct
-
-# compacked complete list display
-#
+# ディレクトリ名のみで移動可
+setopt auto_cd
+# cdしたdirectoryをスタックへ自動追加， cd - で戻れるようにする
+setopt auto_pushd
+# 重複するディレクトリはスタックへ追加しない
+setopt pushd_ignore_dups
+# beep音を無効にする
+setopt no_beep
+# 補完候補時にbeep音を無効にする
+# zshによるterminalのフロー操作を無効化する
+# 通常だと<c-s> <c-r>でterminalの動きを止めたりできるが，
+# これがあると<c-r>で使える履歴検索時に前／後への移動ができなくなる
+# ので，フロー操作を無効化して履歴検索時に移動ができるようにする。
+setopt no_flow_control
+# 候補が多い場合は切り詰める
 setopt list_packed
+# ディレクトリ選択時に最後の/を残す
+setopt no_auto_remove_slash
+# --prefix= とかの=以降でも補完
+setopt magic_equal_subst
+# aliasの補完の際に，もとのコマンドに沿って補完してくれる
+setopt complete_aliases
+# }}}
 
-# no remove postfix slash of command line
-#
-setopt noautoremoveslash
-
-# no beep sound when complete list displayed
-#
-setopt nolistbeep
-#}}}
-
-##{{{ Keybind configuration
-#
-# emacs like keybind (e.x. Ctrl-a gets to line head and Ctrl-e gets
-#   to end) and something additions
-#
-bindkey -e
-bindkey "^[[1~" beginning-of-line # Home gets to line head
-bindkey "^[[4~" end-of-line # End gets to line end
-bindkey "^[[3~" delete-char # Del
-
-# historical backward/forward search with linehead string binded to ^P/^N
-#
-autoload history-search-end
-zle -N history-beginning-search-backward-end history-search-end
-zle -N history-beginning-search-forward-end history-search-end
-bindkey "^p" history-beginning-search-backward-end
-bindkey "^n" history-beginning-search-forward-end
-bindkey "\\ep" history-beginning-search-backward-end
-bindkey "\\en" history-beginning-search-forward-end
-
-# reverse menu completion binded to Shift-Tab
-#
-bindkey "\e[Z" reverse-menu-complete
-
-# Enter key bind
-# key bind:: https://qiita.com/yuku_t/items/e58cbecf13407446bd50
-# Enter key bind:: https://qiita.com/yut-kt/items/267ce4648b801c1c1bca
-function do_enter() {
-    if [ -n "$BUFFER" ]; then
-        zle accept-line   # 処理で表示がないとこっち?
-        return 0
-    fi
-    echo
-    source $HOME/.zsh/enter.zsh
-    echo '\n'
-    zle reset-prompt  # 上の処理で表示があるとこっち?
-    return 0
-}
-
-if [[ -f $HOME/.zsh/enter.zsh ]]; then
-    zle -N do_enter     # do_enterをwidgetとして登録
-    bindkey '^M' do_enter
-fi
-
-# ctrl-b,f で前後の単語に移動
-bindkey "^b" backward-word
-bindkey "^f" forward-word
-
-#}}}
-
-##{{{ Command history configuration
-#
-HISTFILE=${HOME}/.zsh_history
-HISTSIZE=50000
-SAVEHIST=50000
-setopt hist_ignore_dups     # ignore duplication command history list
-setopt hist_ignore_space    # ignore command starting with space
-setopt share_history        # share command history data
-
-# 特定のコマンドを保存しない
-# https://mollifier.hatenablog.com/entry/20090728/p1
-zshaddhistory() {
-    local line=${1%%$'\n'}
-    [[ ${line} != (l|l[sal])
-    # && ${line} != (c|cd)
-    && ! ${line} =~ ".*history"
-    ]]
-}
-
-#}}}
-
-##{{{ Completion configuration
-#
-fpath=(${HOME}/.zsh/functions/Completion ${fpath})
-autoload -U compinit
-compinit
+# zstyle {{{
+### 詳細がわかっていないけど，とりあえずdocを貼っておく
+### http://zsh.sourceforge.net/Doc/Release/Zsh-Modules.html#The-zsh_002fzutil-Module
 
 #大文字と小文字を無視して補完
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-
-# 補完用ファイル読み込み
-[ -f ${HOME}/.zsh/complete.zsh ] && source ${HOME}/.zsh/complete.zsh
-#}}}
-
-##{{{ zsh editor
-#
-autoload zed
-#}}}
-
-##{{{ Prediction configuration
-#
-#autoload predict-on
-#predict-off
-#}}}
-
-##{{{ hook function setting
-
-#chpwd関数を定義しておくとzshがcd後に勝手に実行してくれる。
-#function chpwd() {pwd; echo -ne "\033]0;${USER}@${HOST}\007"}
-IGNORE_FETCH= 
-function chpwd() {
-    if [[ -n $OLD_PROMPT ]]; then
-        pwd
-    fi
-    if [[ -e .git ]]; then
-        #echo "%{${fg[yellow]}%}check git repo is up-to-date%{${reset_color}%}"
-        #echo "\033[33mcheck git repo is up-to-date  (---> git fetch) \033[0m"
-        # don't execute git fetch if dir name is in $IGNORE_FETCH.
-        if [[ -z $(echo $IGNORE_FETCH | grep -e $(basename $(pwd))) ]]; then
-            echo "fetching..."
-            git fetch
-        else
-            echo "fetching... canceled"
-        fi
-    fi
-}
-#from http://qiita.com/dai___chi/items/135d063444d152e63e1c
-#}}}
-
-##{{{ terminal configuration
-#
-#case "${TERM}" in
-#screen)
-    #TERM=xterm-256color
-    #;;
-#esac
-
+# 補完時に選択し対象を強調
+zstyle ':completion:*' menu select
+# 補完を強調，interactiveに行う
+# zstyle ':completion:*' menu select interactive
+# setopt menu_complete    # 余分にtabを押す必要をなくす
+# manの補完をセクション番号別に表示させる
+zstyle ':completion:*:manuals' separate-sections true
+# cd .. で補完する際に今のディレクトリを出さない
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
+# lsの色設定
+# が補完時にも働く？
 case "${TERM}" in
 xterm|xterm-color|xterm-256color)
     zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34' 'tw=42;31' 'ow=43;31'
@@ -192,9 +100,95 @@ jfbterm-color)
     zstyle ':completion:*' list-colors 'di=;36;1' 'ln=;35;1' 'so=;32;1' 'ex=31;1' 'bd=46;34' 'cd=43;34'
     ;;
 esac
+# }}}
 
-# set terminal title as username+MYHOST (in local PC, username+working dir)
-#
+# {{{ bindkey
+### key mapの設定
+### bindkey -L で一覧が見れるらしい
+
+# shift-tabで補完候補の後戻りする
+bindkey "\e[Z" reverse-menu-complete
+# ctrl-b,f で前後の単語に移動
+bindkey "^b" backward-word
+bindkey "^f" forward-word
+# Enter key bind
+# key bind:: https://qiita.com/yuku_t/items/e58cbecf13407446bd50
+# Enter key bind:: https://qiita.com/yut-kt/items/267ce4648b801c1c1bca
+function do_enter() {
+    if [ -n "$BUFFER" ]; then
+        zle accept-line   # 処理で表示がないとこっち?
+        return 0
+    fi
+    echo
+    source $HOME/.zsh/enter.zsh
+    echo '\n'
+    zle reset-prompt  # 上の処理で表示があるとこっち?
+    return 0
+}
+
+if [[ -f $HOME/.zsh/enter.zsh ]]; then  # enter.zshがある場合のみ設定
+    zle -N do_enter     # do_enterをwidgetとして登録
+    bindkey '^M' do_enter
+fi
+
+# }}}
+
+# }}}
+
+# history関連 {{{
+
+# history 保存ファイル
+HISTFILE=${HOME}/.zsh_history
+# メモリに保存される (検索できる) 履歴数
+HISTSIZE=50000
+# ファイルに保存される履歴数
+SAVEHIST=50000
+# 重複するコマンドは履歴に残さない
+setopt hist_ignore_dups
+# spaceで始まるコマンドは履歴を残さない
+setopt hist_ignore_space
+# 同時に開いたzshで履歴を共有する
+setopt share_history
+
+# 履歴探索
+# <c-p>, <c-n> または<esc-p>, <esc-n> で前後に移動
+### zleはzsh line editor の略らしい
+### これもdocを貼っとく http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html
+autoload history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey "^p" history-beginning-search-backward-end
+bindkey "^n" history-beginning-search-forward-end
+bindkey "\\ep" history-beginning-search-backward-end
+bindkey "\\en" history-beginning-search-forward-end
+
+# 特定のコマンドを保存しない
+# https://mollifier.hatenablog.com/entry/20090728/p1
+zshaddhistory() {
+    local line=${1%%$'\n'}
+    [[ ${line} != (l|l[sal])
+    # && ${line} != (c|cd)
+    && ! ${line} =~ ".*history"
+    ]]
+}
+# }}}
+
+## {{{ 各 OS 用設定
+if [ "$(uname)" = "Darwin" ]; then
+    # https://pc-karuma.net/mac-dock-insert-space/
+    alias ad_space="defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type=\"spacer-tile\";}' && killall Dock"
+    alias ldd="otool -L"
+    # https://book.mynavi.jp/macfan/detail_summary/id=78208
+    alias rm_shadow="defaults write com.apple.screencapture disable-shadow -boolean true && killall SystemUIServer"
+
+elif [ "$(uname)" = "Linux" ]; then
+    # do nothing now.
+fi
+#}}}
+
+# {{{ Terminal設定
+### terminal のtab nameをusername@場所 にする
+### 場所はssh先ならhost name, localならカレントディレクトリ，$HOMEだとhomeになる
 case "${TERM}" in
 xterm|xterm-color|kterm|kterm-color|xterm-256color)
     if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
@@ -215,7 +209,7 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color)
 esac
 
 autoload -Uz add-zsh-hook
-# change tab color
+# ssh 先の名前を$TAB1-7に登録しておくと，接続中iterm2のtabの色が変わる
 # https://gist.github.com/wadey/1140259
 if [[ -n $ITERM_SESSION_ID ]]; then
     tab_color() {
@@ -226,25 +220,11 @@ if [[ -n $ITERM_SESSION_ID ]]; then
 
     tab_reset() {echo -ne "\033]6;1;bg;*;default\a" }
 
-    cvt_str_int() {
-        hex=$(for x in $(echo $1 | \grep -o '.');do printf "%03u" \"$x; done)
-        if [[ $hex = "" ]]; then
-            echo 0
-        else
-            echo $hex
-        fi
-    }
-
     function iterm2_tab_precmd() {
         tab_reset
     }
 
     function iterm2_tab_preexec() {
-        # if [[ "$1" =~ "^ ?ssh" ]]; then
-        #     local sshhost=$(for x in $(echo $1 | tr ' ' '\n'); do if [ $x != 'ssh' ] && [ ${x:0:1} != '-' ]; then; echo $x; fi; done)
-        #     local st=$((${#sshhost}/3))
-        #     tab_color $( cvt_str_int ${sshhost:0:1}) $( cvt_str_int ${sshhost:$st:1}) $(cvt_str_int ${sshhost:$((st*2)):1})
-        # fi
         if [[ -n $TAB1 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB1.*$" ]]; then
             tab_color 255 0 0       # Red
         elif [[ -n $TAB2 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB2.*$" ]]; then
@@ -268,20 +248,42 @@ if [[ -n $ITERM_SESSION_ID ]]; then
     add-zsh-hook preexec iterm2_tab_preexec
 
 fi
-#}}}
 
-## {{{ OS dependent settings
-if [ "$(uname)" = "Darwin" ]; then
-    # https://pc-karuma.net/mac-dock-insert-space/
-    alias ad_space="defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type=\"spacer-tile\";}' && killall Dock"
-    alias ldd="otool -L"
-    # https://book.mynavi.jp/macfan/detail_summary/id=78208
-    alias rm_shadow="defaults write com.apple.screencapture disable-shadow -boolean true && killall SystemUIServer"
+# }}}
 
-elif [ "$(uname)" = "Linux" ]; then
-    # do nothing now.
+# {{{ その他設定，関数
+#chpwd関数を定義しておくとzshがcd後に勝手に実行してくれる。
+#function chpwd() {pwd; echo -ne "\033]0;${USER}@${HOST}\007"}
+IGNORE_FETCH= 
+function chpwd() {
+    if [[ -n $OLD_PROMPT ]]; then
+        pwd
+    fi
+    if [[ -e .git ]]; then
+        #echo "%{${fg[yellow]}%}check git repo is up-to-date%{${reset_color}%}"
+        #echo "\033[33mcheck git repo is up-to-date  (---> git fetch) \033[0m"
+        # don't execute git fetch if dir name is in $IGNORE_FETCH.
+        if [[ -z $(echo $IGNORE_FETCH | grep -e $(basename $(pwd))) ]]; then
+            echo "fetching..."
+            git fetch
+        else
+            echo "fetching... canceled"
+        fi
+    fi
+}
+# }}}
+
+# plugin 管理 (if needed) {{{
+### https://github.com/zplug/zplug
+# export ZPLUG_HOME=$HOME/.zsh/zplug
+if [ -n "$ZPLUG_HOME" ]; then
+    if [[ ! -d $ZPLUG_HOME ]]; then
+        git clone https://github.com/zplug/zplug.git $ZPLUG_HOME
+    fi
+    source $ZPLUG_HOME/init.zsh
 fi
-#}}}
+
+# }}}
 
 ##{{{ load user .zshrc configuration file
 #

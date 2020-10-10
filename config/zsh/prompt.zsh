@@ -1,7 +1,4 @@
 # set prompt
-#
-autoload colors
-colors
 
 function ip_color() {
     # {{{
