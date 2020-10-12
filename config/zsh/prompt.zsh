@@ -192,7 +192,6 @@ setopt prompt_subst
 
 RPROMPT=''
 # https://qiita.com/mollifier/items/8d5a627d773758dd8078
-autoload -Uz add-zsh-hook
 autoload -Uz vcs_info
 # 以下の3つのメッセージをエクスポートする
 #   $vcs_info_msg_0_ : 通常メッセージ用 (緑)

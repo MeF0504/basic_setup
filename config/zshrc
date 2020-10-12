@@ -34,6 +34,21 @@ autoload -Uz colors && colors
 autoload -Uz compinit && compinit
 # zshのバージョン指定が簡単
 autoload -Uz is-at-least
+# なにかの操作を行ったときに呼び出される関数を設定するコマンド
+# hook memo {{{
+# https://qiita.com/mollifier/items/558712f1a93ee07e22e2 とか
+# vimにおけるautocmd みたいなものっぽい
+# hookの種類としては，
+# chpwd                 カレントディレクトリが変更したとき
+# periodic              プロンプトを表示するたびに、$PERIOD秒ごと
+# precmd                プロンプトを表示する直前
+# preexec               Enterを押してコマンドを実行する直前
+# zshaddhistory         コマンドラインがヒストリに追加される直前
+# zshexit               zshを終了する直前
+# zsh_directory_name    Dynamic named directoriesによるディレクトリ名変換
+# とか？ }}}
+autoload -Uz add-zsh-hook
+
 # }}}
 
 # setopt {{{
@@ -210,7 +225,6 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color)
     ;;
 esac
 
-autoload -Uz add-zsh-hook
 # ssh 先の名前を$TAB1-7に登録しておくと，接続中iterm2のtabの色が変わる
 # https://gist.github.com/wadey/1140259
 if [[ -n $ITERM_SESSION_ID ]]; then
