@@ -32,6 +32,8 @@ fi
 autoload -Uz colors && colors
 # 自動補完
 autoload -Uz compinit && compinit
+# zshのバージョン指定が簡単
+autoload -Uz is-at-least
 # }}}
 
 # setopt {{{
