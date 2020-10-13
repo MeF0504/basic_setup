@@ -9,22 +9,25 @@
 ### MATPLOTLIBRC FORMAT
 
 ### BACKEND
-backend      : tkagg
+backend             : tkagg
 ## If TkAgg doesn't work, or show only white display, try Qt5Agg.
 ## required?: $ pip3 install PyQt5
 ## maybe following are also required:  PyQt5-sip QtAwesome qtconsole QtPy
-## backend      : Qt5Agg
+## backend          : Qt5Agg
 
 ### LINES
 lines.markersize    : 4     ## markersize, in points
 
 ### AXES
 axes.labelsize      : large # fontsize of the x any y labels
-axes.grid           : True   ## display grid or not
+axes.grid           : True  ## display grid or not
+
+### GRID
+grid.linestyle      :   -   # dash line
 
 ### LEGEND
-legend.numpoints     : 1      # the number of points in the legend line
-legend.frameon       : True   # whether or not to draw a frame around legend
-legend.framealpha    : 0.3  # opacity of of legend frame
-legend.loc           : best
+legend.numpoints    : 1     # the number of points in the legend line
+legend.frameon      : True  # whether or not to draw a frame around legend
+legend.framealpha   : 0.3   # opacity of of legend frame
+legend.loc          : best
 
