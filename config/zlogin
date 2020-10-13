@@ -1,7 +1,9 @@
 
 if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
     # don't save the date time if I logined recenty.
-    if [ -f $HOME/.cache/date.txt ] && [ $(date "+%Y%m%d") != $(cat $HOME/.cache/date.txt) ]; then
+    if [ ! -f $HOME/.cache/date.txt ]; then
+        TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z" >> $HISTFILE
+    elif [ $(TZ=Asia/Tokyo date "+%Y%m%d") != $(cat $HOME/.cache/date.txt) ]; then
         TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z" >> $HISTFILE
     fi
     # save last login time
