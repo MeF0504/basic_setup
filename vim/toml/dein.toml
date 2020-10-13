@@ -148,6 +148,7 @@ hook_add = '''
 """""taglist.vim "{{{
 let g:Tlist_Exit_OnlyWindow = 1
 let g:Tlist_Show_One_File = 1
+let g:Tlist_File_Fold_Auto_Close = 1
 " 幅の設定
 " gui offのときは自動で幅が変わらないようにする (バグる)
 if has('gui_running')
