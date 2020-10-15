@@ -160,22 +160,24 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             elif islink:
                 print(shift+'[ {} ] is a link file, cannot copy!'.format(name2))
             else:
-                input_str = shift+'[ {} ] is already exist, are you realy overwrite? [y(yes), n(no), d(diff)] '.format(name2)
-                yn = get_input(input_str)
-                if (yn == 'y') or (yn == 'yes'):
-                    fcopy_main(cmd, comment, test)
-                elif (yn == 'd') or (yn == 'diff'):
-                    print('')
-                    fcopy_diff(file2, file1)
-                    print('')
-                    input_str = shift+'are you realy overwrite? [y(yes), n(no)] '
+                is_diff = False
+                while True:
+                    if is_diff:
+                        input_str = shift+'are you realy overwrite? [y(yes), n(no)] '
+                    else:
+                        input_str = shift+'[ {} ] is already exist, are you realy overwrite? [y(yes), n(no), d(diff)] '.format(name2)
                     yn = get_input(input_str)
                     if (yn == 'y') or (yn == 'yes'):
                         fcopy_main(cmd, comment, test)
-                    else:
+                        break
+                    elif ((yn == 'd') or (yn == 'diff')) and not is_diff:
+                        print('')
+                        fcopy_diff(file2, file1)
+                        print('')
+                        is_diff = True
+                    elif (yn == 'n') or (yn == 'no'):
                         print('Do not copy '+name2)
-                else:
-                    print('Do not copy '+name2)
+                        break
         else:
             fcopy_main(cmd, comment, test)
 #}}}
