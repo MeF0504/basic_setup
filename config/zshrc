@@ -303,6 +303,7 @@ fi
 
 ##{{{ load user .zshrc configuration file
 #
+[ -f ${HOME}/.zsh/complete.zsh ] && source ${HOME}/.zsh/complete.zsh
 [ -f ${HOME}/.zsh/prompt.zsh ] && source ${HOME}/.zsh/prompt.zsh
 [ -f ${HOME}/.zsh/alias.zsh ] && source ${HOME}/.zsh/alias.zsh
 [ -f ${HOME}/.zsh/functions.zsh ] && source ${HOME}/.zsh/functions.zsh
