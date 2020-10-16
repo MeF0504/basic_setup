@@ -17,7 +17,7 @@ if [[ ${SSH_CLIENT} != "" ]]; then
     export PS1='\[\e[36m\]${HOSTNAME%%.*}\[\e[0m\] '$PS1
 fi
 # time
-export PS1=$PS1'\[\e[32m\]\t\[\e[0m\]'
+export PS1=$PS1'\[\e[32m\]\D{%H:%M}\[\e[0m\]'
 # user name (bold)
 export PS1=$PS1' \[\e[1m\e[31m\]\u\[\e[0m\]'
 

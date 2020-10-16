@@ -149,7 +149,7 @@ set_prompt() {
                 PROMPT="%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%{${reset_color}%} "$PROMPT
             fi
             # time
-            PROMPT=$PROMPT"%{${fg[green]}%}%T%{${reset_color}%}"
+            PROMPT=$PROMPT"%{${fg[green]}%}%D{%H:%M}%{${reset_color}%}"
             # user name (bold)
             PROMPT=$PROMPT" %{${fg[red]}%}%B%n%b%{${reset_color}%}"
             # change red if the previous command was failed.
@@ -215,7 +215,7 @@ if is-at-least 4.3.10; then
     zstyle ':vcs_info:git:*' actionformats '(%s)-[%b]' '%c%u %m' '<!%a>'
     zstyle ':vcs_info:git:*' check-for-changes true
     zstyle ':vcs_info:git:*' stagedstr "+"    # %c で表示する文字列
-    zstyle ':vcs_info:git:*' unstagedstr "-"  # %u で表示する文字列
+    zstyle ':vcs_info:git:*' unstagedstr "*"  # %u で表示する文字列
 fi
 
 # hooks 設定
