@@ -34,6 +34,9 @@ function! <SID>my_color_set_inkpot()
     highlight Normal ctermfg=255
     highlight PmenuThumb ctermbg=55
     highlight MatchParen ctermfg=14 ctermbg=18 cterm=Bold
+
+    " mode message
+    highlight ModeMsg cterm=Bold ctermfg=253 ctermbg=61
 endfunction
 
 function! <SID>my_color_set()
@@ -121,8 +124,8 @@ augroup colorLocal
     autocmd ColorScheme * call <SID>my_color_set()
 
     " corsor line
-    autocmd InsertLeave * highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15
-    autocmd InsertEnter * highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=97
+    " autocmd InsertLeave * highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15
+    " autocmd InsertEnter * highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=97
 
     "全角スペース表示
     autocmd BufEnter * match ZenkakuSpace /　/

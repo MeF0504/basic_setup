@@ -124,6 +124,8 @@ set foldcolumn=2
 "set grepprg=internal
 "外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
 set grepprg=grep\ -nriI
+" modeを表示しない
+set noshowmode
 
 "terminal mode設定
 "Nothing

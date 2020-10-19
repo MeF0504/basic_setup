@@ -77,22 +77,27 @@ command! LS 0tabnew .
 
 ""statusline setting {{{
 let g:l_st_fileformat = {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRLF"}
+let g:l_st_mode = {'n':'NORMAL',
+            \'v':'VISUAL', "\<C-V>":'VISUAL BLOCK', 'V':'VISUAL LINE',
+            \'i':'INSERT', 'R':'REPLACE',
+            \'t':'TERMINAL',
+            \'c':'COMMAND',
+            \}
+" mode
 " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
 " 切り詰め位置 右端に表示
 " filetype
 " file format
-" 今の行/全体の行 [%表示]
+" 今の行/全体の行-今の列 [%表示]
 """ the variable to administer statusline
 let g:l_statusline = [
+            \"%#ModeMsg#%{has_key(g:l_st_mode, mode())?g:l_st_mode[mode()]:mode()} %#StatusLine#",
             \"%f%m%{&readonly?'[RO]':''}%h%w  ",
             \"%<%=",
-            \"%#StatusLineFT# %Y ",
+            \"%#StatusLineFT# %{&filetype} ",
             \"%#StatusLineFF# %{g:l_st_fileformat[&fileformat]}:%{&fileencoding} ",
-            \"%#StatusLineLN# %l/%L %#StatusLine#[%P]"
+            \"%#StatusLineLN# %l/%L-%v %#StatusLine#[%P]",
             \]
-            " \"%y ",
-            " \"[%{g:l_st_fileformat[&fileformat]}:%{&fileencoding}] ",
-            " \"%l/%L [%P]"
 
 let g:l_statusline_off = ["%t%m%{&readonly?'[RO]':''}%h%w"]
 """ control statusline showing
