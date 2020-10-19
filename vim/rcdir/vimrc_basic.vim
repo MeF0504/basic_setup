@@ -103,10 +103,8 @@ endif
 set isfname-==
 " pythonxで使うversionを指定
 " set pyxversion=3    " if needed
-
 "カーソルの下に下線を表示
 set cursorline
-
 "swp fileあり、backup, undoなし
 set swapfile
 " 作れればswp用のdirectoryをvimdir配下に作る
@@ -118,12 +116,14 @@ if exists('g:vimdir')
 endif
 set nobackup
 set noundofile
-
 "tag設定
 set tags=tags;,./tags;
-
 " 左端にfoldの表示を追加
 set foldcolumn=2
+"grepコマンドで内部grep(vimgrep)を使う
+"set grepprg=internal
+"外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
+set grepprg=grep\ -nriI
 
 "terminal mode設定
 "Nothing
@@ -142,16 +142,12 @@ else
     endif
 endif
 
-"grepコマンドで内部grep(vimgrep)を使う
-"set grepprg=internal
-"外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
-set grepprg=grep\ -nriI
-
 " 基本的なstatusline 設定
 set statusline=%f%m%r%h%w%<%=%y\ %l/%L\ [%P]
 " 分割したwindow間で移動を同期
 " (それぞれのwindowでsetする必要あり)
 " set scrollbind
+
 "}}}
 
 ""##########mapping設定 "{{{
