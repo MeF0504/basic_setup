@@ -103,7 +103,7 @@ let g:l_statusline_off = ["%t%m%{&readonly?'[RO]':''}%h%w"]
 """ control statusline showing
 let g:l_st_width_level = [30, 50]
 let g:l_st_showmode = 1
-function! Set_statusline(...)
+function! Set_statusline(cur_win, ...)
     if a:0 == 0
         let l:st_list1 = g:l_statusline
     else
@@ -127,7 +127,7 @@ function! Set_statusline(...)
         let l:st_str .= l:st
     endfor
 
-    if g:l_st_showmode != 0
+    if (g:l_st_showmode != 0) && (a:cur_win != 0)
         " 最終行にモードを表示しない
         set noshowmode
         let modec = mode()
@@ -141,6 +141,8 @@ function! Set_statusline(...)
             let st_mode = '%#StatusLineV#' . st_mode
         elseif modec =~ 'r'
             let st_mode = '%#StatusLineR#' . st_mode
+        elseif modec =~ 't'
+            let st_mode = '%#StatusLineT#' . st_mode
         else
             let st_mode = '%#StatusLineN#' . st_mode
         endif
@@ -152,7 +154,7 @@ function! Set_statusline(...)
 
     return l:st_str
 endfunction
-set statusline=%!Set_statusline()
+set statusline=%!Set_statusline(1)
 
 "}}}
 
@@ -409,8 +411,8 @@ endif
 
 "let g:l_cur_winnr = 1
 "autocmd local WinEnter let g:l_cur_winnr = winnr()
-autocmd local WinEnter ?* set statusline=%!Set_statusline()
-autocmd local WinLeave ?* setlocal statusline=%!Set_statusline(g:l_statusline_off)
+autocmd local WinEnter ?* set statusline=%!Set_statusline(1)
+autocmd local WinLeave ?* setlocal statusline=%!Set_statusline(0,g:l_statusline_off)
 """ ?* ... to igonore setting quick-fix window
 
 ""}}}

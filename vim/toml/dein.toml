@@ -288,7 +288,6 @@ hook_add = '''
 """" current-func-info.vim {{{
 " let s:cfi_st = "[%{cfi#get_func_name()}] "
 let s:cfi_st = "%#StatusLineCFI# %{cfi#get_func_name()} "
-highlight StatusLineCFI cterm=bold ctermfg=233 ctermbg=11
 function! <SID>add_cfi_sl()
 
     function! s:clear_cfi_sl()
