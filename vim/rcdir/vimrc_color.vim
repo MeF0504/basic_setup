@@ -34,9 +34,6 @@ function! <SID>my_color_set_inkpot()
     highlight Normal ctermfg=255
     highlight PmenuThumb ctermbg=55
     highlight MatchParen ctermfg=14 ctermbg=18 cterm=Bold
-
-    " mode message
-    highlight ModeMsg cterm=Bold ctermfg=253 ctermbg=61
 endfunction
 
 function! <SID>my_color_set()
@@ -71,7 +68,11 @@ function! <SID>my_color_set()
     endif
     highlight StatusLineFT cterm=bold ctermfg=253 ctermbg=17
     highlight StatusLineFF cterm=bold ctermfg=253 ctermbg=88
-    highlight StatusLineLN cterm=bold ctermfg=253 ctermbg=6
+    highlight StatusLineLN cterm=bold ctermfg=253 ctermbg=29
+    highlight StatusLineN cterm=bold ctermfg=253 ctermbg=0
+    highlight StatusLineI cterm=bold ctermfg=253 ctermbg=9
+    highlight StatusLineV cterm=bold ctermfg=253 ctermbg=13
+    highlight StatusLineR cterm=bold ctermfg=234 ctermbg=3
 
     if exists('*strftime')
         let month = str2nr(strftime("%b"))

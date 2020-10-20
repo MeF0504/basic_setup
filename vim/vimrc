@@ -78,8 +78,9 @@ command! LS 0tabnew .
 ""statusline setting {{{
 let g:l_st_fileformat = {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRLF"}
 let g:l_st_mode = {'n':'NORMAL',
-            \'v':'VISUAL', "\<C-V>":'VISUAL BLOCK', 'V':'VISUAL LINE',
-            \'i':'INSERT', 'R':'REPLACE',
+            \'v':'VISUAL', "\<C-V>":'VISUAL-B', 'V':'VISUAL-L',
+            \'i':'INSERT',
+            \'R':'REPLACE',
             \'t':'TERMINAL',
             \'c':'COMMAND',
             \}
@@ -91,7 +92,6 @@ let g:l_st_mode = {'n':'NORMAL',
 " 今の行/全体の行-今の列 [%表示]
 """ the variable to administer statusline
 let g:l_statusline = [
-            \"%#ModeMsg#%{has_key(g:l_st_mode, mode())?g:l_st_mode[mode()]:mode()} %#StatusLine#",
             \"%f%m%{&readonly?'[RO]':''}%h%w  ",
             \"%<%=",
             \"%#StatusLineFT# %{&filetype} ",
@@ -102,6 +102,7 @@ let g:l_statusline = [
 let g:l_statusline_off = ["%t%m%{&readonly?'[RO]':''}%h%w"]
 """ control statusline showing
 let g:l_st_width_level = [30, 50]
+let g:l_st_showmode = 1
 function! Set_statusline(...)
     if a:0 == 0
         let l:st_list1 = g:l_statusline
@@ -125,6 +126,29 @@ function! Set_statusline(...)
     for l:st in l:st_list2
         let l:st_str .= l:st
     endfor
+
+    if g:l_st_showmode != 0
+        " 最終行にモードを表示しない
+        set noshowmode
+        let modec = mode()
+        " mode string setting
+        let st_mode = has_key(g:l_st_mode, modec) ? g:l_st_mode[modec] : modec
+        " color setting
+        let st_mode .= ' %#StatusLine#'
+        if modec =~ 'i'
+            let st_mode = '%#StatusLineI#' . st_mode
+        elseif modec =~ 'v' || modec == "\<C-V>"
+            let st_mode = '%#StatusLineV#' . st_mode
+        elseif modec =~ 'r'
+            let st_mode = '%#StatusLineR#' . st_mode
+        else
+            let st_mode = '%#StatusLineN#' . st_mode
+        endif
+        let l:st_str = st_mode . l:st_str
+    else
+        " 最終行にモードを表示する
+        set showmode
+    endif
 
     return l:st_str
 endfunction
@@ -363,12 +387,18 @@ if !exists('$SSH_CONNECTION') && exists('g:l_auto_ime_off')   " ※ssh先ではh
     if has('win32')
         autocmd local InsertLeave * set iminsert=0
     elseif has('mac')
-        " 参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
-        " 参考2: https://moyapro.com/2019/04/14/disable-ime-on-mac-vim/
-        " 非同期で動かせるらしい
-        autocmd local InsertLeave * call job_start(
-                    \ ['osascript', '-e', 'tell application "System Events" to key code {102}'],
-                    \ #{in_io: 'null', out_io: 'null', err_io: 'null'})
+            " 参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
+        if has('nvim')
+            " nvimはjob_startが無い？っぽいのでとりあえず昔の方法で
+            let g:l_imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
+            autocmd local InsertLeave * :call system(g:l_imeoff)
+        else
+            " 参考2: https://moyapro.com/2019/04/14/disable-ime-on-mac-vim/
+            " 非同期で動かせるらしい
+            autocmd local InsertLeave * call job_start(
+                        \ ['osascript', '-e', 'tell application "System Events" to key code {102}'],
+                        \ #{in_io: 'null', out_io: 'null', err_io: 'null'})
+        endif
     endif
     set ttimeoutlen=1
 endif
