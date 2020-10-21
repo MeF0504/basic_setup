@@ -126,6 +126,8 @@ set foldcolumn=2
 set grepprg=grep\ -nriI
 " 最終行にmodeを表示する
 set showmode
+" 右下に検索のカウント数を表示 if needed
+" set shortmess-=S
 
 "terminal mode設定
 "Nothing
