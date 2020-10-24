@@ -128,8 +128,6 @@ function! Set_statusline(cur_win, ...)
     endfor
 
     if (g:l_st_showmode != 0) && (a:cur_win != 0)
-        " 最終行にモードを表示しない
-        set noshowmode
         let modec = mode()
         " mode string setting
         let st_mode = has_key(g:l_st_mode, modec) ? g:l_st_mode[modec] : modec
@@ -147,14 +145,13 @@ function! Set_statusline(cur_win, ...)
             let st_mode = '%#StatusLineN#' . st_mode
         endif
         let l:st_str = st_mode . l:st_str
-    else
-        " 最終行にモードを表示する
-        set showmode
     endif
 
     return l:st_str
 endfunction
 set statusline=%!Set_statusline(1)
+" g:l_st_showmode != 0 なら(statuslineに表示されるので) showmode をoffにする
+autocmd local VimEnter * if g:l_st_showmode!=0 | set noshowmode | endif
 
 "}}}
 
