@@ -421,8 +421,15 @@ command! SearchConf /<<<<<<<\|=======\|>>>>>>>
 command! -nargs=1 Echopand echo expand(<f-args>)
 
 " ipython を呼ぶ用
+" {{{
 command! Ipython2 botright terminal ipython2
 command! Ipython3 botright terminal ipython3
+if exists('&pyxversion') && &pyxversion == 2
+    command! Ipython Ipython2
+else
+    command! Ipython Ipython3
+endif
+" }}}
 
 " self-made plugin/functionファイル読み込み
 let s:plugin_file = g:vimdir . "rcdir/vimrc_plugin.vim"
