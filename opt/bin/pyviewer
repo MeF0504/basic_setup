@@ -514,8 +514,9 @@ def main_raw(fpath, args):
     with rawpy.imread(fpath) as raw:
         rgb = raw.postprocess()
 
-    h = int(rgb.shape[0]/500)
-    w = int(rgb.shape[1]/500)
+    rate = rgb.shape[0]/1080*100   # assume a full-HD display
+    h = int(rgb.shape[0]/rate)
+    w = int(rgb.shape[1]/rate)
     fig1 = plt.figure(figsize=(w,h))
     # full display
     ax1 = fig1.add_axes((0, 0, 1, 1))
