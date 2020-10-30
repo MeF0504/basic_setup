@@ -230,6 +230,10 @@ function del_func() {
     fi
     footer=$(date "+%m%d_%H%M%W")
     for fp in "$@"; do
+        if [[ ! -e "$fp" ]] && [[ ! -d "$fp" ]]; then
+            echo "$fp doesn't exist"
+            continue
+        fi
         touch "$fp"   # update timestamp.
         fn=$(basename "${fp}")
         if [[ -e "${del_trash}"/"${fn}" ]]; then
