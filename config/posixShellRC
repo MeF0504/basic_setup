@@ -113,15 +113,18 @@ esac
 add_env() {
     # {{{
     if [[ "$1" = "-d" ]]; then
+        # add_env -d dir
         local dyn=1
         local in_dir="$2"
     elif [[ "$1" = "" ]] || [[ "$1" =~ ^\- ]]; then
+        # add_env; or add_env -h;
         echo "
     usage: [-h] [-d] add_env dir
 
     add dir/*/bin to PATH
     add dir/*/lib and dir/*/lib64 to LD_LIBRARY_PATH
     add dir/*/share/man to MANPATH
+    ignore directories starts with '_'
 
     positional arguments:
         dir    : path to the target directory
@@ -132,31 +135,37 @@ add_env() {
         "
         return
     else
+        # add_env dir
         local dyn=0
         local in_dir="$1"
     fi
 
-    for d in $(find "$in_dir"/* -maxdepth 0);
+    find "$in_dir"/* -maxdepth 0 -type d |while read -r basedir
     do
-        #echo $d
-        #echo "---"
-        if [ -d "$d"/bin ]; then
-            export PATH=$d/bin:$PATH
+        # echo "$basedir"
+        # echo "---"
+        local bname="$(basename $basedir)"
+        if [ "${bname:0:1}" = "_" ]; then
+            # echo 'pass'
+            continue
         fi
-        if [ -d "$d"/lib ]; then
-            export LD_LIBRARY_PATH=$d/lib:$LD_LIBRARY_PATH
+        if [ -d "$basedir"/bin ]; then
+            export PATH=$basedir/bin:$PATH
+        fi
+        if [ -d "$basedir"/lib ]; then
+            export LD_LIBRARY_PATH=$basedir/lib:$LD_LIBRARY_PATH
             if [ "$dyn" = "1" ]; then
-                export DYLD_LIBRARY_PATH=$d/lib:$DYLD_LIBRARY_PATH
+                export DYLD_LIBRARY_PATH=$basedir/lib:$DYLD_LIBRARY_PATH
             fi
         fi
-        if [ -d "$d"/lib64 ]; then
-            export LD_LIBRARY_PATH=$d/lib64:$LD_LIBRARY_PATH
+        if [ -d "$basedir"/lib64 ]; then
+            export LD_LIBRARY_PATH=$basedir/lib64:$LD_LIBRARY_PATH
             if [ "$dyn" = "1" ]; then
-                export DYLD_LIBRARY_PATH=$d/lib64:$DYLD_LIBRARY_PATH
+                export DYLD_LIBRARY_PATH=$basedir/lib64:$DYLD_LIBRARY_PATH
             fi
         fi
-        if [ -d "$d"/share/man ]; then
-            export MANPATH=$d/share/man:$MANPATH
+        if [ -d "$basedir"/share/man ]; then
+            export MANPATH=$basedir/share/man:$MANPATH
         fi
     done
 # }}}
