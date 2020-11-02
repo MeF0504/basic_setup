@@ -112,13 +112,7 @@ esac
 
 add_env() {
     # {{{
-    if [[ "$1" = "-d" ]]; then
-        # add_env -d dir
-        local dyn=1
-        local in_dir="$2"
-    elif [[ "$1" = "" ]] || [[ "$1" =~ ^\- ]]; then
-        # add_env; or add_env -h;
-        echo "
+    local echo_usage="
     usage: [-h] [-d] add_env dir
 
     add dir/*/bin to PATH
@@ -133,18 +127,38 @@ add_env() {
         -h, --help   show this help message and exit
         -d           also add dir/*/lib and dir/*/lib64 to DYLD_LIBRARY_PATH
         "
+    local dyn=0
+    local in_dir=''
+
+    if (( $# == 0 )); then
+        echo "$echo_usage"
         return
-    else
-        # add_env dir
-        local dyn=0
-        local in_dir="$1"
     fi
+    while (( $# > 0 ))
+    do
+        case $1 in
+            -*)
+                if [[ "$1" =~ 'h' ]]; then
+                    echo "$echo_usage"
+                    return
+                fi
+                if [[ "$1" =~ 'd' ]]; then
+                    dyn=1
+                fi
+                shift
+                ;;
+            *)
+                in_dir="$1"
+                shift
+                ;;
+        esac
+    done
 
     find "$in_dir"/* -maxdepth 0 -type d |while read -r basedir
     do
         # echo "$basedir"
         # echo "---"
-        local bname="$(basename $basedir)"
+        local bname="$(basename "$basedir")"
         if [ "${bname:0:1}" = "_" ]; then
             # echo 'pass'
             continue
@@ -191,30 +205,35 @@ ki() {
     local dot_opt=' -name ".?*" -prune -or '
     local dir='.'
 
-    for OPT in "$@"
+    # declare -i argc=0
+    # declare -a argv=()
+    # declare works incorrectly in zsh?
+
+    while (( $# > 0 ))
     do
-        case $OPT in
+        case $1 in
             -*)
                 if [[ "$1" =~ 'a' ]]; then
-                    local dot_opt=""
+                    dot_opt=""
                 fi
                 if [[ "$1" =~ 'h' ]]; then
                     echo "$echo_usage"
-                    unset OPT
                     return
                 fi
+                shift
                 ;;
-            ?*)
+            *)
                 # remove slash; https://ozuma.hatenablog.jp/entry/20130928/1380380390
-                local dir=${OPT%/}
+                dir=${1%/}
                 if [[ "$dir" =~ .*/.* ]]; then
-                    echo "${dir%/*}"
+                    echo "${1%/*}"
                 fi
+                shift
                 ;;
         esac
     done
-    unset OPT
 
+    # echo $dir $dot_opt
     eval find "$dir" "$dot_opt" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 # }}}
 }
