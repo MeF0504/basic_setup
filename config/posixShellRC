@@ -205,9 +205,11 @@ ki() {
     local dot_opt=' -name ".?*" -prune -or '
     local dir='.'
 
-    # declare -i argc=0
-    # declare -a argv=()
-    # declare works incorrectly in zsh?
+    # typeset -i tmpargc=0
+    # typeset -a tmpargv=()
+    # echo argv $argv
+    # echo argc $argc
+    # $argv is the default variable of zsh. don't use it as a local variable.
 
     while (( $# > 0 ))
     do
