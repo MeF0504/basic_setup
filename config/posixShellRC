@@ -113,7 +113,7 @@ esac
 add_env() {
     # {{{
     local echo_usage="
-    usage: [-h] [-d] add_env dir
+    usage: [-h] [-dv] add_env dir
 
     add dir/*/bin to PATH
     add dir/*/lib and dir/*/lib64 to LD_LIBRARY_PATH
@@ -126,8 +126,10 @@ add_env() {
     optional arguments:
         -h, --help   show this help message and exit
         -d           also add dir/*/lib and dir/*/lib64 to DYLD_LIBRARY_PATH
+        -v           show the verbose.
         "
     local dyn=0
+    local verbose=0
     local in_dir=''
 
     if (( $# == 0 )); then
@@ -145,6 +147,9 @@ add_env() {
                 if [[ "$1" =~ 'd' ]]; then
                     dyn=1
                 fi
+                if [[ "$1" =~ 'v' ]]; then
+                    verbose=1
+                fi
                 shift
                 ;;
             *)
@@ -154,31 +159,37 @@ add_env() {
         esac
     done
 
-    find "$in_dir"/* -maxdepth 0 -type d |while read -r basedir
+    find "$in_dir" -mindepth 1 -maxdepth 1 \( -type d -o -type ld \) \
+        | while read -r basedir
     do
-        # echo "$basedir"
-        # echo "---"
+        if [[ $verbose = 1 ]]; then echo "@$basedir"; fi
         local bname="$(basename "$basedir")"
         if [ "${bname:0:1}" = "_" ]; then
-            # echo 'pass'
+            if [[ $verbose = 1 ]]; then echo 'skip'; fi
             continue
         fi
         if [ -d "$basedir"/bin ]; then
             export PATH=$basedir/bin:$PATH
+            if [[ $verbose = 1 ]]; then echo "add $basedir/bin to PATH"; fi
         fi
         if [ -d "$basedir"/lib ]; then
             export LD_LIBRARY_PATH=$basedir/lib:$LD_LIBRARY_PATH
+            if [[ $verbose = 1 ]]; then echo "add $basedir/lib to LD_LIBRARY_APTH"; fi
             if [ "$dyn" = "1" ]; then
                 export DYLD_LIBRARY_PATH=$basedir/lib:$DYLD_LIBRARY_PATH
+                if [[ $verbose = 1 ]]; then echo "add $basedir/lib to DYLD_LIBRARY_PATH"; fi
             fi
         fi
         if [ -d "$basedir"/lib64 ]; then
             export LD_LIBRARY_PATH=$basedir/lib64:$LD_LIBRARY_PATH
+            if [[ $verbose = 1 ]]; then echo "add $basedir/lib64 to LD_LIBRARY_APTH"; fi
             if [ "$dyn" = "1" ]; then
                 export DYLD_LIBRARY_PATH=$basedir/lib64:$DYLD_LIBRARY_PATH
+                if [[ $verbose = 1 ]]; then echo "add $basedir/lib64 to DYLD_LIBRARY_PATH"; fi
             fi
         fi
         if [ -d "$basedir"/share/man ]; then
+            if [[ $verbose = 1 ]]; then echo "add $basedir/share/man to MANPATH"; fi
             export MANPATH=$basedir/share/man:$MANPATH
         fi
     done
