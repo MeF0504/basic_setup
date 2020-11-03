@@ -116,7 +116,7 @@ add_env() {
     usage: [-h] [-dv] add_env dir
 
     add dir/*/bin to PATH
-    add dir/*/lib and dir/*/lib64 to LD_LIBRARY_PATH
+    add dir/*/lib and dir/*/lib64 to LIBRARY_PATH & LD_LIBRARY_PATH
     add dir/*/share/man to MANPATH
     ignore directories starts with '_'
 
@@ -173,16 +173,19 @@ add_env() {
             if [[ $verbose = 1 ]]; then echo "add $basedir/bin to PATH"; fi
         fi
         if [ -d "$basedir"/lib ]; then
+            # LIBRARY_PATH is for build? LD_LIBRARY_PATH is for execute?
+            export LIBRARY_PATH=$basedir/lib:$LIBRARY_PATH
             export LD_LIBRARY_PATH=$basedir/lib:$LD_LIBRARY_PATH
-            if [[ $verbose = 1 ]]; then echo "add $basedir/lib to LD_LIBRARY_APTH"; fi
+            if [[ $verbose = 1 ]]; then echo "add $basedir/lib to LIBRARY_PATH & LD_LIBRARY_APTH"; fi
             if [ "$dyn" = "1" ]; then
                 export DYLD_LIBRARY_PATH=$basedir/lib:$DYLD_LIBRARY_PATH
                 if [[ $verbose = 1 ]]; then echo "add $basedir/lib to DYLD_LIBRARY_PATH"; fi
             fi
         fi
         if [ -d "$basedir"/lib64 ]; then
+            export LIBRARY_PATH=$basedir/lib64:$LIBRARY_PATH
             export LD_LIBRARY_PATH=$basedir/lib64:$LD_LIBRARY_PATH
-            if [[ $verbose = 1 ]]; then echo "add $basedir/lib64 to LD_LIBRARY_APTH"; fi
+            if [[ $verbose = 1 ]]; then echo "add $basedir/lib64 to LIBRARY_PATH & LD_LIBRARY_APTH"; fi
             if [ "$dyn" = "1" ]; then
                 export DYLD_LIBRARY_PATH=$basedir/lib64:$DYLD_LIBRARY_PATH
                 if [[ $verbose = 1 ]]; then echo "add $basedir/lib64 to DYLD_LIBRARY_PATH"; fi
