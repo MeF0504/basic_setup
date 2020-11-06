@@ -134,11 +134,15 @@ set showmode
 
 " neovim specified config
 if has('nvim')
-    " pop-up menuを半透明にする [0-100(%)]
-    " やっぱり見づらいので0にする...
-    set pumblend=0
-    " 置換をinteractiveに行う
-    set inccommand=split
+    if has('nvim-0.4.0')
+        " pop-up menuを半透明にする [0-100(%)]
+        " やっぱり見づらいので0にする...
+        set pumblend=0
+    endif
+    if has('nvim-0.2.0')
+        " 置換をinteractiveに行う
+        set inccommand=split
+    endif
 else
     if has('terminal')
         "terminal-job modeでのwindow移動short cutを変更
