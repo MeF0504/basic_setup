@@ -127,10 +127,18 @@ add_env() {
         -h, --help   show this help message and exit
         -d           also add dir/*/lib and dir/*/lib64 to DYLD_LIBRARY_PATH
         -v           show the verbose.
-        "
+    "
+
     local dyn=0
     local verbose=0
     local in_dir=''
+
+    ## argument analysis https://qiita.com/b4b4r07/items/dcd6be0bb9c9185475bb
+    # typeset -i tmpargc=0
+    # typeset -a tmpargv=()
+    # echo argv $argv
+    # echo argc $argc
+    # $argv is the default variable of zsh. don't use it as a local variable.
 
     if (( $# == 0 )); then
         echo "$echo_usage"
@@ -202,58 +210,58 @@ add_env() {
 
 ## pseudo-tree http://osxdaily.com/2016/09/09/view-folder-tree-terminal-mac-os-tree-equivalent/
 ## argument analysis https://qiita.com/b4b4r07/items/dcd6be0bb9c9185475bb
-ki() {
-    # {{{
-    echo_usage="
-    usage: ki [-ah] [dir]
-
-    pseudo-tree (ki).
-    list contents of directories in a tree-like format.
-
-    positional arguments:
-        dir     : root directory
-    optional arguments:
-        -a      : do not ignore entries starting with .
-        -h      : print this help message and exit.
-    "
-
-    local dot_opt=' -name ".?*" -prune -or '
-    local dir='.'
-
-    # typeset -i tmpargc=0
-    # typeset -a tmpargv=()
-    # echo argv $argv
-    # echo argc $argc
-    # $argv is the default variable of zsh. don't use it as a local variable.
-
-    while (( $# > 0 ))
-    do
-        case $1 in
-            -*)
-                if [[ "$1" =~ 'a' ]]; then
-                    dot_opt=""
-                fi
-                if [[ "$1" =~ 'h' ]]; then
-                    echo "$echo_usage"
-                    return
-                fi
-                shift
-                ;;
-            *)
-                # remove slash; https://ozuma.hatenablog.jp/entry/20130928/1380380390
-                dir=${1%/}
-                if [[ "$dir" =~ .*/.* ]]; then
-                    echo "${1%/*}"
-                fi
-                shift
-                ;;
-        esac
-    done
-
-    # echo $dir $dot_opt
-    eval find "$dir" "$dot_opt" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
-# }}}
-}
+# ki() {
+#     # {{{
+#     echo_usage="
+#     usage: ki [-ah] [dir]
+# 
+#     pseudo-tree (ki).
+#     list contents of directories in a tree-like format.
+# 
+#     positional arguments:
+#         dir     : root directory
+#     optional arguments:
+#         -a      : do not ignore entries starting with .
+#         -h      : print this help message and exit.
+#     "
+# 
+#     local dot_opt=' -name ".?*" -prune -or '
+#     local dir='.'
+# 
+#     # typeset -i tmpargc=0
+#     # typeset -a tmpargv=()
+#     # echo argv $argv
+#     # echo argc $argc
+#     # $argv is the default variable of zsh. don't use it as a local variable.
+# 
+#     while (( $# > 0 ))
+#     do
+#         case $1 in
+#             -*)
+#                 if [[ "$1" =~ 'a' ]]; then
+#                     dot_opt=""
+#                 fi
+#                 if [[ "$1" =~ 'h' ]]; then
+#                     echo "$echo_usage"
+#                     return
+#                 fi
+#                 shift
+#                 ;;
+#             *)
+#                 # remove slash; https://ozuma.hatenablog.jp/entry/20130928/1380380390
+#                 dir=${1%/}
+#                 if [[ "$dir" =~ .*/.* ]]; then
+#                     echo "${1%/*}"
+#                 fi
+#                 shift
+#                 ;;
+#         esac
+#     done
+# 
+#     # echo $dir $dot_opt
+#     eval find "$dir" "$dot_opt" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
+# # }}}
+# }
 
 weather() {
     # {{{

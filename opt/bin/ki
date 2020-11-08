@@ -1,0 +1,44 @@
+#! /usr/bin/env python3
+### pseudo-tree command
+
+import os
+import argparse
+
+def main(args):
+    # get list of directories and files
+    file_list = {}
+    for cpath,dirs,files in os.walk(args.dir):
+        cdir = os.path.basename(cpath)
+        cpath_ignore = False
+        for d in cpath.split(os.sep):
+            if len(d)>1 and d[0]=='.':
+                cpath_ignore = True
+                break
+        if cpath_ignore and not args.all:
+            continue
+        file_list[cpath] = []
+        for f in files:
+            if f[0]!='.' or args.all:
+                file_list[cpath].append(f)
+
+    # show the files and directories
+    for root in sorted(file_list.keys()):
+        dnum = 0
+        if root == args.dir:
+            print(root)
+        else:
+            for j in root:
+                if os.sep==j:
+                    dnum += 1
+            print('{}|____{}'.format('| '*(dnum-1), os.path.basename(root)))
+        for f in sorted(file_list[root]):
+            print('{}|____{}'.format('| '*dnum, os.path.basename(f)))
+    return
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('dir', help='root directory', nargs='?', default='.')
+    parser.add_argument('-a', dest='all', help='do not ignore entries starting with .', action='store_true')
+    args = parser.parse_args()
+    main(args)
+
