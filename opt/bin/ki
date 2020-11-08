@@ -7,7 +7,7 @@ import argparse
 def main(args):
     # get list of directories and files
     file_list = {}
-    for cpath,dirs,files in os.walk(args.dir):
+    for cpath,dirs,files in os.walk(args.root):
         cdir = os.path.basename(cpath)
         cpath_ignore = False
         for d in cpath.split(os.sep):
@@ -22,22 +22,28 @@ def main(args):
                 file_list[cpath].append(f)
 
     # show the files and directories
-    for root in sorted(file_list.keys()):
+    dnum_root = 0
+    for c in args.root:
+        if os.sep==c:
+            dnum_root += 1
+    if args.root[-1] == os.sep:
+        dnum_root -= 1
+    for cdir in sorted(file_list.keys()):
         dnum = 0
-        if root == args.dir:
-            print(root)
+        if cdir == args.root:
+            print(cdir)
         else:
-            for j in root:
-                if os.sep==j:
+            for c in cdir:
+                if os.sep==c:
                     dnum += 1
-            print('{}|____{}'.format('| '*(dnum-1), os.path.basename(root)))
-        for f in sorted(file_list[root]):
-            print('{}|____{}'.format('| '*dnum, os.path.basename(f)))
+            print('{}|__ {}/'.format('|   '*(dnum-dnum_root-1), os.path.basename(cdir)))
+        for f in sorted(file_list[cdir]):
+            print('{}|__ {}'.format('|   '*(dnum-dnum_root), os.path.basename(f)))
     return
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('dir', help='root directory', nargs='?', default='.')
+    parser.add_argument('root', help='root directory', nargs='?', default='.')
     parser.add_argument('-a', dest='all', help='do not ignore entries starting with .', action='store_true')
     args = parser.parse_args()
     main(args)
