@@ -29,73 +29,73 @@ scriptencoding utf-8
 "" }}}
 
 ""##########基本設定 "{{{
-"左端に数字を表示
+" 左端に数字を表示
 set number
-"常にステータスラインを表示
+" 常にステータスラインを表示
 set laststatus=2
-"コマンドラインの画面上の行数
+" コマンドラインの画面上の行数
 set cmdheight=2
-"カーソルの位置を表示
+" カーソルの位置を表示
 set ruler
-"文の折り返し
+" 文の折り返し
 set wrap
-"タイトルを非表示
+" タイトルを非表示
 set notitle
-"viとの互換性をとらない
+" viとの互換性をとらない
 set nocompatible
-"タブをスペースに変換
+" タブをスペースに変換
 set expandtab
-"タブの幅
+" タブの幅
 set tabstop=4
-"オートインデントの幅
+" オートインデントの幅
 set shiftwidth=0    " 0 ... tabstopの値を使う
-"連続した空白でtabやback spaceが動く幅
+" 連続した空白でtabやback spaceが動く幅
 set softtabstop=-1  " 0 ... off, -1 ... shiftwidthの値を使う
-"自動でインデントを挿入
+" 自動でインデントを挿入
 set autoindent
-"末尾の文字に応じて自動でindentを増減
+" 末尾の文字に応じて自動でindentを増減
 set smartindent
-"文字の色づけ ... onだと現状の設定を破棄する。詳しくは:h :syntax-on
+" 文字の色づけ ... onだと現状の設定を破棄する。詳しくは:h :syntax-on
 syntax enable
-"検索したときにハイライト
+" 検索したときにハイライト
 set hlsearch
-"右下に入力コマンドを表示
+" 右下に入力コマンドを表示
 set showcmd
-"バックスペースのノーマルモード、(改行、)オートインデントへの有効化
+" バックスペースのノーマルモード、(改行、)オートインデントへの有効化
 set backspace=start,indent
-"set backspace=start,eol,indent
-"挿入モードでのマウスの有効化
+" set backspace=start,eol,indent
+" 挿入モードでのマウスの有効化
 set mouse=i
 if !exists('$SSH_CONNECTION')   " localのときのみ
-    "全モードでのマウスの有効化
+    " 全モードでのマウスの有効化
     set mouse=a
 endif
-"大文字、小文字を区別しない
+" 大文字、小文字を区別しない
 set ignorecase
-"検索文字に大文字があると区別する
+" 検索文字に大文字があると区別する
 set smartcase
-"タブとかを可視化?
+" タブとかを可視化?
 set list
 set listchars=tab:».,trail:\ ,extends:»,precedes:«,nbsp:% ",eol:↲
 if !exists('$SSH_CONNECTION')   " localのときのみ
-    "clipboardとyankを共有 (+clipboardが条件)
+    " clipboardとyankを共有 (+clipboardが条件)
     set clipboard+=unnamed
 endif
-"検索のときに移動しない
+" 検索のときに移動しない
 set noincsearch
-"カーソルが上下2行に行ったらスクロール
+" カーソルが上下2行に行ったらスクロール
 set scrolloff=2
-"候補の出方を良い感じに
-"http://boscono.hatenablog.com/entry/2013/11/17/230740
+" 候補の出方を良い感じに
+" http://boscono.hatenablog.com/entry/2013/11/17/230740
 set wildmenu
 set wildmode=longest,full
 set foldenable
 set foldmethod=marker
-"縦分割時に右に出る
+" 縦分割時に右に出る
 set splitright
-"Leaderを<space>に設定
+" Leaderを<space>に設定
 let mapleader = "\<space>"
-"doc directoryを追加
+" doc directoryを追加
 if exists('g:vimdir') && isdirectory(g:vimdir . 'doc')
     execute "helptags " . g:vimdir . "doc"
 endif
@@ -103,9 +103,9 @@ endif
 set isfname-==
 " pythonxで使うversionを指定
 " set pyxversion=3    " if needed
-"カーソルの下に下線を表示
+" カーソルの下に下線を表示
 set cursorline
-"swp fileあり、backup, undoなし
+" swp fileあり、backup, undoなし
 set swapfile
 " 作れればswp用のdirectoryをvimdir配下に作る
 if exists('g:vimdir')
@@ -116,21 +116,24 @@ if exists('g:vimdir')
 endif
 set nobackup
 set noundofile
-"tag設定
+" tag設定
 set tags=tags;,./tags;
 " 左端にfoldの表示を追加
 set foldcolumn=2
-"grepコマンドで内部grep(vimgrep)を使う
-"set grepprg=internal
-"外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
+" grepコマンドで内部grep(vimgrep)を使う
+" set grepprg=internal
+" 外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
 set grepprg=grep\ -nriI
 " 最終行にmodeを表示する
 set showmode
 " 右下に検索のカウント数を表示 if needed
 " set shortmess-=S
+" 分割したwindow間で移動を同期
+" (それぞれのwindowでsetする必要あり)
+" set scrollbind
 
-"terminal mode設定
-"Nothing
+" terminal mode設定
+" Nothing
 
 " neovim specified config
 if has('nvim')
@@ -152,9 +155,11 @@ endif
 
 " 基本的なstatusline 設定
 set statusline=%f%m%r%h%w%<%=%y\ %l/%L\ [%P]
-" 分割したwindow間で移動を同期
-" (それぞれのwindowでsetする必要あり)
-" set scrollbind
+
+" In case vim don't read vimrc_color.vim
+if !exists('g:vimdir')
+    colorscheme desert
+endif
 
 "}}}
 
