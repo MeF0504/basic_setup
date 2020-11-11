@@ -92,7 +92,7 @@ let g:l_st_mode = {'n':'NORMAL',
 " 今の行/全体の行-今の列 [%表示]
 """ the variable to administer statusline
 let g:l_statusline = [
-            \"%f%m%{&readonly?'[RO]':''}%h%w  ",
+            \" %f%m%{&readonly?'[RO]':''}%h%w ",
             \"%<%=",
             \"%#StatusLineFT# %{&filetype} ",
             \"%#StatusLineFF# %{g:l_st_fileformat[&fileformat]}:%{&fileencoding} ",
@@ -310,13 +310,12 @@ function! s:my_tabline()
     endfor
     let header = '_'.is_edit.'/'.all_files.'('.all_wins.')_ ' . header
     " color setting
-    let header = '%#TabLineFill#'.header
+    let header = '%#TabLineFill#'.header.'%#TabLineFill#'
     " color setting
-    let footer = '%#TabLineFill#'.footer
+    let footer = '%#TabLineFill#'.footer.'%#TabLineFill#'
     " 右寄せしてディレクトリ表示
-    let footer .= '%=%#TabLineDir#'.cdir.'%#TabLine#'
-    let s = header.s.footer
-    let s .= '%#TabLineFill#%T%=%#TabLine#'
+    let rtabline = '%=%#TabLineDir#'.cdir.'%#TabLineFill#'
+    let s = header.s.footer.rtabline
     return s
 endfunction
 
