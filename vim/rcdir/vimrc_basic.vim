@@ -1,6 +1,7 @@
 "" basic setup Run Command file.
 "" 基本的にはset, map系のみ書かれており、autcmd, 関数などはなし。
 "" のちのちversion依存、コンパイル依存もちゃんと書いていきたい。
+""  -> 書き始めた。とりあえず問題が起きたやつは全部書いていこうと思う。
 "" 日本語なしは諦めた
 
 " 単体で動かすことも考えて
@@ -127,10 +128,16 @@ set grepprg=grep\ -nriI
 " 最終行にmodeを表示する
 set showmode
 " 右下に検索のカウント数を表示 if needed
-" set shortmess-=S
+" if (v:version > 801) || ((v:version==801) && has('patch1270')) || has('neovim')
+"     set shortmess-=S
+" endif
 " 分割したwindow間で移動を同期
 " (それぞれのwindowでsetする必要あり)
 " set scrollbind
+" エコーエリアに補完時のメッセージ (match n of Nとか)を表示しない
+if (v:version > 704) || ((v:version==704) && has('patch314'))
+    set shortmess+=c
+endif
 
 " terminal mode設定
 " Nothing
