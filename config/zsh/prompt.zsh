@@ -152,9 +152,9 @@ set_prompt() {
             PROMPT=$PROMPT"%{${fg[green]}%}%D{%H:%M}%{${reset_color}%}"
             # user name (bold)
             PROMPT=$PROMPT" %{${fg[red]}%}%B%n%b%{${reset_color}%}"
-            # change red if the previous command was failed.
+            # change the color to magenta if the previous command was failed.
             # https://blog.8-p.info/2009/01/red-prompt
-            PROMPT=$PROMPT"%(?. >> . %{${fg[red]}%}!!%{${reset_color}%} "
+            PROMPT=$PROMPT"%(?. >> . %{${fg[magenta]}%}>>%{${reset_color}%} "
         fi
         # ip_color
         PROMPT='$(ip_color $ip)'$PROMPT
