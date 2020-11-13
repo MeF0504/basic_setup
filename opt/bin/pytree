@@ -16,35 +16,36 @@ def main(args):
                 break
         if cpath_ignore and not args.all:
             continue
+
         file_list[cpath] = []
         for f in files:
             if f[0]!='.' or args.all:
                 file_list[cpath].append(f)
 
     # show the files and directories
-    dnum_root = 0
-    for c in args.root:
-        if os.sep==c:
-            dnum_root += 1
+    dnum_root = args.root.count(os.sep)
     if args.root[-1] == os.sep:
         dnum_root -= 1
     for cdir in sorted(file_list.keys()):
-        dnum = 0
+        # show directory
         if cdir == args.root:
+            dnum = 0
             print(cdir)
         else:
-            for c in cdir:
-                if os.sep==c:
-                    dnum += 1
-            print('{}|__ {}/'.format('|   '*(dnum-dnum_root-1), os.path.basename(cdir)))
-        for f in sorted(file_list[cdir]):
-            print('{}|__ {}'.format('|   '*(dnum-dnum_root), os.path.basename(f)))
+            dnum = cdir.count(os.sep)
+            if (dnum < (args.maxdepth+1)) or (args.maxdepth==0):
+                print('{}|__ {}/'.format('|   '*(dnum-dnum_root-1), os.path.basename(cdir)))
+        # show files
+        if (dnum < args.maxdepth) or (args.maxdepth==0):
+            for f in sorted(file_list[cdir]):
+                print('{}|__ {}'.format('|   '*(dnum-dnum_root), os.path.basename(f)))
     return
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('root', help='root directory', nargs='?', default='.')
     parser.add_argument('-a', dest='all', help='do not ignore entries starting with .', action='store_true')
+    parser.add_argument('-maxdepth', help='specify the level of directory. If set 0, show all directories.', nargs='?', type=int, default=0)
     args = parser.parse_args()
     main(args)
 
