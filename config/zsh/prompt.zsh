@@ -141,25 +141,26 @@ set_prompt() {
                 local ip="$(curl ifconfig.io 2> /dev/null)"
             fi
             # path
-            PROMPT="%{${bg[cyan]}%}%d%{${reset_color}%}"$'\n'
+            PROMPT="%F{255}%K{06}%d%f%k"$'\n'
             # ip_color for IPv6
             PROMPT=$PROMPT'$(ip_color2 $ip)'
             if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
                 # host name in ssh server
-                PROMPT="%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%{${reset_color}%} "$PROMPT
+                PROMPT="%F{14}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%f%k "$PROMPT
             fi
             # time
-            PROMPT=$PROMPT"%{${fg[green]}%}%D{%H:%M}%{${reset_color}%}"
+            PROMPT=$PROMPT"%F{42}%D{%H:%M}%f%k"
             # user name (bold)
-            PROMPT=$PROMPT" %{${fg[red]}%}%B%n%b%{${reset_color}%}"
+            PROMPT=$PROMPT" %F{160}%B%n%b%f%k"
             # change the color to magenta if the previous command was failed.
             # https://blog.8-p.info/2009/01/red-prompt
-            PROMPT=$PROMPT"%(?. >> . %{${fg[magenta]}%}>>%{${reset_color}%} "
+            PROMPT=$PROMPT"%(?. >> . %F{125}>>%f%k "
         fi
         # ip_color
         PROMPT='$(ip_color $ip)'$PROMPT
 
         PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
+
         SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
         ;;
     esac
