@@ -3,8 +3,51 @@
 
 import os
 import argparse
+try:
+    from pathlib import Path
+    use_pathlib = True
+except ImportError:
+    use_pathlib = False
 
-def main(args):
+def get_file_list_pathlib(args):
+    # get list of directories and files by using pathlib
+    file_list = {}
+    top_path = Path(args.root)
+    file_list[str(top_path)] = []
+    if args.maxdepth == 0:
+        glob_path = ['**/*']
+    else:
+        glob_path = []
+        for i in range(args.maxdepth):
+            glob_path.append('*/'*i)
+            glob_path[i] += '*'
+    if str(top_path) == '.':
+        add_top = './'
+    else:
+        add_top = ''
+
+    for gp in glob_path:
+        for cpath in top_path.glob(gp):
+            if not args.all:
+                if cpath.name.startswith('.'): continue
+                cpath_ignore = False
+                for d in cpath.parents:
+                    if len(str(d))>1 and str(d).startswith('.'):
+                        cpath_ignore = True
+                        break
+                if cpath_ignore: continue
+
+            if cpath.is_dir():
+                file_list[add_top+str(cpath)] = []
+            else:
+                if cpath.parent == top_path:
+                    cpath_key = str(top_path)
+                else:
+                    cpath_key = add_top+str(cpath.parent)
+                file_list[cpath_key].append(str(cpath.name))
+    return file_list
+
+def get_file_list_walk(args):
     # get list of directories and files
     file_list = {}
     for cpath,dirs,files in os.walk(args.root):
@@ -21,11 +64,17 @@ def main(args):
         for f in files:
             if f[0]!='.' or args.all:
                 file_list[cpath].append(f)
+    return file_list
 
+def main(args):
+    if args.root.endswith(os.sep):
+        args.root = args.root[:-1]
+    if use_pathlib:
+        file_list = get_file_list_pathlib(args)
+    else:
+        file_list = get_file_list_walk(args)
     # show the files and directories
     dnum_root = args.root.count(os.sep)
-    if args.root[-1] == os.sep:
-        dnum_root -= 1
     for cdir in sorted(file_list.keys()):
         # show directory
         if cdir == args.root:
