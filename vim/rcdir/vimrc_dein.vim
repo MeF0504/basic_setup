@@ -21,11 +21,13 @@ endif
 let s:toml_file = s:dein_dir . '/toml/dein.toml'
 let s:lazy_file = s:dein_dir . '/toml/dein_lazy.toml'
 
-" Required:
-"set runtimepath+=$XDG_CONFIG_HOME/nvim/dein/repos/github.com/Shougo/dein.vim
-execute "set runtimepath+=" . s:dein_dir . "/dein/repos/github.com/Shougo/dein.vim"
+" update the settings reffering to https://knowledge.sakura.ad.jp/23248/
+" Required: dein install check
+if &runtimepath !~# '/dein.vim'
+    execute "set runtimepath+=" . s:dein_dir . "/dein/repos/github.com/Shougo/dein.vim"
+endif
 
-" Required:
+" Required: begin settings
 if dein#load_state(s:dein_dir . '/dein/')
   call dein#begin(s:dein_dir . '/dein/')
 
@@ -53,5 +55,16 @@ syntax enable
 " If you want to install not installed plugins on startup.
 if dein#check_install()
   call dein#install()
+endif
+
+" Plugin remove check
+let s:removed_plugins = dein#check_clean()
+if len(s:removed_plugins) > 0
+    " call map(s:removed_plugins, "delete(v:val, 'rf')")
+    for s:rmp in s:removed_plugins
+        call delete(s:rmp, 'rf')
+        echo 'removed '.s:rmp
+    endfor
+    call dein#recache_runtimepath()
 endif
 
