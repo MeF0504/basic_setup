@@ -52,6 +52,8 @@ endfunction
 command! -nargs=? AddEnv call Add_env(<q-args>)
 " }}}
 
+set suffixesadd+=.tex
+
 autocmd texvim InsertLeave *.tex %s/、/，/ge
 autocmd texvim InsertLeave *.tex %s/。/．/ge
 
