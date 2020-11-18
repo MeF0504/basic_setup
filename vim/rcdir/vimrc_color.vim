@@ -4,7 +4,10 @@ scriptencoding utf-8
 
 function! <SID>get_colorid(r, g, b)
     if has('gui_running')
-        return '#' . printf('%02x', a:r*50) . printf('%02x', a:g*50) . printf('%02x', a:b*50)
+        let gui_r = a:r==0 ? 0 : 55+40*a:r
+        let gui_g = a:g==0 ? 0 : 55+40*a:g
+        let gui_b = a:b==0 ? 0 : 55+40*a:b
+        return '#' . printf('%02x', gui_r) . printf('%02x', gui_g) . printf('%02x', gui_b)
     else
         return (36*a:r)+(6*a:g)+a:b + 16
     endif
