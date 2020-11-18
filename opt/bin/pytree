@@ -12,7 +12,8 @@ except ImportError:
 def get_file_list_pathlib(args):
     # get list of directories and files by using pathlib
     file_list = {}
-    top_path = Path(args.root)
+    top_path = Path(args.root).resolve()
+    root = str(top_path)
     file_list[str(top_path)] = []
     if args.maxdepth == 0:
         glob_path = ['**/*']
@@ -21,10 +22,6 @@ def get_file_list_pathlib(args):
         for i in range(args.maxdepth):
             glob_path.append('*/'*i)
             glob_path[i] += '*'
-    if str(top_path) == '.':
-        add_top = './'
-    else:
-        add_top = ''
 
     for gp in glob_path:
         for cpath in top_path.glob(gp):
@@ -32,29 +29,30 @@ def get_file_list_pathlib(args):
                 if cpath.name.startswith('.'): continue
                 cpath_ignore = False
                 for d in cpath.parents:
-                    if len(str(d))>1 and str(d).startswith('.'):
+                    if d == top_path:
+                        break
+                    if str(d.name).startswith('.'):
                         cpath_ignore = True
                         break
                 if cpath_ignore: continue
 
             if cpath.is_dir():
-                file_list[add_top+str(cpath)] = []
+                file_list[str(cpath)] = []
             else:
-                if cpath.parent == top_path:
-                    cpath_key = str(top_path)
-                else:
-                    cpath_key = add_top+str(cpath.parent)
-                file_list[cpath_key].append(str(cpath.name))
-    return file_list
+                file_list[str(cpath.parent)].append(str(cpath.name))
+    return root, file_list
 
 def get_file_list_walk(args):
     # get list of directories and files
     file_list = {}
-    for cpath,dirs,files in os.walk(args.root):
+    root = os.path.abspath(args.root)
+    dnum_root = root.count(os.sep)
+    for cpath,dirs,files in os.walk(root):
         cdir = os.path.basename(cpath)
         cpath_ignore = False
-        for d in cpath.split(os.sep):
-            if len(d)>1 and d[0]=='.':
+        cpath_parents = cpath.split(os.sep)
+        for d in cpath_parents[len(cpath_parents)-dnum_root:]:
+            if d.startswith('.'):
                 cpath_ignore = True
                 break
         if cpath_ignore and not args.all:
@@ -64,30 +62,30 @@ def get_file_list_walk(args):
         for f in files:
             if f[0]!='.' or args.all:
                 file_list[cpath].append(f)
-    return file_list
+    return root, file_list
 
 def main(args):
-    if args.root.endswith(os.sep):
-        args.root = args.root[:-1]
+    global use_pathlib
+    # if args.walk: use_pathlib=False
     if use_pathlib:
-        file_list = get_file_list_pathlib(args)
+        root, file_list = get_file_list_pathlib(args)
     else:
-        file_list = get_file_list_walk(args)
+        root, file_list = get_file_list_walk(args)
     # show the files and directories
-    dnum_root = args.root.count(os.sep)
+    dnum_root = root.count(os.sep)
     for cdir in sorted(file_list.keys()):
         # show directory
-        if cdir == args.root:
+        if cdir == root:
             dnum = 0
-            print(cdir)
+            print(args.root)
         else:
-            dnum = cdir.count(os.sep)
+            dnum = cdir.count(os.sep) - dnum_root
             if (dnum < (args.maxdepth+1)) or (args.maxdepth==0):
-                print('{}|__ {}/'.format('|   '*(dnum-dnum_root-1), os.path.basename(cdir)))
+                print('{}|__ {}/'.format('|   '*(dnum-1), os.path.basename(cdir)))
         # show files
         if (dnum < args.maxdepth) or (args.maxdepth==0):
             for f in sorted(file_list[cdir]):
-                print('{}|__ {}'.format('|   '*(dnum-dnum_root), os.path.basename(f)))
+                print('{}|__ {}'.format('|   '*(dnum), os.path.basename(f)))
     return
 
 if __name__ == '__main__':
@@ -95,6 +93,7 @@ if __name__ == '__main__':
     parser.add_argument('root', help='root directory', nargs='?', default='.')
     parser.add_argument('-a', dest='all', help='do not ignore entries starting with .', action='store_true')
     parser.add_argument('-maxdepth', help='specify the level of directory. If set 0, show all directories.', nargs='?', type=int, default=0)
+    # parser.add_argument('--walk', help='use os.walk', action='store_true')
     args = parser.parse_args()
     main(args)
 
