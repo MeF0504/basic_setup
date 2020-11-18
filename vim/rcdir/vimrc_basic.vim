@@ -265,7 +265,7 @@ if has('terminal') || has('nvim')
     " (1回だと矢印を検知してしまうため2回にする)
     " tnoremap <ESC><ESC> <c-\><c-n>
     " (なんかescape 2回だとE21 cannot changeが出るので，ちょっと変えてみる...)
-    tnoremap <ESC><C-d> <c-\><c-n>
+    tnoremap <ESC><C-e> <c-\><c-n>
 endif
 
 " }}}
