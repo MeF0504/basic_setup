@@ -62,8 +62,10 @@ let s:removed_plugins = dein#check_clean()
 if len(s:removed_plugins) > 0
     " call map(s:removed_plugins, "delete(v:val, 'rf')")
     for s:rmp in s:removed_plugins
-        call delete(s:rmp, 'rf')
-        echo 'removed '.s:rmp
+        let yn = input('remove '.s:rmp.'? (y/[n])')
+        if yn=='y'
+            call delete(s:rmp, 'rf')
+        endif
     endfor
     call dein#recache_runtimepath()
 endif
