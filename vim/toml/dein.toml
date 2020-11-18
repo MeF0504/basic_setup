@@ -370,7 +370,7 @@ nmap n <Plug>(anzu-n-with-echo)
 nmap N <Plug>(anzu-N-with-echo)
 
 " clear status
-nmap <ESC><ESC> <Plug>(anzu-clear-search-status)
+" nmap <ESC><ESC> <Plug>(anzu-clear-search-status)
 " }}}
 '''
 

@@ -263,7 +263,9 @@ nnoremap <silent> <expr> q <SID>close_con()==1 ? ':quit<CR>' : 'q'
 if has('terminal') || has('nvim')
     " terminal-job modeからterminal-normal modeへの移行をescape*2で行えるようにする
     " (1回だと矢印を検知してしまうため2回にする)
-    tnoremap <ESC><ESC> <c-\><c-n>
+    " tnoremap <ESC><ESC> <c-\><c-n>
+    " (なんかescape 2回だとE21 cannot changeが出るので，ちょっと変えてみる...)
+    tnoremap <ESC><C-d> <c-\><c-n>
 endif
 
 " }}}
