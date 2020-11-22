@@ -61,6 +61,16 @@ repo = 'MeF0504/sl.vim'
 [[plugins]]
 repo = 'MeF0504/vim-popsyntax'
 
+# 単語に色を付ける
+[[plugins]]
+repo = 'MeF0504/vim-wordcolor'
+hook_add = '''
+" {{{
+let g:word_color_mapping = '//'
+let g:word_color_default = 'keyword'
+" }}}
+'''
+
 # neosnippet用のsnipets
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
