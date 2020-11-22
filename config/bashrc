@@ -11,7 +11,7 @@ fi
 ##{{{ prompt
 # useful: https://qiita.com/hmmrjn/items/60d2a64c9e5bf7c0fe60
 # path
-export PS1='\[\e[46m\]${PWD}\[\e[0m\]\n'
+export PS1='\[\e[30m\]\[\e[46m\]${PWD}\[\e[0m\]\n'
 if [[ ${SSH_CLIENT} != "" ]]; then
     # host name
     export PS1='\[\e[36m\]${HOSTNAME%%.*}\[\e[0m\] '$PS1
