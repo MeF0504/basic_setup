@@ -13,7 +13,7 @@ function! <SID>get_colorid(r, g, b)
     endif
 endfunction
 
-let s:w_r = 2.0
+let s:w_r = 1.0 " <- 2.0
 let s:w_g = 2.0
 let s:w_b = 1.0
 let s:thsd = 2.0
