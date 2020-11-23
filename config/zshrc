@@ -14,7 +14,7 @@ fi
 # <c-w>で消す際に/単位で削除
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
-if [[ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]]; then
+if [[ -z "${SSH_CLIENT}${SSH_CONNECTION}" ]]; then
     MYHOST="local"
 else
     MYHOST=${HOST%%.*}
