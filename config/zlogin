@@ -1,5 +1,5 @@
 
-if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
     # don't save the date time if I logined recenty.
     if [ ! -f $HOME/.cache/date.txt ]; then
         TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z" >> $HISTFILE

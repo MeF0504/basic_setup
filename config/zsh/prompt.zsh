@@ -5,7 +5,7 @@ function ip_color() {
     if [ -n "$CURLTIMEOUT" ]; then
         local to=$CURLTIMEOUT
     else
-        if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+        if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
             # wait long time in ssh server since it works only once.
             local to=3
         else
@@ -77,7 +77,7 @@ function ip_color2() {
     if [ -n "$CURLTIMEOUT" ]; then
         local to=$CURLTIMEOUT
     else
-        if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+        if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
             # wait long time in ssh server since it works only once.
             local to=3
         else
@@ -128,7 +128,7 @@ set_prompt() {
             local long="%{${fg[red]}%}%(4/,%-1/.../%2/,%/) L%{${reset_color}%} "
             PROMPT="%4(/|$long|$short)"
             ## from http://0xcc.net/blog/archives/000032.html
-            if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+            if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
                 PROMPT="%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]') ${PROMPT}"
                 #PROMPT="%F{cyan}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%f ${PROMPT}"
             else
@@ -137,14 +137,14 @@ set_prompt() {
             # }}}
         else
             # get ip address in ssh server
-            if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+            if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
                 local ip="$(curl ifconfig.io 2> /dev/null)"
             fi
             # path
             PROMPT="%F{255}%K{12}%d%f%k"$'\n'
             # ip_color for IPv6
             PROMPT=$PROMPT'$(ip_color2 $ip)'
-            if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+            if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
                 # host name in ssh server
                 PROMPT="%F{14}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%f%k "$PROMPT
             fi

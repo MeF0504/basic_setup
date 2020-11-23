@@ -12,8 +12,8 @@ fi
 # useful: https://qiita.com/hmmrjn/items/60d2a64c9e5bf7c0fe60
 # color & format: https://misc.flogisoft.com/bash/tip_colors_and_formatting
 # path
-if [[ ${SSH_CLIENT} != "" ]]; then
 export PS1='\[\e[97m\]\[\e[104m\]${PWD}\[\e[0m\]\n'
+if [[ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]]; then
     # host name
     export PS1='\[\e[36m\]${HOSTNAME%%.*}\[\e[0m\] '$PS1
 fi

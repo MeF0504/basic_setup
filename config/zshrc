@@ -14,7 +14,7 @@ fi
 # <c-w>で消す際に/単位で削除
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
-if [[ ${SSH_CLIENT} == "" ]]; then
+if [[ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]]; then
     MYHOST="local"
 else
     MYHOST=${HOST%%.*}
@@ -208,7 +208,7 @@ fi
 ### 場所はssh先ならhost name, localならカレントディレクトリ，$HOMEだとhomeになる
 case "${TERM}" in
 xterm|xterm-color|kterm|kterm-color|xterm-256color)
-    if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then
+    if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
         precmd() {
             echo -ne "\033]0;${USER}@${MYHOST}\007"
         }
