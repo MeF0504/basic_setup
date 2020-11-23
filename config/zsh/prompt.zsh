@@ -141,7 +141,7 @@ set_prompt() {
                 local ip="$(curl ifconfig.io 2> /dev/null)"
             fi
             # path
-            PROMPT="%F{255}%K{06}%d%f%k"$'\n'
+            PROMPT="%F{255}%K{12}%d%f%k"$'\n'
             # ip_color for IPv6
             PROMPT=$PROMPT'$(ip_color2 $ip)'
             if [ -n "${REMOTEHOST}${SSH_CONNECTION}" ]; then

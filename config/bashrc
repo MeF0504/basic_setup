@@ -10,14 +10,15 @@ fi
 
 ##{{{ prompt
 # useful: https://qiita.com/hmmrjn/items/60d2a64c9e5bf7c0fe60
+# color & format: https://misc.flogisoft.com/bash/tip_colors_and_formatting
 # path
-export PS1='\[\e[30m\]\[\e[46m\]${PWD}\[\e[0m\]\n'
 if [[ ${SSH_CLIENT} != "" ]]; then
+export PS1='\[\e[97m\]\[\e[104m\]${PWD}\[\e[0m\]\n'
     # host name
     export PS1='\[\e[36m\]${HOSTNAME%%.*}\[\e[0m\] '$PS1
 fi
 # time
-export PS1=$PS1'\[\e[32m\]\D{%H:%M}\[\e[0m\]'
+export PS1=$PS1'\[\e[92m\]\D{%H:%M}\[\e[0m\]'
 # user name (bold)
 export PS1=$PS1' \[\e[1m\e[31m\]\u\[\e[0m\]'
 
@@ -27,7 +28,7 @@ if [[ -f $GITPROMPT ]]; then
     # unstaged (*) and staged (+) are shown
     export GIT_PS1_SHOWDIRTYSTATE=1
     source $GITPROMPT
-    export PS1=$PS1' $(__git_ps1 "(%s)")'
+    export PS1=$PS1'$(__git_ps1 " (%s)")'
 fi
 
 # change red if the previous command was failed.
