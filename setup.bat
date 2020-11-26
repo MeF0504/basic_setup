@@ -64,6 +64,8 @@ if exist %vimcon%\toml (
 )
 copy %curdir%\vim\toml\* %vimcon%\toml\
 
+echo bashrc
+copy %curdir%\config\bashrc %homedrive%%homepath%\.bashrc
 
 pause
 
