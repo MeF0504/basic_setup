@@ -73,3 +73,92 @@ nnoremap <silent> <Leader>u :GundoToggle<CR>
 " }}}
 '''
 
+# vimからJupyter notebookを開く
+[[plugins]]
+repo = 'jupyter-vim/jupyter-vim'
+on_ft = 'python'
+hook_source = '''
+" {{{
+" $ jupyter console --generate-config
+" => c.ZMQTerminalInteractiveShell.include_other_output = True
+" $ jupyter qtconsole --generate-config
+" => c.ConsoleWidget.include_other_output = True
+
+" no mapping
+let g:jupyter_mapkeys = 0
+
+let s:l_jupyter_connect = 0
+let s:jupyter_arg_list_raw = 'File Count Range Cell Code Cd'
+function! s:jupyter_arg_list(arglead, cmdline, cursorpos) abort
+    let jupyter_arg_list = split(s:jupyter_arg_list_raw, ' ')
+    let arglead = tolower(a:arglead)
+    let ret = filter(jupyter_arg_list, '!stridx(tolower(v:val), arglead)')
+    return ret
+endfunction
+
+function! s:jupyter_wrapper(...) abort
+    if a:0 == 0
+        let jmode = 'File'
+    else
+        let jmode = a:1
+    endif
+    let mode_check = 0
+    for mode_list in split(s:jupyter_arg_list_raw, ' ')
+        if jmode == mode_list
+            let mode_check = 1
+        endif
+    endfor
+    if mode_check == 0
+        echo 'incorrect argument'
+        return
+    endif
+
+    if s:l_jupyter_connect == 0
+        !jupyter qtconsole &
+        let yn = input('jupyter is already open?')
+        JupyterConnect
+        sleep 2
+        let s:l_jupyter_connect = 1
+    endif
+
+    if jmode == 'File'
+        JupyterRunFile
+        return
+    elseif jmode == 'Count'
+        if a:0 >= 2
+            let header = a:2
+        else
+            let header = ''
+        endif
+        execute header.'JupyterSendCount'
+    elseif jmode == 'Range'
+        if a:0 == 2
+            let header = a:2
+        elseif a:0 > 2
+            let header = a:2.','.a:3
+        else
+            let header = ''
+        endif
+        execute header.'JupyterSendRange'
+    elseif jmode == 'Cell'
+        JupyterSendCell
+    elseif jmode == 'Code'
+        let send_code = ''
+        for i in range(2,a:0)
+            let send_code .= ' '.a:{i}
+        endfor
+        execute 'JupyterSendCode "'.send_code.'"'
+    elseif jmode == 'Cd'
+        if a:0 == 2
+            let cdir = a:2
+        else
+            let cdir = ''
+        endif
+        execute 'JupyterCd '.cdir
+    endif
+endfunction
+
+command! -nargs=* -complete=customlist,s:jupyter_arg_list Jupyter call s:jupyter_wrapper(<f-args>)
+" }}}
+'''
+
