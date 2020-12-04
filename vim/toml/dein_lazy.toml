@@ -96,6 +96,32 @@ function! s:jupyter_arg_list(arglead, cmdline, cursorpos) abort
     return ret
 endfunction
 
+function! s:jupyter_connect_check() abort
+    if s:l_jupyter_connect != 0
+        " already connected
+        return
+    endif
+
+    redir => jupyter_con_out
+    JupyterConnect
+    sleep 2
+    redir END
+    for l in split(jupyter_con_out, '\n')
+        if stridx(l, 'Connected') != -1
+            " already connected
+            let s:l_jupyter_connect = 1
+            return
+        endif
+    endfor
+
+    !jupyter qtconsole &
+    let yn = input('jupyter is already open?')
+    JupyterConnect
+    sleep 2
+    let s:l_jupyter_connect = 1
+
+endfunction
+
 function! s:jupyter_wrapper(...) abort
     if a:0 == 0
         let jmode = 'File'
@@ -113,13 +139,7 @@ function! s:jupyter_wrapper(...) abort
         return
     endif
 
-    if s:l_jupyter_connect == 0
-        !jupyter qtconsole &
-        let yn = input('jupyter is already open?')
-        JupyterConnect
-        sleep 2
-        let s:l_jupyter_connect = 1
-    endif
+    call s:jupyter_connect_check()
 
     if jmode == 'File'
         JupyterRunFile
