@@ -117,7 +117,7 @@ function! s:jupyter_connect_check() abort
     if has('win32')
         silent !start /min jupyter qtconsole
     else
-        silent !jupyter qtconsole &
+        !jupyter qtconsole &
     endif
 
     let yn = input('jupyter is already open?')
