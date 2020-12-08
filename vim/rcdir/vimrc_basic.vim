@@ -27,6 +27,9 @@ scriptencoding utf-8
 "   =~, =~#, =~?          ：正規表現マッチ
 "   !~, !~#, !~?          ：正規表現非マッチ
 " 正規表現については :h pattern-overview or https://vim-jp.org/vimdoc-ja/pattern.html#pattern-overview
+" about SID
+" :scriptnames          ... List all sourced script names
+" :echo expand('<SID>') ... Get the current file SID
 "" }}}
 
 ""##########基本設定 "{{{
