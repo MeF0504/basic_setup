@@ -13,6 +13,16 @@ fi
 #
 # <c-w>で消す際に/単位で削除
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+# timeコマンドの表示設定
+# https://dev.classmethod.jp/articles/zsh-time-command-formatting-like-bash/
+export TIMEFMT=\
+$'\n========================\n'\
+$'Program : %J\n'\
+$'CPU     : %P\n'\
+$'user    : %*Us\n'\
+$'system  : %*Ss\n'\
+$'total   : %*Es\n'\
+$'========================\n'
 
 if [[ -z "${SSH_CLIENT}${SSH_CONNECTION}" ]]; then
     MYHOST="local"
