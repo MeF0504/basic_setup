@@ -88,7 +88,7 @@ hook_source = '''
 let g:jupyter_mapkeys = 0
 
 let s:l_jupyter_connect = 0
-let s:jupyter_arg_list_raw = 'File Count Range Cell Code Cd'
+let s:jupyter_arg_list_raw = 'Connect File Count Range Cell Code Cd'
 function! s:jupyter_arg_list(arglead, cmdline, cursorpos) abort
     let jupyter_arg_list = split(s:jupyter_arg_list_raw, ' ')
     let arglead = tolower(a:arglead)
@@ -129,7 +129,7 @@ endfunction
 
 function! s:jupyter_wrapper(...) abort
     if a:0 == 0
-        let jmode = 'File'
+        let jmode = 'Connect'
     else
         let jmode = a:1
     endif
@@ -146,7 +146,9 @@ function! s:jupyter_wrapper(...) abort
 
     call s:jupyter_connect_check()
 
-    if jmode == 'File'
+    if jmode == 'Connect'
+        "do nothing
+    elseif jmode == 'File'
         JupyterRunFile
         return
     elseif jmode == 'Count'
