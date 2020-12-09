@@ -24,4 +24,6 @@ Host dummy
     AddKeysToAgent yes
 ## enable to use passphrase in keychain on macOS?
     UseKeychain yes
+## port forward (connect to local)
+    LocalForward 8088 AccessFromServer.com:80
 
