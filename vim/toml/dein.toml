@@ -109,23 +109,32 @@ repo = 'thinca/vim-quickrun'
 hook_add = '''
 """ vim-quick_run {{{
 let g:quickrun_no_default_key_mappings = 1
-function! <SID>my_quickrun()
-    if &modified
-        echo 'file is not saved.'
-    else
-        return ':QuickRun'
-    endif
-endfunction
-" nnoremap <silent> <Leader>q :QuickRun<CR>
-nnoremap <silent> <expr> <Leader>q <SID>my_quickrun().'<CR>'
 
 let g:quickrun_config = get(g:, 'quickrun_config', {})  " 変数がなければ初期化
 
+" {{{ python
 let g:quickrun_config.python = {
             \ 'command' : 'python3'
             \ }
+" }}}
 
-function! s:set_qrun_marp()
+" {{{ markdown
+if has('mac')
+    let s:cmd = 'open'
+    let s:exe = '%c %s -a Google\ Chrome'
+elseif has('win32')
+    let s:cmd = 'start'
+    let s:exe = '%c chrome %s'
+else
+    let s:cmd = 'firefox'   " temporary
+    let s:exe = '%c %s'
+endif
+let g:quickrun_config.markdown = {
+            \ 'command' : s:cmd,
+            \ 'exec' : s:exe
+            \}
+
+function! s:qrun_markdown()
     let l:is_marp = 0
     for l:ln in getline(1, 5)
         if stridx(l:ln, 'marp') != -1
@@ -135,78 +144,94 @@ function! s:set_qrun_marp()
     endfor
     if l:is_marp == 1
         " make prezantation by markdown [https://github.com/marp-team/marp-cli]
-        if has('mac')
-            let l:open_pdf = 'open %s:r.pdf'
-        elseif has('win32')
-            let l:open_pdf = 'start %s:r.pdf'
-        else
-            let l:open_pdf = 'evince %s:r.pdf'
-        endif
-        let g:quickrun_config.markdown = {
-                    \ 'command' : 'npx',
-                    \ 'exec' : ['%c \@marp-team/marp-cli %s --pdf --allow-local-files',l:open_pdf ],
-                    \ }
-
-        " --preview may not be supported anymore.
         if has('terminal') " || has('nvim')
             " http://chrome.half-moon.org/43.html
             if has('mac')
-                let l:open_server = 'open -n -a Google\ Chrome --args -incognito http://localhost:8080/'
+                let l:open_server = 'open -n -a Google\\ Chrome --args -incognito http://localhost:8080/'
             elseif has('win32')
-                let l:open_server = '"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --new-window --incognito http://localhost:8080/'
+                let l:open_server = '"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe" --new-window --incognito http://localhost:8080/'
             else
                 let l:open_server = 'firefox http://localhost:8080/'
             endif
-            let g:quickrun_config.markdown = {
-                        \ 'command' : 'npx',
-                        \ 'exec' : [l:open_server, '%c \@marp-team/marp-cli --server %s:h'],
-                        \ 'runner' : 'terminal',
-                        \ 'runner/opener' : 'botright new',
-                        \ }
-        endif
-    else
-        if has('mac')
-            let l:cmd = 'open'
-            let l:exe = '%c %s -a Google\ Chrome'
-        elseif has('win32')
-            let l:cmd = 'start'
-            let l:exe = '%c chrome %s'
+
+            let ret = ":QuickRun -command 'npx' "
+            let ret .= "-exec '".l:open_server."'"
+            let ret .= "-exec '%c \\\\\\@marp-team/marp-cli --server %s:h' "
+            let ret .= "-runner 'terminal' "
+            let ret .= "-runner/opener 'botright new'"
         else
-            let l:cmd = 'firefox'   " temporary
-            let l:exe = '%c %s'
+            if has('mac')
+                let l:open_pdf = 'open %s:r.pdf'
+            elseif has('win32')
+                let l:open_pdf = 'start %s:r.pdf'
+            else
+                let l:open_pdf = 'evince %s:r.pdf'
+            endif
+
+            let ret = ":QuickRun -command 'npx' "
+            let ret .= "-exec '%c \\\\\\@marp-team/marp-cli %s --pdf --allow-local-files' "
+            let ret .= "-exec '".l:open_pdf."'"
         endif
-        let g:quickrun_config.markdown = {
-                    \ 'command' : l:cmd,
-                    \ 'exec' : l:exe
-                    \}
+        return ret
+    else
+        return ':QuickRun'
     endif
 endfunction
-autocmd deinLocal FileType markdown call s:set_qrun_marp()
+" }}}
 
+" {{{ tex
 if has('mac')
     " macOSでlatex (ptex2pdf)を使う場合
     " https://texwiki.texjp.org/?quickrun
-
-    " main.texがあったらそっちをコンパイル
-    if filereadable(expand('%:h').'/main.tex')
-        let s:main_file = expand('%:h').'/main.tex'
-        let s:pdf_file = fnamemodify(s:main_file, ':r').'.pdf'
-    else
-        let s:main_file = '%s'
-        let s:pdf_file = '%s:t:r.pdf'
-    endif
-
-    " texの中間ファイルはbuild dirに突っ込む
-    let s:build_dir = expand('%:h').'/__build__'
-    let s:build_pdf = s:build_dir.'/'.fnamemodify(s:pdf_file, ':t')
-    if !isdirectory(s:build_dir)
-        call mkdir(s:build_dir, 'p')
-    endif
     let g:quickrun_config.tex = {
                 \ 'command' : 'ptex2pdf',
-                \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" '.s:main_file.' -output-directory '.s:build_dir, 'mv '.s:build_pdf.' '.s:pdf_file, 'open '.s:pdf_file]
+                \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" %s -output-directory %s:h', 'open %s:r.pdf']
                 \ }
+
+    function! s:qrun_tex()
+        " texの中間ファイルはbuild dirに突っ込む
+        let s:build_dir = expand('%:h').'/__build__'
+        if !isdirectory(s:build_dir)
+            call mkdir(s:build_dir, 'p')
+        endif
+
+        " main.texがあったらそっちをコンパイル
+        if filereadable(expand('%:h').'/main.tex')
+            let s:main_file = expand('%:h').'/main.tex'
+            let s:pdf_file = fnamemodify(s:main_file, ':r').'.pdf'
+            let s:build_pdf = s:build_dir.'/'.fnamemodify(s:pdf_file, ':t')
+        else
+            let s:main_file = expand('%')
+            let s:pdf_file = expand('%:r').'.pdf'
+            let s:build_pdf = s:build_dir.'/'.expand('%:t:r').'.pdf'
+        endif
+
+        let ret = ":QuickRun -command 'ptex2pdf' "
+        let ret .= "-exec '%c -l -u -ot \"-synctex=1 -interaction=nonstopmode\" ".s:main_file." -output-directory ".s:build_dir."' "
+        let ret .= "-exec 'mv ".s:build_pdf." ".s:pdf_file."' "
+        let ret .= "-exec 'echo \"\\\\n move from ".s:build_pdf." to ". s:pdf_file."\"' "
+        let ret .= "-exec 'open ".s:pdf_file."'"
+        return ret
+    endfunction
 endif
+" }}}
+
+function! <SID>quickrun_wrapper()
+    if &modified
+        echo 'file is not saved.'
+        return ''
+    endif
+    let qrun_ft_func = expand('<SID>').'qrun_'.&filetype
+    if exists('*'.qrun_ft_func)
+        execute 'let res = '.qrun_ft_func.'()'
+        return res
+    else
+        return ':QuickRun'
+    endif
+endfunction
+
+" nnoremap <silent> <Leader>q <SID>quickrun_wrapper()
+nnoremap <silent> <expr> <Leader>q <SID>quickrun_wrapper().'<CR>'
 " }}}
 '''
 
