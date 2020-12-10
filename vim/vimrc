@@ -67,6 +67,10 @@ autocmd local QuickFixCmdPost *grep* cwindow
 "quick fix windowでc-tで新しいtabで開く
 autocmd local Filetype qf nnoremap <buffer><silent> <c-t> <c-w><s-t><CR>:cclose<CR>
 
+" .mine系ファイルのtype設定
+autocmd local BufEnter *bashrc* set filetype=sh
+autocmd local BufEnter *zshrc* set filetype=zsh
+
 "autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
 "See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
 " }}}

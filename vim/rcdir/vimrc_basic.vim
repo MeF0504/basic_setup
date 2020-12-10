@@ -171,6 +171,11 @@ if !exists('g:vimdir')
     colorscheme desert
 endif
 
+" tex flavor
+let g:tex_flavor = 'latex'
+" default shell script type
+let g:is_bash = 1
+
 "}}}
 
 ""##########mapping設定 "{{{
