@@ -27,9 +27,10 @@ function! <SID>my_color_set_inkpot()
     highlight Number ctermfg=9
     highlight Type ctermfg=149
     highlight String ctermfg=222 ctermbg=None
-    highlight Comment ctermfg=31
+    highlight Comment ctermfg=37
     highlight LineNr ctermfg=243
     highlight Title ctermfg=197
+    highlight PreProc cterm=bold
     highlight SpecialKey cterm=bold ctermfg=255 ctermbg=236
     if has('nvim')
         highlight link Whitespace SpecialKey
@@ -40,10 +41,9 @@ function! <SID>my_color_set_inkpot()
 endfunction
 
 function! <SID>my_color_set()
-    if g:colors_name == "inkpot"
-        call <SID>my_color_set_inkpot()
-    elseif g:colors_name == 'shiki'
-        " Do nothing
+    let local_scheme_func = expand('<SID>').'my_color_set_'.g:colors_name
+    if exists('*'.local_scheme_func)
+        execute "call ".local_scheme_func.'()'
     else
         echo "color scheme: " . g:colors_name
     endif
