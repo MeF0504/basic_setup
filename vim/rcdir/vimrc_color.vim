@@ -40,8 +40,12 @@ function! <SID>my_color_set_inkpot()
     highlight MatchParen ctermfg=14 ctermbg=18 cterm=Bold
 endfunction
 
+function! s:SID()
+    return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
+endfunction
+
 function! <SID>my_color_set()
-    let local_scheme_func = expand('<SID>').'my_color_set_'.g:colors_name
+    let local_scheme_func = '<SNR>'.s:SID().'_my_color_set_'.g:colors_name
     if exists('*'.local_scheme_func)
         execute "call ".local_scheme_func.'()'
     else
