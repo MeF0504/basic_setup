@@ -27,10 +27,10 @@ function! <SID>my_color_set_inkpot()
     highlight Number ctermfg=9
     highlight Type ctermfg=149
     highlight String ctermfg=222 ctermbg=None
-    highlight Comment ctermfg=37
+    highlight Comment ctermfg=66
     highlight LineNr ctermfg=243
     highlight Title ctermfg=197
-    highlight PreProc cterm=bold
+    " highlight PreProc cterm=bold
     highlight SpecialKey cterm=bold ctermfg=255 ctermbg=236
     if has('nvim')
         highlight link Whitespace SpecialKey
