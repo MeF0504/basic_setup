@@ -81,6 +81,6 @@ if __name__ == '__main__':
     if hasattr(args,'num'):
         files = files[:args.num]
 
-    if os.uname()[0] == 'Linux': linux(files,args.force, args.threshold)
+    if os.uname()[0] == 'Linux': linux(files, args.threshold, args.force)
     if os.uname()[0] == 'Darwin': mac(files, args.threshold)
 
