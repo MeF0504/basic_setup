@@ -49,7 +49,7 @@ function! <SID>my_color_set()
     if exists('*'.local_scheme_func)
         execute "call ".local_scheme_func.'()'
     else
-        echo "color scheme: " . g:colors_name
+        " echo "color scheme: " . g:colors_name
     endif
 
     " general settings
