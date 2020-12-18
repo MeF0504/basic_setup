@@ -88,7 +88,7 @@ hook_source = '''
 let g:jupyter_mapkeys = 0
 
 let s:l_jupyter_connect = 0
-let s:jupyter_arg_list_raw = 'Connect File Count Range Cell Code Cd'
+let s:jupyter_arg_list_raw = 'Connect File Count Range Cell Code Cd Restart'
 function! s:jupyter_arg_list(arglead, cmdline, cursorpos) abort
     let jupyter_arg_list = split(s:jupyter_arg_list_raw, ' ')
     let arglead = tolower(a:arglead)
@@ -182,6 +182,8 @@ function! s:jupyter_wrapper(...) abort
             let cdir = ''
         endif
         execute 'JupyterCd '.cdir
+    elseif jmode == 'Restart'
+        JupyterSendCode 'import os; os._exit(00)'
     endif
 endfunction
 
