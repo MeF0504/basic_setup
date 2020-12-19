@@ -32,7 +32,9 @@ def main():
                             end = -1
                         opt = line[st:end]
                         tmp_gline += ' ' + cterm.replace('cterm', 'gui') + cvt_256_fc(opt)
-                gline.append(tmp_gline)
+                if end != -1:
+                    tmp_gline += line[end:]
+                gline.append(tmp_gline.replace('\n', ''))
             else:
                 gline.append(line.replace('\n', ''))
             # print(gline[-1])
