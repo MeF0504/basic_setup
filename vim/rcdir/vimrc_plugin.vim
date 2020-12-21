@@ -693,7 +693,7 @@ endfunction
 
 " https://qiita.com/shiena/items/1dcb20e99f43c9383783
 let s:term_cnt = 1
-function! s:open_term_win()
+function! s:open_term_win(opts)
     " 日本語Windowsの場合`ja`が設定されるので、入力ロケールに合わせたUTF-8に設定しなおす
     " コマンドの存在確認はあとで考える
     let l:env = {
@@ -709,7 +709,8 @@ function! s:open_term_win()
     endif
 
     " term_startでgit for windowsのbashを実行する
-    call term_start(['bash.exe', '-l'], {
+    term_opt = split(a:opts, ' ')
+    call term_start(['bash.exe', '-l']+term_opt, {
                 \ 'term_name': '!Git_'.s:term_cnt,
                 \ 'term_finish': 'close',
                 \ 'curwin': v:true,
@@ -727,69 +728,116 @@ function! s:Terminal(...) abort
 
     if a:0 == 0
         if !exists('g:l_term_default')
-            let opt = 'S'
+            let opts = ['S']
         else
             if match(s:term_opts, g:l_term_default) != -1
-                let opt = g:l_term_default
+                let opts = [g:l_term_default]
             else
-                let opt = 'S'
+                let opts = ['S']
             endif
         endif
     else
-        let opt = a:1
+        let opts = a:000
     endif
+
+    let t_opened = 0
+    let term_opt = ''
     if has('win32')
-        if opt == 'S'
-            botright split
-        elseif opt == 'V'
-            botright vertical split
-        elseif opt == 'F'
-            tabnew
-        else
-            call s:open_term(opt)
-            normal! i
-            return
-        endif
-        call s:open_term_win()
-    else
-        if has('nvim')
+        for opt in opts
             if opt == 'S'
-                botright split
-                terminal
+                if t_opened!=1
+                    botright split
+                    let t_opened = 1
+                endif
             elseif opt == 'V'
-                botright vertical split
-                terminal
+                if t_opened!=1
+                    botright vertical split
+                    let t_opened = 1
+                endif
             elseif opt == 'F'
-                tabnew
-                terminal
-            else
+                if t_opened!=1
+                    tabnew
+                    let t_opened = 1
+                endif
+            elseif (opt[0] == '!') || (opt[:6] == 'term://')
                 call s:open_term(opt)
-                startinsert " neovimはstartinsertでTeminal modeになる
-                return
-            endif
-            startinsert
-        else
-            if opt == 'S'
-                botright terminal
-            elseif opt == 'V'
-                botright vertical terminal
-            elseif opt == 'F'
-                tabnew
-                terminal ++curwin
-            else
-                call s:open_term(opt)
-                " startinsert は無効らしい
                 normal! i
                 return
+            else
+                let term_opt .= ' '.opt
             endif
+        endfor
+        call s:open_term_win(term_opt)
+
+    else
+        if has('nvim')
+            for opt in opts
+                if opt == 'S'
+                    if t_opened!=1
+                        botright split
+                        let t_opened = 1
+                    endif
+                elseif opt == 'V'
+                    if t_opened!=1
+                        botright vertical split
+                        let t_opened = 1
+                    endif
+                elseif opt == 'F'
+                    if t_opened!=1
+                        tabnew
+                        let t_opened = 1
+                    endif
+                elseif (opt[0] == '!') || (opt[:6] == 'term://')
+                    call s:open_term(opt)
+                    startinsert " neovimはstartinsertでTeminal modeになる
+                    return
+                else
+                    let term_opt .= ' '.opt
+                endif
+            endfor
+            execute 'terminal '.term_opt
+            execute "file ".substitute(expand('%'), ' ', '', 'g')
+            startinsert
+
+        else
+            let term_header = ''
+            for opt in opts
+                if opt == 'S'
+                    if t_opened!=1
+                        let term_header = 'botright '
+                        let t_opened = 1
+                    endif
+                elseif opt == 'V'
+                    if t_opened!=1
+                        let term_header = 'botright vertical '
+                        let t_opened = 1
+                    endif
+                elseif opt == 'F'
+                    if t_opened!=1
+                        tabnew
+                        let term_opt = ' ++curwin'.term_opt
+                        let t_opened = 1
+                    endif
+                elseif (opt[0] == '!') || (opt[:6] == 'term://')
+                    call s:open_term(opt)
+                    " startinsert は無効らしい
+                    normal! i
+                    return
+                else
+                    let term_opt .= ' '.opt
+                endif
+            endfor
+            execute term_header.'terminal '.term_opt
+            execute "file ".substitute(expand('%'), ' ', '', 'g')
         endif
     endif
+
     setlocal nolist
     setlocal foldcolumn=0
     setlocal nonumber
 endfunction
 
-command! -nargs=? -complete=customlist,s:complete_term  Terminal call s:Terminal(<f-args>)
+command! -nargs=* -complete=customlist,s:complete_term  Terminal call s:Terminal(<f-args>)
 
 
 " }}}
