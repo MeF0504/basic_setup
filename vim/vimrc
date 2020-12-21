@@ -411,9 +411,8 @@ endif
 
 "let g:l_cur_winnr = 1
 "autocmd local WinEnter let g:l_cur_winnr = winnr()
-autocmd local WinEnter ?* set statusline=%!Set_statusline(1)
-autocmd local WinLeave ?* setlocal statusline=%!Set_statusline(0,g:l_statusline_off)
-""" ?* ... to igonore setting quick-fix window
+autocmd local WinEnter * if &buftype != 'quickfix' | set statusline=%!Set_statusline(1) | endif
+autocmd local WinLeave * if &buftype != 'quickfix' | setlocal statusline=%!Set_statusline(0,g:l_statusline_off) | endif
 
 ""}}}
 
