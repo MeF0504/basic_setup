@@ -796,7 +796,8 @@ function! s:Terminal(...) abort
                 endif
             endfor
             execute 'terminal '.term_opt
-            execute "file ".substitute(expand('%'), ' ', '', 'g')
+            " rename buffer
+            execute "silent file ".substitute(expand('%'), ' ', '', 'g')
             startinsert
 
         else
@@ -828,7 +829,8 @@ function! s:Terminal(...) abort
                 endif
             endfor
             execute term_header.'terminal '.term_opt
-            execute "file ".substitute(expand('%'), ' ', '', 'g')
+            " rename buffer
+            execute "silent file ".substitute(expand('%'), ' ', '', 'g')
         endif
     endif
 
