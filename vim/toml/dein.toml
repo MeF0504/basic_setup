@@ -98,10 +98,6 @@ let g:NERDTreeWinPos="right"
 "local mapping
 nnoremap <silent> <Leader>n :NERDTreeToggle<CR>
 
-"NERDTree color setting
-highlight NERDTreeBookmarksLeader ctermfg=32 guifg=DeepSkyBlue3
-highlight NERDTreeBookmark ctermfg=107 guifg=DarkOliveGreen3
-
 "]でnerdtreeから抜け
 "autocmd deinLocal FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
 "autocmd deinLocal FileType nerdtree nnoremap <buffer> ] <c-w>l <c-w>k
@@ -414,21 +410,21 @@ endif
 """ }}}
 '''
 
-# 検索時にhit数をcountしてくれるplugin
-[[plugins]]
-repo = 'osyo-manga/vim-anzu'
-hook_add = '''
-""" vim-anzu {{{
-" max search count
-let g:anzu_search_limit = 3000
-" mapping
-nmap n <Plug>(anzu-n-with-echo)
-nmap N <Plug>(anzu-N-with-echo)
-
-" clear status
-" nmap <ESC><ESC> <Plug>(anzu-clear-search-status)
-" }}}
-'''
+# # 検索時にhit数をcountしてくれるplugin
+# [[plugins]]
+# repo = 'osyo-manga/vim-anzu'
+# hook_add = '''
+# """ vim-anzu {{{
+# " max search count
+# let g:anzu_search_limit = 3000
+# " mapping
+# nmap n <Plug>(anzu-n-with-echo)
+# nmap N <Plug>(anzu-N-with-echo)
+# 
+# " clear status
+# " nmap <ESC><ESC> <Plug>(anzu-clear-search-status)
+# " }}}
+# '''
 
 # if - endif 等を補完してくれるplugin
 [[plugins]]
@@ -531,10 +527,15 @@ if = '''!has('nvim')'''
 [[plugins]]
 repo = 'tpope/vim-commentary'
 
-# # 検索のhit数を右上にpopupで表示するplugin
-# [[plugins]]
-# repo = 'obcat/vim-hitspop'
-# # memo {{{
-# # https://zenn.dev/obcat/articles/4ef6822de53b643bbd01
-# # :nohlsearch で消える→ 自分は\で消える }}}
+# 検索のhit数を右上にpopupで表示するplugin
+[[plugins]]
+repo = 'obcat/vim-hitspop'
+hook_add = '''
+" {{{
+" https://zenn.dev/obcat/articles/4ef6822de53b643bbd01
+" :nohlsearch で消える→ 自分は\で消える
+let g:hitspop_line = 'winbot'
+let g:hitspop_column = 'winright'
+" }}}
+'''
 

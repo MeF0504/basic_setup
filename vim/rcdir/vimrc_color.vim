@@ -83,6 +83,15 @@ function! <SID>my_color_set()
     highlight StatusLineR cterm=bold ctermfg=234 ctermbg=3
     highlight StatusLineT cterm=bold ctermfg=234 ctermbg=10
 
+    """ plugin highlights
+    " NERDTree
+    highlight NERDTreeBookmarksLeader ctermfg=32
+    highlight NERDTreeBookmark ctermfg=107
+    
+    " hitspop
+    highlight hitspopNormal ctermfg=224 ctermbg=238
+    highlight hitspopErrorMsg ctermfg=9 ctermbg=238
+
     if exists('*strftime')
         let month = str2nr(strftime("%b"))
         let day = str2nr(strftime("%d"))
