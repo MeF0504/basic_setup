@@ -212,11 +212,20 @@ function! s:get_cwd_path()
             let ret .= d[0].sep
         endif
     endfor
-    if len(ret) > max_dir_len
-        return '~~'.ret[-(max_dir_len-2):]
+
+    " ssh 先ではhostnameも表示
+    if exists('$SSH_CLIENT')
+        let hname = hostname()[:match(hostname(), '\.')-1] . ':'
     else
-        return ret
+        let hname = ''
     endif
+
+    " 長い場合は切る
+    if len(ret)+len(hname) > max_dir_len
+        let ret = '~~'.ret[-(max_dir_len-len(hname)-2):]
+    endif
+
+    return hname.ret
 endfunction
 
 function! s:my_tabline()
