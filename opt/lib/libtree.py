@@ -3,7 +3,7 @@
 import os
 from pathlib import PurePath
 
-debug = True
+debug = False
 branch_str  = '|__ '
 branch_str2 = '|   '
 
@@ -11,9 +11,6 @@ class tree_viewer():
     def __init__(self, tree_list, root):
         self.tree = tree_list
         self.root = root    # root path
-        self.current = None     # current dir's list-contents
-        self.parents = []       # list of parents' list-contents
-        self.next = None        # next dir's list-contents
         self.cpath = None       # current path
         self.cnt = 0
         self.is_finish = False
@@ -24,56 +21,67 @@ class tree_viewer():
     def __next__(self):
         if self.is_finish or (self.cnt == -1):
             if debug:
-                print('finish: cur:{}, cnt:{}'.format(self.current, self.cnt))
+                print('finish: cur:{}, cnt:{}'.format(self.cpath, self.cnt))
             raise StopIteration()
         self.cnt += 1
-        if self.current is None:
+        if self.cpath is None:
             # return root directory
             if debug:
-                print('pattern 1')
-            self.current = self.tree
-            self.cpath = PurePath(self.root)
+                print('pattern 1 @ {}'.format(self.cpath))
+            self.cpath = PurePath(self.root).relative_to(self.root)
         else:
             # other directories
-            files, dirs = self.get_contents(self.current)
+            files, dirs = self.get_contents(self.cpath)
             if len(dirs) != 0:
                 # go to a directory in this directory
-                self.parents.append(self.current)
                 if debug:
-                    print('pattern 2')
+                    print('pattern 2 @ {}'.format(self.cpath))
                     print('from {}, to dirs:{}[0]'.format(self.cpath.name, dirs))
-                self.current = self.current[0][dirs[0]]
                 self.cpath /= dirs[0]
             else:
                 # no dirs in this directory
                 # -> search the parent directories
-                for i in range(len(self.parents)):
-                    files, dirs = self.get_contents(self.parents[-1])
+                for i in range(len(self.cpath.parents)):
+                    files, dirs = self.get_contents(self.cpath.parent)
                     if debug:
-                        print('pattern 3-{}'.format(i))
-                        print('\n parents:{},\n dirs:{}'.format(self.parents, dirs))
+                        print('pattern 3-{}/{} @ {}'.format(i, len(self.cpath.parents)-1, self.cpath))
+                        print('parent:{}, dirs:{}'.format(self.cpath.parent, dirs))
                     index = dirs.index(self.cpath.name)+1
                     if index < len(dirs):
                         # not a last directory in parent directory
-                        self.current = self.parents[-1][0][dirs[index]]
                         self.cpath = self.cpath.parent / dirs[index]
                         if debug:
-                            print('return current:{}, cpath:{}, parents:{}'.format(self.current, self.cpath, self.parents))
-                        if (len(self.parents) == 1) and (index+1 == len(dirs)):
+                            print('return cpath:{}, index:{}, parent:{}, len(parents):{}'.format(self.cpath, index, self.cpath.parent, len(self.cpath.parents)))
+                        if (len(self.cpath.parents)==1) and (index+1 == len(dirs)):
                             # at the directory just under the root  and the last directory
                             self.is_finish = True
                         break
                     else:
                         # go up to parents
-                        self.current = self.parents.pop()
                         self.cpath = self.cpath.parent
                         if debug:
-                            print('cur: {},\n cpath:{}'.format(self.current, self.cpath))
-                            print(self.parents)
-        files, dirs = self.get_contents(self.current)
+                            print('continue; cpath:{}, index:{}'.format(self.cpath, index))
+        files, dirs = self.get_contents(self.cpath)
         return self.cpath, files, dirs
 
-    def get_contents(self, tree_list):
+    def get_contents(self, path):
+        if type(path) != type(PurePath('.')):
+            path = PurePath(path)
+
+        if str(path) == '.':
+            if debug:
+                print('get_contents @ root:{}'.format(self.root))
+            tree_list = self.tree
+        else:
+            if debug:
+                print('get_contents @ {}'.format(path))
+            tree_list = self.tree
+            for p in path.parts:
+                if (str(p)==self.root): continue
+                else: tree_list = tree_list[0][str(p)]
+        if debug:
+            print('get tree_list:{}'.format(tree_list))
+
         if len(tree_list) == 0:
             return [], []
         files = tree_list[1:]
@@ -83,22 +91,24 @@ class tree_viewer():
 
         return files, dirs
 
-def show_contents(cpath, files, dirs):
-    dnum = str(cpath).count(os.sep)
-    if dnum == 0:
+def show_contents(root, cpath, files, dirs):
+    if str(cpath) == '.':
         # root
-        print('{}/'.format(cpath.name))
+        print('{}/'.format(root))
+        for f in files:
+            print('{} {}'.format(branch_str, f))
     else:
-        print('{}{} {}/'.format(branch_str2*(dnum-1), branch_str, cpath.name))
-    for f in files:
-        print('{}{} {}'.format(branch_str2*dnum, branch_str, f))
+        dnum = str(cpath).count(os.sep)
+        print('{}{} {}/'.format(branch_str2*(dnum), branch_str, cpath.name))
+        for f in files:
+            print('{}{} {}'.format(branch_str2*(dnum+1), branch_str, f))
 
 def show_tree(tree, root='.'):
     tree_view = tree_viewer(tree, root)
     for cpath, files, dirs in tree_view:
         if debug:
             print(cpath, files, dirs)
-        show_contents(cpath, files, dirs)
+        show_contents(root, cpath, files, dirs)
 
 if __name__ == '__main__':
     test_data = [\
