@@ -34,7 +34,7 @@ class tree_viewer():
         else:
             # other directories
             files, dirs = self.get_contents(self.cpath)
-            if (str(self.cpath)=='.') and (len(files)==0) and (len(dirs)==0):
+            if (str(self.cpath)=='.') and (len(dirs)==0):
                 self.is_finish = True
             if len(dirs) != 0:
                 # go to a directory in this directory
