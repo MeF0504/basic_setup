@@ -2,12 +2,17 @@
 # -*- coding: utf-8 -*-
 # vim: set filetype=python:
 
-from __future__ import print_function
-
 import os
 import sys
 import argparse
 import tarfile
+
+try:
+    from libtree import tree_viewer, show_tree
+    is_old = False
+except ImportError as e:
+    print(e)
+    is_old = True
 
 try:
     from color_test import BG, FG, END
@@ -15,7 +20,18 @@ try:
 except ImportError:
     print_color = False
 
+debug = False
 inter_str = "'q':quit, '..':go back 1 tree, key_name:select a key >> "
+
+def args_chk(args, attr):
+    if not hasattr(args, attr):
+        return False
+    if attr == 'verbose':
+        return args.verbose
+    elif attr == 'key':
+        return args.key is not None
+    elif attr == 'interactive':
+        return args.interactive
 
 def cprint(str1, str2, fg=None, bg=None, **kwargs):
     print_str = str1
@@ -28,6 +44,45 @@ def cprint(str1, str2, fg=None, bg=None, **kwargs):
             print_str += END
     print_str += str2
     print(print_str, **kwargs)
+
+def interactive_view(tree, show_func):
+    return 1
+
+def main_hdf5(fpath, args):
+    import h5py
+    list_tree = [{}]
+    def make_list(name, obj):
+        if isinstance(obj, h5py.Dataset):
+            if not args_chk(args, 'interactive') and not args_chk(args, 'key'):
+                print(name)
+            if args_chk(args, 'verbose'):
+                print(" >>>  {}".format(h5_file[name][()]))
+
+            tmp_list = list_tree
+            for p in name.split('/'):
+                if p == name.split('/')[-1]:
+                    tmp_list.append(p)
+                    if debug:
+                        print('add {} to {}'.format(p, tmp_list))
+                elif p in tmp_list[0]:
+                    tmp_list = tmp_list[0][p]
+                else:
+                    tmp_list[0][p] = [{}]
+                    tmp_list = tmp_list[0][p]
+
+    h5_file = h5py.File(fpath, 'r')
+    h5_file.visititems(make_list)
+    if args_chk(args, 'interactive'):
+        print(1)
+    elif args_chk(args, 'key'):
+        data = h5_file[args.key]
+        if isinstance(data, h5py.Group):
+            for k in data.keys():
+                print(k)
+        elif isinstance(data, h5py.Dataset):
+            print(data[()])
+
+    h5_file.close()
 
 def get_dir_items(path, flist):
     if path[-1] != '/':
@@ -50,7 +105,7 @@ def get_dir_items(path, flist):
     return res
 
 #function to show the constitution of hdf5 file.
-def main_hdf5(fpath, args):
+def main_hdf5_old(fpath, args):
     import h5py
     try:
         import numpy as np
@@ -115,7 +170,7 @@ def main_hdf5(fpath, args):
 
     h5_file.close()
 
-def main_pickle(fpath, args):
+def main_pickle_old(fpath, args):
     import pickle
     try:
         import numpy as np
@@ -195,7 +250,7 @@ def main_pickle(fpath, args):
     else:
         print(data)
 
-def main_numpy(fpath, args):
+def main_numpy_old(fpath, args):
     import numpy as np
     data = np.load(fpath)
     if args.verbose:
@@ -219,7 +274,7 @@ min : {} '''.format(data.shape, d_mean, d_max, d_min)
 
         print(prt_str)
 
-def main_tar(fpath, args):
+def main_tar_old(fpath, args):
     if not tarfile.is_tarfile(fpath):
         print('{} is not a tar file.'.format(fpath))
         return
@@ -301,7 +356,7 @@ def main_tar(fpath, args):
 
     tar.close()
 
-def main_zip(fpath, args):
+def main_zip_old(fpath, args):
     import zipfile
     zip_files = zipfile.ZipFile(fpath, 'r')
     # with zipfile.ZipFile(fpath, 'r') as zip_files:
@@ -385,7 +440,7 @@ def main_zip(fpath, args):
 
     zip_files.close()
 
-def main_sqlite3(fpath, args):
+def main_sqlite3_old(fpath, args):
     import sqlite3
     try:
         from tabulate import tabulate
@@ -499,7 +554,7 @@ def main_sqlite3(fpath, args):
                 table_info_simple(table)
     database.close()
 
-def main_raw(fpath, args):
+def main_raw_old(fpath, args):
     try:
         import rawpy
     except ImportError:
@@ -561,19 +616,40 @@ def main(args):
             return
 
     if args.type == 'hdf5':
-        main_hdf5(fpath, args)
+        if args.old:
+            main_hdf5_old(fpath, args)
+        else:
+            main_hdf5(fpath, args)
     elif args.type == 'pickle':
-        main_pickle(fpath, args)
+        if args.old:
+            main_pickle_old(fpath, args)
+        else:
+            main_pickle(fpath, args)
     elif args.type == 'numpy':
-        main_numpy(fpath, args)
+        if args.old:
+            main_numpy_old(fpath, args)
+        else:
+            main_numpy(fpath, args)
     elif args.type == 'tar':
-        main_tar(fpath, args)
+        if args.old:
+            main_tar_old(fpath, args)
+        else:
+            main_tar(fpath, args)
     elif args.type == 'zip':
-        main_zip(fpath, args)
+        if args.old:
+            main_zip_old(fpath, args)
+        else:
+            main_zip(fpath, args)
     elif args.type == 'sqlite3':
-        main_sqlite3(fpath, args)
+        if args.old:
+            main_sqlite3_old(fpath, args)
+        else:
+            main_sqlite3(fpath, args)
     elif args.type == 'raw_image':
-        main_raw(fpath, args)
+        if args.old:
+            main_raw_old(fpath, args)
+        else:
+            main_raw(fpath, args)
     else:
         print('this file is not supported.')
 
@@ -587,7 +663,10 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(' '))
     parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, Dataset name in hdf5, file name in tar/zip, or table name in sqlite3.')
     parser.add_argument('-i', '--interactive', dest='interactive', help='(beta ver.) open a file with interactive mode. support pickle, hdf5, tar, zip, sqlite3.', action='store_true')
+    parser.add_argument('--old', help='use old functions. this option will be deleted in future.', action='store_true')
     args = parser.parse_args()
+    if is_old:
+        args.old = True
 
     main(args)
 
