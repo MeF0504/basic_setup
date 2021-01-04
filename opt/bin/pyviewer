@@ -8,7 +8,7 @@ import argparse
 import tarfile
 
 try:
-    from libtree import tree_viewer, show_tree
+    from libtree import tree_viewer, show_tree, branch_str
     is_old = False
 except ImportError as e:
     print(e)
@@ -84,6 +84,305 @@ def main_hdf5(fpath, args):
 
     h5_file.close()
 
+# def main_pickle(fpath, args):
+#     import pickle
+#     try:
+#         with open(fpath, 'rb') as f:
+#             data = pickle.load(f)
+#     except UnicodeDecodeError:
+#         with open(fpath, 'rb') as f:
+#             data = pickle.load(f, encoding='latin1')
+# 
+#     tree_data = [{}]
+#     data_contents = {}
+#     tmp_data = data
+#     tmp_tree = tree_data
+#     # how to make tree_list from dictionary?
+#     # while(True):
+#     #     if type(tmp_data) == type(dict()):
+#     #         for k in tmp_data.keys():
+#     #             tree_data[0][k] = [{}]
+#     # if debug:
+#     #     print(tree_data, data_contents)
+# 
+#     if type(data) == type(dict()):
+#         if args_chk(args, 'key'):
+#             if args.key in data:
+#                 print(data[args.key])
+#             else:
+#                 print('{} is not in {}'.format(args.key, fpath.split(os.sep)[-1]))
+#         elif args_chk(args, 'interactive'):
+#             print(1)
+#         elif
+#     else:
+#         print(data)
+
+# It is difficult to rebuild a recursive dictionary by any means...
+def main_pickle(fpath, args):
+    import pickle
+    try:
+        import numpy as np
+        imp_np = True
+    except ImportError:
+        imp_np = False
+    try:
+        with open(fpath, 'rb') as f:
+            data = pickle.load(f)
+    except UnicodeDecodeError:
+        with open(fpath, 'rb') as f:
+            data = pickle.load(f, encoding='latin1')
+
+    if type(data) == type(dict()):
+        if hasattr(args, 'key') and args.key is not None:
+            for k in data:
+                if str(k) == args.key:
+                    print(data[k])
+        elif hasattr(args, 'interactive') and args.interactive:
+            selected_keys = []
+            tmp_data = data
+            while(True):
+                key_strs = [str(k) for k in selected_keys]
+                cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(key_strs))
+                cprint('current path:', ' {}'.format(cpath), bg='c')
+                cprint('contents in this dict:', ' ', bg='g', end='')
+                try:
+                    tmp_keys = sorted(tmp_data.keys())
+                except TypeError:
+                    tmp_keys = tmp_data.keys()
+                for i,k in enumerate(tmp_keys):
+                    # print('|{} {}\n (type:{})'.format(i, k, type(tmp_data[k]).__name__), end=' ')
+                    print('{},'.format(k), end='  ')
+                print('\n')
+                key_name = input(inter_str)
+                if key_name == 'q':
+                    break
+                elif key_name == '':
+                    continue
+                elif key_name == '..':
+                    if len(selected_keys) >= 1:
+                        selected_keys = selected_keys[:-1]
+                        tmp_data = data
+                        for sk in selected_keys:
+                            tmp_data = tmp_data[sk]
+                    else:
+                        cprint('you are in root.\n', '', fg='r')
+                else:
+                    find_key = False
+                    for k in tmp_data:
+                        if str(k) == key_name:
+                            find_key = True
+                            if type(tmp_data[k]) == dict:
+                                tmp_data = tmp_data[k]
+                                selected_keys.append(k)
+                            else:
+                                cprint('output::', '\n{}'.format(tmp_data[k]), bg='r')
+                                if imp_np:
+                                    if type(tmp_data[k])==np.ndarray:
+                                        print('>> shape: {}, mean: {:.2e}, median: {:.2e}, std: {:.2e}'.format(tmp_data[k].shape, np.mean(tmp_data[k]), np.median(tmp_data[k]), np.std(tmp_data[k])))
+                                print('')
+                    if not find_key:
+                        cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
+        else:
+            try:
+                tmp_keys = sorted(data.keys())
+            except TypeError:
+                tmp_keys = data.keys()
+            for key in tmp_keys:
+                print(key)
+                if args.verbose:
+                    print(' >>> {}'.format(data[key]))
+                else:
+                    print('  type   : {}'.format(type(data[key]).__name__))
+                    if hasattr(data[key], '__len__'):
+                        print('  length : {}'.format(len(data[key])))
+    else:
+        print(data)
+
+
+def main_numpy(fpath, args):
+    import numpy as np
+    data = np.load(fpath)
+    if args.verbose:
+        print(data)
+    else:
+        d_mean = np.mean(data)
+        d_max = np.max(data)
+        d_min = np.min(data)
+        if np.isnan(d_mean):
+            d_mean = np.nanmean(data)
+            d_max = np.nanmax(data)
+            d_min = np.nanmin(data)
+            nan_rate = 1 - np.sum(data==data)/np.prod(data.shape)
+        prt_str = '''
+shape : {}
+mean : {}
+max : {}
+min : {} '''.format(data.shape, d_mean, d_max, d_min)
+        if 'nan_rate' in locals():
+            prt_str += '\nnan rate : {:.1f}%'.format(nan_rate*100)
+
+        print(prt_str)
+
+def main_tar(fpath, args):
+    if not tarfile.is_tarfile(fpath):
+        print('{} is not a tar file.'.format(fpath))
+        return
+    tar_file = tarfile.open(fpath, 'r:*')
+    list_tree = [{}]
+    fname = os.path.basename(fpath)
+
+    for t in tar_file:
+        tmp_list = list_tree
+        tnames = t.name.split('/')
+        for p in tnames:
+            if p == '': continue
+            if (p==tnames[-1]) and t.isfile():
+                tmp_list.append(p)
+                if debug:
+                    print('add {} to {}'.format(p, tmp_list))
+            elif p in tmp_list[0]:
+                tmp_list = tmp_list[0][p]
+            else:
+                tmp_list[0][p] = [{}]
+                tmp_list = tmp_list[0][p]
+    if debug:
+        print(list_tree)
+
+    if args_chk(args, 'interactive'):
+        print(1)
+    elif args_chk(args, 'key'):
+        try:
+            if args.key.endswith('/'):
+                key_name = args.key[:-1]
+            else:
+                key_name = args.key
+            tarinfo = tar_file.getmember(key_name)
+        except KeyError as e:
+            print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
+            tar_file.close()
+            return
+        if tarinfo.isfile():
+            for line in tar_file.extractfile(args.key):
+                try:
+                    print(line.decode(), end='')
+                except UnicodeDecodeError as e:
+                    print('Error!! {}'.format(e), file=sys.stderr)
+                    tar_file.close()
+                    return
+            print('')
+        elif tarinfo.isdir():
+            tree = tree_viewer(list_tree, fname)
+            print('{}/'.format(key_name))
+            files, dirs = tree.get_contents(key_name)
+            for f in files:
+                print('{}{}'.format(branch_str, f))
+            for d in dirs:
+                print('{}{}/'.format(branch_str, d))
+        else:
+            cprint('sorry, I can\'t show information.\n', '', fg='r')
+    elif args_chk(args, 'verbose'):
+        tar_file.list(verbose=True)
+    else:
+        show_tree(list_tree, fname)
+
+    tar_file.close()
+
+def main_zip(fpath, args):
+    import zipfile
+    if not zipfile.is_zipfile(fpath):
+        print('{} is not a zip file.'.format(fpath))
+        return
+    zip_file = zipfile.ZipFile(fpath, 'r')
+    list_tree = [{}]
+    fname = os.path.basename(fpath)
+
+    for z in zip_file.infolist():
+        tmp_list = list_tree
+        znames = z.filename.split('/')
+        for p in znames:
+            if p == '': continue
+            if (p==znames[-1]) and not z.is_dir():
+                tmp_list.append(p)
+                if debug:
+                    print('add {} to {}'.format(p, tmp_list))
+            elif p in tmp_list[0]:
+                tmp_list = tmp_list[0][p]
+            else:
+                tmp_list[0][p] = [{}]
+                tmp_list = tmp_list[0][p]
+    if debug:
+        print()
+        print(list_tree)
+
+    if args_chk(args, 'interactive'):
+        print(1)
+    elif args_chk(args, 'key'):
+        try:
+            key_name = args.key
+            if key_name+'/' in zip_file.namelist():
+                key_name += '/'
+            zipinfo = zip_file.getinfo(key_name)
+        except KeyError as e:
+            if debug:
+                print(e)
+            print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
+            zip_file.close()
+            return
+        if zipinfo.is_dir():
+            tree = tree_viewer(list_tree, fname)
+            print('{}/'.format(key_name))
+            files, dirs = tree.get_contents(key_name)
+            for f in files:
+                print('{}{}'.format(branch_str, f))
+            for d in dirs:
+                print('{}{}/'.format(branch_str, d))
+        else:
+            for line in zip_file.open(args.key, 'r'):
+                try:
+                    print(line.decode(), end='')
+                except UnicodeDecodeError as e:
+                    print('Error!! {}'.format(e), file=sys.stderr)
+                    zip_files.close()
+                    return
+    elif args_chk(args, 'verbose'):
+        zip_file.printdir()
+    else:
+        show_tree(list_tree, fname)
+
+    zip_file.close()
+
+def main_raw(fpath, args):
+    try:
+        import rawpy
+    except ImportError:
+        print("I can't find rawpy.")
+        return
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        print("I can't find matplotlib.")
+        return
+
+    with rawpy.imread(fpath) as raw:
+        rgb = raw.postprocess()
+
+    rate = rgb.shape[0]/1080*100   # assume a full-HD display
+    h = int(rgb.shape[0]/rate)
+    w = int(rgb.shape[1]/rate)
+    fig1 = plt.figure(figsize=(w,h))
+    # full display
+    ax1 = fig1.add_axes((0, 0, 1, 1))
+    ax1.imshow(rgb)
+    # not display axes
+    ax1.xaxis.set_visible(False)
+    ax1.yaxis.set_visible(False)
+    ax1.spines['top'].set_visible(False)
+    ax1.spines['bottom'].set_visible(False)
+    ax1.spines['right'].set_visible(False)
+    ax1.spines['left'].set_visible(False)
+    plt.show()
+
+# {{{   old functions
 def get_dir_items(path, flist):
     if path[-1] != '/':
         path += '/'
@@ -584,6 +883,7 @@ def main_raw_old(fpath, args):
     ax1.spines['right'].set_visible(False)
     ax1.spines['left'].set_visible(False)
     plt.show()
+# }}}
 
 def main(args):
 
