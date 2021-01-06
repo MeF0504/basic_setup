@@ -16,7 +16,7 @@ endfunction
 let s:w_r = 1.0 " <- 2.0
 let s:w_g = 2.0
 let s:w_b = 1.0
-let s:thsd = 2.0
+let s:thsd = 2.1
 function! s:isdark(r, g, b)
     let cond = (a:r*s:w_r+a:g*s:w_g+a:b*s:w_b)/(s:w_r+s:w_g+s:w_b) < s:thsd
     return cond
@@ -73,15 +73,15 @@ function! <SID>my_color_set()
         highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
         highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249
     endif
-    highlight StatusLineFT cterm=bold ctermfg=253 ctermbg=17
-    highlight StatusLineFF cterm=bold ctermfg=253 ctermbg=88
-    highlight StatusLineLN cterm=bold ctermfg=253 ctermbg=29
-    highlight StatusLineCFI cterm=bold ctermfg=233 ctermbg=11
-    highlight StatusLineN cterm=bold ctermfg=253 ctermbg=0
-    highlight StatusLineI cterm=bold ctermfg=253 ctermbg=9
-    highlight StatusLineV cterm=bold ctermfg=253 ctermbg=13
-    highlight StatusLineR cterm=bold ctermfg=234 ctermbg=3
-    highlight StatusLineT cterm=bold ctermfg=234 ctermbg=10
+    highlight StatusLine_FT cterm=bold ctermfg=253 ctermbg=17
+    highlight StatusLine_FF cterm=bold ctermfg=253 ctermbg=88
+    highlight StatusLine_LN cterm=bold ctermfg=253 ctermbg=29
+    highlight StatusLine_CFI cterm=bold ctermfg=233 ctermbg=11
+    highlight Mode_N cterm=bold ctermfg=253 ctermbg=0
+    highlight Mode_I cterm=bold ctermfg=253 ctermbg=9
+    highlight Mode_V cterm=bold ctermfg=253 ctermbg=13
+    highlight Mode_R cterm=bold ctermfg=234 ctermbg=3
+    highlight Mode_T cterm=bold ctermfg=234 ctermbg=10
 
     """ plugin highlights
     " NERDTree

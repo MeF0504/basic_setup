@@ -30,8 +30,8 @@ def isdark(r,g,b):
     # else:
     #     cond = g*g+b*b < (7-r)**2
 
-    w_r, w_g, w_b = (2,2,1)
-    cond = (r*w_r+g*w_g+b*w_b)/(w_r+w_g+w_b) < 1.5
+    w_r, w_g, w_b = (1,2,1)
+    cond = (r*w_r+g*w_g+b*w_b)/(w_r+w_g+w_b) < 2.1
 
     return cond
 
