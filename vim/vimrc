@@ -98,9 +98,9 @@ let g:l_st_mode = {'n':'NORMAL',
 let g:l_statusline = [
             \" %f%m%{&readonly?'[RO]':''}%h%w ",
             \"%<%=",
-            \"%#StatusLineFT# %{&filetype} ",
-            \"%#StatusLineFF# %{g:l_st_fileformat[&fileformat]}:%{&fileencoding} ",
-            \"%#StatusLineLN# %l/%L-%v %#StatusLine#[%P]",
+            \"%#StatusLine_FT# %{&filetype} ",
+            \"%#StatusLine_FF# %{g:l_st_fileformat[&fileformat]}:%{&fileencoding} ",
+            \"%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]",
             \]
 
 let g:l_statusline_off = ["%t%m%{&readonly?'[RO]':''}%h%w"]
@@ -138,15 +138,15 @@ function! Set_statusline(cur_win, ...)
         " color setting
         let st_mode .= ' %#StatusLine#'
         if modec =~ 'i'
-            let st_mode = '%#StatusLineI#' . st_mode
+            let st_mode = '%#Mode_I#' . st_mode
         elseif modec =~ 'v' || modec == "\<C-V>"
-            let st_mode = '%#StatusLineV#' . st_mode
+            let st_mode = '%#Mode_V#' . st_mode
         elseif modec =~ 'r'
-            let st_mode = '%#StatusLineR#' . st_mode
+            let st_mode = '%#Mode_R#' . st_mode
         elseif modec =~ 't'
-            let st_mode = '%#StatusLineT#' . st_mode
+            let st_mode = '%#Mode_T#' . st_mode
         else
-            let st_mode = '%#StatusLineN#' . st_mode
+            let st_mode = '%#Mode_N#' . st_mode
         endif
         let l:st_str = st_mode . l:st_str
     endif
