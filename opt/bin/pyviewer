@@ -351,6 +351,97 @@ def main_zip(fpath, args):
 
     zip_file.close()
 
+def main_sqlite3(fpath, args):
+    import sqlite3
+    try:
+        from tabulate import tabulate
+        is_tabulate = True
+    except ImportError:
+        print("I can't find tabulate library.")
+        is_tabulate = False
+    shift = '  '
+
+    def show_table(table_path, verbose=True):
+        if '/' in table_path:
+            table, column = table_path.split('/')
+            if column == '':
+                column = None
+            if debug:
+                print('table, column: {}, {}'.format(table, column))
+        else:
+            table = table_path
+            column = None
+            if debug:
+                print('table: {}'.format(table))
+        cursor.execute("pragma table_info('{}')".format(table))
+        table_info = cursor.fetchall()
+
+        print(table)
+        if not verbose:
+            for tinfo in table_info:
+                if tinfo[2] == '':
+                    ctype = 'none'
+                else:
+                    ctype = tinfo[2]
+                print('{}{} [ {} ]'.format(branch_str, tinfo[1], ctype))
+
+        else:
+            if column is None:
+                headers = []
+                for tinfo in table_info:
+                    headers.append(tinfo[1])
+                cursor.execute('select * from {}'.format(table))
+            else:
+                headers = column.split(',')
+                cursor.execute('select {} from {}'.format(column, table))
+            columns = cursor.fetchall()
+            table = []
+            for col in columns:
+                table.append([])
+                for item in col:
+                    table[-1].append(item)
+
+            if is_tabulate:
+                table_str = tabulate(table, headers, tablefmt='orgtbl')
+                table_str = table_str.replace('\n', '\n'+shift)
+                print(shift + table_str)
+            else:
+                print(shift+'|', end='')
+                for hd in headers:
+                    print(' {} |'.format(hd), end='')
+                print('')
+                for itms in table:
+                    print(shift+'|', end='')
+                    for itm in itms:
+                        print(' {} |'.format(itm), end='')
+                    print('')
+
+    database = sqlite3.connect(fpath)
+    cursor = database.cursor()
+    cursor.execute("select name from sqlite_master where type='table'")
+    tables = cursor.fetchall()
+
+    if args_chk(args, 'interactive'):
+        list_tree = [{}]
+        for table, in tables:
+            if debug:
+                print(table)
+            list_tree[0][table] = [{}]
+            cursor.execute('select * from {}'.format(table))
+            columns = cursor.fetchall()
+            for index,col in columns:
+                if debug:
+                    print(col)
+                list_tree[0][table].append(col)
+        if debug:
+            print(list_tree)
+        print(1)
+    elif args_chk(args, 'key'):
+        show_table(args.key, verbose=True)
+    else:
+        for table, in tables:
+            show_table(table, args.verbose)
+
 def main_raw(fpath, args):
     try:
         import rawpy
@@ -961,7 +1052,7 @@ if __name__ == "__main__":
     parser.add_argument('file', help='imput hdf5 file')
     parser.add_argument('-v', dest='verbose', action='store_true', help='show details')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(' '))
-    parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, Dataset name in hdf5, file name in tar/zip, or table name in sqlite3.')
+    parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, path to a Group/Dataset in hdf5, path to a file/dictionary in tar/zip, or table[/column] in sqlite3.')
     parser.add_argument('-i', '--interactive', dest='interactive', help='(beta ver.) open a file with interactive mode. support pickle, hdf5, tar, zip, sqlite3.', action='store_true')
     parser.add_argument('--old', help='use old functions. this option will be deleted in future.', action='store_true')
     args = parser.parse_args()
