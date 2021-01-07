@@ -6,6 +6,9 @@ if exists("$PYTHONPATH")
     execute 'set path+=' . substitute(expand($PYTHONPATH), ':', ',', 'g')
 endif
 set suffixesadd+=.py
+" error format for quickfix https://vim-jp.org/vimdoc-ja/quickfix.html#errorformats
+" if needed
+" set errorformat=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 
 command! PySyntax !python -m py_compile %
 

@@ -112,6 +112,11 @@ hook_add = '''
 let g:quickrun_no_default_key_mappings = 1
 
 let g:quickrun_config = get(g:, 'quickrun_config', {})  " 変数がなければ初期化
+let g:quickrun_config._ = {
+    \ 'outputter' : 'error',
+    \ 'outputter/error/success' : 'buffer',
+    \ 'outputter/error/error'   : 'quickfix',
+    \ }
 
 " {{{ python
 let g:quickrun_config.python = {
@@ -127,7 +132,7 @@ elseif has('win32')
     let s:cmd = 'start'
     let s:exe = '%c chrome %s'
 else
-    let s:cmd = 'firefox'   " temporary
+    let s:cmd = 'firefox &'   " temporary
     let s:exe = '%c %s'
 endif
 let g:quickrun_config.markdown = {
@@ -152,7 +157,7 @@ function! s:qrun_markdown()
             elseif has('win32')
                 let l:open_server = '"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe" --new-window --incognito http://localhost:8080/'
             else
-                let l:open_server = 'firefox http://localhost:8080/'
+                let l:open_server = 'firefox http://localhost:8080/ &'
             endif
 
             let ret = ":QuickRun -command 'npx' "
