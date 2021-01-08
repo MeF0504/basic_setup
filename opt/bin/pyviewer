@@ -8,6 +8,7 @@ import argparse
 import tarfile
 
 try:
+    from pathlib import PurePath
     from libtree import tree_viewer, show_tree, branch_str
     is_old = False
 except ImportError as e:
@@ -45,11 +46,51 @@ def cprint(str1, str2, fg=None, bg=None, **kwargs):
     print_str += str2
     print(print_str, **kwargs)
 
-def interactive_view(tree, show_func):
-    return 1
+def interactive_view(tree, fname, show_func):
+    cpath = PurePath('.')
+    inter_str = "'q':quit, '..':go back 1 tree, key_name:select a key >> "
+    tv = tree_viewer(tree, '.')
+    while(True):
+        files, dirs = tv.get_contents(cpath)
+        cprint('current path:', ' {}/{}'.format(fname, cpath), bg='c')
+        cprint('contents in this dict:', ' ', bg='g', end='')
+        for d in dirs:
+            print('{}/, '.format(d), end='')
+        for f in files:
+            print('{}, '.format(f), end='')
+        print('\n')
+        key_name = input(inter_str)
+        if key_name == 'q':
+            if debug: print('quit')
+            break
+        elif key_name == '':
+            if debug: print('continue')
+            continue
+        elif key_name == '..':
+            if debug: print('go up')
+            if str(cpath) != '.':
+                cpath = cpath.parent
+        else:
+            if debug: print('specify key:{}'.format(key_name))
+            if key_name in files:
+                cprint('output::', '\n', bg='r')
+                show_func(str(cpath/key_name))
+            elif key_name in dirs:
+                cpath /= key_name
+            else:
+                cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
 
 def main_hdf5(fpath, args):
     import h5py
+
+    def show_hdf5(cpath):
+        data = h5_file[cpath]
+        if isinstance(data, h5py.Group):
+            for k in data.keys():
+                print(k)
+        elif isinstance(data, h5py.Dataset):
+            print(data[()])
+
     list_tree = [{}]
     def make_list(name, obj):
         if isinstance(obj, h5py.Dataset):
@@ -71,19 +112,18 @@ def main_hdf5(fpath, args):
                     tmp_list = tmp_list[0][p]
 
     h5_file = h5py.File(fpath, 'r')
+    # make list_tree
     h5_file.visititems(make_list)
+
     if args_chk(args, 'interactive'):
-        print(1)
+        fname = os.path.basename(fpath)
+        interactive_view(list_tree, fname, show_hdf5)
     elif args_chk(args, 'key'):
-        data = h5_file[args.key]
-        if isinstance(data, h5py.Group):
-            for k in data.keys():
-                print(k)
-        elif isinstance(data, h5py.Dataset):
-            print(data[()])
+        show_hdf5(args.key)
 
     h5_file.close()
 
+# {{{
 # def main_pickle(fpath, args):
 #     import pickle
 #     try:
@@ -116,6 +156,7 @@ def main_hdf5(fpath, args):
 #         elif
 #     else:
 #         print(data)
+# }}}
 
 # It is difficult to rebuild a recursive dictionary by any means...
 def main_pickle(fpath, args):
@@ -231,6 +272,36 @@ def main_tar(fpath, args):
     list_tree = [{}]
     fname = os.path.basename(fpath)
 
+    def show_tar(cpath):
+        try:
+            if cpath.endswith('/'):
+                key_name = cpath[:-1]
+            else:
+                key_name = cpath
+            tarinfo = tar_file.getmember(key_name)
+        except KeyError as e:
+            print('Error!! cannnot open {}.'.format(cpath), file=sys.stderr)
+            return
+        if tarinfo.isfile():
+            for line in tar_file.extractfile(cpath):
+                try:
+                    print(line.decode(), end='')
+                except UnicodeDecodeError as e:
+                    print('Error!! {}'.format(e), file=sys.stderr)
+                    return
+            print('')
+        elif tarinfo.isdir():
+            tree = tree_viewer(list_tree, fname)
+            print('{}/'.format(key_name))
+            files, dirs = tree.get_contents(key_name)
+            for f in files:
+                print('{}{}'.format(branch_str, f))
+            for d in dirs:
+                print('{}{}/'.format(branch_str, d))
+        else:
+            cprint('sorry, I can\'t show information.\n', '', fg='r')
+
+    # make list_tree
     for t in tar_file:
         tmp_list = list_tree
         tnames = t.name.split('/')
@@ -249,37 +320,9 @@ def main_tar(fpath, args):
         print(list_tree)
 
     if args_chk(args, 'interactive'):
-        print(1)
+        interactive_view(list_tree, fname, show_tar)
     elif args_chk(args, 'key'):
-        try:
-            if args.key.endswith('/'):
-                key_name = args.key[:-1]
-            else:
-                key_name = args.key
-            tarinfo = tar_file.getmember(key_name)
-        except KeyError as e:
-            print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
-            tar_file.close()
-            return
-        if tarinfo.isfile():
-            for line in tar_file.extractfile(args.key):
-                try:
-                    print(line.decode(), end='')
-                except UnicodeDecodeError as e:
-                    print('Error!! {}'.format(e), file=sys.stderr)
-                    tar_file.close()
-                    return
-            print('')
-        elif tarinfo.isdir():
-            tree = tree_viewer(list_tree, fname)
-            print('{}/'.format(key_name))
-            files, dirs = tree.get_contents(key_name)
-            for f in files:
-                print('{}{}'.format(branch_str, f))
-            for d in dirs:
-                print('{}{}/'.format(branch_str, d))
-        else:
-            cprint('sorry, I can\'t show information.\n', '', fg='r')
+        show_tar(args.key)
     elif args_chk(args, 'verbose'):
         tar_file.list(verbose=True)
     else:
@@ -296,6 +339,34 @@ def main_zip(fpath, args):
     list_tree = [{}]
     fname = os.path.basename(fpath)
 
+    def show_zip(cpath):
+        try:
+            key_name = cpath
+            if key_name+'/' in zip_file.namelist():
+                key_name += '/'
+            zipinfo = zip_file.getinfo(key_name)
+        except KeyError as e:
+            if debug:
+                print(e)
+            print('Error!! cannnot open {}.'.format(cpath), file=sys.stderr)
+            return
+        if zipinfo.is_dir():
+            tree = tree_viewer(list_tree, fname)
+            print('{}/'.format(key_name))
+            files, dirs = tree.get_contents(key_name)
+            for f in files:
+                print('{}{}'.format(branch_str, f))
+            for d in dirs:
+                print('{}{}/'.format(branch_str, d))
+        else:
+            for line in zip_file.open(cpath, 'r'):
+                try:
+                    print(line.decode(), end='')
+                except UnicodeDecodeError as e:
+                    print('Error!! {}'.format(e), file=sys.stderr)
+                    return
+
+    # make list_tree
     for z in zip_file.infolist():
         tmp_list = list_tree
         znames = z.filename.split('/')
@@ -315,35 +386,9 @@ def main_zip(fpath, args):
         print(list_tree)
 
     if args_chk(args, 'interactive'):
-        print(1)
+        interactive_view(list_tree, fname, show_zip)
     elif args_chk(args, 'key'):
-        try:
-            key_name = args.key
-            if key_name+'/' in zip_file.namelist():
-                key_name += '/'
-            zipinfo = zip_file.getinfo(key_name)
-        except KeyError as e:
-            if debug:
-                print(e)
-            print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
-            zip_file.close()
-            return
-        if zipinfo.is_dir():
-            tree = tree_viewer(list_tree, fname)
-            print('{}/'.format(key_name))
-            files, dirs = tree.get_contents(key_name)
-            for f in files:
-                print('{}{}'.format(branch_str, f))
-            for d in dirs:
-                print('{}{}/'.format(branch_str, d))
-        else:
-            for line in zip_file.open(args.key, 'r'):
-                try:
-                    print(line.decode(), end='')
-                except UnicodeDecodeError as e:
-                    print('Error!! {}'.format(e), file=sys.stderr)
-                    zip_files.close()
-                    return
+        show_zip(cpath)
     elif args_chk(args, 'verbose'):
         zip_file.printdir()
     else:
@@ -422,20 +467,23 @@ def main_sqlite3(fpath, args):
     tables = cursor.fetchall()
 
     if args_chk(args, 'interactive'):
+        # make list_tree
         list_tree = [{}]
         for table, in tables:
             if debug:
                 print(table)
             list_tree[0][table] = [{}]
-            cursor.execute('select * from {}'.format(table))
-            columns = cursor.fetchall()
-            for index,col in columns:
+            cursor.execute("pragma table_info('{}')".format(table))
+            table_info = cursor.fetchall()
+            for tinfo in table_info:
                 if debug:
-                    print(col)
-                list_tree[0][table].append(col)
+                    print(tinfo)
+                name = tinfo[1]
+                list_tree[0][table].append(name)
         if debug:
             print(list_tree)
-        print(1)
+        fname = os.path.basename(fpath)
+        interactive_view(list_tree, fname, show_table)
     elif args_chk(args, 'key'):
         show_table(args.key, verbose=True)
     else:
