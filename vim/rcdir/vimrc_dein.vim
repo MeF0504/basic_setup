@@ -61,8 +61,9 @@ endif
 let s:removed_plugins = dein#check_clean()
 if len(s:removed_plugins) > 0
     for s:rmp in s:removed_plugins
-        echo 'old plugin '.s:rmp.' exists.'
+        echo 'old plugin "'.fnamemodify(s:rmp, ':t').'" exists.'
     endfor
+    echo "please do ':call RemovePlugins()'"
     function! RemovePlugins()
         " call map(s:removed_plugins, "delete(v:val, 'rf')")
         for s:rmp in s:removed_plugins
