@@ -40,10 +40,10 @@ if exists('*Mygrep') == 1
             let res = a:1
             let st = match(a:1, 'dir=')
             if st == -1
-                let res .= ' dir=' . MFsearch_dir(g:mftag_dir)
+                let res .= ' dir=' . substitute(MFsearch_dir(g:mftag_dir), '\', '\\\\', 'g')
             endif
         else
-            let res = ' dir=' . MFsearch_dir(g:mftag_dir)
+            let res = ' dir=' . substitute(MFsearch_dir(g:mftag_dir), '\', '\\\\', 'g')
         endif
         execute 'call ' . 'Mygrep("' . res . '")'
     endfunction
