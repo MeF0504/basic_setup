@@ -60,17 +60,16 @@ endif
 " Plugin remove check
 let s:removed_plugins = dein#check_clean()
 if len(s:removed_plugins) > 0
-    for s:rmp in s:removed_plugins
-        echo 'old plugin "'.fnamemodify(s:rmp, ':t').'" exists.'
-    endfor
-    echo "please do ':call RemovePlugins()'"
-    function! RemovePlugins()
+    function! s:RemovePlugins()
         " call map(s:removed_plugins, "delete(v:val, 'rf')")
         for s:rmp in s:removed_plugins
-            call delete(s:rmp, 'rf')
-            echo 'delete '.s:rmp
+            let yn = input('remove '.s:rmp.'? (y/[n])')
+            if yn=='y'
+                call delete(s:rmp, 'rf')
+            endif
         endfor
         call dein#recache_runtimepath()
     endfunction
+    autocmd deinLocal VimEnter * call s:RemovePlugins()
 endif
 
