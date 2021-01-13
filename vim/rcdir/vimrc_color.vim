@@ -87,7 +87,7 @@ function! <SID>my_color_set()
     " NERDTree
     highlight NERDTreeBookmarksLeader ctermfg=32
     highlight NERDTreeBookmark ctermfg=107
-    
+
     " hitspop
     highlight hitspopNormal ctermfg=224 ctermbg=238
     highlight hitspopErrorMsg ctermfg=9 ctermbg=238
