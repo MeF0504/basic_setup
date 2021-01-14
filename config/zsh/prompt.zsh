@@ -113,6 +113,52 @@ function ip_color2() {
     # }}}
 }
 
+# {{{ calculate the command execution time
+# from https://github.com/sindresorhus/pure
+CMD_MAX_EXEC_TIME=10
+chk_exec_time_precmd() {
+    chk_exec_time
+    unset cmd_timestamp
+}
+chk_exec_time_preexec() {
+    typeset -g cmd_timestamp=$EPOCHSECONDS
+}
+zmodload zsh/datetime
+add-zsh-hook preexec chk_exec_time_preexec
+add-zsh-hook precmd chk_exec_time_precmd
+
+# Turns seconds into human readable time.
+# 165392 => 1d 21h 56m 32s
+# https://github.com/sindresorhus/pretty-time-zsh
+exec_human_time_to_var() {
+    local human total_seconds=$1 var=$2
+    local days=$(( total_seconds / 60 / 60 / 24 ))
+    local hours=$(( total_seconds / 60 / 60 % 24 ))
+    local minutes=$(( total_seconds / 60 % 60 ))
+    local seconds=$(( total_seconds % 60 ))
+    (( days > 0 )) && human+="${days}d "
+    (( hours > 0 )) && human+="${hours}h "
+    (( minutes > 0 )) && human+="${minutes}m "
+    human+="${seconds}s"
+
+    # Store human readable time in a variable as specified by the caller
+    typeset -g "${var}"="${human}"
+}
+
+chk_exec_time() {
+    integer elapsed
+    (( elapsed = EPOCHSECONDS - ${cmd_timestamp:-$EPOCHSECONDS} ))
+    typeset -g chk_cmd_exec_time=
+    (( elapsed > ${CMD_MAX_EXEC_TIME:-5} )) && {
+        exec_human_time_to_var $elapsed "chk_cmd_exec_time"
+    }
+}
+
+ret_cmd_exec_time() {
+    echo $chk_cmd_exec_time
+}
+# }}}
+
 # OLD_PROMPT=1
 set_prompt() {
     case ${UID} in
@@ -141,7 +187,11 @@ set_prompt() {
                 local ip="$(curl ifconfig.io 2> /dev/null)"
             fi
             # path
-            PROMPT="%F{255}%K{19}%d%f%k"$'\n'
+            PROMPT="%F{255}%K{19}%d%f%k"
+            # exec time
+            PROMPT=$PROMPT' $(ret_cmd_exec_time)'
+            # new line
+            PROMPT=$PROMPT$'\n'
             # ip_color for IPv6
             PROMPT=$PROMPT'$(ip_color2 $ip)'
             if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
