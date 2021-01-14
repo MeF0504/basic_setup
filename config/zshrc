@@ -205,6 +205,8 @@ zshaddhistory() {
     [[ ${line} != (l|l[sal])
     # && ${line} != (c|cd)
     && ! ${line} =~ ".*history"
+    && ! ${line} == clear
+    && ! ${line} == logout
     ]]
 }
 # }}}
@@ -228,11 +230,11 @@ fi
 case "${TERM}" in
 xterm|xterm-color|kterm|kterm-color|xterm-256color)
     if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
-        precmd() {
+        tab_title_precmd() {
             echo -ne "\033]0;${USER}@${MYHOST}\007"
         }
     else
-        precmd() {
+        tab_title_precmd() {
             if [[ $PWD = $HOME ]]; then
                 mypwd=home
             else
@@ -243,6 +245,7 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color)
     fi
     ;;
 esac
+add-zsh-hook precmd tab_title_precmd
 
 # ssh 先の名前を$TAB1-7に登録しておくと，接続中iterm2のtabの色が変わる
 # https://gist.github.com/wadey/1140259
