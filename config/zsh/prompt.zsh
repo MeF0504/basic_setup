@@ -123,7 +123,6 @@ chk_exec_time_precmd() {
 chk_exec_time_preexec() {
     typeset -g cmd_timestamp=$EPOCHSECONDS
 }
-zmodload zsh/datetime
 add-zsh-hook preexec chk_exec_time_preexec
 add-zsh-hook precmd chk_exec_time_precmd
 

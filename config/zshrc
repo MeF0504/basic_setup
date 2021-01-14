@@ -129,6 +129,15 @@ jfbterm-color)
 esac
 # }}}
 
+# zmodload {{{
+# これもよく分かっていないが，いくつかのモジュールは別れていて，必要に応じてlinkしないといけないらしい
+# これもdocを貼っておく
+# http://zsh.sourceforge.net/Doc/Release/Zsh-Modules.html
+
+# some date/time commands and parametersらしい。今は$EPOCHSECONDSを使うため
+zmodload zsh/datetime
+# }}}
+
 # {{{ bindkey
 ### key mapの設定
 ### bindkey -L で一覧が見れるらしい
