@@ -54,8 +54,16 @@ command! -nargs=? AddEnv call Add_env(<q-args>)
 
 set suffixesadd+=.tex
 
-autocmd texvim InsertLeave *.tex %s/、/，/ge
-autocmd texvim InsertLeave *.tex %s/。/．/ge
+function! s:replace_words()
+    let l = line('.')
+    let c = col('.')
+    %s/、/，/ge
+    %s/。/．/ge
+    " go back
+    execute l
+    execute "normal! ".c."|"
+endfunction
+autocmd texvim InsertLeave *.tex call s:replace_words()
 
 " とりあえずコピー() from https://vim-jp.org/vimdoc-ja/quickfix.html#errorformat-LaTeX
 " set makeprg=latex\ \\\\nonstopmode\ \\\\input\\{$*}
