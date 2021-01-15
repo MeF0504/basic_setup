@@ -11,7 +11,8 @@ scriptencoding utf-8
 ""########## tips {{{
 " ##### shortcut comment
 " <c-h> ... backspace <c-m> ... Enter
-" <c-i> ... tab <c-j> ... Enter?
+" <c-i> ... tab <c-j> ... Down
+
 " ##### useful command
 " :set          ... Show all options that differ from their default value.
 " :set all      ... Show all but terminal options.
@@ -19,6 +20,17 @@ scriptencoding utf-8
 " :map          ... Show all mapping settings.
 " :highlight    ... Show all highlight settings.
 " command       ... Show all user commands.
+
+" ##### spell check
+" information; :h spell or https://vim-jp.org/vimdoc-ja/spell.html
+" on; :setlocal spell spelllang=en_us
+" search;
+" 次を検索 ]s or ]S
+" 前を検索 [s or [S
+" (カーソル下を)正しい(good)単語として登録      zg or :spe[llgood] {word}
+" (カーソル下を)間違った(wrong)単語として登録   zw or :spellw[rong] {word}
+" (カーソル下の?)単語を一覧から削除             zuw / zug / :spellu[ndo] {word}
+
 " ##### other topics
 " about command args... <f-args>=string, <args>=value
 " about equation operator ...  (sorry for Japanese)
@@ -30,6 +42,7 @@ scriptencoding utf-8
 " about SID
 " :scriptnames          ... List all sourced script names
 " :echo expand('<SID>') ... Get the current file SID
+
 "" }}}
 
 ""##########基本設定 "{{{
@@ -140,6 +153,15 @@ set showmode
 " エコーエリアに補完時のメッセージ (match n of Nとか)を表示しない
 if (v:version > 704) || ((v:version==704) && has('patch314'))
     set shortmess+=c
+endif
+" spell checkする言語
+set spelllang=en_us
+" spell checkされた単語リストファイル
+if exists('g:vimdir')
+    if !isdirectory(g:vimdir.'spell')
+        call mkdir(g:vimdir.'spell')
+    endif
+    let &spellfile = g:vimdir.'spell/local.'.&encoding.'.add'
 endif
 
 " terminal mode設定
