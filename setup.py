@@ -129,7 +129,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
     shift = '  '
     if link:    #link
         cmd = 'os.symlink("{}", "{}")'.format(file1, file2)
-        comment = 'linked '+name1
+        comment = 'linked {} --> {}'.format(name1, home_cut(file2))
 
         if not condition:
             print(shift+"condition doesn't match" )
