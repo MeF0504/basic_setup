@@ -1095,11 +1095,11 @@ def main(args):
     return
 
 if __name__ == "__main__":
-    supported_type = 'hdf5 pickle numpy tar zip sqlite3 raw_image'
-    parser = argparse.ArgumentParser(description="show the constitution of file. supported file types ... " + supported_type.replace(' ', ', '))
-    parser.add_argument('file', help='imput hdf5 file')
-    parser.add_argument('-v', dest='verbose', action='store_true', help='show details')
-    parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(' '))
+    supported_type = 'hdf5, pickle, numpy, tar, zip, sqlite3, raw_image'
+    parser = argparse.ArgumentParser(description="show the constitution of a file. support file types ... {}".format(supported_type))
+    parser.add_argument('file', help='input file')
+    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='show details')
+    parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(', '))
     parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, path to a Group/Dataset in hdf5, path to a file/dictionary in tar/zip, or table[/column] in sqlite3.')
     parser.add_argument('-i', '--interactive', dest='interactive', help='(beta ver.) open a file with interactive mode. support pickle, hdf5, tar, zip, sqlite3.', action='store_true')
     parser.add_argument('--old', help='use old functions. this option will be deleted in future.', action='store_true')
