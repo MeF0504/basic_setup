@@ -501,11 +501,20 @@ def main_raw(fpath, args):
     except ImportError:
         print("I can't find matplotlib.")
         return
+    try:
+        from screeninfo import get_monitors
+        get_screen = True
+    except ImportError:
+        get_screen = False
 
     with rawpy.imread(fpath) as raw:
         rgb = raw.postprocess()
 
-    rate = rgb.shape[0]/1080*100   # assume a full-HD display
+    if get_screen:
+        height = get_monitors()[0].height
+    else:
+        height = 1080   # assume a full-HD display
+    rate = rgb.shape[0]/height*100
     h = int(rgb.shape[0]/rate)
     w = int(rgb.shape[1]/rate)
     fig1 = plt.figure(figsize=(w,h))
