@@ -94,10 +94,10 @@ def main_hdf5(fpath, args):
     list_tree = [{}]
     def make_list(name, obj):
         if isinstance(obj, h5py.Dataset):
-            if not args_chk(args, 'interactive') and not args_chk(args, 'key'):
-                print(name)
             if args_chk(args, 'verbose'):
-                print(" >>>  {}".format(h5_file[name][()]))
+                print("--- {} ---\n{}".format(name, h5_file[name][()]))
+            elif not args_chk(args, 'interactive') and not args_chk(args, 'key'):
+                print(name)
 
             tmp_list = list_tree
             for p in name.split('/'):
@@ -242,10 +242,8 @@ def main_pickle(fpath, args):
 
 def main_numpy(fpath, args):
     import numpy as np
-    data = np.load(fpath)
-    if args.verbose:
-        print(data)
-    else:
+    from numpy.lib.npyio import NpzFile
+    def show_numpy(data):
         d_mean = np.mean(data)
         d_max = np.max(data)
         d_min = np.min(data)
@@ -254,15 +252,32 @@ def main_numpy(fpath, args):
             d_max = np.nanmax(data)
             d_min = np.nanmin(data)
             nan_rate = 1 - np.sum(data==data)/np.prod(data.shape)
-        prt_str = '''
-shape : {}
+        prt_str = '''shape : {}
 mean : {}
 max : {}
 min : {} '''.format(data.shape, d_mean, d_max, d_min)
         if 'nan_rate' in locals():
             prt_str += '\nnan rate : {:.1f}%'.format(nan_rate*100)
-
         print(prt_str)
+
+    data = np.load(fpath)
+    if args_chk(args, 'verbose'):
+        if type(data) == NpzFile:
+            for k in data:
+                print('--- {} ---\n{}'.format(k, data[k]))
+        else:
+            print(data)
+    elif args_chk(args, 'key'):
+        if type(data) == NpzFile:
+            print('--- {} ---\n{}'.format(args.key, data[args.key]))
+            show_numpy(data[args.key])
+    else:
+        if type(data) == NpzFile:
+            for k in data:
+                print('\n{}'.format(k))
+                show_numpy(data[k])
+        else:
+            show_numpy(data)
 
 def main_tar(fpath, args):
     if not tarfile.is_tarfile(fpath):
@@ -1046,7 +1061,7 @@ def main(args):
             args.type = 'hdf5'
         elif ext == 'pkl' or ext == 'pickle':
             args.type = 'pickle'
-        elif ext == 'npy':
+        elif ext in 'npy npz'.split(' '):
             args.type = 'numpy'
         elif tarfile.is_tarfile(fpath):
             args.type = 'tar'
@@ -1109,7 +1124,7 @@ if __name__ == "__main__":
     parser.add_argument('file', help='input file')
     parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='show details')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(', '))
-    parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, path to a Group/Dataset in hdf5, path to a file/dictionary in tar/zip, or table[/column] in sqlite3.')
+    parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, path to a Group/Dataset in hdf5, path to a file/dictionary in tar/zip, table[/column] in sqlite3, or key name in npz.')
     parser.add_argument('-i', '--interactive', dest='interactive', help='(beta ver.) open a file with interactive mode. support pickle, hdf5, tar, zip, sqlite3.', action='store_true')
     parser.add_argument('--old', help='use old functions. this option will be deleted in future.', action='store_true')
     args = parser.parse_args()
