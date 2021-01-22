@@ -152,6 +152,15 @@ function! s:qrun_markdown()
     endfor
     if l:is_marp == 1
         " make prezantation by markdown [https://github.com/marp-team/marp-cli]
+        if executable('marp') == 1
+            let exec_cmd = 'marp'
+            let exec_opt = ''
+        else
+            let exec_cmd = 'npx'
+            let exec_opt = "\\\\\\@marp-team/marp-cli"
+        endif
+        let ret = ":QuickRun -command '".exec_cmd."' "
+
         if has('terminal') " || has('nvim')
             " http://chrome.half-moon.org/43.html
             if has('mac')
@@ -162,9 +171,8 @@ function! s:qrun_markdown()
                 let l:open_server = 'firefox http://localhost:8080/ &'
             endif
 
-            let ret = ":QuickRun -command 'npx' "
-            let ret .= "-exec '".l:open_server."'"
-            let ret .= "-exec '%c \\\\\\@marp-team/marp-cli --server %s:h' "
+            let ret .= "-exec '".l:open_server."' "
+            let ret .= "-exec '%c ".exec_opt." --server %s:h' "
             let ret .= "-runner 'terminal' "
             let ret .= "-runner/opener 'botright new'"
         else
@@ -176,8 +184,7 @@ function! s:qrun_markdown()
                 let l:open_pdf = 'evince %s:r.pdf'
             endif
 
-            let ret = ":QuickRun -command 'npx' "
-            let ret .= "-exec '%c \\\\\\@marp-team/marp-cli %s --pdf --allow-local-files' "
+            let ret .= "-exec '%c ".exec_opt." %s --pdf --allow-local-files' "
             let ret .= "-exec '".l:open_pdf."'"
         endif
         return ret
@@ -232,6 +239,7 @@ function! <SID>quickrun_wrapper()
     let qrun_ft_func = expand('<SID>').'qrun_'.&filetype
     if exists('*'.qrun_ft_func)
         execute 'let res = '.qrun_ft_func.'()'
+        " execute 'let res = ":echo '.qrun_ft_func.'()"'
         return res
     else
         return ':QuickRun'
