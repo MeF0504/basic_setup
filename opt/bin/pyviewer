@@ -22,7 +22,7 @@ except ImportError:
     print_color = False
 
 debug = False
-inter_str = "'q':quit, '..':go back 1 tree, key_name:select a key >> "
+inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
 
 def args_chk(args, attr):
     if not hasattr(args, attr):
@@ -48,7 +48,7 @@ def cprint(str1, str2, fg=None, bg=None, **kwargs):
 
 def interactive_view(tree, fname, show_func):
     cpath = PurePath('.')
-    inter_str = "'q':quit, '..':go back 1 tree, key_name:select a key >> "
+    inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
     tv = tree_viewer(tree, '.')
     while(True):
         files, dirs = tv.get_contents(cpath)
