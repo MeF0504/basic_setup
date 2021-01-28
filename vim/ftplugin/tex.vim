@@ -56,7 +56,7 @@ set suffixesadd+=.tex
 
 function! s:replace_words()
     let l = line('.')
-    let c = col('.')
+    let c = virtcol('.')
     %s/、/，/ge
     %s/。/．/ge
     " go back
