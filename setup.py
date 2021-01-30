@@ -182,60 +182,36 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             fcopy_main(cmd, comment, test)
 #}}}
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--prefix',help='install directory',default=op.expanduser('~/opt'))
-    parser.add_argument('--download',help='download some files (from git)',action='store_true')
-    parser.add_argument('--link',help="link files instead of copy",action='store_true')
-    parser.add_argument('--test',help="don't copy, just show command",action='store_true')
-    parser.add_argument('-f','--force',help="Do not prompt for confirmation before overwriting the destination path",action='store_true')
-    parser.add_argument('--min', help='Minimum install. only copy *shrc, posixShellRC, and vimrc_basic.vim.', action='store_true')
-    args = parser.parse_args()
-
-    if not op.exists(args.prefix):
-        print("install path {} does not exit".format(args.prefix))
-        exit()
-
-    fpath = op.dirname(op.abspath(__file__))
+def main_opt(args):
     binpath = op.join(args.prefix,'bin')
     libpath = op.join(args.prefix,'lib')
-    os.chdir(fpath)
-
-    if 'XDG_CONFIG_HOME' in os.environ:
-        conf_home = os.environ['XDG_CONFIG_HOME']
-    else:
-        conf_home = op.expanduser('~/.config')
-
-    ############### script directory ############### {{{
-    optdir = op.join(fpath,'opt')
+    optdir = op.join(args.fpath,'opt')
     print('\n@ '+optdir+'\n')
 
     bindir = op.join(optdir,'bin')
-    optfiles = []
+    binfiles = []
     for bfy in glob.glob(op.join(bindir,'*')):
         if os.access(bfy,os.X_OK):
             if (op.basename(bfy) == 'pdf2jpg'):
                 if (os.uname()[0] == 'Darwin'):
-                    optfiles.append(bfy)
+                    binfiles.append(bfy)
             else:
-                optfiles.append(bfy)
+                binfiles.append(bfy)
 
-    if not args.min:
-        # Do not copy any files in ./opt if this script runs with --min.
-        for p in optfiles:
-            fname = op.basename(p)
-            fcopy(p,op.join(binpath,fname),link=args.link,force=args.force,test=args.test)
+    for b in binfiles:
+        fname = op.basename(b)
+        fcopy(b,op.join(binpath,fname),link=args.link,force=args.force,test=args.test)
 
-        libdir = op.join(optdir, 'lib')
-        for lfy in glob.glob(op.join(libdir,'*')):
-            fname = op.basename(lfy)
-            fcopy(lfy,op.join(libpath,fname),link=args.link,force=args.force,test=args.test)
+    libdir = op.join(optdir, 'lib')
+    for lfy in glob.glob(op.join(libdir,'*')):
+        fname = op.basename(lfy)
+        fcopy(lfy,op.join(libpath,fname),link=args.link,force=args.force,test=args.test)
 
-    # }}}
-
-    ############### basic config directory ############### {{{
-    setdir = op.join(fpath,'config')
+def main_conf(args):
+    binpath = op.join(args.prefix,'bin')
+    setdir = op.join(args.fpath,'config')
     print('\n@ '+setdir+'\n')
+
     files_mac = {\
                 'zshrc':'~/.zshrc', \
                 'zlogin':'~/.zlogin', \
@@ -250,8 +226,8 @@ def main():
                   'zlogin':'~/.zlogin', \
                   'posixShellRC':'~/.posixShellRC',\
                   'bashrc':'~/.bashrc',\
-                  'terminator_config':op.join(conf_home,'terminator/config'), \
-                  'matplotlibrc':op.join(conf_home, 'matplotlib/matplotlibrc'), \
+                  'terminator_config':op.join(args.conf_home,'terminator/config'), \
+                  'matplotlibrc':op.join(args.conf_home, 'matplotlib/matplotlibrc'), \
                   'gitignore_global':'~/.gitignore_global', \
                 }
 
@@ -262,12 +238,12 @@ def main():
                 }
 
     if os.uname()[0] == 'Darwin':
-        if args.min:
+        if args.type == 'min':
             files = files_min
         else:
             files = files_mac
     elif os.uname()[0] == 'Linux':
-        if args.min:
+        if args.type == 'min':
             files = files_min
         else:
             files = files_linux
@@ -290,14 +266,13 @@ def main():
             fcopy(spath,files[fy], link=bool(args.link), force=args.force,test=args.test)
 
     pyopt = '--prefix ' + args.prefix
+    pyopt += ' --type ' + args.type
     if args.link:
         pyopt += ' --link'
     if args.force:
         pyopt += ' --force'
-    if args.min:
-        pyopt += ' --min'
     up_stup = \
-            "alias update_setup='cd {}".format(fpath) +\
+            "alias update_setup='cd {}".format(args.fpath) +\
             " && git pull" +\
             " && echo \"update? (y/[n])\"" +\
             " && read YN" +\
@@ -307,7 +282,7 @@ def main():
     zshrc_mine = op.join(zshdir, 'zshrc.mine')
     bashrc_mine = op.join(bashdir, 'bashrc.mine')
     mine_exist = True
-    if not args.min:
+    if not args.type == 'min':
         if not op.exists(zshrc_mine):
             with open(zshrc_mine,'a') as f:
                 f.write('## PC dependent zshrc\n')
@@ -333,28 +308,26 @@ def main():
     if mine_exist:
         print('  update alias is\n{}'.format(up_stup))
 
-    if not args.min:
+    if not args.type == 'min':
         for fy in glob.glob(op.join(setdir, 'zsh', '*')):
             fcopy(fy, op.join(zshdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
 
-    # }}}
-
-    ############### vim setup directory ############### {{{
-    vimdir = op.join(fpath,'vim')
+def main_vim(args):
+    vimdir = op.join(args.fpath,'vim')
     print('\n@ '+vimdir+'\n')
 
-    vim_config_dir = op.join(conf_home, 'nvim')
+    vim_config_dir = op.join(args.conf_home, 'nvim')
     rcdir = op.join(vim_config_dir, 'rcdir')
     ftdir = op.join(vim_config_dir, 'ftplugin')
     tmdir = op.join(vim_config_dir, 'toml')
     mkdir(op.join(vim_config_dir, "swp"))
 
-    if args.min:
+    if args.type == 'min':
         fcopy(op.join(vimdir, "rcdir", 'vimrc_basic.vim'), op.join(vim_config_dir, "init.vim"), link=bool(args.link), force=args.force, test=args.test)
     else:
         if args.download and chk_cmd('sh'):
             mkdir('tmp')
-            os.chdir(op.join(fpath,'tmp'))
+            os.chdir(op.join(args.fpath,'tmp'))
 
             print('\nclone dein')
             mkdir(op.join(vim_config_dir, 'dein'))
@@ -362,8 +335,8 @@ def main():
             subprocess.call('sh installer.sh {}'.format(op.join(vim_config_dir, 'dein')), shell=True)
 
             print('\nremove download tmp files')
-            os.chdir(fpath)
-            shutil.rmtree(op.join(fpath, 'tmp'))
+            os.chdir(args.fpath)
+            shutil.rmtree(op.join(args.fpath, 'tmp'))
 
         fcopy(op.join(vimdir, "vimrc"), op.join(vim_config_dir, "init.vim"), link=bool(args.link), force=args.force, test=args.test)
         for fy in glob.glob(op.join(vimdir, 'rcdir', "*")):
@@ -401,8 +374,36 @@ def main():
         print("link " + src + " -> " + dst)
         os.symlink(src, dst)
 
-    # }}}
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--prefix',help='install directory',default=op.expanduser('~/opt'))
+    parser.add_argument('--download',help='download some files (from git)',action='store_true')
+    parser.add_argument('--link',help="link files instead of copy",action='store_true')
+    parser.add_argument('--test',help="don't copy, just show command",action='store_true')
+    parser.add_argument('-f','--force',help="Do not prompt for confirmation before overwriting the destination path",action='store_true')
+    parser.add_argument('-t', '--type', help="set the type of copy files. If min is specified, only copy *shrc, posixShellRC, and vimrc_basic.vim.", choices='all opt config vim min'.split(), default='all')
+    args = parser.parse_args()
 
+    if not op.exists(args.prefix):
+        print("install path {} does not exit".format(args.prefix))
+        exit()
+
+    fpath = op.dirname(op.abspath(__file__))
+    args.fpath = fpath
+    os.chdir(fpath)
+
+    if 'XDG_CONFIG_HOME' in os.environ:
+        conf_home = os.environ['XDG_CONFIG_HOME']
+    else:
+        conf_home = op.expanduser('~/.config')
+    args.conf_home = conf_home
+
+    if args.type in 'all opt'.split():
+        main_opt(args)
+    if args.type in 'all config min'.split():
+        main_conf(args)
+    if args.type in 'all vim min'.split():
+        main_vim(args)
 
 if __name__ == "__main__":
     main()
