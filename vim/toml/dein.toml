@@ -198,9 +198,14 @@ endfunction
 if has('mac')
     " macOSでlatex (ptex2pdf)を使う場合
     " https://texwiki.texjp.org/?quickrun
+    if isdirectory('/Applications/Skim.app')
+        let s:open_pdf = 'open -a Skim '
+    else
+        let s:open_pdf = 'open '
+    endif
     let g:quickrun_config.tex = {
                 \ 'command' : 'ptex2pdf',
-                \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" %s -output-directory %s:h', 'open %s:r.pdf']
+                \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" %s -output-directory %s:h', s:open_pdf.'%s:r.pdf']
                 \ }
 
     function! s:qrun_tex()
@@ -225,7 +230,7 @@ if has('mac')
         let ret .= "-exec '%c -l -u -ot \"-synctex=1 -interaction=nonstopmode\" ".s:main_file." -output-directory ".s:build_dir."' "
         let ret .= "-exec 'mv ".s:build_pdf." ".s:pdf_file."' "
         let ret .= "-exec 'echo \"\\\\n move from ".s:build_pdf." to ". s:pdf_file."\"' "
-        let ret .= "-exec 'open ".s:pdf_file."'"
+        let ret .= "-exec '".s:open_pdf.s:pdf_file."'"
         return ret
     endfunction
 endif
