@@ -7,6 +7,7 @@ on_ft = 'toml'
 # dark powered 補完plugin
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
+if = '''has('python3') && ((v:version>=801) || (has('nvim')&&has('nvim-0.3.0')))'''
 on_i = 1
 hook_source = '''
 "{{{ "deoplete
@@ -35,18 +36,19 @@ autocmd deinLocal CompleteDone * silent! pclose!
 repo = 'Shougo/neosnippet.vim'
 on_ft = 'snippet'
 
-# vim script 用補完 plugin
-[[plugins]]
-repo = 'Shougo/neco-vim'
-on_i = 1
-on_ft = 'vim'
+### plugins for deoplete (from here)
+# https://github.com/Shougo/deoplete.nvim/wiki/Completion-Sources
 
 # syntax file から補完候補を作成
 [[plugins]]
 repo = 'Shougo/neco-syntax'
-on_i = 1
+on_source = ['deoplete.nvim']
 
-# https://github.com/Shougo/deoplete.nvim/wiki/Completion-Sources
+# vim script 用補完 plugin
+[[plugins]]
+repo = 'Shougo/neco-vim'
+on_source = ['deoplete.nvim']
+on_ft = 'vim'
 
 # c言語用補完 plugin
 [[plugins]]
@@ -59,6 +61,14 @@ on_ft = 'c'
 repo = 'deoplete-plugins/deoplete-jedi'
 on_source = ['deoplete.nvim']
 on_ft = 'python'
+
+# zsh 用補完 plugin
+[[plugins]]
+repo = 'deoplete-plugins/deoplete-zsh'
+on_source = ['deoplete.nvim']
+on_ft = 'zsh'
+
+### (to here)
 
 # vimの編集履歴を表示／適用してくれる plugin
 [[plugins]]
