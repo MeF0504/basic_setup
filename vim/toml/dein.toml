@@ -433,7 +433,7 @@ endif
 # 検索時にhit数をcountしてくれるplugin
 [[plugins]]
 repo = 'osyo-manga/vim-anzu'
-if = '''!exists('*searchcount')'''  # if exists => use vim-anzu
+if = '''!exists('*searchcount')'''  # if exists => use vim-hitspop
 hook_add = '''
 """ vim-anzu {{{
 " max search count
