@@ -247,7 +247,11 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color)
 esac
 add-zsh-hook precmd tab_title_precmd
 
-# ssh 先の名前を$TAB0-15に登録しておくと，接続中iterm2のtabの色が変わる
+# $TAB0-15にコマンドと引数を指定すると，色が変わる
+# 例：serverにsshすると色が変わる
+#       export TAB1=('ssh' 'server')
+# 例2：ipython
+#       export TAB2=('ipython.*' '')
 # https://gist.github.com/wadey/1140259
 if [[ -n $ITERM_SESSION_ID ]]; then
     tab_color() {
@@ -299,37 +303,37 @@ if [[ -n $ITERM_SESSION_ID ]]; then
     }
 
     function iterm2_tab_preexec() {
-        if [[ -n $TAB0 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB0.*$" ]]; then
+        if [[ -n $TAB0 ]] && [[ "$1" =~ "^ ?${TAB0[1]}" ]] && [[ "$1" =~ "${TAB0[2]}.*$" ]]; then
             iterm2_tab_color_set 0
-        elif [[ -n $TAB1 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB1.*$" ]]; then
+        elif [[ -n $TAB1 ]] && [[ "$1" =~ "^ ?${TAB1[1]}" ]] && [[ "$1" =~ "${TAB1[2]}.*$" ]]; then
             iterm2_tab_color_set 1
-        elif [[ -n $TAB2 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB2.*$" ]]; then
+        elif [[ -n $TAB2 ]] && [[ "$1" =~ "^ ?${TAB2[1]}" ]] && [[ "$1" =~ "${TAB2[2]}.*$" ]]; then
             iterm2_tab_color_set 2
-        elif [[ -n $TAB3 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB3.*$" ]]; then
+        elif [[ -n $TAB3 ]] && [[ "$1" =~ "^ ?${TAB3[1]}" ]] && [[ "$1" =~ "${TAB3[2]}.*$" ]]; then
             iterm2_tab_color_set 3
-        elif [[ -n $TAB4 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB4.*$" ]]; then
+        elif [[ -n $TAB4 ]] && [[ "$1" =~ "^ ?${TAB4[1]}" ]] && [[ "$1" =~ "${TAB4[2]}.*$" ]]; then
             iterm2_tab_color_set 4
-        elif [[ -n $TAB5 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB5.*$" ]]; then
+        elif [[ -n $TAB5 ]] && [[ "$1" =~ "^ ?${TAB5[1]}" ]] && [[ "$1" =~ "${TAB5[2]}.*$" ]]; then
             iterm2_tab_color_set 5
-        elif [[ -n $TAB6 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB6.*$" ]]; then
+        elif [[ -n $TAB6 ]] && [[ "$1" =~ "^ ?${TAB6[1]}" ]] && [[ "$1" =~ "${TAB6[2]}.*$" ]]; then
             iterm2_tab_color_set 6
-        elif [[ -n $TAB7 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB7.*$" ]]; then
+        elif [[ -n $TAB7 ]] && [[ "$1" =~ "^ ?${TAB7[1]}" ]] && [[ "$1" =~ "${TAB7[2]}.*$" ]]; then
             iterm2_tab_color_set 7
-        elif [[ -n $TAB8 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB8.*$" ]]; then
+        elif [[ -n $TAB8 ]] && [[ "$1" =~ "^ ?${TAB8[1]}" ]] && [[ "$1" =~ "${TAB8[2]}.*$" ]]; then
             iterm2_tab_color_set 8
-        elif [[ -n $TAB9 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB9.*$" ]]; then
+        elif [[ -n $TAB9 ]] && [[ "$1" =~ "^ ?${TAB9[1]}" ]] && [[ "$1" =~ "${TAB9[2]}.*$" ]]; then
             iterm2_tab_color_set 9
-        elif [[ -n $TAB10 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB10.*$" ]]; then
+        elif [[ -n $TAB10 ]] && [[ "$1" =~ "^ ?${TAB10[1]}" ]] && [[ "$1" =~ "${TAB10[2]}.*$" ]]; then
             iterm2_tab_color_set 10
-        elif [[ -n $TAB11 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB11.*$" ]]; then
+        elif [[ -n $TAB11 ]] && [[ "$1" =~ "^ ?${TAB11[1]}" ]] && [[ "$1" =~ "${TAB11[2]}.*$" ]]; then
             iterm2_tab_color_set 11
-        elif [[ -n $TAB12 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB12.*$" ]]; then
+        elif [[ -n $TAB12 ]] && [[ "$1" =~ "^ ?${TAB12[1]}" ]] && [[ "$1" =~ "${TAB12[2]}.*$" ]]; then
             iterm2_tab_color_set 12
-        elif [[ -n $TAB13 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB13.*$" ]]; then
+        elif [[ -n $TAB13 ]] && [[ "$1" =~ "^ ?${TAB13[1]}" ]] && [[ "$1" =~ "${TAB13[2]}.*$" ]]; then
             iterm2_tab_color_set 13
-        elif [[ -n $TAB14 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB14.*$" ]]; then
+        elif [[ -n $TAB14 ]] && [[ "$1" =~ "^ ?${TAB14[1]}" ]] && [[ "$1" =~ "${TAB14[2]}.*$" ]]; then
             iterm2_tab_color_set 14
-        elif [[ -n $TAB15 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB15.*$" ]]; then
+        elif [[ -n $TAB15 ]] && [[ "$1" =~ "^ ?${TAB15[1]}" ]] && [[ "$1" =~ "${TAB15[2]}.*$" ]]; then
             iterm2_tab_color_set 15
         fi
     }
