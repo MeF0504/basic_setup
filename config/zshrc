@@ -247,7 +247,7 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color)
 esac
 add-zsh-hook precmd tab_title_precmd
 
-# ssh 先の名前を$TAB1-7に登録しておくと，接続中iterm2のtabの色が変わる
+# ssh 先の名前を$TAB0-15に登録しておくと，接続中iterm2のtabの色が変わる
 # https://gist.github.com/wadey/1140259
 if [[ -n $ITERM_SESSION_ID ]]; then
     tab_color() {
@@ -262,28 +262,89 @@ if [[ -n $ITERM_SESSION_ID ]]; then
         tab_reset
     }
 
-    function iterm2_tab_preexec() {
-        if [[ -n $TAB1 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB1.*$" ]]; then
-            tab_color 255 0 0       # Red
-        elif [[ -n $TAB2 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB2.*$" ]]; then
-            tab_color 0 255 0       # Lime
-        elif [[ -n $TAB3 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB3.*$" ]]; then
-            tab_color 255 255 0     # Yellow
-        elif [[ -n $TAB4 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB4.*$" ]]; then
-            tab_color 0 0 255       # Blue
-        elif [[ -n $TAB5 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB5.*$" ]]; then
-            tab_color 255 0 255     # Fuchsia
-        elif [[ -n $TAB6 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB6.*$" ]]; then
-            tab_color 0 255 255     # Aqua
-        elif [[ -n $TAB7 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB7.*$" ]]; then
+    function iterm2_tab_color_set() {
+        if [[ $1 == '0' ]]; then
+            tab_color 0 0 0       # Black
+        elif [[ $1 == '1' ]]; then
+            tab_color 128 0 0       # Maroon
+        elif [[ $1 == '2' ]]; then
             tab_color 0 128 0       # Green
-        elif [[ -n $TAB8 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB8.*$" ]]; then
+        elif [[ $1 == '3' ]]; then
+            tab_color 128 128 0     # Olive
+        elif [[ $1 == '4' ]]; then
+            tab_color 0 0 128       # Navy
+        elif [[ $1 == '5' ]]; then
             tab_color 128 0 128     # Purple
+        elif [[ $1 == '6' ]]; then
+            tab_color 0 128 128     # Teal
+        elif [[ $1 == '7' ]]; then
+            tab_color 0 128 0       # Silver
+        elif [[ $1 == '8' ]]; then
+            tab_color 128 128 128     # Gray
+        elif [[ $1 == '9' ]]; then
+            tab_color 255 0 0     # Red
+        elif [[ $1 == '10' ]]; then
+            tab_color 0 255 0     # Lime
+        elif [[ $1 == '11' ]]; then
+            tab_color 255 255 0     # Yellow
+        elif [[ $1 == '12' ]]; then
+            tab_color 0 0 255     # Blue
+        elif [[ $1 == '13' ]]; then
+            tab_color 255 0 255     # Fuchsia
+        elif [[ $1 == '14' ]]; then
+            tab_color 0 255 255     # Aqua
+        elif [[ $1 == '15' ]]; then
+            tab_color 255 255 255     # White
+        fi
+    }
+
+    function iterm2_tab_preexec() {
+        if [[ -n $TAB0 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB0.*$" ]]; then
+            iterm2_tab_color_set 0
+        elif [[ -n $TAB1 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB1.*$" ]]; then
+            iterm2_tab_color_set 1
+        elif [[ -n $TAB2 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB2.*$" ]]; then
+            iterm2_tab_color_set 2
+        elif [[ -n $TAB3 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB3.*$" ]]; then
+            iterm2_tab_color_set 3
+        elif [[ -n $TAB4 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB4.*$" ]]; then
+            iterm2_tab_color_set 4
+        elif [[ -n $TAB5 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB5.*$" ]]; then
+            iterm2_tab_color_set 5
+        elif [[ -n $TAB6 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB6.*$" ]]; then
+            iterm2_tab_color_set 6
+        elif [[ -n $TAB7 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB7.*$" ]]; then
+            iterm2_tab_color_set 7
+        elif [[ -n $TAB8 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB8.*$" ]]; then
+            iterm2_tab_color_set 8
+        elif [[ -n $TAB9 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB9.*$" ]]; then
+            iterm2_tab_color_set 9
+        elif [[ -n $TAB10 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB10.*$" ]]; then
+            iterm2_tab_color_set 10
+        elif [[ -n $TAB11 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB11.*$" ]]; then
+            iterm2_tab_color_set 11
+        elif [[ -n $TAB12 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB12.*$" ]]; then
+            iterm2_tab_color_set 12
+        elif [[ -n $TAB13 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB13.*$" ]]; then
+            iterm2_tab_color_set 13
+        elif [[ -n $TAB14 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB14.*$" ]]; then
+            iterm2_tab_color_set 14
+        elif [[ -n $TAB15 ]] && [[ "$1" =~ "^ ?ssh" ]] && [[ "$1" =~ "$TAB15.*$" ]]; then
+            iterm2_tab_color_set 15
         fi
     }
 
     add-zsh-hook precmd iterm2_tab_precmd
     add-zsh-hook preexec iterm2_tab_preexec
+
+    function iterm2_tab_color_test() {
+        for i in {0..15}; do
+            echo $i
+            iterm2_tab_color_set $i
+            sleep 2
+        done
+        tab_reset
+    }
 
 fi
 
