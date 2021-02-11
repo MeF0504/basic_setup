@@ -151,12 +151,12 @@ function! s:file_list() abort
     " tab number
     for i in range(1,tabpagenr('$'))
         "buffer number of each window
-        for j in tabpagebuflist(i)
-            let l:fname = bufname(j)
+        for bufn in tabpagebuflist(i)
+            let l:fname = bufname(bufn)
             if (len(l:fname) > 0) && (l:fname[0] == '/')
                 let l:fname = fnamemodify(l:fname,':~')
             endif
-            let l:fnames[i . "-" . j] = l:fname
+            let l:fnames[i . "-" . bufn] = l:fname
         endfor
     endfor
 
@@ -169,15 +169,19 @@ function! s:file_list() abort
             let l:tab_files = printf("%3d", i)
             let l:tab_files .= ' '
             " for in # of window in 1 tab
-            for j in tabpagebuflist(i)
+            for j in range(1, tabpagewinnr(i, '$'))
+                let win_winID = win_getid(j, i)
+                let bufn = tabpagebuflist(i)[j-1]
+                let curpos = getcurpos(win_winID)
                 "check if 'search word' in file name.
-                if match(l:fnames[i . "-" . j], l:search_name) != -1
+                if match(l:fnames[i . "-" . bufn], l:search_name) != -1
                     let l:disp = 1
                 endif
 
-                let mod = getbufvar(j, '&modified') ? '[+]' : ''
-                let l:flist =  '[ ' . l:fnames[i . "-" . j] . mod . ' ] '
-                if getbufvar(j, '&filetype') == 'qf'
+                let mod = getbufvar(bufn, '&modified') ? '[+]' : ''
+                let line_col = ' ('.curpos[1].'-'.curpos[2].')'
+                let l:flist =  '[ ' . l:fnames[i . "-" . bufn] . mod . line_col . ' ] '
+                if getbufvar(bufn, '&filetype') == 'qf'
                     let l:flist = '[ QuickFix' . mod . ']'
                 endif
                 let l:tab_files .= l:flist
