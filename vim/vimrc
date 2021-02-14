@@ -163,7 +163,7 @@ autocmd local VimEnter * if g:l_st_showmode!=0 | set noshowmode | endif
 
 function! s:noeol_reenc()
     if &endofline == 0
-        if input("reencode? 'y' or 'n'")=='y'
+        if input("reencode? (y/[n])")=='y'
             set readonly
             e ++enc=utf-8
         endif
@@ -487,9 +487,10 @@ command! LastWin execute "vsplit " . g:l_last_file['win']
 
 "検索pathを追加
 set path+=../include
-if exists("$LD_LIBRARY_PATH")
-    set path+=$LD_LIBRARY_PATH
-endif
+" I should serarch $INCLUDE, not the environment for lib?
+" if exists("$LD_LIBRARY_PATH")
+"     execute "set path+=".substitute($LD_LIBRARY_PATH, ':', ',', 'g')
+" endif
 
 " test用directoryを追加
 let s:test_vim_dir = g:vimdir . 'test'
