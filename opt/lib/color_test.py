@@ -39,14 +39,20 @@ def main_test(num):
     print('system colors')
     for i in range(8):
         if num == 1:
-            tmp_st = '{:02x}'.format(i)
+            if i%2 == 0:    # even
+                tmp_st = '{}{:02x}{}'.format(FG['w'], i, END)
+            else:           # odd
+                tmp_st = '{}{:02x}{}'.format(FG['k'], i, END)
         else:
             tmp_st = '  '
         print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
     print()
     for i in range(8,16):
         if num == 1:
-            tmp_st = '{:02x}'.format(i)
+            if i%2 == 0:    # even
+                tmp_st = '{}{:02x}{}'.format(FG['w'], i, END)
+            else:           # odd
+                tmp_st = '{}{:02x}{}'.format(FG['k'], i, END)
         else:
             tmp_st = '  '
         print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
@@ -60,7 +66,10 @@ def main_test(num):
                 if num == 0:
                     tmp_st = '  '
                 elif num == 1:
-                    tmp_st = '{:02x}'.format(i)
+                    if i%2 == 0:    # even
+                        tmp_st = '{}{:02x}{}'.format(FG['w'], i, END)
+                    else:           # odd
+                        tmp_st = '{}{:02x}{}'.format(FG['k'], i, END)
                 else:
                     # tmp_st = '{}{:02x}{}'.format(FG256(36*((r+3)%6)+6*((g+3)%6)+(b+3)%6+16), i, END)
                     if isdark(r, g, b):
@@ -76,7 +85,7 @@ def main_test(num):
     st = 6*6*6+16
     for i in range(st, 256):
         if num == 1:
-            tmp_st = '{:02x}'.format(i)
+            tmp_st = '{}{:02x}{}'.format(FG256(255+st-i), i, END)
         else:
             tmp_st = '  '
         print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
