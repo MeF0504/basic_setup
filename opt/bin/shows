@@ -36,8 +36,8 @@ def linux(files, thr, force=False):
             break
 
     for fy in pdf_files:
-        # judge = subprocess.call('evince {} &'.format(f), shell=True)
-        judge = subprocess.call('display {} &'.format(f), shell=True)
+        # judge = subprocess.call('evince {} &'.format(fy), shell=True)
+        judge = subprocess.call('display {} &'.format(fy), shell=True)
         if judge != 0:
             break
 
