@@ -159,7 +159,7 @@ function! s:qrun_markdown()
             let exec_cmd = 'npx'
             let exec_opt = "\\\\\\@marp-team/marp-cli"
         endif
-        let ret = ":QuickRun -command '".exec_cmd."' "
+        let ret = "QuickRun -command '".exec_cmd."' "
 
         if has('terminal') " || has('nvim')
             " http://chrome.half-moon.org/43.html
@@ -189,7 +189,7 @@ function! s:qrun_markdown()
         endif
         return ret
     else
-        return ':QuickRun'
+        return 'QuickRun'
     endif
 endfunction
 " }}}
@@ -226,7 +226,7 @@ if has('mac')
             let s:build_pdf = s:build_dir.'/'.expand('%:t:r').'.pdf'
         endif
 
-        let ret = ":QuickRun -command 'ptex2pdf' "
+        let ret = "QuickRun -command 'ptex2pdf' "
         let ret .= "-exec '%c -l -u -ot \"-synctex=1 -interaction=nonstopmode\" ".s:main_file." -output-directory ".s:build_dir."' "
         let ret .= "-exec 'mv ".s:build_pdf." ".s:pdf_file."' "
         let ret .= "-exec 'echo \"\\\\n move from ".s:build_pdf." to ". s:pdf_file."\"' "
@@ -243,11 +243,12 @@ function! <SID>quickrun_wrapper()
     endif
     let qrun_ft_func = expand('<SID>').'qrun_'.&filetype
     if exists('*'.qrun_ft_func)
-        execute 'let res = '.qrun_ft_func.'()'
+        let res = ':cclose | '
+        execute 'let res .= '.qrun_ft_func.'()'
         " execute 'let res = ":echo '.qrun_ft_func.'()"'
         return res
     else
-        return ':QuickRun'
+        return ':cclose | QuickRun'
     endif
 endfunction
 
