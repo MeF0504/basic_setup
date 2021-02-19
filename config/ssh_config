@@ -26,6 +26,8 @@ Host dummy
     UseKeychain yes
 ## port forward (connect to local)
     LocalForward 8088 AccessFromServer.com:80
+## don't request to use terminal output
+    RequestTTY no
 ## keep connecting?
     TCPKeepAlive yes
 
