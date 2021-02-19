@@ -10,7 +10,7 @@ Host dummy
     User hoge
 ## to avoid timeout
     ServerAliveInterval 60
-## use same key at server A and server B
+## use same key at target server A and bastion server B
     ForwardAgent yes
 ## set key file
     IdentityFile /path/to/id_rsa
@@ -26,4 +26,6 @@ Host dummy
     UseKeychain yes
 ## port forward (connect to local)
     LocalForward 8088 AccessFromServer.com:80
+## keep connecting?
+    TCPKeepAlive yes
 
