@@ -473,6 +473,27 @@ function! <SID>leader_map()
     map <Leader>
 endfunction
 nnoremap <silent> <Leader><Leader> :call <SID>leader_map()<CR>
+
+" 要らない？user関数を消す
+function! s:del_comds()
+    let del_commands = get(g:, 'del_commands', [])
+    for dc in del_commands
+        if exists(':'.dc) == 2
+            execute 'delcommand '.dc
+            " echo 'delete '.dc
+            " sleep 1
+        else
+            " echo 'not delete '.dc
+            " sleep 1
+        endif
+    endfor
+endfunction
+if v:vim_did_enter
+    call s:del_comds()
+else
+    autocmd local VimEnter * call s:del_comds()
+endif
+
 " }}}
 
 ""##########file, directory関連 "{{{
