@@ -10,7 +10,7 @@ if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
     TZ=Asia/Tokyo date "+%Y%m%d" > $HOME/.cache/date.txt
 fi
 
-if [[ -n $(ls $HOME/.vim/swp/) ]]; then
+if [[ -e $HOME/.vim/swp ]]; then
     ls $HOME/.vim/swp/
 fi
 
