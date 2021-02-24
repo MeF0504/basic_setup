@@ -1,25 +1,45 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import os
-import sys
 import subprocess
+import argparse
+
+try:
+    from color_test import BG, FG, END
+    bg = BG['c']
+except ImportError as e:
+    bg = ''
+    END = ''
 
 def linux_version():
     release_files = ['/etc/redhat-release','/etc/lsb-release','/etc/issue']
     for rf in release_files:
         if os.path.exists(rf):
-            #print subprocess.check_output('cat '+rf,shell=True)
-            subprocess.call('cat '+rf,shell=True)
+            with open(rf, 'r') as f:
+                for line in f:
+                    print(line, end='')
+            break
 
 def linux_cpu():
-    subprocess.call('cat /proc/cpuinfo', shell=True)
-    
+    cpuinfo = '/proc/cpuinfo'
+    if not os.path.exists(cpuinfo):
+        print('info file {} is not exists'.format(cpuinfo))
+        return
+    with open(cpuinfo, 'r') as f:
+        for line in f:
+            print(line, end='')
+
 def linux_mem():
-    subprocess.call('cat /proc/meminfo', shell=True)
+    meminfo = '/proc/meminfo'
+    if not os.path.exists(meminfo):
+        print('info file {} is not exists'.format(meminfo))
+        return
+    with open(meminfo, 'r') as f:
+        for line in f:
+            print(line, end='')
 
 
 def mac_version():
-    #print subprocess.check_call('sw_vers',shell=True)
     subprocess.call('sw_vers',shell=True)
 
 def mac_cpu():
@@ -30,53 +50,62 @@ def mac_mem():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='show version etc. information of this computer.')
+    parser.add_argument('-v', '--version', help='display version.', action='store_true')
+    parser.add_argument('-c', '--cpu', help='display CPU information.', action='store_true')
+    parser.add_argument('-m', '--memory', help='display memory information.', action='store_true')
+    parser.add_argument('-a', '--all', help='display all information.', action='store_true')
+    args = parser.parse_args()
+
     uname = os.uname()[0]
-    if (len(sys.argv) <= 1) or (sys.argv[1] == "version"):
+    is_display = False
+
+    if args.version:
+        is_display = True
         if uname == 'Darwin':
             mac_version()
         elif uname == 'Linux':
             linux_version()
         else:
-            print("can't find version file. please add version file place in version.py!")
-
-    elif sys.argv[1] == "cpu":
+            print('Sorry, this OS is not supported.')
+    if args.cpu:
+        is_display = True
         if uname == 'Darwin':
             mac_cpu()
         elif uname == 'Linux':
             linux_cpu()
         else:
-            print("can't find cpu file. please add version file place in version.py!")
-
-    elif sys.argv[1] == "memory":
+            print('Sorry, this OS is not supported.')
+    if args.memory:
+        is_display = True
         if uname == 'Darwin':
             mac_mem()
         elif uname == 'Linux':
             linux_mem()
         else:
-            print("can't find memory file. please add version file place in version.py!")
-
-    elif sys.argv[1] == "all":
+            print('Sorry, this OS is not supported.')
+    if args.all:
+        is_display = True
         if uname == 'Darwin':
-            print("----------OS version----------")
+            print("{}----------OS version----------{}".format(bg, END))
             mac_version()
-            print("----------cpu & memory information----------")
+            print("{}----------cpu & memory information----------{}".format(bg, END))
             mac_cpu()
         elif uname == 'Linux':
-            print("----------OS version----------")
+            print("{}----------OS version----------{}".format(bg, END))
             linux_version()
-            print("----------cpu  information----------")
+            print("{}----------cpu  information----------{}".format(bg, END))
             linux_cpu()
-            print("----------memory information----------")
+            print("{}----------memory information----------{}".format(bg, END))
             linux_mem()
+        else:
+            print('Sorry, this OS is not supported.')
 
-    else:
-        print("""
-usage: version.py [command]
-
-enable commands are following;
-version : display version.
-cpu     : display cpu information.
-memory  : display memory information.
-all     : display version, cpu, and memory information.
-""")
+    if not is_display:
+        if uname == 'Darwin':
+            mac_version()
+        elif uname == 'Linux':
+            linux_version()
+        else:
+            print('Sorry, this OS is not supported.')
 
