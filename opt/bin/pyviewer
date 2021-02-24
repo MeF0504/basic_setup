@@ -80,6 +80,9 @@ def interactive_view(tree, fname, show_func):
             else:
                 cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
 
+def print_key(key_name):
+    cprint('<<< {} >>>'.format(key_name), '', fg='w', bg='b')
+
 def main_hdf5(fpath, args):
     import h5py
 
@@ -96,7 +99,7 @@ def main_hdf5(fpath, args):
         if isinstance(obj, h5py.Dataset):
             if args_chk(args, 'verbose'):
                 print("--- {} ---\n{}".format(name, h5_file[name][()]))
-            elif not args_chk(args, 'interactive') and not args_chk(args, 'key'):
+            elif args_chk(args, 'key') and len(args.key)==0:
                 print(name)
 
             tmp_list = list_tree
@@ -120,9 +123,11 @@ def main_hdf5(fpath, args):
         interactive_view(list_tree, fname, show_hdf5)
     elif args_chk(args, 'key'):
         for k in args.key:
-            cprint('<<< {} >>>'.format(k), '', fg='w', bg='b')
+            print_key(k)
             show_hdf5(k)
             print()
+    else:
+        show_tree(list_tree)
 
     h5_file.close()
 
@@ -178,11 +183,15 @@ def main_pickle(fpath, args):
 
     if type(data) == type(dict()):
         if args_chk(args, 'key'):
-            for k in data:
-                if str(k) in args.key:
-                    cprint('<<< {} >>>'.format(str(k)), '', fg='w', bg='b')
-                    print(data[k])
-                    print()
+            if len(args.key)==0:
+                for k in data:
+                    print(k)
+            else:
+                for k in data:
+                    if str(k) in args.key:
+                        print_key(str(k))
+                        print(data[k])
+                        print()
         elif hasattr(args, 'interactive') and args.interactive:
             selected_keys = []
             tmp_data = data
@@ -257,10 +266,10 @@ def main_numpy(fpath, args):
             d_max = np.nanmax(data)
             d_min = np.nanmin(data)
             nan_rate = 1 - np.sum(data==data)/np.prod(data.shape)
-        prt_str = '''shape : {}
-mean : {}
-max : {}
-min : {} '''.format(data.shape, d_mean, d_max, d_min)
+        prt_str = '''shape    : {}
+mean     : {}
+max      : {}
+min      : {} '''.format(data.shape, d_mean, d_max, d_min)
         if 'nan_rate' in locals():
             prt_str += '\nnan rate : {:.1f}%'.format(nan_rate*100)
         print(prt_str)
@@ -269,13 +278,18 @@ min : {} '''.format(data.shape, d_mean, d_max, d_min)
     if args_chk(args, 'verbose'):
         if type(data) == NpzFile:
             for k in data:
-                print('--- {} ---\n{}'.format(k, data[k]))
+                print_key(k)
+                print(data[k])
         else:
             print(data)
     elif args_chk(args, 'key'):
         if type(data) == NpzFile:
+            if len(args.key)==0:
+                for k in data:
+                    print(k)
             for k in args.key:
-                cprint('<<< {} >>>'.format(k), '\n{}'.format(data[k]), fg='w', bg='b')
+                print_key(k)
+                print(data[k])
                 show_numpy(data[k])
                 print()
     else:
@@ -344,8 +358,10 @@ def main_tar(fpath, args):
     if args_chk(args, 'interactive'):
         interactive_view(list_tree, fname, show_tar)
     elif args_chk(args, 'key'):
+        if len(args.key)==0:
+            tar_file.list(verbose=False)
         for k in args.key:
-            cprint('<<< {} >>>'.format(k), '', fg='w', bg='b')
+            print_key(k)
             show_tar(k)
             print()
     elif args_chk(args, 'verbose'):
@@ -413,8 +429,11 @@ def main_zip(fpath, args):
     if args_chk(args, 'interactive'):
         interactive_view(list_tree, fname, show_zip)
     elif args_chk(args, 'key'):
+        if len(args.key)==0:
+            for fy in zip_file.namelist():
+                print(fy)
         for k in args.key:
-            cprint('<<< {} >>>'.format(k), '', fg='w', bg='b')
+            print_key(k)
             show_zip(k)
             print()
     elif args_chk(args, 'verbose'):
@@ -513,8 +532,11 @@ def main_sqlite3(fpath, args):
         fname = os.path.basename(fpath)
         interactive_view(list_tree, fname, show_table)
     elif args_chk(args, 'key'):
+        if len(args.key)==0:
+            for t in tables:
+                print(t[0])
         for k in args.key:
-            cprint('<<< {} >>>'.format(k), '', fg='w', bg='b')
+            print_key(k)
             show_table(k, verbose=True)
             print()
     else:
@@ -1140,7 +1162,7 @@ if __name__ == "__main__":
     parser.add_argument('file', help='input file')
     parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='show details')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(', '))
-    parser.add_argument('-k', '--key', dest='key', help='dictionary key name in pickle, path to a Group/Dataset in hdf5, path to a file/dictionary in tar/zip, table[/column[,column2...]] in sqlite3, or key name in npz.', nargs='+')
+    parser.add_argument('-k', '--key', dest='key', help='Dictionary key name in a pickle, path to a Group/Dataset in hdf5, a path to a file/dictionary in tar/zip, a table[/column[,column2...]] in sqlite3 or a key name in npz. If no key is specified, return the list of keys.', nargs='*')
     parser.add_argument('-i', '--interactive', dest='interactive', help='(beta ver.) open a file with interactive mode. support pickle, hdf5, tar, zip, sqlite3.', action='store_true')
     parser.add_argument('--old', help='use old functions. this option will be deleted in future.', action='store_true')
     args = parser.parse_args()
