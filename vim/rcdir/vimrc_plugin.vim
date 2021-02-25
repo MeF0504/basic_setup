@@ -172,14 +172,18 @@ function! s:file_list() abort
             for j in range(1, tabpagewinnr(i, '$'))
                 let win_winID = win_getid(j, i)
                 let bufn = tabpagebuflist(i)[j-1]
-                let curpos = getcurpos(win_winID)
+                if (v:version > 802) || ((v:version == 802) && has('patch1727'))
+                    let curpos = getcurpos(win_winID)
+                    let line_col = ' ('.curpos[1].'-'.curpos[2].')'
+                else
+                    let line_col = ''
+                endif
                 "check if 'search word' in file name.
                 if match(l:fnames[i . "-" . bufn], l:search_name) != -1
                     let l:disp = 1
                 endif
 
                 let mod = getbufvar(bufn, '&modified') ? '[+]' : ''
-                let line_col = ' ('.curpos[1].'-'.curpos[2].')'
                 let l:flist =  '[ ' . l:fnames[i . "-" . bufn] . mod . line_col . ' ] '
                 if getbufvar(bufn, '&filetype') == 'qf'
                     let l:flist = '[ QuickFix' . mod . ']'
