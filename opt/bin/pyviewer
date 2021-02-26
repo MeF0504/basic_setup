@@ -6,14 +6,9 @@ import os
 import sys
 import argparse
 import tarfile
+from pathlib import PurePath
 
-try:
-    from pathlib import PurePath
-    from libtree import tree_viewer, show_tree, branch_str
-    is_old = False
-except ImportError as e:
-    print(e)
-    is_old = True
+from libtree import tree_viewer, show_tree, branch_str
 
 try:
     from color_test import BG, FG, END
@@ -27,7 +22,9 @@ inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
 def args_chk(args, attr):
     if not hasattr(args, attr):
         return False
-    if attr == 'verbose':
+    if attr == 'type':
+        return args.type is not None
+    elif attr == 'verbose':
         return args.verbose
     elif attr == 'key':
         return args.key is not None
@@ -72,6 +69,8 @@ def interactive_view(tree, fname, show_func):
                 cpath = cpath.parent
         else:
             if debug: print('specify key:{}'.format(key_name))
+            if key_name.endswith('/'):
+                key_name = key_name[:-1]
             if key_name in files:
                 cprint('output::', '\n', bg='r')
                 show_func(str(cpath/key_name))
@@ -97,10 +96,11 @@ def main_hdf5(fpath, args):
     list_tree = [{}]
     def make_list(name, obj):
         if isinstance(obj, h5py.Dataset):
-            if args_chk(args, 'verbose'):
-                print("--- {} ---\n{}".format(name, h5_file[name][()]))
-            elif args_chk(args, 'key') and len(args.key)==0:
-                print(name)
+            if not args_chk(args, 'interactive'):
+                if args_chk(args, 'verbose'):
+                    print("--- {} ---\n{}".format(name, h5_file[name][()]))
+                elif args_chk(args, 'key') and len(args.key)==0:
+                    print(name)
 
             tmp_list = list_tree
             for p in name.split('/'):
@@ -583,508 +583,6 @@ def main_raw(fpath, args):
     ax1.spines['left'].set_visible(False)
     plt.show()
 
-# {{{   old functions
-def get_dir_items(path, flist):
-    if path[-1] != '/':
-        path += '/'
-    if path[0] != '/':
-        path = '/'+path
-    l_path = len(path)
-
-    res = []
-    for ffile in flist:
-        if ffile[0] != '/':
-            ffile = '/'+ffile
-        if (ffile[:l_path] == path) and ('/' not in ffile[l_path:]):
-            res.append(os.path.basename(ffile))
-        elif ffile[:l_path] == path:
-            tmp_path = ffile[l_path:]
-            tmp_dir = tmp_path[:tmp_path.find('/')]
-            if tmp_dir not in res:
-                res.append(tmp_dir)
-    return res
-
-#function to show the constitution of hdf5 file.
-def main_hdf5_old(fpath, args):
-    import h5py
-    try:
-        import numpy as np
-        imp_np = True
-    except ImportError:
-        imp_np = False
-    def print_data(name, obj):
-        if isinstance(obj, h5py.Dataset):
-            print(name)
-            if args.verbose:
-                print(" >>>  {}".format(h5_file[name][()]))
-
-    h5_file = h5py.File(fpath, 'r')
-    if hasattr(args, 'interactive') and args.interactive:
-        selected_keys = []
-        keys = h5_file['/'].keys()
-        while(True):
-            cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(selected_keys))
-            cprint('current path:', ' {}'.format(cpath), bg='c')
-            cprint('contents in this dict:', ' ', bg='g', end='')
-            for k in keys:
-                print('{},'.format(k), end='  ')
-            print('\n')
-            key_name = input(inter_str)
-            if key_name == 'q':
-                break
-            elif key_name == '':
-                continue
-            elif key_name == '..':
-                if len(selected_keys) >= 1:
-                    selected_keys = selected_keys[:-1]
-                    cpath = '/'
-                    cpath += '/'.join(selected_keys)
-                    keys = h5_file[cpath].keys()
-                else:
-                    cprint('you are in root.\n', '', fg='r')
-            else:
-                if key_name not in keys:
-                    cprint('"{}" is not a correct name.\n'.format(key_name), '', fg='r')
-                    continue
-                cpath = '/'.join(selected_keys+[key_name])
-                data = h5_file[cpath]
-                if isinstance(data, h5py.Group):
-                    keys = data.keys()
-                    selected_keys.append(key_name)
-                elif isinstance(data, h5py.Dataset):
-                    cprint('output::', '\n{}'.format(data[()]), bg='r')
-                    if imp_np:
-                        tmp_data = data[()]
-                        if type(tmp_data)==np.ndarray:
-                            print('>> shape: {}, mean: {:.2e}, median: {:.2e}, std: {:.2e}'.format(tmp_data.shape, np.mean(tmp_data), np.median(tmp_data), np.std(tmp_data)))
-                    print('')
-                else:
-                    cprint('"{}" is not a database or a group (currently attribute is not suppoted).\n'.format(key_name), '', fg='r')
-                    continue
-
-    elif hasattr(args, 'key') and args.key is not None:
-        print(h5_file[args.key][()])
-    else:
-        # https://qiita.com/skotaro/items/873507dc8f8f967bbc03
-        h5_file.visititems(print_data)
-
-    h5_file.close()
-
-def main_pickle_old(fpath, args):
-    import pickle
-    try:
-        import numpy as np
-        imp_np = True
-    except ImportError:
-        imp_np = False
-    try:
-        with open(fpath, 'rb') as f:
-            data = pickle.load(f)
-    except UnicodeDecodeError:
-        with open(fpath, 'rb') as f:
-            data = pickle.load(f, encoding='latin1')
-
-    if type(data) == type(dict()):
-        if hasattr(args, 'key') and args.key is not None:
-            for k in data:
-                if str(k) == args.key:
-                    print(data[k])
-        elif hasattr(args, 'interactive') and args.interactive:
-            selected_keys = []
-            tmp_data = data
-            while(True):
-                key_strs = [str(k) for k in selected_keys]
-                cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(key_strs))
-                cprint('current path:', ' {}'.format(cpath), bg='c')
-                cprint('contents in this dict:', ' ', bg='g', end='')
-                try:
-                    tmp_keys = sorted(tmp_data.keys())
-                except TypeError:
-                    tmp_keys = tmp_data.keys()
-                for i,k in enumerate(tmp_keys):
-                    # print('|{} {}\n (type:{})'.format(i, k, type(tmp_data[k]).__name__), end=' ')
-                    print('{},'.format(k), end='  ')
-                print('\n')
-                key_name = input(inter_str)
-                if key_name == 'q':
-                    break
-                elif key_name == '':
-                    continue
-                elif key_name == '..':
-                    if len(selected_keys) >= 1:
-                        selected_keys = selected_keys[:-1]
-                        tmp_data = data
-                        for sk in selected_keys:
-                            tmp_data = tmp_data[sk]
-                    else:
-                        cprint('you are in root.\n', '', fg='r')
-                else:
-                    find_key = False
-                    for k in tmp_data:
-                        if str(k) == key_name:
-                            find_key = True
-                            if type(tmp_data[k]) == dict:
-                                tmp_data = tmp_data[k]
-                                selected_keys.append(k)
-                            else:
-                                cprint('output::', '\n{}'.format(tmp_data[k]), bg='r')
-                                if imp_np:
-                                    if type(tmp_data[k])==np.ndarray:
-                                        print('>> shape: {}, mean: {:.2e}, median: {:.2e}, std: {:.2e}'.format(tmp_data[k].shape, np.mean(tmp_data[k]), np.median(tmp_data[k]), np.std(tmp_data[k])))
-                                print('')
-                    if not find_key:
-                        cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
-        else:
-            try:
-                tmp_keys = sorted(data.keys())
-            except TypeError:
-                tmp_keys = data.keys()
-            for key in tmp_keys:
-                print(key)
-                if args.verbose:
-                    print(' >>> {}'.format(data[key]))
-                else:
-                    print('  type   : {}'.format(type(data[key]).__name__))
-                    if hasattr(data[key], '__len__'):
-                        print('  length : {}'.format(len(data[key])))
-    else:
-        print(data)
-
-def main_numpy_old(fpath, args):
-    import numpy as np
-    data = np.load(fpath)
-    if args.verbose:
-        print(data)
-    else:
-        d_mean = np.mean(data)
-        d_max = np.max(data)
-        d_min = np.min(data)
-        if np.isnan(d_mean):
-            d_mean = np.nanmean(data)
-            d_max = np.nanmax(data)
-            d_min = np.nanmin(data)
-            nan_rate = 1 - np.sum(data==data)/np.prod(data.shape)
-        prt_str = '''
-shape : {}
-mean : {}
-max : {}
-min : {} '''.format(data.shape, d_mean, d_max, d_min)
-        if 'nan_rate' in locals():
-            prt_str += '\nnan rate : {:.1f}%'.format(nan_rate*100)
-
-        print(prt_str)
-
-def main_tar_old(fpath, args):
-    if not tarfile.is_tarfile(fpath):
-        print('{} is not a tar file.'.format(fpath))
-        return
-    tar = tarfile.open(fpath, 'r:*')
-
-    if hasattr(args, 'interactive') and args.interactive:
-        tlist = tar.getnames()
-        root = tlist[0]
-        selected_keys = [root]
-        keys = get_dir_items(root, tlist)
-        while(True):
-            cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(selected_keys))
-            cprint('current path:', ' {}'.format(cpath), bg='c')
-            cprint('contents in this dict:', ' ', bg='g', end='')
-            for k in keys:
-                print('{},'.format(k), end='  ')
-            print('\n')
-            key_name = input(inter_str)
-            if key_name == 'q':
-                break
-            elif key_name == '':
-                continue
-            elif key_name == '..':
-                if len(selected_keys) >= 2:
-                    selected_keys = selected_keys[:-1]
-                    cpath = '/'.join(selected_keys)
-                    keys = get_dir_items(cpath, tlist)
-                else:
-                    cprint('you are in root.\n', '', fg='r')
-            else:
-                if key_name not in keys:
-                    cprint('"{}" is not a correct name.\n'.format(key_name), '', fg='r')
-                    continue
-                cpath = '/'.join(selected_keys+[key_name])
-                tarinfo = tar.getmember(cpath)
-                if tarinfo.isdir():
-                    keys = get_dir_items(cpath, tlist)
-                    selected_keys.append(key_name)
-                elif tarinfo.isfile():
-                    cprint('output::', '', bg='r')
-                    for line in tar.extractfile(cpath):
-                        try:
-                            print(line.decode(), end='')
-                        except UnicodeDecodeError as e:
-                            # print('Error!! {}'.format(e), file=sys.stderr)
-                            break
-                    print()
-                else:
-                    cprint('sorry, I can\'t show information.\n', '', fg='r')
-
-    elif hasattr(args, 'key') and args.key is not None:
-        try:
-            if args.key[-1] == '/':
-                key_name = args.key[:-1]
-            else:
-                key_name = args.key
-            tarinfo = tar.getmember(key_name)
-        except KeyError as e:
-            print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
-            tar.close()
-            return
-        if tarinfo.isfile():
-            for line in tar.extractfile(args.key):
-                try:
-                    print(line.decode(), end='')
-                except UnicodeDecodeError as e:
-                    print('Error!! {}'.format(e), file=sys.stderr)
-                    tar.close()
-                    return
-            print('')
-        elif tarinfo.isdir():
-            key_name += '/'
-            for tfile in get_dir_items(key_name, tar.getnames()):
-                print(os.path.join(key_name, tfile))
-        else:
-            cprint('sorry, I can\'t show information.\n', '', fg='r')
-    else:
-        tar.list(verbose=args.verbose)
-
-    tar.close()
-
-def main_zip_old(fpath, args):
-    import zipfile
-    zip_files = zipfile.ZipFile(fpath, 'r')
-    # with zipfile.ZipFile(fpath, 'r') as zip_files:
-    if hasattr(args, 'interactive') and args.interactive:
-        zlist = zip_files.namelist()
-        selected_keys = []
-        keys = get_dir_items('/', zlist)
-        while(True):
-            cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(selected_keys))
-            cprint('current path:', ' {}'.format(cpath), bg='c')
-            cprint('contents in this dict:', ' ', bg='g', end='')
-            for k in keys:
-                print('{},'.format(k), end='  ')
-            print('\n')
-            key_name = input(inter_str)
-            if key_name == 'q':
-                break
-            elif key_name == '':
-                continue
-            elif key_name == '..':
-                if len(selected_keys) >= 1:
-                    selected_keys = selected_keys[:-1]
-                    cpath = '/'.join(selected_keys)
-                    if cpath == '':
-                        cpath = '/'
-                    keys = get_dir_items(cpath, zlist)
-                else:
-                    cprint('you are in root.\n', '', fg='r')
-            else:
-                if key_name not in keys:
-                    cprint('"{}" is not a correct name.\n'.format(key_name), '', fg='r')
-                    continue
-                cpath = '/'.join(selected_keys+[key_name])
-                zpath = zipfile.Path(zip_files, cpath)
-                if not zpath.exists():
-                    cpath += '/'
-                    zpath = zipfile.Path(zip_files, cpath)
-                    if not zpath.exists():
-                        cprint('"{}" is not a correct name.\n'.format(key_name), '', fg='r')
-                        continue
-                if zpath.is_dir():
-                    keys = get_dir_items(cpath, zlist)
-                    selected_keys.append(key_name)
-                elif zpath.is_file():
-                    cprint('output::', '', bg='r')
-                    for line in zip_files.open(cpath, 'r'):
-                        try:
-                            print(line.decode(), end='')
-                        except UnicodeDecodeError as e:
-                            # print('Error!! {}'.format(e), file=sys.stderr)
-                            break
-                    print()
-                else:
-                    cprint('sorry, I can\'t show information.\n', '', fg='r')
-
-    elif hasattr(args, 'key') and args.key is not None:
-        zpath = zipfile.Path(zip_files, args.key)
-        if not zpath.exists():
-            print('Error!! cannnot open {}.'.format(args.key), file=sys.stderr)
-            zip_files.close()
-            return
-        if zpath.is_file():
-            for line in zip_files.open(args.key, 'r'):
-                try:
-                    print(line.decode(), end='')
-                except UnicodeDecodeError as e:
-                    print('Error!! {}'.format(e), file=sys.stderr)
-                    zip_files.close()
-                    return
-        elif zpath.is_dir():
-            l_key = len(args.key)   # args.key[-1] == '/'
-            for zfile in get_dir_items(args.key, zip_files.namelist()):
-                print(os.path.join(args.key, zfile))
-        else:
-            print('{} is a unknown filetype.'.format(args.key))
-    elif args.verbose:
-        zip_files.printdir()
-    else:
-        for zfile in zip_files.namelist():
-            print(zfile)
-
-    zip_files.close()
-
-def main_sqlite3_old(fpath, args):
-    import sqlite3
-    try:
-        from tabulate import tabulate
-        is_tabulate = True
-    except ImportError:
-        print("I can't find tabulate library.")
-        is_tabulate = False
-    shift = '  '
-
-    def table_info_simple(table):
-        cursor.execute("pragma table_info('{}')".format(table))
-        table_info = cursor.fetchall()
-        for tinfo in table_info:
-            if tinfo[2] == '':
-                ctype = 'none'
-            else:
-                ctype = tinfo[2]
-            print('  | {} [ {} ]'.format(tinfo[1], ctype))
-
-    def table_info_verbose(table):
-        cursor.execute("pragma table_info('{}')".format(table))
-        table_info = cursor.fetchall()
-        headers = []
-        for tinfo in table_info:
-            headers.append(tinfo[1])
-        cursor.execute('select * from {}'.format(table))
-        column = cursor.fetchall()
-        table = []
-        for clm in column:
-            table.append([])
-            for item in clm:
-                table[-1].append(item)
-
-        if is_tabulate:
-            table_str = tabulate(table, headers, tablefmt='orgtbl')
-            table_str = table_str.replace('\n', '\n'+shift)
-            print(shift + table_str)
-        else:
-            print(shift+'|', end='')
-            for hd in headers:
-                print(' {} |'.format(hd), end='')
-            print('')
-            for itms in table:
-                print(shift+'|', end='')
-                for itm in itms:
-                    print(' {} |'.format(itm), end='')
-                print('')
-
-    def table_iinfo_inter():
-        keys = []
-        for tb in tables:
-            keys.append(tb[0])
-        selected_keys = []
-        while(True):
-            cpath = '{}/{}'.format(os.path.basename(fpath), '/'.join(selected_keys))
-            cprint('current path:', ' {}'.format(cpath), bg='c')
-            cprint('contents in this dict:', ' ', bg='g', end='')
-            for k in keys:
-                print('{},'.format(k), end='  ')
-            print('\n')
-            key_name = input(inter_str)
-            if key_name == 'q':
-                break
-            elif key_name == '':
-                continue
-            elif key_name == '..':
-                if len(selected_keys) >= 1:
-                    selected_keys = selected_keys[:-1]
-                    keys = []
-                    for tb in tables:
-                        keys.append(tb[0])
-                else:
-                    cprint('you are in root.\n', '', fg='r')
-            else:
-                if key_name not in keys:
-                    cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
-                    continue
-                if len(selected_keys) == 0:     # select tables
-                    selected_keys.append(key_name)
-                    cursor.execute("pragma table_info('{}')".format(key_name))
-                    table_info = cursor.fetchall()
-                    keys = []
-                    for tinfo in table_info:
-                        keys.append(tinfo[1])
-                elif len(selected_keys) == 1:   # select columns
-                    cursor.execute('select {} from {}'.format(key_name, selected_keys[0]))
-                    column = cursor.fetchall()
-                    output = []
-                    for clm in column:
-                        output.append(clm[0])
-                    cprint('output::', '\n{}\n'.format(output), bg='r')
-                else:
-                    cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
-
-    database = sqlite3.connect(fpath)
-    cursor = database.cursor()
-    cursor.execute("select name from sqlite_master where type='table'")
-    tables = cursor.fetchall()
-    if hasattr(args, 'interactive') and args.interactive:
-        table_iinfo_inter()
-    elif hasattr(args, 'key') and args.key is not None:
-        print(args.key)
-        table_info_verbose(args.key)
-    else:
-        for tb in tables:
-            table = tb[0]
-            print(table)
-            if args.verbose:
-                table_info_verbose(table)
-            else:
-                table_info_simple(table)
-    database.close()
-
-def main_raw_old(fpath, args):
-    try:
-        import rawpy
-    except ImportError:
-        print("I can't find rawpy.")
-        return
-    try:
-        import matplotlib.pyplot as plt
-    except ImportError:
-        print("I can't find matplotlib.")
-        return
-
-    with rawpy.imread(fpath) as raw:
-        rgb = raw.postprocess()
-
-    rate = rgb.shape[0]/1080*100   # assume a full-HD display
-    h = int(rgb.shape[0]/rate)
-    w = int(rgb.shape[1]/rate)
-    fig1 = plt.figure(figsize=(w,h))
-    # full display
-    ax1 = fig1.add_axes((0, 0, 1, 1))
-    ax1.imshow(rgb)
-    # not display axes
-    ax1.xaxis.set_visible(False)
-    ax1.yaxis.set_visible(False)
-    ax1.spines['top'].set_visible(False)
-    ax1.spines['bottom'].set_visible(False)
-    ax1.spines['right'].set_visible(False)
-    ax1.spines['left'].set_visible(False)
-    plt.show()
-# }}}
 
 def main(args):
 
@@ -1093,7 +591,7 @@ def main(args):
         print("file doesn't exists!")
         return
 
-    if not hasattr(args, 'type') or (args.type is None):
+    if not args_chk(args, 'type'):
         ext = fpath[fpath.rfind('.')+1:].lower()
         if ext == 'hdf5':
             args.type = 'hdf5'
@@ -1117,40 +615,19 @@ def main(args):
             return
 
     if args.type == 'hdf5':
-        if args.old:
-            main_hdf5_old(fpath, args)
-        else:
-            main_hdf5(fpath, args)
+        main_hdf5(fpath, args)
     elif args.type == 'pickle':
-        if args.old:
-            main_pickle_old(fpath, args)
-        else:
-            main_pickle(fpath, args)
+        main_pickle(fpath, args)
     elif args.type == 'numpy':
-        if args.old:
-            main_numpy_old(fpath, args)
-        else:
-            main_numpy(fpath, args)
+        main_numpy(fpath, args)
     elif args.type == 'tar':
-        if args.old:
-            main_tar_old(fpath, args)
-        else:
-            main_tar(fpath, args)
+        main_tar(fpath, args)
     elif args.type == 'zip':
-        if args.old:
-            main_zip_old(fpath, args)
-        else:
-            main_zip(fpath, args)
+        main_zip(fpath, args)
     elif args.type == 'sqlite3':
-        if args.old:
-            main_sqlite3_old(fpath, args)
-        else:
-            main_sqlite3(fpath, args)
+        main_sqlite3(fpath, args)
     elif args.type == 'raw_image':
-        if args.old:
-            main_raw_old(fpath, args)
-        else:
-            main_raw(fpath, args)
+        main_raw(fpath, args)
     else:
         print('this file is not supported.')
 
@@ -1164,10 +641,7 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(', '))
     parser.add_argument('-k', '--key', dest='key', help='Dictionary key name in a pickle, path to a Group/Dataset in hdf5, a path to a file/dictionary in tar/zip, a table[/column[,column2...]] in sqlite3 or a key name in npz. If no key is specified, return the list of keys.', nargs='*')
     parser.add_argument('-i', '--interactive', dest='interactive', help='(beta ver.) open a file with interactive mode. support pickle, hdf5, tar, zip, sqlite3.', action='store_true')
-    parser.add_argument('--old', help='use old functions. this option will be deleted in future.', action='store_true')
     args = parser.parse_args()
-    if is_old:
-        args.old = True
 
     main(args)
 
