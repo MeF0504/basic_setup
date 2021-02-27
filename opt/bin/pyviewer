@@ -553,11 +553,20 @@ def main_raw(fpath, args):
     except ImportError:
         print("I can't find rawpy.")
         return
+
     try:
-        import matplotlib.pyplot as plt
+        from PIL import Image, ImageShow
     except ImportError:
-        print("I can't find matplotlib.")
-        return
+        try:
+            import matplotlib.pyplot as plt
+        except ImportError:
+            print("I can't find any libraries to show image. Please install Pillow or matplotlib.")
+            return
+        else:
+            img_lib = 'matplotlib'
+    else:
+        img_lib = 'PIL'
+
     try:
         from screeninfo import get_monitors
     except ImportError:
@@ -568,25 +577,32 @@ def main_raw(fpath, args):
     with rawpy.imread(fpath) as raw:
         rgb = raw.postprocess()
 
-    if get_screen:
-        height = get_monitors()[0].height
-    else:
-        height = 1080   # assume a full-HD display
-    rate = rgb.shape[0]/height*100
-    h = int(rgb.shape[0]/rate)
-    w = int(rgb.shape[1]/rate)
-    fig1 = plt.figure(figsize=(w,h))
-    # full display
-    ax1 = fig1.add_axes((0, 0, 1, 1))
-    ax1.imshow(rgb)
-    # not display axes
-    ax1.xaxis.set_visible(False)
-    ax1.yaxis.set_visible(False)
-    ax1.spines['top'].set_visible(False)
-    ax1.spines['bottom'].set_visible(False)
-    ax1.spines['right'].set_visible(False)
-    ax1.spines['left'].set_visible(False)
-    plt.show()
+    if debug:
+        print(rgb.shape)
+        print('use {}'.format(img_lib))
+    if img_lib == 'PIL':
+        img = Image.fromarray(rgb)
+        ImageShow.show(img, title=os.path.basename(fpath))
+    elif img_lib == 'matplotlib':
+        if get_screen:
+            height = get_monitors()[0].height
+        else:
+            height = 1080   # assume a full-HD display
+        rate = rgb.shape[0]/height*100
+        h = int(rgb.shape[0]/rate)
+        w = int(rgb.shape[1]/rate)
+        fig1 = plt.figure(figsize=(w,h))
+        # full display
+        ax1 = fig1.add_axes((0, 0, 1, 1))
+        ax1.imshow(rgb)
+        # not display axes
+        ax1.xaxis.set_visible(False)
+        ax1.yaxis.set_visible(False)
+        ax1.spines['top'].set_visible(False)
+        ax1.spines['bottom'].set_visible(False)
+        ax1.spines['right'].set_visible(False)
+        ax1.spines['left'].set_visible(False)
+        plt.show()
 
 def main_jupyter(fpath, args):
     import json
