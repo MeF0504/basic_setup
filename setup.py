@@ -3,6 +3,7 @@ from __future__ import print_function
 import os
 import os.path as op
 import sys
+sys.path.append(op.join(op.dirname(__file__), 'opt/lib'))
 import argparse
 import shutil
 import subprocess
@@ -17,28 +18,12 @@ else:
 #if float(sys.version[:3]) < 2.7:
     #import commands
 
+from local_lib import mkdir, chk_cmd
 try:
     from color_test import FG256, END
     is_color = True
 except ImportError:
     is_color = False
-
-def mkdir(path):
-    path = op.expanduser(path)
-    if not op.exists(path):
-        print('mkdir '+path)
-        os.makedirs(path, mode=0o755)
-        #os.chmod(path,0755)
-
-def chk_cmd(cmd):   # check the command exists.
-    if not 'PATH' in os.environ:
-        print("PATH isn't found in environment values.")
-        return False
-    for path in os.environ['PATH'].split(os.pathsep):
-        cmd_path = op.join(path, cmd)
-        if op.isfile(cmd_path) and os.access(cmd_path, os.X_OK):
-            print(cmd_path)
-            return True
 
 ### copy func {{{
 # copy file1 -> file2
@@ -205,10 +190,12 @@ def main_opt(args):
     libdir = op.join(optdir, 'lib')
     for lfy in glob.glob(op.join(libdir,'*')):
         fname = op.basename(lfy)
-        fcopy(lfy,op.join(libpath,fname),link=args.link,force=args.force,test=args.test)
+        if not fname.endswith('pyc'):
+            fcopy(lfy,op.join(libpath,fname),link=args.link,force=args.force,test=args.test)
 
 def main_conf(args):
     binpath = op.join(args.prefix,'bin')
+    libpath = op.join(args.prefix,'lib')
     setdir = op.join(args.fpath,'config')
     print('\n@ '+setdir+'\n')
 
@@ -279,7 +266,7 @@ def main_conf(args):
             " && [[ $YN = \"y\" ]]" +\
             " && python setup.py {}".format(pyopt) +\
             " ; cd -'"
-    zshrc_mine = op.join(zshdir, 'zshrc.mine')
+    zshrc_mine = op.join(zshdir, 'zshrc.mineeee')
     bashrc_mine = op.join(bashdir, 'bashrc.mine')
     mine_exist = True
     if not args.type == 'min':
@@ -289,6 +276,8 @@ def main_conf(args):
                 f.write('#\n')
                 f.write('\n')
                 f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
+                f.write('\n')
+                f.write('export PYTHONPATH=\\\n' + libpath + ':\\\n$PYTHONPATH')
                 f.write('\n\n')
                 f.write(up_stup)
                 f.write('\n\n')
@@ -300,6 +289,8 @@ def main_conf(args):
             f.write('#\n')
             f.write('\n')
             f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
+            f.write('\n')
+            f.write('export PYTHONPATH=\\\n' + libpath + ':\\\n$PYTHONPATH')
             f.write('\n\n')
             f.write(up_stup)
             f.write('\n\n')
@@ -325,7 +316,7 @@ def main_vim(args):
     if args.type == 'min':
         fcopy(op.join(vimdir, "rcdir", 'vimrc_basic.vim'), op.join(vim_config_dir, "init.vim"), link=bool(args.link), force=args.force, test=args.test)
     else:
-        if args.download and chk_cmd('sh'):
+        if args.download and chk_cmd('sh', True):
             mkdir('tmp')
             os.chdir(op.join(args.fpath,'tmp'))
 
