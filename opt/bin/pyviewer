@@ -13,9 +13,10 @@ from local_lib import chk_cmd
 
 try:
     from color_test import BG, FG, END
-    print_color = True
 except ImportError:
     print_color = False
+else:
+    print_color = True
 
 debug = False
 inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
@@ -172,9 +173,10 @@ def main_pickle(fpath, args):
     import pickle
     try:
         import numpy as np
-        imp_np = True
     except ImportError:
         imp_np = False
+    else:
+        imp_np = True
     try:
         with open(fpath, 'rb') as f:
             data = pickle.load(f)
@@ -448,10 +450,11 @@ def main_sqlite3(fpath, args):
     import sqlite3
     try:
         from tabulate import tabulate
-        is_tabulate = True
     except ImportError:
         print("I can't find tabulate library.")
         is_tabulate = False
+    else:
+        is_tabulate = True
     shift = '  '
 
     def show_table(table_path, verbose=True):
@@ -557,9 +560,10 @@ def main_raw(fpath, args):
         return
     try:
         from screeninfo import get_monitors
-        get_screen = True
     except ImportError:
         get_screen = False
+    else:
+        get_screen = True
 
     with rawpy.imread(fpath) as raw:
         rgb = raw.postprocess()
