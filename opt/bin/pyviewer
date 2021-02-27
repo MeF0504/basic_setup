@@ -9,6 +9,7 @@ import tarfile
 from pathlib import PurePath
 
 from libtree import tree_viewer, show_tree, branch_str
+from local_lib import chk_cmd
 
 try:
     from color_test import BG, FG, END
@@ -31,7 +32,7 @@ def args_chk(args, attr):
     elif attr == 'interactive':
         return args.interactive
 
-def cprint(str1, str2, fg=None, bg=None, **kwargs):
+def cprint(str1, str2='', fg=None, bg=None, **kwargs):
     print_str = str1
     if print_color:
         if fg is not None:
@@ -583,6 +584,102 @@ def main_raw(fpath, args):
     ax1.spines['left'].set_visible(False)
     plt.show()
 
+def main_jupyter(fpath, args):
+    import json
+    import base64
+    if chk_cmd('gosr'):
+        import subprocess
+        import tempfile
+        is_term = True
+        is_disp = True
+    else:
+        is_term = False
+        try:
+            from PIL import Image
+            import io
+            is_disp = True
+        except ImportError as e:
+            if debug: print(e)
+            print('Images are not shown in this configuration. If you want to, please install Pillow.')
+            is_disp = False
+
+    with open(fpath, 'r') as f:
+        data = json.load(f)
+    if debug:
+        print('keys: {}'.format(data.keys()))
+
+    if args_chk(args, 'verbose'):
+        meta = data['metadata']
+        if debug: print(meta)
+        print('kernel   : {}'.format(meta['kernelspec']['display_name']))
+        if 'language_info' in meta:
+            print('language : {}-{}'.format( \
+                    meta['language_info']['name'], \
+                    meta['language_info']['version']))
+        if 'colab' in meta:
+            print('colab : {}'.format(meta['colab']['name']))
+
+    for cell in data['cells']:
+        if debug:
+            print(' ---- cell ----')
+            print(cell)
+            print('---------------')
+        if cell['cell_type'] == 'code':
+            cnt = cell['execution_count']
+            if cnt is None:
+                cnt = ' '
+            # Input
+            cprint('In [{}]'.format(cnt), fg='c')
+            for instr in cell['source']:
+                print(instr, end='')
+            print()
+            # Output
+            if len(cell['outputs']) != 0:
+                cprint('Out [{}]'.format(cnt), fg='r')
+            for output in cell['outputs']:
+                if 'text' in output:
+                    for text in output['text']:
+                        print(text, end='')
+                    print()
+                elif 'data' in output:
+                    out_data = output['data']
+                    for out_type in out_data:
+                        if out_type == 'text/plain':
+                            for text in out_data['text/plain']:
+                                print(text, end='')
+                            print()
+                        elif out_type == 'image/png':
+                            if not is_disp:
+                                continue
+                            img_code = out_data['image/png']
+                            img_bin = base64.b64decode(img_code.encode())
+                            if is_term:
+                                with tempfile.NamedTemporaryFile() as tmp:
+                                    tmp.write(img_bin)
+                                    subprocess.call('gosr {}'.format(tmp.name), shell=True)
+                            else:
+                                with Image.open(io.BytesIO(img_bin)) as img:
+                                    # title doesn't work?
+                                    img.show(title='Out [{}]'.format(cnt))
+
+        elif cell['cell_type'] == 'markdown':
+            cprint('markdown', fg='g')
+            for instr in cell['source']:
+                print(instr, end='')
+            print()
+
+        elif cell['cell_type'] == 'raw':
+            cprint('raw', fg='g')
+            for instr in cell['source']:
+                print(instr, end='')
+            print()
+
+        else:
+            if debug:
+                print('not a supported type of cell: {}'.format(cell['cell_type']))
+
+        if not args_chk(args, 'verbose'):
+            input(' >>> Press ENTER to continue')
 
 def main(args):
 
@@ -607,6 +704,8 @@ def main(args):
             args.type = 'sqlite3'
         elif ext in 'raw nef nrw cr3 cr2 crw tif arw'.split(' '):   # nikon, canon, sony
             args.type = 'raw_image'
+        elif ext == 'ipynb':
+            args.type = 'jupyter'
         elif ext == 'py':
             if 'ja_JP' in os.environ['LANG']:
                 print('vimでも使ってろ！')
@@ -628,13 +727,15 @@ def main(args):
         main_sqlite3(fpath, args)
     elif args.type == 'raw_image':
         main_raw(fpath, args)
+    elif args.type == 'jupyter':
+        main_jupyter(fpath, args)
     else:
         print('this file is not supported.')
 
     return
 
 if __name__ == "__main__":
-    supported_type = 'hdf5, pickle, numpy, tar, zip, sqlite3, raw_image'
+    supported_type = 'hdf5, pickle, numpy, tar, zip, sqlite3, raw_image, jupyter'
     parser = argparse.ArgumentParser(description="show the constitution of a file. support file types ... {}".format(supported_type))
     parser.add_argument('file', help='input file')
     parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='show details')
