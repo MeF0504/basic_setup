@@ -266,7 +266,7 @@ def main_conf(args):
             " && [[ $YN = \"y\" ]]" +\
             " && python setup.py {}".format(pyopt) +\
             " ; cd -'"
-    zshrc_mine = op.join(zshdir, 'zshrc.mineeee')
+    zshrc_mine = op.join(zshdir, 'zshrc.mine')
     bashrc_mine = op.join(bashdir, 'bashrc.mine')
     mine_exist = True
     if not args.type == 'min':
