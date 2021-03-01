@@ -104,16 +104,19 @@ def main_hdf5(fpath, args):
                     print(name)
 
             tmp_list = list_tree
+            depth = 1
             for p in name.split('/'):
-                if p == name.split('/')[-1]:
+                if p == name.split('/')[-1] and depth==len(name.split('/')):
                     tmp_list.append(p)
                     if debug:
-                        print('add {} to {}'.format(p, tmp_list))
+                        print('add {} to {} @ {:d}'.format(p, tmp_list, depth))
                 elif p in tmp_list[0]:
                     tmp_list = tmp_list[0][p]
+                    depth += 1
                 else:
                     tmp_list[0][p] = [{}]
                     tmp_list = tmp_list[0][p]
+                    depth += 1
 
     h5_file = h5py.File(fpath, 'r')
     # make list_tree
@@ -311,6 +314,7 @@ def main_tar(fpath, args):
     fname = os.path.basename(fpath)
 
     def show_tar(cpath):
+        # check cpath
         try:
             if cpath.endswith('/'):
                 key_name = cpath[:-1]
@@ -318,8 +322,10 @@ def main_tar(fpath, args):
                 key_name = cpath
             tarinfo = tar_file.getmember(key_name)
         except KeyError as e:
-            print('Error!! cannnot open {}.'.format(cpath), file=sys.stderr)
+            print('Error!! Cannot open {}.'.format(cpath), file=sys.stderr)
             return
+
+        # file
         if tarinfo.isfile():
             for line in tar_file.extractfile(cpath):
                 try:
@@ -328,6 +334,8 @@ def main_tar(fpath, args):
                     print('Error!! {}'.format(e), file=sys.stderr)
                     return
             print('')
+
+        #directory
         elif tarinfo.isdir():
             tree = tree_viewer(list_tree, fname)
             print('{}/'.format(key_name))
@@ -342,18 +350,25 @@ def main_tar(fpath, args):
     # make list_tree
     for t in tar_file:
         tmp_list = list_tree
+        depth = 1
         tnames = t.name.split('/')
+        if debug: print('cpath: {}'.format(t.name))
         for p in tnames:
             if p == '': continue
-            if (p==tnames[-1]) and t.isfile():
+            if (p==tnames[-1]) and t.isfile() and depth==len(tnames):
+                # file
                 tmp_list.append(p)
                 if debug:
-                    print('add {} to {}'.format(p, tmp_list))
+                    print('add {} to {} @ {:d}'.format(p, tmp_list, depth))
             elif p in tmp_list[0]:
+                # existing directory
                 tmp_list = tmp_list[0][p]
+                depth += 1
             else:
+                # new directory
                 tmp_list[0][p] = [{}]
                 tmp_list = tmp_list[0][p]
+                depth += 1
     if debug:
         print(list_tree)
 
@@ -393,6 +408,8 @@ def main_zip(fpath, args):
                 print(e)
             print('Error!! cannnot open {}.'.format(cpath), file=sys.stderr)
             return
+
+        # directory
         if zipinfo.is_dir():
             tree = tree_viewer(list_tree, fname)
             print('{}/'.format(key_name))
@@ -401,6 +418,8 @@ def main_zip(fpath, args):
                 print('{}{}'.format(branch_str, f))
             for d in dirs:
                 print('{}{}/'.format(branch_str, d))
+
+        # file
         else:
             for line in zip_file.open(cpath, 'r'):
                 try:
@@ -412,18 +431,21 @@ def main_zip(fpath, args):
     # make list_tree
     for z in zip_file.infolist():
         tmp_list = list_tree
+        depth = 1
         znames = z.filename.split('/')
         for p in znames:
             if p == '': continue
-            if (p==znames[-1]) and not z.is_dir():
+            if (p==znames[-1]) and (not z.is_dir()) and depth==len(znames):
                 tmp_list.append(p)
                 if debug:
-                    print('add {} to {}'.format(p, tmp_list))
+                    print('add {} to {} @ {:d}'.format(p, tmp_list, depth))
             elif p in tmp_list[0]:
                 tmp_list = tmp_list[0][p]
+                depth += 1
             else:
                 tmp_list[0][p] = [{}]
                 tmp_list = tmp_list[0][p]
+                depth += 1
     if debug:
         print()
         print(list_tree)
