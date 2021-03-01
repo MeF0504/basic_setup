@@ -9,7 +9,6 @@ import tarfile
 from pathlib import PurePath
 
 from libtree import tree_viewer, show_tree, branch_str
-from local_lib import chk_cmd
 
 try:
     from color_test import BG, FG, END
@@ -82,7 +81,7 @@ def interactive_view(tree, fname, show_func):
                 cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
 
 def print_key(key_name):
-    cprint('<<< {} >>>'.format(key_name), '', fg='w', bg='b')
+    cprint('<<< {} >>>'.format(key_name), '', fg='k', bg='y')
 
 def main_hdf5(fpath, args):
     import h5py
@@ -555,7 +554,7 @@ def main_raw(fpath, args):
         return
 
     try:
-        from PIL import Image, ImageShow
+        from PIL import Image
     except ImportError:
         try:
             import matplotlib.pyplot as plt
@@ -582,7 +581,7 @@ def main_raw(fpath, args):
         print('use {}'.format(img_lib))
     if img_lib == 'PIL':
         img = Image.fromarray(rgb)
-        ImageShow.show(img, title=os.path.basename(fpath))
+        img.show(title=os.path.basename(fpath))
     elif img_lib == 'matplotlib':
         if get_screen:
             height = get_monitors()[0].height
@@ -607,6 +606,7 @@ def main_raw(fpath, args):
 def main_jupyter(fpath, args):
     import json
     import base64
+    from local_lib import chk_cmd
     if chk_cmd('gosr'):
         import subprocess
         import tempfile
