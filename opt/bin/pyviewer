@@ -19,6 +19,7 @@ else:
 
 debug = False
 inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
+image_ext = 'png jpg jpeg bmp'.split(' ')
 
 def args_chk(args, attr):
     if not hasattr(args, attr):
@@ -306,6 +307,14 @@ min      : {} '''.format(data.shape, d_mean, d_max, d_min)
             show_numpy(data)
 
 def main_tar(fpath, args):
+    try:
+        from PIL import Image
+    except ImportError as e:
+        if debug: print(e)
+        show_image = False
+    else:
+        show_image = True
+
     if not tarfile.is_tarfile(fpath):
         print('{} is not a tar file.'.format(fpath))
         return
@@ -327,12 +336,16 @@ def main_tar(fpath, args):
 
         # file
         if tarinfo.isfile():
-            for line in tar_file.extractfile(cpath):
-                try:
-                    print(line.decode(), end='')
-                except UnicodeDecodeError as e:
-                    print('Error!! {}'.format(e), file=sys.stderr)
-                    return
+            if show_image and cpath.lower().endswith(tuple(image_ext)):
+                with Image.open(tar_file.extractfile(cpath)) as img:
+                    img.show(title=os.path.basename(cpath))
+            else:
+                for line in tar_file.extractfile(cpath):
+                    try:
+                        print(line.decode(), end='')
+                    except UnicodeDecodeError as e:
+                        print('Error!! {}'.format(e), file=sys.stderr)
+                        return
             print('')
 
         #directory
@@ -390,6 +403,15 @@ def main_tar(fpath, args):
 
 def main_zip(fpath, args):
     import zipfile
+    try:
+        from PIL import Image
+        import io
+    except ImportError as e:
+        if debug: print(e)
+        show_image = False
+    else:
+        show_image = True
+
     if not zipfile.is_zipfile(fpath):
         print('{} is not a zip file.'.format(fpath))
         return
@@ -421,12 +443,16 @@ def main_zip(fpath, args):
 
         # file
         else:
-            for line in zip_file.open(cpath, 'r'):
-                try:
-                    print(line.decode(), end='')
-                except UnicodeDecodeError as e:
-                    print('Error!! {}'.format(e), file=sys.stderr)
-                    return
+            if show_image and cpath.lower().endswith(tuple(image_ext)):
+                with Image.open(io.BytesIO(zip_file.read(cpath))) as img:
+                    img.show(title=os.path.basename(cpath))
+            else:
+                for line in zip_file.open(cpath, 'r'):
+                    try:
+                        print(line.decode(), end='')
+                    except UnicodeDecodeError as e:
+                        print('Error!! {}'.format(e), file=sys.stderr)
+                        return
 
     # make list_tree
     for z in zip_file.infolist():
