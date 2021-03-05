@@ -8,12 +8,25 @@ scriptencoding utf-8
 function! s:analythis_args(arg)
     let args = split(a:arg, ' ')
     let ret = {'no_key':""}
+    let last_key = -1
     for dic in args
-        let dic_sub = split(dic, "=")
+        let dic_sub = split(dic, "=", 1)
         if len(dic_sub) < 2
-            let ret["no_key"] .= ' ' . dic_sub[0]
+            if last_key != -1
+                let ret[last_key] .= ' ' . dic_sub[0]
+                if dic_sub[0][-1:] != '\'
+                    let last_key = -1
+                endif
+            else
+                let ret["no_key"] .= ' ' . dic_sub[0]
+            endif
         else
-            let ret[dic_sub[0]] = dic_sub[1]
+            let dic_key = dic_sub[0]
+            let dic_val = join(dic_sub[1:], '=')
+            let ret[dic_key] = dic_val
+            if dic_val[-1:] == '\'
+                let last_key = dic_key
+            endif
         endif
     endfor
 
@@ -1085,12 +1098,13 @@ function! Mygrep(...)
         endif
         execute 'grep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
     elseif &grepprg == "grep\ -nriI"
+        let l:dir=substitute(l:dir, ' ', '\\ ', 'g')
         let l:tabnum = tabpagenr()
         cclose
         "wincmd b
         "vsplit
         tabnew
-        execute 'grep --include=\*' . l:ft . ' "' . l:word . '" ' .l:dir 
+        execute 'grep --include=\*' . l:ft . ' "' . l:word . '" ' .l:dir
         cclose
         quit
         execute "normal! " . l:tabnum . "gt"

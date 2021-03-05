@@ -20,7 +20,7 @@ nnoremap <silent> <Leader>m :MFfunclist<CR>
 function! s:AddPath()
     if exists("b:mftag_save_dir")
         if b:mftag_save_dir != "/"
-            let l:save_dir = substitute(b:mftag_save_dir, " ", "\\\\ ", "")
+            let l:save_dir = substitute(b:mftag_save_dir, " ", "\\\\ ", "g")
             execute "set path+=" . l:save_dir . "**/include"
         endif
     endif
@@ -40,10 +40,10 @@ if exists('*Mygrep') == 1
             let res = a:1
             let st = match(a:1, 'dir=')
             if st == -1
-                let res .= ' dir=' . substitute(MFsearch_dir(g:mftag_dir), '\', '\\\\', 'g')
+                let res .= ' dir=' . substitute(substitute(MFsearch_dir(g:mftag_dir), '\', '\\\\', 'g'), ' ', '\\\\ ', 'g')
             endif
         else
-            let res = ' dir=' . substitute(MFsearch_dir(g:mftag_dir), '\', '\\\\', 'g')
+            let res = ' dir=' . substitute(substitute(MFsearch_dir(g:mftag_dir), '\', '\\\\', 'g'), ' ', '\\\\ ', 'g')
         endif
         execute 'call ' . 'Mygrep("' . res . '")'
     endfunction
