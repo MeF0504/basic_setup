@@ -11,6 +11,7 @@ import glob
 import filecmp
 import difflib
 import datetime
+import json
 if sys.version_info.major < 3:
     import urllib as urlreq
 else:
@@ -79,6 +80,9 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
 
     file1 = op.expanduser(file1)
     file2 = op.expanduser(file2)
+    if not op.exists(file1):
+        print("No such file: {}".format(file1))
+        return
     name1 = op.basename(file1)
     name2 = op.basename(file2)
     mkdir(op.dirname(file2))
@@ -167,31 +171,54 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             fcopy_main(cmd, comment, test)
 #}}}
 
+def get_files(fpath, args_type):
+    if fpath is None:
+        return None
+
+    fpath = op.expanduser(fpath)
+    fpath = op.expandvars(fpath)
+    if not op.exists(fpath):
+        print("setup_file doesn't find. copy default files.")
+        return None
+
+    with open(fpath, 'r') as f:
+        set_dict = json.load(f)
+    if args_type in set_dict:
+        return set_dict[args_type]
+    else:
+        print("{} is not in {}. copy default files.".format(args_type, fpath))
+        return None
+
 def main_opt(args):
     binpath = op.join(args.prefix,'bin')
     libpath = op.join(args.prefix,'lib')
     optdir = op.join(args.fpath,'opt')
+    bindir = op.join(optdir,'bin')
+    libdir = op.join(optdir, 'lib')
     print('\n@ '+optdir+'\n')
 
-    bindir = op.join(optdir,'bin')
-    binfiles = []
-    for bfy in glob.glob(op.join(bindir,'*')):
-        if os.access(bfy,os.X_OK):
-            if (op.basename(bfy) == 'pdf2jpg'):
-                if (os.uname()[0] == 'Darwin'):
-                    binfiles.append(bfy)
-            else:
-                binfiles.append(bfy)
+    files = get_files(args.setup_file, 'opt')
+    if files is None:
+        files = {}
 
-    for b in binfiles:
-        fname = op.basename(b)
-        fcopy(b,op.join(binpath,fname),link=args.link,force=args.force,test=args.test)
+        if args.type != 'min':
+            for bfy in glob.glob(op.join(bindir,'*')):
+                if os.access(bfy,os.X_OK):
+                    fname = op.basename(bfy)
+                    if (fname == 'pdf2jpg'):
+                        if (os.uname()[0] == 'Darwin'):
+                            files[bfy] = op.join(binpath, fname)
+                    else:
+                        files[bfy] = op.join(binpath, fname)
 
-    libdir = op.join(optdir, 'lib')
-    for lfy in glob.glob(op.join(libdir,'*')):
-        fname = op.basename(lfy)
-        if not fname.endswith('pyc'):
-            fcopy(lfy,op.join(libpath,fname),link=args.link,force=args.force,test=args.test)
+            for lfy in glob.glob(op.join(libdir,'*')):
+                fname = op.basename(lfy)
+                if not fname.endswith('pyc'):
+                    files[lfy] = op.join(libpath, fname)
+
+    for fy in files:
+        optpath = op.join(optdir, fy)
+        fcopy(optpath, files[fy], link=args.link, force=args.force, test=args.test)
 
 def main_conf(args):
     binpath = op.join(args.prefix,'bin')
@@ -202,6 +229,10 @@ def main_conf(args):
     files_mac = {\
                 'zshrc':'~/.zshrc', \
                 'zlogin':'~/.zlogin', \
+                'zsh/alias.zsh': '~/.zsh/alias.zsh', \
+                'zsh/complete.zsh': '~/.zsh/complete.zsh', \
+                'zsh/functions.zsh': '~/.zsh/functions.zsh', \
+                'zsh/prompt.zsh': '~/.zsh/prompt.zsh', \
                 'posixShellRC':'~/.posixShellRC',\
                 'bashrc':'~/.bashrc',\
                 'matplotlibrc':'~/.matplotlib/matplotlibrc', \
@@ -211,6 +242,10 @@ def main_conf(args):
     files_linux = {\
                   'zshrc':'~/.zshrc', \
                   'zlogin':'~/.zlogin', \
+                  'zsh/alias.zsh': '~/.zsh/alias.zsh', \
+                  'zsh/complete.zsh': '~/.zsh/complete.zsh', \
+                  'zsh/functions.zsh': '~/.zsh/functions.zsh', \
+                  'zsh/prompt.zsh': '~/.zsh/prompt.zsh', \
                   'posixShellRC':'~/.posixShellRC',\
                   'bashrc':'~/.bashrc',\
                   'terminator_config':op.join(args.conf_home,'terminator/config'), \
@@ -224,36 +259,33 @@ def main_conf(args):
                   'gitignore_global':'~/.gitignore_global', \
                 }
 
-    if os.uname()[0] == 'Darwin':
+    files = get_files(args.setup_file, 'config')
+    if files is None:
         if args.type == 'min':
             files = files_min
-        else:
+        elif os.uname()[0] == 'Darwin':
             files = files_mac
-    elif os.uname()[0] == 'Linux':
-        if args.type == 'min':
-            files = files_min
-        else:
+        elif os.uname()[0] == 'Linux':
             files = files_linux
-    else:
-        files = {}
-
-    zshdir = op.expanduser('~/.zsh')
-    mkdir(zshdir)
-    bashdir = op.expanduser('~/.bash')
-    mkdir(bashdir)
+        else:
+            files = {}
 
     if args.download:
         print('download git-prompt for bash')
+        bashdir = op.expanduser('~/.bash')
+        mkdir(bashdir)
         urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', op.expanduser('~/.bash/git-prompt.sh'))
 
     for fy in files:
         spath = op.join(setdir,fy)
         fy_dir = op.dirname(op.expanduser(files[fy]))
-        if op.exists(spath) and op.exists(fy_dir):
+        if op.exists(fy_dir):
             fcopy(spath,files[fy], link=bool(args.link), force=args.force,test=args.test)
 
     pyopt = '--prefix ' + args.prefix
     pyopt += ' --type ' + args.type
+    if args.setup_file is not None:
+        pyopt += ' --setup_file '+args.setup_file
     if args.link:
         pyopt += ' --link'
     if args.force:
@@ -266,10 +298,10 @@ def main_conf(args):
             " && [[ $YN = \"y\" ]]" +\
             " && python setup.py {}".format(pyopt) +\
             " ; cd -'"
-    zshrc_mine = op.join(zshdir, 'zshrc.mine')
-    bashrc_mine = op.join(bashdir, 'bashrc.mine')
     mine_exist = True
-    if not args.type == 'min':
+
+    if 'zshrc' in files:
+        zshrc_mine = op.expandvars('$HOME/.zsh/zshrc.mine')
         if not op.exists(zshrc_mine):
             with open(zshrc_mine,'a') as f:
                 f.write('## PC dependent zshrc\n')
@@ -283,83 +315,93 @@ def main_conf(args):
                 f.write('\n\n')
             print('made zshrc.mine')
             mine_exist = False
-    if not op.exists(bashrc_mine):
-        with open(bashrc_mine,'a') as f:
-            f.write('## PC dependent bashrc\n')
-            f.write('#\n')
-            f.write('\n')
-            f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
-            f.write('\n')
-            f.write('export PYTHONPATH=\\\n' + libpath + ':\\\n$PYTHONPATH')
-            f.write('\n\n')
-            f.write(up_stup)
-            f.write('\n\n')
-        print('made bashrc.mine')
-        mine_exist = False
+
+    if 'bashrc' in files:
+        bashrc_mine = op.expandvars('$HOME/.bash/bashrc.mine')
+        if not op.exists(bashrc_mine):
+            with open(bashrc_mine,'a') as f:
+                f.write('## PC dependent bashrc\n')
+                f.write('#\n')
+                f.write('\n')
+                f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
+                f.write('\n')
+                f.write('export PYTHONPATH=\\\n' + libpath + ':\\\n$PYTHONPATH')
+                f.write('\n\n')
+                f.write(up_stup)
+                f.write('\n\n')
+            print('made bashrc.mine')
+            mine_exist = False
+
     if mine_exist:
         print('  update alias is\n{}'.format(up_stup))
-
-    if not args.type == 'min':
-        for fy in glob.glob(op.join(setdir, 'zsh', '*')):
-            fcopy(fy, op.join(zshdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
 
 def main_vim(args):
     vimdir = op.join(args.fpath,'vim')
     print('\n@ '+vimdir+'\n')
 
-    vim_config_dir = op.join(args.conf_home, 'nvim')
-    rcdir = op.join(vim_config_dir, 'rcdir')
-    ftdir = op.join(vim_config_dir, 'ftplugin')
-    tmdir = op.join(vim_config_dir, 'toml')
-    mkdir(op.join(vim_config_dir, "swp"))
+    vim_config_path = op.join(args.conf_home, 'nvim')
+    rcpath = op.join(vim_config_path, 'rcdir')
+    ftpath = op.join(vim_config_path, 'ftplugin')
+    tmpath = op.join(vim_config_path, 'toml')
+    mkdir(op.join(vim_config_path, "swp"))
 
-    if args.type == 'min':
-        fcopy(op.join(vimdir, "rcdir", 'vimrc_basic.vim'), op.join(vim_config_dir, "init.vim"), link=bool(args.link), force=args.force, test=args.test)
-    else:
-        if args.download and chk_cmd('sh', True):
+    files = get_files(args.setup_file, 'vim')
+    if files is None:
+        if args.type == 'min':
+            files = {'rcdir/vimrc_basic.vim':'~/.vimrc'}
+        else:
+            files = {'vimrc': '~/.vimrc'}
+            for fy in glob.glob(op.join(vimdir, 'rcdir', "*")):
+                fname = op.basename(fy)
+                files[fy] = op.join(rcpath, fname)
+            for fy in glob.glob(op.join(vimdir, 'ftplugin', "*")):
+                fname = op.basename(fy)
+                files[fy] = op.join(ftpath, fname)
+            for fy in glob.glob(op.join(vimdir, 'toml', "*")):
+                fname = op.basename(fy)
+                files[fy] = op.join(tmpath, fname)
+
+        if (args.type != 'min') and args.download and chk_cmd('sh', True):
             mkdir('tmp')
             os.chdir(op.join(args.fpath,'tmp'))
 
             print('\nclone dein')
-            mkdir(op.join(vim_config_dir, 'dein'))
+            mkdir(op.join(vim_config_path, 'dein'))
             urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
-            subprocess.call('sh installer.sh {}'.format(op.join(vim_config_dir, 'dein')), shell=True)
+            subprocess.call('sh installer.sh {}'.format(op.join(vim_config_path, 'dein')), shell=True)
 
             print('\nremove download tmp files')
             os.chdir(args.fpath)
             shutil.rmtree(op.join(args.fpath, 'tmp'))
 
-        fcopy(op.join(vimdir, "vimrc"), op.join(vim_config_dir, "init.vim"), link=bool(args.link), force=args.force, test=args.test)
-        for fy in glob.glob(op.join(vimdir, 'rcdir', "*")):
-            fcopy(fy, op.join(rcdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
+    for fy in files:
+        vimpath = op.join(vimdir, fy)
+        fcopy(vimpath, files[fy], link=args.link, force=args.force, test=args.test)
 
-        for fy in glob.glob(op.join(vimdir, 'ftplugin', "*")):
-            fcopy(fy, op.join(ftdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
-
-        for fy in glob.glob(op.join(vimdir, 'toml', "*")):
-            fcopy(fy, op.join(tmdir, op.basename(fy)), link=bool(args.link), force=args.force, test=args.test)
-
-        vim_mine = op.expanduser('~/.config/nvim/rcdir/vimrc.mine')
+    if 'vimrc' in files:
+        vim_mine = op.join(vim_config_path, 'rcdir/vimrc.mine')
         if not op.exists(vim_mine):
             with open(vim_mine,'a') as f:
                 f.write('"" PC dependent vimrc\n')
                 f.write('"\n')
                 f.write('\n')
+            print('made vimrc.mine')
 
-        vim_init = op.expanduser('~/.config/nvim/rcdir/init.vim.mine')
+        vim_init = op.join(vim_config_path, 'rcdir/init.vim.mine')
         if not op.exists(vim_init):
             with open(vim_init,'a') as f:
                 f.write('"" init setting file for vim\n')
                 f.write('"\n')
                 f.write('\n')
+            print('made init.vim.mine')
 
-    src = op.join(vim_config_dir, "init.vim")
+    src = op.join(vim_config_path, "init.vim")
     dst = op.expanduser('~/.vimrc')
     if not op.exists(dst):
         print("link " + src + " -> " + dst)
         os.symlink(src, dst)
 
-    src = vim_config_dir
+    src = vim_config_path
     dst = op.expanduser("~/.vim")
     if not op.exists(dst):
         print("link " + src + " -> " + dst)
@@ -373,6 +415,7 @@ def main():
     parser.add_argument('--test',help="don't copy, just show command",action='store_true')
     parser.add_argument('-f','--force',help="Do not prompt for confirmation before overwriting the destination path",action='store_true')
     parser.add_argument('-t', '--type', help="set the type of copy files. If min is specified, only copy *shrc, posixShellRC, and vimrc_basic.vim.", choices='all opt config vim min'.split(), default='all')
+    parser.add_argument('-s', '--setup_file', help='specify the copy files by json format setting file. please see "opt/test/setup_file_template.json" as an example.')
     args = parser.parse_args()
 
     if not op.exists(args.prefix):
@@ -389,7 +432,7 @@ def main():
         conf_home = op.expanduser('~/.config')
     args.conf_home = conf_home
 
-    if args.type in 'all opt'.split():
+    if args.type in 'all opt min'.split():
         main_opt(args)
     if args.type in 'all config min'.split():
         main_conf(args)
@@ -398,3 +441,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

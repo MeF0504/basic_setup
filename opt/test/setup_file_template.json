@@ -1,0 +1,20 @@
+{
+    "opt": {
+        "bin/pytree": "~/opt/bin/pytree",
+        "bin/pyviewer": "~/opt/bin/pyviewer",
+        "lib/local_lib.py": "~/opt/lib/local_lib.py",
+        "lib/libtree.py": "~/opt/lib/libtree.py",
+        "lib/color_test.py": "~/opt/lib/color_test.py"
+    },
+   "config": {
+        "posixShellRC": "~/.posixShellRC",
+        "zshrc": "~/.zshrc",
+        "zsh/alias.zsh": "~/.zsh/alias.zsh",
+        "zsh/complete.zsh": "~/.zsh/complete.zsh",
+        "zsh/functions.zsh": "~/.zsh/functions.zsh",
+        "zsh/prompt.zsh": "~/.zsh/prompt.zsh",
+        "gitignore_global": "~/.gitignore_global"
+    },
+    "//comment": "vim is not set here. if you want, add\"vim\" key and setting dictionaries." 
+}
+
