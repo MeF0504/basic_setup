@@ -203,10 +203,15 @@ let g:is_bash = 1
 ""##########mapping設定 "{{{
 
 " 誤って使うとまずいkeymapを削除
+" 保存して終了 :h ZZ
 nnoremap ZZ <Nop>
+" 保存せずに終了 :h ZQ
 nnoremap ZQ <Nop>
+" ex modeに切り替え。viの前身か？ :h Q
 nnoremap Q <Nop>
+" current windowを閉じる :h CTRL-W_q
 nnoremap <c-w>q <Nop>
+" sをctrl-wにmapしているので...
 nnoremap sq <Nop>
 
 " 使いやすいようにmapping
@@ -238,6 +243,8 @@ nnoremap gh gT
 nnoremap <silent> 0gt :tablast<CR>
 nnoremap <silent> g> :tabmove +1<CR>
 nnoremap <silent> g< :tabmove -1<CR>
+nnoremap <silent> $g> :tabmove $<CR>
+nnoremap <silent> 0g< :tabmove 0<CR>
 " 画面自体を左右に移動
 nnoremap H 5zh
 nnoremap L 5zl
@@ -266,7 +273,10 @@ noremap gW B
 noremap E ge
 noremap ge E
 
-" ヘッダーファイルをタブで開く
+" 今の行を画面のtopにする。ctrl-lはterminalの感覚
+nnoremap <c-l> z<CR>
+
+" goto file をタブで開く
 nnoremap gf <c-w>gf
 
 " tag jump
@@ -275,7 +285,7 @@ nnoremap <c-]> g<c-]>
 " 分割で表示
 nnoremap <silent> g<c-]> :vertical stjump<CR>
 " preview で開く
-nnoremap <silent> <c-l> :execute("ptjump " . expand("<cword>"))<CR>
+nnoremap <silent> <c-p> :execute("ptjump " . expand("<cword>"))<CR>
 
 " \で検索のハイライトを消す
 nnoremap <silent> \ :nohlsearch<CR>
