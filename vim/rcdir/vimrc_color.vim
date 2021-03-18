@@ -40,6 +40,10 @@ function! <SID>my_color_set_inkpot()
     highlight MatchParen ctermfg=14 ctermbg=18 cterm=Bold
 endfunction
 
+function! <SID>my_color_set_shiki()
+    highlight Directory ctermfg=34
+endfunction
+
 function! s:SID()
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfunction
