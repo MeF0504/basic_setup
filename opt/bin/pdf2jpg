@@ -1,7 +1,12 @@
-#! /bin/zsh
+#! /bin/sh
 # http://hajimemasita.blogspot.jp/2009/08/pdfjpeg.htmlを一部改変
 
-if [ $1 = '-h' ]; then
+if [ ! -f "$(which gs)" ]; then
+    echo "cannot find gs command."
+    exit
+fi
+
+if [ "$1" = "-h" ]; then
     echo "Usage: $0 target.pdf [outfile]"
     exit
 fi
@@ -14,14 +19,18 @@ fi
 TARGET=$1
 OUTFILE=$2
 
-if [[ $2 == "" ]]; then
+if [ -z "$2" ]; then
+    # 空文字
     OUTFILE=${1%.*}
+elif [ -d "$2" ]; then
+    # directory 指定
+    OUTFILE=$2/$(basename "$TARGET")
+    OUTFILE=${OUTFILE%.*}
 fi
 
-#echo $TARGET
-#echo $OUTFILE
+echo "${TARGET} => ${OUTFILE}_xx.jpg"
 
-#exit
+# exit
 
 gs \
 -dSAFER \
@@ -32,6 +41,6 @@ gs \
 -dTextAlphaBits=4 \
 -dGraphicsAlphaBits=4 \
 -dMaxStripSize=8192 \
--sOutputFile=${OUTFILE}_%d.jpg \
-${TARGET}
+-sOutputFile="${OUTFILE}"_%d.jpg \
+"${TARGET}"
 
