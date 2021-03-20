@@ -1,5 +1,17 @@
 # set prompt
 
+function get_ip() {
+    local to=${1:-1}
+    if [[ "$(which timeout &> /dev/null; echo $?)" == 0 ]]; then
+        local ip="$( timeout $to curl ifconfig.io 2> /dev/null)"
+    elif [[ "$(which timeout_local &> /dev/null; echo $?)" == 0 ]]; then
+        local ip="$( timeout_local $to curl ifconfig.io 2> /dev/null)"
+    else
+        local ip="$(curl --max-time $to ifconfig.io 2> /dev/null)"
+    fi
+    echo $ip
+}
+
 function ip_color() {
     # {{{
     if [ -n "$CURLTIMEOUT" ]; then
@@ -16,7 +28,7 @@ function ip_color() {
     if [ -n "$1" ]; then
         local ip=$1
     else
-        local ip="$(curl --max-time $to ifconfig.io 2> /dev/null)"
+        local ip=$(get_ip)
     fi
     if [[ $(echo $ip | wc -l) -ne 1 ]]; then
         local ret=""
@@ -88,7 +100,7 @@ function ip_color2() {
     if [ -n "$1" ]; then
         local ip=$1
     else
-        local ip="$(curl --max-time $to ifconfig.io 2> /dev/null)"
+        local ip=$(get_ip)
     fi
     if [[ $(echo $ip | wc -l) -ne 1 ]]; then
         return 0
@@ -183,7 +195,7 @@ set_prompt() {
         else
             # get ip address in ssh server
             if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
-                local ip="$(curl ifconfig.io 2> /dev/null)"
+                local ip=$(get_ip)
             fi
             # path
             PROMPT="%F{255}%K{19}%d%f%k"
