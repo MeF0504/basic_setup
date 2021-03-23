@@ -33,7 +33,10 @@ def isdark(r,g,b):
     w_r, w_g, w_b = (0.299,0.587,0.114)
     cond = (r*w_r+g*w_g+b*w_b)/(w_r+w_g+w_b) < 2.1
 
-    return cond
+    w_r_old, w_g_old, w_b_old = (0.299,0.587,0.114)
+    cond_old = (r*w_r+g*w_g+b*w_b)/(w_r+w_g+w_b) < 2.1
+
+    return cond, cond_old
 
 def main_test(num):
     print('system colors')
@@ -72,7 +75,8 @@ def main_test(num):
                         tmp_st = '{}{:02x}{}'.format(FG['k'], i, END)
                 else:
                     # tmp_st = '{}{:02x}{}'.format(FG256(36*((r+3)%6)+6*((g+3)%6)+(b+3)%6+16), i, END)
-                    if isdark(r, g, b):
+                    dark_new, dark_old = isdark(r, g, b)
+                    if dark_new:
                         tmp_st = '{}{:02x}{}'.format(FG256(255), i, END)
                     else:
                         tmp_st = '{}{:02x}{}'.format(FG256(234), i, END)
@@ -90,6 +94,22 @@ def main_test(num):
             tmp_st = '  '
         print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
     print('\n')
+
+    if num == 2:
+        for r in range(6):
+            for g in range(6):
+                for b in range(6):
+                    i = 36*r+6*g+b+16
+                    dark_new, dark_old = isdark(r, g, b)
+                    if dark_new != dark_old:
+                        if dark_new:
+                            fg1 = FG256(255)
+                            fg2 = FG256(234)
+                        else:
+                            fg1 = FG256(234)
+                            fg2 = FG256(255)
+                        print('{}{}{:02x}{} -> {}{}{:03d}{}'.format(BG256(i), fg2, i, END, BG256(i), fg1, i, END), end=' ')
+        print()
 
 if __name__ == '__main__':
     import argparse
