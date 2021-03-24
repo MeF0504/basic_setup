@@ -12,6 +12,7 @@ import filecmp
 import difflib
 import datetime
 import json
+import tempfile
 if sys.version_info.major < 3:
     import urllib as urlreq
 else:
@@ -272,9 +273,9 @@ def main_conf(args):
 
     if args.download:
         print('download git-prompt for bash')
-        bashdir = op.expanduser('~/.bash')
+        bashdir = op.expandvars('$HOME/.bash')
         mkdir(bashdir)
-        urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', op.expanduser('~/.bash/git-prompt.sh'))
+        urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', op.join(bashdir, 'git-prompt.sh'))
 
     for fy in files:
         spath = op.join(setdir,fy)
@@ -362,17 +363,24 @@ def main_vim(args):
                 files[fy] = op.join(tmpath, fname)
 
         if (args.type != 'min') and args.download and chk_cmd('sh', True):
-            mkdir('tmp')
-            os.chdir(op.join(args.fpath,'tmp'))
-
             print('\nclone dein')
             mkdir(op.join(vim_config_path, 'dein'))
-            urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
-            subprocess.call('sh installer.sh {}'.format(op.join(vim_config_path, 'dein')), shell=True)
 
-            print('\nremove download tmp files')
-            os.chdir(args.fpath)
-            shutil.rmtree(op.join(args.fpath, 'tmp'))
+            if hasattr(tempfile, 'TemporaryDirectory'):
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    os.chdir(tmpdir)
+                    urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
+                    subprocess.call('sh installer.sh {}'.format(op.join(vim_config_path, 'dein')), shell=True)
+                    os.chdir(args.fpath)
+            else:
+                tmpdir = tempfile.mkdtemp()
+                os.chdir(tmpdir)
+                urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
+                subprocess.call('sh installer.sh {}'.format(op.join(vim_config_path, 'dein')), shell=True)
+                os.chdir(args.fpath)
+                shutil.rmtree(tmpdir)
+
+            print('\nremoved download tmp files')
 
     for fy in files:
         vimpath = op.join(vimdir, fy)

@@ -17,6 +17,6 @@ def chk_cmd(cmd, verbose=False):   # check the command exists.
     for path in os.environ['PATH'].split(os.pathsep):
         cmd_path = op.join(path, cmd)
         if op.isfile(cmd_path) and os.access(cmd_path, os.X_OK):
-            if verbose: print(cmd_path)
+            if verbose: print('find {} ... {}'.format(cmd,  cmd_path))
             return True
 
