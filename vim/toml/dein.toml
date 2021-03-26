@@ -303,7 +303,8 @@ function! Open_taglist()
         let g:Tlist_WinWidth = (winwidth(winnr())/11)*5
     endif
 
-    if (winnr()==1 ) || (winnr() != winnr("$"))
+    " 右端だと右側に開く
+    if (winnr()==1 ) || (winnr() != winnr("1l"))
         let g:Tlist_Use_Right_Window = 0
     else
         let g:Tlist_Use_Right_Window = 1
@@ -568,7 +569,10 @@ let g:hitspop_column = 'winright'
 [[plugins]]
 repo = 'skanehira/translate.vim'
 hook_add = '''
+" {{{
 let g:translate_popup_window = 0
 let g:translate_source = 'en'
 let g:translate_target = 'ja'
+" }}}
 '''
+
