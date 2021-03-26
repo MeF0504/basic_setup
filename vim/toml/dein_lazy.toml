@@ -4,6 +4,33 @@
 repo = 'cespare/vim-toml'
 on_ft = 'toml'
 
+# deinの設定ファイル内で，vimの部分をvimのsyntaxにする
+[[plugins]]
+repo = 'inkarkat/vim-SyntaxRange'
+on_ft = 'toml'
+on_source = ['vim-ingo-library']
+hook_add = '''
+" {{{
+" https://qiita.com/tmsanrinsha/items/9670628aef3144c7919b
+" Insertで戻る... 要検討
+function! s:syntax_range_dein() abort
+    let start = '^\s*hook_\%('.
+                \ 'add\|source\|post_source\|post_update'.
+                \ '\)\s*=\s*%s'
+    call SyntaxRange#Include(printf(start, "\'\'\'"), "\'\'\'", 'vim', '')
+    call SyntaxRange#Include(printf(start, '"""'), '"""', 'vim', '')
+endfunction
+
+" autocmdのタイミングが悪い (vim-tomlに上書きされる)ので，調整
+" autocmd deinLocal BufNewFile,BufRead dein*.toml call s:syntax_range_dein()
+autocmd deinLocal VimEnter dein*.toml call s:syntax_range_dein()
+" }}}
+'''
+
+# 上のpluginで使われるやつ
+[[plugins]]
+repo = 'inkarkat/vim-ingo-library'
+
 # dark powered 補完plugin
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
