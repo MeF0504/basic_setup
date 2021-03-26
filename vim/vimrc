@@ -13,6 +13,7 @@ let s:echo_auto = 0
 augroup local
     autocmd!
     if s:echo_auto == 1
+        " {{{
         autocmd VimEnter * echo 'VimEnter' | sleep 1
         autocmd FileReadPre * echo 'FileReadPre' | sleep 1
         autocmd FileReadPost * echo 'FileReadPost' | sleep 1
@@ -27,6 +28,7 @@ augroup local
         autocmd Syntax * echo 'Syntax' | sleep 1
         autocmd WinNew * echo 'WinNew' | sleep 1
         autocmd TabNew * echo 'TabNew' | sleep 1
+        " }}}
     endif
 augroup END
 
