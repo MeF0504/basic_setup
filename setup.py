@@ -125,9 +125,9 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             print(shift+"condition doesn't match" )
         elif exist:
             if islink and filecmp.cmp(file1, file2):
-                print(shift+'[ {} ] is already linked.'.format(name2))
+                print(shift+'[ {} ] is already linked. ({})'.format(home_cut(file2), name1))
             else:
-                print(shift+'[ {} ] is already exist, cannot link!'.format(name2))
+                print(shift+'[ {} ] is already exist, cannot link! ({})'.format(home_cut(file2), name1))
         else:
             fcopy_main(cmd,comment,test)
 
@@ -139,23 +139,23 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             print(shift+"condition doesn't match" )
         elif force:
             if islink:
-                print(shift+'[ {} ] is a link file, cannot copy!'.format(name2))
+                print(shift+'[ {} ] is a link file, cannot copy! ({})'.format(home_cut(file2), name1))
             else:
                 fcopy_main(cmd, comment, test)
         elif exist:
             if filecmp.cmp(file1, file2) and islink:
-                print(shift+'[ {} ] is linked.'.format(name2))
+                print(shift+'[ {} ] is linked. ({})'.format(home_cut(file2), name1))
             elif filecmp.cmp(file1, file2):
-                print(shift+'[ {} ] is already copied.'.format(name2))
+                print(shift+'[ {} ] is already copied. ({})'.format(home_cut(file2), name1))
             elif islink:
-                print(shift+'[ {} ] is a link file, cannot copy!'.format(name2))
+                print(shift+'[ {} ] is a link file, cannot copy! ({})'.format(home_cut(file2), name1))
             else:
                 is_diff = False
                 while True:
                     if is_diff:
                         input_str = shift+'are you realy overwrite? [y(yes), n(no)] '
                     else:
-                        input_str = shift+'[ {} ] is already exist, are you realy overwrite? [y(yes), n(no), d(diff)] '.format(name2)
+                        input_str = shift+'[ {} ] is already exist, are you realy overwrite? [y(yes), n(no), d(diff)] '.format(home_cut(file2))
                     yn = get_input(input_str)
                     if (yn == 'y') or (yn == 'yes'):
                         fcopy_main(cmd, comment, test)
@@ -347,11 +347,12 @@ def main_vim(args):
     mkdir(op.join(vim_config_path, "swp"))
 
     files = get_files(args.setup_file, 'vim')
+    vimrc = op.join(vim_config_path, 'init.vim')
     if files is None:
         if args.type == 'min':
-            files = {'rcdir/vimrc_basic.vim':'~/.vimrc'}
+            files = {'rcdir/vimrc_basic.vim':vimrc}
         else:
-            files = {'vimrc': '~/.vimrc'}
+            files = {'vimrc':vimrc}
             for fy in glob.glob(op.join(vimdir, 'rcdir', "*")):
                 fname = op.basename(fy)
                 files[fy] = op.join(rcpath, fname)
@@ -403,7 +404,7 @@ def main_vim(args):
                 f.write('\n')
             print('made init.vim.mine')
 
-    src = op.join(vim_config_path, "init.vim")
+    src = vimrc
     dst = op.expanduser('~/.vimrc')
     if not op.exists(dst):
         print("link " + src + " -> " + dst)
