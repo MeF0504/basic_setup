@@ -1,5 +1,11 @@
 "vim script encording setting
+" encoding setting for vim system
 set encoding=utf-8
+" encoding setting for current buffer
+set fileencoding=utf-8
+" encoding setting for all buffer
+set fileencodings=utf-8
+" encoding setting for vim script
 scriptencoding utf-8
 
 augroup gLocal
