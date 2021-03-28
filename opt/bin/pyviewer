@@ -806,10 +806,11 @@ if __name__ == "__main__":
     supported_type = 'hdf5, pickle, numpy, tar, zip, sqlite3, raw_image, jupyter'
     parser = argparse.ArgumentParser(description="show the constitution of a file. support file types ... {}".format(supported_type))
     parser.add_argument('file', help='input file')
-    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='show details')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(', '))
-    parser.add_argument('-k', '--key', dest='key', help='Dictionary key name in a pickle, path to a Group/Dataset in hdf5, a path to a file/dictionary in tar/zip, a table[/column[,column2...]] in sqlite3 or a key name in npz. If no key is specified, return the list of keys.', nargs='*')
-    parser.add_argument('-i', '--interactive', dest='interactive', help='(beta ver.) open a file with interactive mode. support pickle, hdf5, tar, zip, sqlite3.', action='store_true')
+    ex_group = parser.add_mutually_exclusive_group()
+    ex_group.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='show details')
+    ex_group.add_argument('-k', '--key', dest='key', help='Dictionary key name in a pickle, path to a Group/Dataset in hdf5, a path to a file/dictionary in tar/zip, a table[/column[,column2...]] in sqlite3 or a key name in npz. If no key is specified, return the list of keys.', nargs='*')
+    ex_group.add_argument('-i', '--interactive', dest='interactive', help='open a file with interactive mode. support pickle, hdf5, tar, zip, sqlite3.', action='store_true')
     args = parser.parse_args()
 
     main(args)
