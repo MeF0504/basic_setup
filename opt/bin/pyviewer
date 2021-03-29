@@ -264,20 +264,35 @@ def main_numpy(fpath, args):
     import numpy as np
     from numpy.lib.npyio import NpzFile
     def show_numpy(data):
-        d_mean = np.mean(data)
-        d_max = np.max(data)
-        d_min = np.min(data)
-        if np.isnan(d_mean):
-            d_mean = np.nanmean(data)
-            d_max = np.nanmax(data)
-            d_min = np.nanmin(data)
-            nan_rate = 1 - np.sum(data==data)/np.prod(data.shape)
-        prt_str = '''shape    : {}
-mean     : {}
+        # shape
+        shape = data.shape
+        print('shape    : {}'.format(shape))
+        if np.prod(shape)==0:
+            print('  empty data.')
+            return
+        # other information
+        try:
+            if np.any(np.isnan(data)):
+                # including np.nan
+                d_mean = np.nanmean(data)
+                d_max  = np.nanmax(data)
+                d_min  = np.nanmin(data)
+                nan_rate = 1 - np.sum(np.isnan(data))/np.prod(data.shape)
+                prt_str = '''mean     : {}
 max      : {}
-min      : {} '''.format(data.shape, d_mean, d_max, d_min)
-        if 'nan_rate' in locals():
-            prt_str += '\nnan rate : {:.1f}%'.format(nan_rate*100)
+min      : {}
+nan raet : {:.1f}%'''.format(d_mean, d_max, d_min, 100*nan_rate)
+            else:
+                # normal data
+                d_mean = np.mean(data)
+                d_max  = np.max(data)
+                d_min  = np.min(data)
+                prt_str = '''mean     : {}
+max      : {}
+min      : {}'''.format(d_mean, d_max, d_min)
+        except TypeError as e:
+            # string list or something
+            prt_str = 'not a array of number'
         print(prt_str)
 
     data = np.load(fpath)
