@@ -225,16 +225,20 @@ nnoremap sh <c-w>h
 nnoremap s<Left> <c-w>h
 nnoremap sl <c-w>l
 nnoremap s<Right> <c-w>l
+
 " new tab
 nnoremap T :tabnew<space>
+
 " quick fix window
 nnoremap <silent> co :botright copen<CR>
 nnoremap <silent> cc :cclose<CR>
 nnoremap <silent> cn :cnewer<CR>
 nnoremap <silent> cp :colder<CR>
+
 " search
 nnoremap / /\v
 nnoremap * /\v<<c-r><c-w>><CR>
+
 " tab 移動
 nnoremap g<Right> gt
 nnoremap g<Left> gT
@@ -245,6 +249,7 @@ nnoremap <silent> g> :tabmove +1<CR>
 nnoremap <silent> g< :tabmove -1<CR>
 nnoremap <silent> $g> :tabmove $<CR>
 nnoremap <silent> 0g< :tabmove 0<CR>
+
 " 画面自体を左右に移動
 nnoremap H 5zh
 nnoremap L 5zl
@@ -252,13 +257,14 @@ nnoremap L 5zl
 " commandlineでも<c-a>で最初に戻りたい
 cnoremap <c-a> <c-b>
 
+" Yで行末までヤンク
+nnoremap Y y$
+vnoremap Y $y
+
 " fold関連
 " 大文字にするとファイル全体に適用
 nnoremap zO zR
 nnoremap zC zM
-" Yで行末までヤンク
-nnoremap Y y$
-vnoremap Y $y
 " 右方向で再帰的に開く
 nnoremap <expr> l foldclosed(line('.')) != -1 ? 'zO' : 'l'
 nnoremap <expr> <Right> foldclosed(line('.')) != -1 ? 'zO' : 'l'
@@ -289,6 +295,9 @@ nnoremap <silent> <c-p> :execute("ptjump " . expand("<cword>"))<CR>
 
 " \で検索のハイライトを消す
 nnoremap <silent> \ :nohlsearch<CR>
+
+" 1行複製をよく使うので...
+nnoremap yp yyp
 
 " preview , nofile, quickfix windowはqで閉じる
 function! <SID>close_con()
