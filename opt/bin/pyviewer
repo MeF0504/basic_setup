@@ -475,6 +475,7 @@ def main_zip(fpath, args):
         depth = 1
         znames = z.filename.split('/')
         for p in znames:
+            p = p.encode('cp437').decode()
             if p == '': continue
             if (p==znames[-1]) and (not z.is_dir()) and depth==len(znames):
                 tmp_list.append(p)
