@@ -28,7 +28,7 @@ function ip_color() {
     if [ -n "$1" ]; then
         local ip=$1
     else
-        local ip=$(get_ip)
+        local ip=$(get_ip $to)
     fi
     if [[ $(echo $ip | wc -l) -ne 1 ]]; then
         local ret=""
@@ -100,7 +100,7 @@ function ip_color2() {
     if [ -n "$1" ]; then
         local ip=$1
     else
-        local ip=$(get_ip)
+        local ip=$(get_ip $to)
     fi
     if [[ $(echo $ip | wc -l) -ne 1 ]]; then
         return 0
@@ -195,7 +195,7 @@ set_prompt() {
         else
             # get ip address in ssh server
             if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
-                local ip=$(get_ip)
+                local ip=$(get_ip 5)
             fi
             # path
             PROMPT="%F{255}%K{19}%d%f%k"
