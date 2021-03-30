@@ -1,7 +1,7 @@
 # set prompt
 
 function get_ip() {
-    local to=${1:-1}
+    local to=${1:-$CURLTIMEOUT}
     if [[ "$(which timeout &> /dev/null; echo $?)" == 0 ]]; then
         local ip="$( timeout $to curl ifconfig.io 2> /dev/null)"
     elif [[ "$(which timeout_local &> /dev/null; echo $?)" == 0 ]]; then
@@ -14,22 +14,7 @@ function get_ip() {
 
 function ip_color() {
     # {{{
-    if [ -n "$CURLTIMEOUT" ]; then
-        local to=$CURLTIMEOUT
-    else
-        if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
-            # wait long time in ssh server since it works only once.
-            local to=3
-        else
-            local to=1
-        fi
-    fi
-
-    if [ -n "$1" ]; then
-        local ip=$1
-    else
-        local ip=$(get_ip $to)
-    fi
+    local ip=${1:-$(get_ip)}
     if [[ $(echo $ip | wc -l) -ne 1 ]]; then
         local ret=""
         ret=$ret"%F{15}%K{16}m%f%k"
@@ -86,22 +71,7 @@ function ip_color() {
 function ip_color2() {
     # {{{
     # only for IPv6
-    if [ -n "$CURLTIMEOUT" ]; then
-        local to=$CURLTIMEOUT
-    else
-        if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
-            # wait long time in ssh server since it works only once.
-            local to=3
-        else
-            local to=1
-        fi
-    fi
-
-    if [ -n "$1" ]; then
-        local ip=$1
-    else
-        local ip=$(get_ip $to)
-    fi
+    local ip=${1:-$(get_ip)}
     if [[ $(echo $ip | wc -l) -ne 1 ]]; then
         return 0
     fi
@@ -195,7 +165,7 @@ set_prompt() {
         else
             # get ip address in ssh server
             if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
-                local ip=$(get_ip 5)
+                local ip=$(get_ip 3)
             fi
             # path
             PROMPT="%F{255}%K{19}%d%f%k"
@@ -218,7 +188,11 @@ set_prompt() {
             PROMPT=$PROMPT"%(?. >> . %F{125}>>%f%k "
         fi
         # ip_color
-        PROMPT='$(ip_color $ip)'$PROMPT
+        if [ -n "$ip" ]; then
+            PROMPT="$(ip_color $ip)"$PROMPT
+        else
+            PROMPT='$(ip_color)'$PROMPT
+        fi
 
         PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
 
