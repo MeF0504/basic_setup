@@ -383,7 +383,7 @@ def main_tar(fpath, args):
         if debug: print('cpath: {}'.format(t.name))
         for p in tnames:
             if p == '': continue
-            if (p==tnames[-1]) and t.isfile() and depth==len(tnames):
+            if t.isfile() and depth==len(tnames):
                 # file
                 tmp_list.append(p)
                 if debug:
@@ -474,14 +474,22 @@ def main_zip(fpath, args):
         tmp_list = list_tree
         depth = 1
         znames = z.filename.split('/')
+        if debug: print('cpath: {}'.format(t.name))
         for p in znames:
-            p = p.encode('cp437').decode()
+            try:
+                p = p.encode('cp932', 'replace').decode()
+            except UnicodeEncodeError as e:
+                if debug:
+                    print(e)
+                p = p.encode('cp437', 'replace').decode()
             if p == '': continue
-            if (p==znames[-1]) and (not z.is_dir()) and depth==len(znames):
+            if (not z.is_dir()) and depth==len(znames):
+                # file
                 tmp_list.append(p)
                 if debug:
                     print('add {} to {} @ {:d}'.format(p, tmp_list, depth))
             elif p in tmp_list[0]:
+                # existing directory
                 tmp_list = tmp_list[0][p]
                 depth += 1
             else:
