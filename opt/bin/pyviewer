@@ -6,6 +6,7 @@ import os
 import sys
 import argparse
 import tarfile
+import platform
 from pathlib import PurePath
 
 from libtree import tree_viewer, show_tree, branch_str
@@ -20,6 +21,7 @@ else:
 debug = False
 inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
 image_ext = 'png jpg jpeg bmp'.split(' ')
+uname = platform.system()
 
 def args_chk(args, attr):
     if not hasattr(args, attr):
@@ -470,6 +472,10 @@ def main_zip(fpath, args):
                         return
 
     # make list_tree
+    if uname == 'Windows':
+        zip_codec = 'cp932' # test codec.
+    else:
+        zip_codec = 'cp437' # test codec.
     for z in zip_file.infolist():
         tmp_list = list_tree
         depth = 1
@@ -477,11 +483,11 @@ def main_zip(fpath, args):
         if debug: print('cpath: {}'.format(t.name))
         for p in znames:
             try:
-                p = p.encode('cp932', 'replace').decode()
-            except UnicodeEncodeError as e:
+                # try to decode
+                p = p.encode(zip_codec, 'replace').decode()
+            except Exception as e:
                 if debug:
                     print(e)
-                p = p.encode('cp437', 'replace').decode()
             if p == '': continue
             if (not z.is_dir()) and depth==len(znames):
                 # file
