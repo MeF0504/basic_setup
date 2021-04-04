@@ -13,6 +13,7 @@ import difflib
 import datetime
 import json
 import tempfile
+import platform
 if sys.version_info.major < 3:
     import urllib as urlreq
 else:
@@ -26,6 +27,8 @@ try:
     is_color = True
 except ImportError:
     is_color = False
+
+uname = platform.system()
 
 ### copy func {{{
 # copy file1 -> file2
@@ -179,7 +182,7 @@ def get_files(fpath, args_type):
     fpath = op.expanduser(fpath)
     fpath = op.expandvars(fpath)
     if not op.exists(fpath):
-        print("setup_file doesn't find. copy default files.")
+        print("setup_file {} doesn't find. copy default files.".format(fpath))
         return None
 
     with open(fpath, 'r') as f:
@@ -207,13 +210,15 @@ def main_opt(args):
                 if os.access(bfy,os.X_OK):
                     fname = op.basename(bfy)
                     if (fname == 'pdf2jpg'):
-                        if (os.uname()[0] == 'Darwin'):
+                        if (uname == 'Darwin'):
                             files[bfy] = op.join(binpath, fname)
                     else:
                         files[bfy] = op.join(binpath, fname)
 
             for lfy in glob.glob(op.join(libdir,'*')):
                 fname = op.basename(lfy)
+                if fname == '__pycache__':
+                    continue
                 if not fname.endswith('pyc'):
                     files[lfy] = op.join(libpath, fname)
 
@@ -254,6 +259,8 @@ def main_conf(args):
                   'gitignore_global':'~/.gitignore_global', \
                 }
 
+    files_win = {}
+
     files_min = {\
                   'posixShellRC':'~/.posixShellRC',\
                   'bashrc':'~/.bashrc',\
@@ -264,10 +271,12 @@ def main_conf(args):
     if files is None:
         if args.type == 'min':
             files = files_min
-        elif os.uname()[0] == 'Darwin':
+        elif uname == 'Darwin':
             files = files_mac
-        elif os.uname()[0] == 'Linux':
+        elif uname == 'Linux':
             files = files_linux
+        elif uname == 'Windows':
+            files = files_win
         else:
             files = {}
 
@@ -318,7 +327,7 @@ def main_conf(args):
             mine_exist = False
 
     if 'bashrc' in files:
-        bashrc_mine = op.expandvars('$HOME/.bash/bashrc.mine')
+        bashrc_mine = op.expanduser('~/.bash/bashrc.mine')
         if not op.exists(bashrc_mine):
             with open(bashrc_mine,'a') as f:
                 f.write('## PC dependent bashrc\n')
@@ -340,14 +349,20 @@ def main_vim(args):
     vimdir = op.join(args.fpath,'vim')
     print('\n@ '+vimdir+'\n')
 
-    vim_config_path = op.join(args.conf_home, 'nvim')
+    if uname == 'Windows':
+        vim_config_path = op.expanduser('~/vimfiles')
+    else:
+        vim_config_path = op.join(args.conf_home, 'nvim')
     rcpath = op.join(vim_config_path, 'rcdir')
     ftpath = op.join(vim_config_path, 'ftplugin')
     tmpath = op.join(vim_config_path, 'toml')
     mkdir(op.join(vim_config_path, "swp"))
 
     files = get_files(args.setup_file, 'vim')
-    vimrc = op.join(vim_config_path, 'init.vim')
+    if uname == 'Windows':
+        vimrc = op.expanduser('~/_vimrc')
+    else:
+        vimrc = op.join(vim_config_path, 'init.vim')
     if files is None:
         if args.type == 'min':
             files = {'rcdir/vimrc_basic.vim':vimrc}
@@ -404,17 +419,20 @@ def main_vim(args):
                 f.write('\n')
             print('made init.vim.mine')
 
-    src = vimrc
-    dst = op.expanduser('~/.vimrc')
-    if not op.exists(dst):
-        print("link " + src + " -> " + dst)
-        os.symlink(src, dst)
+    if not uname == 'Windows':
+        src = vimrc
+        dst = op.expanduser('~/.vimrc')
+        if not op.exists(dst):
+            if not args.test:
+                print("link " + src + " -> " + dst)
+                os.symlink(src, dst)
 
-    src = vim_config_path
-    dst = op.expanduser("~/.vim")
-    if not op.exists(dst):
-        print("link " + src + " -> " + dst)
-        os.symlink(src, dst)
+        src = vim_config_path
+        dst = op.expanduser("~/.vim")
+        if not op.exists(dst):
+            if not args.test:
+                print("link " + src + " -> " + dst)
+                os.symlink(src, dst)
 
 def main():
     parser = argparse.ArgumentParser()
