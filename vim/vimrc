@@ -165,8 +165,10 @@ function! Set_statusline(cur_win, ...)
             let st_mode = '%#Mode_R#' . st_mode
         elseif modec =~ 't'
             let st_mode = '%#Mode_T#' . st_mode
-        else
+        elseif modec =~ 'n'
             let st_mode = '%#Mode_N#' . st_mode
+        else
+            let st_mode = '%#Mode_ELSE#' . st_mode
         endif
         let l:st_str = st_mode . l:st_str
     endif
