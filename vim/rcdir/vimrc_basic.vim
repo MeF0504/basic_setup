@@ -244,15 +244,16 @@ nnoremap g<Right> gt
 nnoremap g<Left> gT
 nnoremap gl gt
 nnoremap gh gT
+" ↓ <num>gt に合わせて0gt
 nnoremap <silent> 0gt :tablast<CR>
 nnoremap <silent> g> :tabmove +1<CR>
 nnoremap <silent> g< :tabmove -1<CR>
-nnoremap <silent> $g> :tabmove $<CR>
-nnoremap <silent> 0g< :tabmove 0<CR>
+nnoremap <silent> g$> :tabmove $<CR>
+nnoremap <silent> g0< :tabmove 0<CR>
 
 " 画面自体を左右に移動
-nnoremap H 5zh
-nnoremap L 5zl
+nnoremap <expr> H winwidth('.')/3.'zh'
+nnoremap <expr> L winwidth('.')/3.'zl'
 
 " commandlineでも<c-a>で最初に戻りたい
 cnoremap <c-a> <c-b>
