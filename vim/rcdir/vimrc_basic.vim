@@ -319,5 +319,17 @@ if has('terminal') || has('nvim')
     " tnoremap <ESC><C-e> <c-\><c-n>
 endif
 
+" vim only
+if has('terminal')
+    " vimのterminalでterminal modeを抜けずに移動
+    " termwinkey = <c-l>
+    tnoremap g<Right> <c-l>gt
+    tnoremap g<Left> <c-l>gT
+    tnoremap s<Up> <c-l><c-w>k
+    tnoremap s<Down> <c-l><c-w>j
+    tnoremap s<Right> <c-l><c-w>l
+    tnoremap s<Left> <c-l><c-w>h
+endif
+
 " }}}
 
