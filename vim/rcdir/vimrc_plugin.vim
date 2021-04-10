@@ -756,9 +756,13 @@ endfunction
 function! s:open_term(bufname) abort
     let bufn = bufnr(a:bufname)
     if bufn == -1
-        throw 'E94: No matching buffer for ' . a:bufname
+        " throw 'E94: No matching buffer for ' . a:bufname
+        echo 'No matching buffer for "' . a:bufname . '"'
+        return
     elseif exists('*term_list') && index(term_list(), bufn) == -1
-        throw a:bufname . 'is not a terminal buffer'
+        " throw a:bufname . 'is not a terminal buffer'
+        echo '"' . a:bufname . '"is not a terminal buffer'
+        return
     endif
     let winids = win_findbuf(bufn)
     if empty(winids)
@@ -787,8 +791,11 @@ function! s:open_term_win(opts)
     endif
 
     " term_startでgit for windowsのbashを実行する
-    term_opt = split(a:opts, ' ')
-    call term_start(['bash.exe', '-l']+term_opt, {
+    let term_opt = split(a:opts, ' ')
+    if len(term_opt) == 0
+        let term_opt = ['bash.exe', '-l']
+    endif
+    call term_start(term_opt, {
                 \ 'term_name': '!Git_'.s:term_cnt,
                 \ 'term_finish': 'close',
                 \ 'curwin': v:true,
@@ -829,8 +836,8 @@ function! s:Terminal(...) abort
             call s:open_term(opts['term'][0])
             if mode() != 't'
                 normal! i
-                return
             endif
+            return
         else
             if win_opt == 'S'
                 botright split
@@ -852,8 +859,8 @@ function! s:Terminal(...) abort
                 call s:open_term(opts['term'][0])
                 if mode() != 't'
                     startinsert " neovimはstartinsertでTeminal modeになる
-                    return
                 endif
+                return
             else
                 if win_opt == 'S'
                     botright split
