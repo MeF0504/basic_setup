@@ -4,8 +4,8 @@ scriptencoding utf-8
 
 " vim (almost) self-made function file
 
-" 関数の引数解析用関数 {{{
-function! s:analythis_args(arg)
+" 関数の引数解析用関数 (key=arg){{{
+function! s:analythis_args(arg) abort
     let args = split(a:arg, ' ')
     let ret = {'no_key':""}
     let last_key = -1
@@ -33,6 +33,44 @@ function! s:analythis_args(arg)
     return ret
 endfunction
 " }}}
+
+" 関数の引数解析用関数 (-opt arg) {{{
+function! s:analythis_args2(args, args_config) abort
+    let args = split(a:args, ' ')
+    let res = {'no_opt':[]}
+    let skip_cnt = -1
+    " echo args
+    for i in range(len(args))
+        let arg = args[i]
+        " echo '<>'.i.':'.arg
+        let opt_num = 0
+        if arg[0]=='-'
+            let opt = arg[1:]
+            let res[opt] = []
+            " echo ' set '.opt
+            if has_key(a:args_config, opt)
+                let opt_num = a:args_config[opt]
+            endif
+            let skip_cnt = i
+            for j in range(i+1, i+opt_num)
+                let res[opt] += [args[j]]
+                let skip_cnt += 1
+                " echo '  '.j.': add '.args[j].'(skip:'.skip_cnt.')'
+            endfor
+        elseif i <= skip_cnt
+            " already set to res dictionary
+            " echo 'skip '.i
+            continue
+        else
+            " echo 'no key: '.i.' '.arg
+            let res['no_opt'] += [arg]
+        endif
+        " let test=input('>> ')
+    endfor
+
+    return res
+endfunction
+"}}}
 
 "単語のハイライト情報をget "{{{
 "from http://cohama.hateblo.jp/entry/2013/08/11/020849
@@ -668,32 +706,51 @@ vnoremap <expr> # <SID>chk_braket()
 
 " termonal commandを快適に使えるようにする {{{
 "" http://koturn.hatenablog.com/entry/2018/02/12/140000
-let s:term_opts = ['S', 'V', 'F']
+let s:term_opts = ['win', 'term']
+let s:term_win_opts = ['S', 'V', 'F']
 function! s:complete_term(arglead, cmdline, cursorpos) abort
+    ":h :command-completion-custom
     let arglead = tolower(a:arglead)
-    let ret = s:term_opts
-    if exists('*term_list')
-        let ret = filter(map(term_list(), 'bufname(v:val)'), '!stridx(tolower(v:val), arglead)') + ret
-    else
-        if has('nvim')
-            let st_idx = 6
-            let term_head = 'term://'
-        else
-            let st_idx = 0
-            let term_head = '!'
-        endif
-        let term_list = []
-        for i in range(1, tabpagenr('$'))
-            for j in tabpagebuflist(i)
-                let bname = bufname(j)
-                if bname[:st_idx] == term_head
-                    let term_list += [bname]
-                endif
-            endfor
+    let cmdline = tolower(a:cmdline)
+    let opt_idx = strridx(cmdline, '-')
+    " return ['-1-'.a:arglead, '-2-'.a:cmdline, '-3-'.a:cursorpos, '-4-'.a:cmdline[opt_idx:]]
+    if arglead[0] == '-'
+        " select option
+        let res = []
+        for opt in s:term_opts
+            let res += ['-'.opt]
         endfor
-        let ret = filter(term_list, '!stridx(tolower(v:val), arglead)') + ret
+        return filter(res, '!stridx(tolower(v:val), arglead)')
+    elseif cmdline[opt_idx:opt_idx+3] == '-win'
+        return s:term_win_opts
+    elseif cmdline[opt_idx:opt_idx+4] == '-term'
+        if exists('*term_list')
+            let term_names = filter(map(term_list(), 'bufname(v:val)'), '!stridx(tolower(v:val), arglead)')
+        else
+            if has('nvim')
+                let st_idx = 6
+                let term_head = 'term://'
+            else
+                let st_idx = 0
+                let term_head = '!'
+            endif
+            let term_list = []
+            for i in range(1, tabpagenr('$'))
+                for j in tabpagebuflist(i)
+                    let bname = bufname(j)
+                    if bname[:st_idx] == term_head
+                        let term_list += [bname]
+                    endif
+                endfor
+            endfor
+            let term_names = filter(term_list, '!stridx(tolower(v:val), arglead)')
+        endif
+        return term_names
+    else
+        " shell コマンド一覧が得られたら嬉しい
+        " $PATHでfor文を回す手もあるが，時間が掛かりそう...
+        return []
     endif
-    return ret
 endfunction
 
 function! s:open_term(bufname) abort
@@ -747,75 +804,69 @@ function! s:Terminal(...) abort
         return
     endif
 
+    let args_config = {'win':1, 'term':1}
     if a:0 == 0
-        if !exists('g:l_term_default')
-            let opts = ['S']
-        else
-            if match(s:term_opts, g:l_term_default) != -1
-                let opts = [g:l_term_default]
-            else
-                let opts = ['S']
-            endif
-        endif
+        let opts = ''
     else
-        let opts = a:000
+        let opts = a:1
+    endif
+    let opts = s:analythis_args2(opts, args_config)
+
+    if has_key(opts, 'win')
+        let win_opt = opts['win'][0]
+    elseif exists('g:l_term_default')
+        let win_opt = g:l_term_default
+    else
+        let win_opt = 'S'
+    endif
+    if match(s:term_win_opts, win_opt) == -1
+        let win_opt = 'S'
     endif
 
-    let t_opened = 0
     let term_opt = ''
     if has('win32')
-        for opt in opts
-            if opt == 'S'
-                if t_opened!=1
-                    botright split
-                    let t_opened = 1
-                endif
-            elseif opt == 'V'
-                if t_opened!=1
-                    botright vertical split
-                    let t_opened = 1
-                endif
-            elseif opt == 'F'
-                if t_opened!=1
-                    tabnew
-                    let t_opened = 1
-                endif
-            elseif (opt[0] == '!') || (opt[:6] == 'term://')
-                call s:open_term(opt)
+        if has_key(opts, 'term')
+            call s:open_term(opts['term'][0])
+            if mode() != 't'
                 normal! i
                 return
-            else
-                let term_opt .= ' '.opt
             endif
-        endfor
+        else
+            if win_opt == 'S'
+                botright split
+            elseif win_opt == 'V'
+                botright vertical split
+            elseif win_opt == 'F'
+                tabnew
+            else
+                echo 'not a supported option. return'
+                return
+            endif
+        endif
+        let term_opt .= ' '.join(opts['no_opt'])
         call s:open_term_win(term_opt)
 
     else
         if has('nvim')
-            for opt in opts
-                if opt == 'S'
-                    if t_opened!=1
-                        botright split
-                        let t_opened = 1
-                    endif
-                elseif opt == 'V'
-                    if t_opened!=1
-                        botright vertical split
-                        let t_opened = 1
-                    endif
-                elseif opt == 'F'
-                    if t_opened!=1
-                        tabnew
-                        let t_opened = 1
-                    endif
-                elseif (opt[0] == '!') || (opt[:6] == 'term://')
-                    call s:open_term(opt)
+            if has_key(opts, 'term')
+                call s:open_term(opts['term'][0])
+                if mode() != 't'
                     startinsert " neovimはstartinsertでTeminal modeになる
                     return
-                else
-                    let term_opt .= ' '.opt
                 endif
-            endfor
+            else
+                if win_opt == 'S'
+                    botright split
+                elseif win_opt == 'V'
+                    botright vertical split
+                elseif win_opt == 'F'
+                    tabnew
+                else
+                    echo 'not a supported option. return'
+                    return
+                endif
+            endif
+            let term_opt .= join(opts['no_opt'])
             execute 'terminal '.term_opt
             " rename buffer
             execute "silent file ".substitute(expand('%'), ' ', '', 'g')
@@ -823,32 +874,27 @@ function! s:Terminal(...) abort
 
         else
             let term_header = ''
-            for opt in opts
-                if opt == 'S'
-                    if t_opened!=1
-                        let term_header = 'botright '
-                        let t_opened = 1
-                    endif
-                elseif opt == 'V'
-                    if t_opened!=1
-                        let term_header = 'botright vertical '
-                        let t_opened = 1
-                    endif
-                elseif opt == 'F'
-                    if t_opened!=1
-                        tabnew
-                        let term_opt = ' ++curwin'.term_opt
-                        let t_opened = 1
-                    endif
-                elseif (opt[0] == '!') || (opt[:6] == 'term://')
-                    call s:open_term(opt)
+            if has_key(opts, 'term')
+                call s:open_term(opts['term'][0])
+                if mode() != 't'
                     " startinsert は無効らしい
                     normal! i
-                    return
-                else
-                    let term_opt .= ' '.opt
                 endif
-            endfor
+                return
+            else
+                if win_opt == 'S'
+                    let term_header = 'botright '
+                elseif win_opt == 'V'
+                    let term_header = 'botright vertical '
+                elseif win_opt == 'F'
+                    tabnew
+                    let term_opt = ' ++curwin'.term_opt
+                else
+                    echo 'not a supported option. return'
+                    return
+                endif
+            endif
+            let term_opt .= ' '.join(opts['no_opt'])
             execute term_header.'terminal '.term_opt
             " rename buffer
             execute "silent file ".substitute(expand('%'), ' ', '', 'g')
@@ -860,7 +906,7 @@ function! s:Terminal(...) abort
     setlocal nonumber
 endfunction
 
-command! -nargs=* -complete=customlist,s:complete_term  Terminal call s:Terminal(<f-args>)
+command! -nargs=? -complete=customlist,s:complete_term  Terminal call s:Terminal(<f-args>)
 
 
 " }}}
