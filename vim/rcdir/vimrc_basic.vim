@@ -325,10 +325,10 @@ if has('terminal')
     " termwinkey = <c-l>
     tnoremap g<Right> <c-l>gt
     tnoremap g<Left> <c-l>gT
-    tnoremap s<Up> <c-l><c-w>k
-    tnoremap s<Down> <c-l><c-w>j
-    tnoremap s<Right> <c-l><c-w>l
-    tnoremap s<Left> <c-l><c-w>h
+    tnoremap s<Up> <c-l>k
+    tnoremap s<Down> <c-l>j
+    tnoremap s<Right> <c-l>l
+    tnoremap s<Left> <c-l>h
 endif
 
 " }}}
