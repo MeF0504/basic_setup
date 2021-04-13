@@ -1,9 +1,25 @@
 @echo off
 
-echo which "git", "sh" and "python";
-which git
-which sh
-which python
+echo where "git", "sh" and "python";
+where git
+rem https://qiita.com/plcherrim/items/8edf3d3d33a0ae86cb5c
+if errorlevel 1 (
+    echo "git" not found
+    pause
+    exit \b
+)
+where sh
+if errorlevel 1 (
+    echo "sh" not found
+    pause
+    exit \b
+)
+where python
+if errorlevel 1 (
+    echo "python" not found
+    pause
+    exit \b
+)
 
 echo;
 set curdir=%~dp0
