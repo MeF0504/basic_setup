@@ -758,11 +758,11 @@ function! s:open_term(bufname) abort
     if bufn == -1
         " throw 'E94: No matching buffer for ' . a:bufname
         echo 'No matching buffer for "' . a:bufname . '"'
-        return
+        return 1        " 以上終了ということにしよう
     elseif exists('*term_list') && index(term_list(), bufn) == -1
         " throw a:bufname . 'is not a terminal buffer'
         echo '"' . a:bufname . '"is not a terminal buffer'
-        return
+        return 1        " 以上終了ということにしよう
     endif
     let winids = win_findbuf(bufn)
     if empty(winids)
@@ -771,6 +771,7 @@ function! s:open_term(bufname) abort
     else
         call win_gotoid(winids[0])
     endif
+    return 0
 endfunction
 
 " https://qiita.com/shiena/items/1dcb20e99f43c9383783
@@ -833,7 +834,11 @@ function! s:Terminal(...) abort
     let term_opt = ''
     if has('win32')
         if has_key(opts, 'term')
-            call s:open_term(opts['term'][0])
+            let res = s:open_term(opts['term'][0])
+            if res != 0
+                " can't find buffer
+                return
+            endif
             if mode() != 't'
                 normal! i
             endif
@@ -856,7 +861,11 @@ function! s:Terminal(...) abort
     else
         if has('nvim')
             if has_key(opts, 'term')
-                call s:open_term(opts['term'][0])
+                let res = s:open_term(opts['term'][0])
+                if res != 0
+                    " can't find buffer
+                    return
+                endif
                 if mode() != 't'
                     startinsert " neovimはstartinsertでTeminal modeになる
                 endif
@@ -882,7 +891,11 @@ function! s:Terminal(...) abort
         else
             let term_header = ''
             if has_key(opts, 'term')
-                call s:open_term(opts['term'][0])
+                let res = s:open_term(opts['term'][0])
+                if res != 0
+                    " can't find buffer
+                    return
+                endif
                 if mode() != 't'
                     " startinsert は無効らしい
                     normal! i
