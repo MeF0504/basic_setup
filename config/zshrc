@@ -207,6 +207,8 @@ zshaddhistory() {
     && ! ${line} =~ ".*history"
     && ! ${line} == clear
     && ! ${line} == logout
+    && ! ${line} == :
+    && ! ${line} == \;
     ]]
 }
 # }}}
