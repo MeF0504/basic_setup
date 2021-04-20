@@ -243,6 +243,7 @@ def main_conf(args):
                 'bashrc':'~/.bashrc',\
                 'matplotlibrc':'~/.matplotlib/matplotlibrc', \
                 'gitignore_global':'~/.gitignore_global', \
+                'screenrc':'~/.screenrc', \
                 }
 
     files_linux = {\
@@ -257,6 +258,7 @@ def main_conf(args):
                   'terminator_config':op.join(args.conf_home,'terminator/config'), \
                   'matplotlibrc':op.join(args.conf_home, 'matplotlib/matplotlibrc'), \
                   'gitignore_global':'~/.gitignore_global', \
+                  'screenrc':'~/.screenrc', \
                 }
 
     files_win = {}

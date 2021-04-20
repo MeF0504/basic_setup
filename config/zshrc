@@ -112,7 +112,7 @@ zstyle ':completion:*:cd:*' ignore-parents parent pwd
 # lsの色設定
 # が補完時にも働く？
 case "${TERM}" in
-xterm|xterm-color|xterm-256color)
+xterm|xterm-color|xterm-256color|screen-256color)
     zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34' 'tw=42;31' 'ow=43;31'
     ;;
 kterm-color)
@@ -230,7 +230,7 @@ fi
 ### terminal のtab nameをusername@場所 にする
 ### 場所はssh先ならhost name, localならカレントディレクトリ，$HOMEだとhomeになる
 case "${TERM}" in
-xterm|xterm-color|kterm|kterm-color|xterm-256color)
+xterm|xterm-color|kterm|kterm-color|xterm-256color|screen-256color)
     if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
         tab_title_precmd() {
             echo -ne "\033]0;${USER}@${MYHOST}\007"
@@ -246,6 +246,10 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color)
         }
     fi
     ;;
+*)
+    tab_title_precmd() {
+        # do nothing
+    }
 esac
 add-zsh-hook precmd tab_title_precmd
 
