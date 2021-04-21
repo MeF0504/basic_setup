@@ -1,10 +1,10 @@
 
 if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
-    # don't save the date time if I logined recenty.
+    # don't save the date time if I logined today.
     if [ ! -f $HOME/.cache/date.txt ]; then
-        TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z" >> $HISTFILE
+        TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z from '${SSH_CLIENT}' to '${HOST}'" >> $HISTFILE
     elif [ $(TZ=Asia/Tokyo date "+%Y%m%d") != $(cat $HOME/.cache/date.txt) ]; then
-        TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z" >> $HISTFILE
+        TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z from '${SSH_CLIENT}' to '${HOST}'" >> $HISTFILE
     fi
     # save last login time
     TZ=Asia/Tokyo date "+%Y%m%d" > $HOME/.cache/date.txt
@@ -15,3 +15,4 @@ if [[ -e $HOME/.vim/swp ]]; then
 fi
 
 [ -f $HOME/.zsh/zlogin.mine ] && source $HOME/.zsh/zlogin.mine
+
