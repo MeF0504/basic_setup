@@ -146,52 +146,35 @@ endfunction
 command! SyntaxInfo call s:get_syn_info()
 " }}}
 
-"vimでbinary fileを見る "{{{
-function! <SID>BinaryMode(on_off)
-    if a:on_off == 'on'
-        if exists("t:l_old_ft")
-            echo "already open as binary editor"
-            return
-        endif
-        "前の値を避難させる
-        let t:l_old_ft = &filetype
-        "let t:l_old_disp = &display
-        "binay modeで開く
-        if ! exists("t:l_pp_bin")
-            e ++bin
-            let t:l_pp_bin = 0
-        endif
-        "不可視文字をHexフォーマットで
-        "set display=uhex
-        "バイナリエディタっぽく
-        %!xxd
-        set filetype=xxd
-
-    elseif a:on_off == 'off'
-        if ! exists('t:l_old_ft')
-            echo "not opened as binary editor yet"
-            return
-        endif
-        if &modified == 1
-            if input('save this file? (y/[n]) ') != 'y'
-                return
-            endif
-        endif
-        %!xxd -r
-        write
-        e ++nobin
-        "execute "set display=" . t:l_old_disp
-        execute "set filetype=" . t:l_old_ft
-
-        unlet t:l_old_ft
-        "unlet t:l_old_disp
-
-    else
-        echo 'usage: BinMode on/off'
+"vimでbinary fileを閲覧，編集 "{{{
+let s:bin_fts = ''
+function! <SID>BinaryMode()
+    " :h using-xxd
+    " vim -b : edit binary using xxd-format!
+    let ext = '.'.expand('%:e')
+    if ext == '.'
+        let ext = expand('%:t')
     endif
+    if match(split(s:bin_fts, ','), '*'.ext) != -1
+        echo 'already set '.ext
+        return
+    endif
+    let s:bin_fts .= '*'.ext.','
+    augroup Binary
+        autocmd!
+        execute "autocmd BufReadPre   ".s:bin_fts." let &bin=1"
+        execute "autocmd BufReadPost  ".s:bin_fts." if &bin | %!xxd"
+        execute "autocmd BufReadPost  ".s:bin_fts." set ft=xxd | endif"
+        execute "autocmd BufWritePre  ".s:bin_fts." if &bin | %!xxd -r"
+        execute "autocmd BufWritePre  ".s:bin_fts." endif"
+        execute "autocmd BufWritePost ".s:bin_fts." if &bin | %!xxd"
+        execute "autocmd BufWritePost ".s:bin_fts." set nomod | endif"
+    augroup END
+    e!
 endfunction
 
-command! -nargs=1 BinMode call <SID>BinaryMode(<f-args>)
+command! BinMode call <SID>BinaryMode()
+
 " }}}
 
 " 開いているfile一覧 {{{
