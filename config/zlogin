@@ -1,12 +1,15 @@
 
-# save the login time, address to the history file
-# when login to server via ssh and if I save the coommand history.
-if [ -n "${SSH_CLIENT}${SSH_CONNECTION}${HISTFILE}" ]; then
-    # don't save the date time if I logined today.
-    if [ ! -f $HOME/.cache/date.txt ]; then
-        TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z from '${SSH_CLIENT}' to '${HOST}'" >> $HISTFILE
-    elif [ $(TZ=Asia/Tokyo date "+%Y%m%d") != $(cat $HOME/.cache/date.txt) ]; then
-        TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z from '${SSH_CLIENT}' to '${HOST}'" >> $HISTFILE
+# save the login time client address and server hostname
+# to the history file when login to server via ssh
+if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
+    # if $HISTFILE does not exist, don't save the login time etc.
+    if [ -f "${HISTFILE}" ]; then
+        # don't save the date time if I logined today.
+        if [ ! -f $HOME/.cache/date.txt ]; then
+            TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z from '${SSH_CLIENT}' to '${HOST}'" >> $HISTFILE
+        elif [ $(TZ=Asia/Tokyo date "+%Y%m%d") != $(cat $HOME/.cache/date.txt) ]; then
+            TZ=Asia/Tokyo date "+## %Y-%m-%d %H:%M %Z from '${SSH_CLIENT}' to '${HOST}'" >> $HISTFILE
+        fi
     fi
     # save last login time
     TZ=Asia/Tokyo date "+%Y%m%d" > $HOME/.cache/date.txt
