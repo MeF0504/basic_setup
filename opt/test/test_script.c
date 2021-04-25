@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+int g_var = 1;
+
 // comment
 typedef struct {
     int var;
