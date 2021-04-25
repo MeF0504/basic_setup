@@ -209,6 +209,8 @@ zshaddhistory() {
     && ! ${line} == logout
     && ! ${line} == :
     && ! ${line} == \;
+    # vimからterminalを開いてるときによく打っちゃう
+    && ! ${line} == :q
     ]]
 }
 # }}}
