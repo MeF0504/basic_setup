@@ -1,70 +1,91 @@
 # set prompt
 
+# functions of ip address and ip-color {{{
+
 function get_ip() {
     local to=${1:-$CURLTIMEOUT}
     if [[ "$(which timeout &> /dev/null; echo $?)" == 0 ]]; then
-        local ip="$( timeout $to curl ifconfig.io 2> /dev/null)"
+        local ip="$( timeout "$to" curl ifconfig.io 2> /dev/null)"
     elif [[ "$(which timeout_local &> /dev/null; echo $?)" == 0 ]]; then
-        local ip="$( timeout_local $to curl ifconfig.io 2> /dev/null)"
+        local ip="$( timeout_local "$to" curl ifconfig.io 2> /dev/null)"
     else
-        local ip="$(curl --max-time $to ifconfig.io 2> /dev/null)"
+        local ip="$(curl --max-time "$to" ifconfig.io 2> /dev/null)"
     fi
-    echo $ip
+    echo "$ip"
 }
 
 function ip_color() {
     # {{{
     local ip=${1:-$(get_ip)}
-    if [[ $(echo $ip | wc -l) -ne 1 ]]; then
+    if [[ $(echo "$ip" | wc -l) -ne 1 ]]; then
         local ret=""
         ret=$ret"%F{15}%K{16}m%f%k"
         ret=$ret"%F{15}%K{16}i%f%k"
         ret=$ret"%F{15}%K{16}s%f%k"
         ret=$ret"%F{15}%K{16}s%f%k"
         ret=$ret" "
-        echo $ret
+        echo "$ret"
         return 0
     fi
+
     if [[ $ip == *.* ]]; then   # IPv4
-        ip11=$(echo $ip | cut -f 1 -d ".")
-        ip12=$ip11
-        ip21=$(echo $ip | cut -f 2 -d ".")
-        ip22=$ip21
-        ip31=$(echo $ip | cut -f 3 -d ".")
-        ip32=$ip31
-        ip41=$(echo $ip | cut -f 4 -d ".")
-        ip42=$ip41
-        ipv=4
+        ip1f=15
+        ip1b=$(echo "$ip" | cut -f 1 -d ".")
+        ip2f=15
+        ip2b=$(echo "$ip" | cut -f 2 -d ".")
+        ip3f=15
+        ip3b=$(echo "$ip" | cut -f 3 -d ".")
+        ip4f=15
+        ip4b=$(echo "$ip" | cut -f 4 -d ".")
     elif [[ $ip == *:* ]]; then     # IPv6
-        ip11=$(( 0x$(echo $ip | cut -f 1 -d ":") >> 8))
-        ip12=$(( 0x$(echo $ip | cut -f 1 -d ":") & 0xFF))
-        ip21=$(( 0x$(echo $ip | cut -f 2 -d ":") >> 8))
-        ip22=$(( 0x$(echo $ip | cut -f 2 -d ":") & 0xFF))
-        ip31=$(( 0x$(echo $ip | cut -f 3 -d ":") >> 8))
-        ip32=$(( 0x$(echo $ip | cut -f 3 -d ":") & 0xFF))
-        ip41=$(( 0x$(echo $ip | cut -f 4 -d ":") >> 8))
-        ip42=$(( 0x$(echo $ip | cut -f 4 -d ":") & 0xFF))
-        ipv=6
+        ip1f=$(( 0x$(echo "$ip" | cut -f 1 -d ":") & 0xFF))
+        ip1b=$(( 0x$(echo "$ip" | cut -f 1 -d ":") >> 8))
+        ip2f=$(( 0x$(echo "$ip" | cut -f 2 -d ":") & 0xFF))
+        ip2b=$(( 0x$(echo "$ip" | cut -f 2 -d ":") >> 8))
+        ip3f=$(( 0x$(echo "$ip" | cut -f 3 -d ":") & 0xFF))
+        ip3b=$(( 0x$(echo "$ip" | cut -f 3 -d ":") >> 8))
+        ip4f=$(( 0x$(echo "$ip" | cut -f 4 -d ":") & 0xFF))
+        ip4b=$(( 0x$(echo "$ip" | cut -f 4 -d ":") >> 8))
     else
-        ip11=16 # black
-        ip12=16 # black
-        ip21=16 # black
-        ip22=16 # black
-        ip31=16 # black
-        ip32=16 # black
-        ip41=16 # black
-        ip42=16 # black
-        ipv="-"
+        ip1f=15 # black
+        ip1b=16 # black
+        ip2f=15 # black
+        ip2b=16 # black
+        ip3f=15 # black
+        ip3b=16 # black
+        ip4f=15 # black
+        ip4b=16 # black
+    fi
+
+    # sourceなら$0で行けるかと思ったけど，zshだとsourceでも$0がスクリプト名になる
+    # ので，https://tkuchiki.hatenablog.com/entry/2014/05/08/222135 を参考にした
+    # 今はzshの中でしか動かしていないから要らないかも
+    if  ps -p $$ | grep -qs zsh ; then
+        ch0=' '
+        ch1='Z'
+    elif ps -p $$ | grep -qs bash ; then
+        ch0='b'
+        ch1='a'
+    else
+        ch0='?'
+        ch1='?'
+    fi
+    ch2='-'
+    # vim上で開いてたらv, 他はshellの深さ -> https://www.atmarkit.co.jp/flinux/rensai/linuxtips/529shelldep.html
+    if [[ -n $VIM_TERMINAL ]]; then
+        ch3='v'
+    else
+        ch3=$SHLVL
     fi
 
     ### display colorfully: https://qiita.com/butaosuinu/items/770a040bc9cfe22c71f4
     local ret=""
-    ret=$ret"%F{$ip11}%K{$ip12}I%f%k"
-    ret=$ret"%F{$ip21}%K{$ip22}P%f%k"
-    ret=$ret"%F{$ip31}%K{$ip32}v%f%k"
-    ret=$ret"%F{$ip41}%K{$ip42}${ipv}%f%k"
+    ret=$ret"%F{$ip1f}%K{$ip1b}${ch0}%f%k"
+    ret=$ret"%F{$ip2f}%K{$ip2b}${ch1}%f%k"
+    ret=$ret"%F{$ip3f}%K{$ip3b}${ch2}%f%k"
+    ret=$ret"%F{$ip4f}%K{$ip4b}${ch3}%f%k"
     ret=$ret" "
-    echo $ret
+    echo "$ret"
     # }}}
 }
 
@@ -72,28 +93,29 @@ function ip_color2() {
     # {{{
     # only for IPv6
     local ip=${1:-$(get_ip)}
-    if [[ $(echo $ip | wc -l) -ne 1 ]]; then
+    if [[ $(echo "$ip" | wc -l) -ne 1 ]]; then
         return 0
     fi
     if [[ $ip == *:* ]]; then
-        ip11=$(( 0x$(echo $ip | cut -f 5 -d ":") >> 8))
-        ip12=$(( 0x$(echo $ip | cut -f 5 -d ":") & 0xFF))
-        ip21=$(( 0x$(echo $ip | cut -f 6 -d ":") >> 8))
-        ip22=$(( 0x$(echo $ip | cut -f 6 -d ":") & 0xFF))
-        ip31=$(( 0x$(echo $ip | cut -f 7 -d ":") >> 8))
-        ip32=$(( 0x$(echo $ip | cut -f 7 -d ":") & 0xFF))
-        ip41=$(( 0x$(echo $ip | cut -f 8 -d ":") >> 8))
-        ip42=$(( 0x$(echo $ip | cut -f 8 -d ":") & 0xFF))
+        ip1f=$(( 0x$(echo "$ip" | cut -f 5 -d ":") & 0xFF))
+        ip1b=$(( 0x$(echo "$ip" | cut -f 5 -d ":") >> 8))
+        ip2f=$(( 0x$(echo "$ip" | cut -f 6 -d ":") & 0xFF))
+        ip2b=$(( 0x$(echo "$ip" | cut -f 6 -d ":") >> 8))
+        ip3f=$(( 0x$(echo "$ip" | cut -f 7 -d ":") & 0xFF))
+        ip3b=$(( 0x$(echo "$ip" | cut -f 7 -d ":") >> 8))
+        ip4f=$(( 0x$(echo "$ip" | cut -f 8 -d ":") & 0xFF))
+        ip4b=$(( 0x$(echo "$ip" | cut -f 8 -d ":") >> 8))
         local ret=""
-        ret=$ret"%F{$ip11}%K{$ip12}c%f%k"
-        ret=$ret"%F{$ip21}%K{$ip22}o%f%k"
-        ret=$ret"%F{$ip31}%K{$ip32}n%f%k"
-        ret=$ret"%F{$ip41}%K{$ip42}n%f%k"
+        ret=$ret"%F{$ip1f}%K{$ip1b}c%f%k"
+        ret=$ret"%F{$ip2f}%K{$ip2b}o%f%k"
+        ret=$ret"%F{$ip3f}%K{$ip3b}n%f%k"
+        ret=$ret"%F{$ip4f}%K{$ip4b}n%f%k"
         ret=$ret" "
-        echo $ret
+        echo "$ret"
     fi
     # }}}
 }
+# }}}
 
 # {{{ calculate the command execution time
 # from https://github.com/sindresorhus/pure
@@ -168,31 +190,32 @@ set_prompt() {
                 local ip=$(get_ip 3)
             fi
             # path
-            PROMPT="%F{255}%K{19}%d%f%k"
+            _PS_PATH="%F{255}%K{19}%d%f%k"
             # exec time
-            PROMPT=$PROMPT' $(ret_cmd_exec_time)'
+            _PS_EXTIME=' $(ret_cmd_exec_time)'
             # new line
-            PROMPT=$PROMPT$'\n'
+            _PS_NEWLINE=$'\n'
             # ip_color for IPv6
-            PROMPT=$PROMPT'$(ip_color2 $ip)'
+            _PS_IPCOLOR2='$(ip_color2 $ip)'
             if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
                 # host name in ssh server
-                PROMPT="%F{14}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%f%k "$PROMPT
+                _PS_HOST="%F{14}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%f%k "
             fi
             # time
-            PROMPT=$PROMPT"%F{42}%D{%H:%M}%f%k"
+            _PS_TIME="%F{42}%D{%H:%M}%f%k"
             # user name (bold)
-            PROMPT=$PROMPT" %F{160}%B%n%b%f%k"
+            _PS_USER=" %F{160}%B%n%b%f%k"
             # change the color to magenta if the previous command was failed.
             # https://blog.8-p.info/2009/01/red-prompt
-            PROMPT=$PROMPT"%(?. >> . %F{125}>>%f%k "
+            _PS_END="%(?. >> . %F{125}>>%f%k "
         fi
         # ip_color
         if [ -n "$ip" ]; then
-            PROMPT="$(ip_color $ip)"$PROMPT
+            _PS_IPCOLOR="$(ip_color $ip)"
         else
-            PROMPT='$(ip_color)'$PROMPT
+            _PS_IPCOLOR='$(ip_color)'
         fi
+        export PROMPT="${_PS_IPCOLOR}${_PS_HOST}${_PS_PATH}${_PS_EXTIME}${_PS_NEWLINE}${_PS_IPCOLOR2}${_PS_TIME}${_PS_USER}${_PS_END}"
 
         PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
 
