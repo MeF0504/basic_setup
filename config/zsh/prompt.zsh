@@ -16,7 +16,11 @@ function get_ip() {
 
 function ip_color() {
     # {{{
-    local ip=${1:-$(get_ip)}
+    if [ $CURLTIMEOUT -eq -1 ]; then
+        local ip=$1
+    else
+        local ip=$(get_ip)
+    fi
     if [[ $(echo "$ip" | wc -l) -ne 1 ]]; then
         local ret=""
         ret=$ret"%F{15}%K{16}m%f%k"
@@ -185,18 +189,13 @@ set_prompt() {
             fi
             # }}}
         else
-            # get ip address in ssh server
-            if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
-                local ip=$(get_ip 3)
-            fi
+            _GLOBAL_IP=$(get_ip 3)
             # path
             _PS_PATH="%F{255}%K{19}%d%f%k"
             # exec time
             _PS_EXTIME=' $(ret_cmd_exec_time)'
             # new line
             _PS_NEWLINE=$'\n'
-            # ip_color for IPv6
-            _PS_IPCOLOR2='$(ip_color2 $ip)'
             if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
                 # host name in ssh server
                 _PS_HOST="%F{14}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%f%k "
@@ -210,11 +209,10 @@ set_prompt() {
             _PS_END="%(?. >> . %F{125}>>%f%k "
         fi
         # ip_color
-        if [ -n "$ip" ]; then
-            _PS_IPCOLOR="$(ip_color $ip)"
-        else
-            _PS_IPCOLOR='$(ip_color)'
-        fi
+        _PS_IPCOLOR='$(ip_color $_GLOBAL_IP)'
+        # ip_color for IPv6
+        _PS_IPCOLOR2='$(ip_color2 $_GLOBAL_IP)'
+
         export PROMPT="${_PS_IPCOLOR}${_PS_HOST}${_PS_PATH}${_PS_EXTIME}${_PS_NEWLINE}${_PS_IPCOLOR2}${_PS_TIME}${_PS_USER}${_PS_END}"
 
         PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
