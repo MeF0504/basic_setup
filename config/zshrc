@@ -142,6 +142,9 @@ zmodload zsh/datetime
 ### key mapの設定
 ### bindkey -L で一覧が見れるらしい
 
+# もうこれで慣れてるのでEmacs風key bind
+# (むしろvim風だと自分の環境との違いに発狂思想になるという面もある...)
+bindkey -e
 # shift-tabで補完候補の後戻りする
 bindkey "\e[Z" reverse-menu-complete
 # ctrl-b,f で前後の単語に移動
