@@ -226,8 +226,24 @@ if has('mac')
             let s:pdf_file = expand('%:r').'.pdf'
             let s:build_pdf = s:build_dir.'/'.expand('%:t:r').'.pdf'
         endif
+        " bibliography があり，かつ.bibがmain.texより新しければbibもコンパイル
+        let cmp_bib = 0
+        let bib_line = match(readfile(s:main_file), 'bibliography')
+        if bib_line != -1
+            let bra_idx = match(readfile(s:main_file)[bib_line+1], '{')
+            let bib_file = readfile(s:main_file)[bib_line+1][bra_idx+1:-2].'.bib'
+            if getftime(s:main_file) < getftime(bib_file)
+                let cmp_bib = 1
+            endif
+        endif
+
 
         let ret = "QuickRun -command 'ptex2pdf' "
+        if cmp_bib == 1
+            let ret .= "-exec 'uplatex -output-directory ".s:build_dir." ".fnamemodify(s:main_file, ':r')."' "
+            let ret .= "-exec 'upbibtex ".s:build_dir."/".fnamemodify(s:main_file, ':r')."' "
+            let ret .= "-exec 'uplatex -output-directory ".s:build_dir." ".fnamemodify(s:main_file, ':r')."' "
+        endif
         let ret .= "-exec '%c -l -u -ot \"-synctex=1 -interaction=nonstopmode\" ".s:main_file." -output-directory ".s:build_dir."' "
         let ret .= "-exec 'mv ".s:build_pdf." ".s:pdf_file."' "
         let ret .= "-exec 'echo \"\\\\n move from ".s:build_pdf." to ". s:pdf_file."\"' "
