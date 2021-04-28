@@ -52,7 +52,9 @@ endfunction
 command! -nargs=? AddEnv call Add_env(<q-args>)
 " }}}
 
-set suffixesadd+=.tex
+" $VIMRUNTIME/ftplugin あたりで上書きされてそうなのでautocmd化する
+autocmd texvim BufEnter *.tex set suffixesadd+=.tex
+autocmd texvim BufEnter *.tex set suffixesadd+=.bib
 
 function! s:replace_words()
     let l = line('.')
