@@ -61,26 +61,10 @@ function ip_color() {
         ip4b=16 # black
     fi
 
-    # sourceなら$0で行けるかと思ったけど，zshだとsourceでも$0がスクリプト名になる
-    # ので，https://tkuchiki.hatenablog.com/entry/2014/05/08/222135 を参考にした
-    # 今はzshの中でしか動かしていないから要らないかも
-    if  ps -p $$ | grep -qs zsh ; then
-        ch0=' '
-        ch1='Z'
-    elif ps -p $$ | grep -qs bash ; then
-        ch0='b'
-        ch1='a'
-    else
-        ch0='?'
-        ch1='?'
-    fi
-    ch2='-'
-    # vim上で開いてたらv, 他はshellの深さ -> https://www.atmarkit.co.jp/flinux/rensai/linuxtips/529shelldep.html
-    if [[ -n $VIM_TERMINAL ]]; then
-        ch3='v'
-    else
-        ch3=$SHLVL
-    fi
+    local ch0=${SHELL_INFO:0:1}
+    local ch1=${SHELL_INFO:1:1}
+    local ch2=${SHELL_INFO:2:1}
+    local ch3=${SHELL_INFO:3}
 
     ### display colorfully: https://qiita.com/butaosuinu/items/770a040bc9cfe22c71f4
     local ret=""

@@ -41,12 +41,7 @@ else
 fi
 \` "
 
-if [[ -n ${VIM_TERMINAL} ]]; then
-    export _PS_SHINFO='v'
-else
-    export _PS_SHINFO=${SHLVL}
-fi
-export _PS_SHINFO="\[\e[33m\][ba-${_PS_SHINFO}]\[\e[0m\] "
+export _PS_SHINFO="\[\e[33m\][${SHELL_INFO}]\[\e[0m\] "
 
 export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}\n${_PS_TIME}${_PS_USER}${_PS_GIT}${_PS_END}"
 

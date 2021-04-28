@@ -17,6 +17,26 @@ esac
 
 export XDG_CONFIG_HOME=~/.config
 
+# sourceなら$0で行けるかと思ったけど，zshだとsourceでも$0がスクリプト名になる
+# ので，https://tkuchiki.hatenablog.com/entry/2014/05/08/222135 を参考にした
+# sourceならプロセスは変わらないので，$$でOK
+if  ps -p $$ | grep -qs zsh ; then
+    export SHELL_INFO=' Z'
+elif ps -p $$ | grep -qs bash ; then
+    export SHELL_INFO='ba'
+elif ps -p $$ | grep -qs ' sh' ; then
+    # shは全部に当てはまっちゃうので' sh'で探す
+    export SHELL_INFO='sh'
+else
+    export SHELL_INFO='??'
+fi
+# vim上で開いてたらv, 他はshellの深さ -> https://www.atmarkit.co.jp/flinux/rensai/linuxtips/529shelldep.html
+if [[ -n $VIM_TERMINAL ]]; then
+    export SHELL_INFO="${SHELL_INFO}-v"
+else
+    export SHELL_INFO="${SHELL_INFO}-${SHLVL}"
+fi
+
 #}}}
 
 ##{{{ Alias configuration
