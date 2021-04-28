@@ -80,7 +80,11 @@ function ip_color() {
 function ip_color2() {
     # {{{
     # only for IPv6
-    local ip=${1:-$(get_ip)}
+    if [ $CURLTIMEOUT -eq -1 ]; then
+        local ip=$1
+    else
+        local ip=$(get_ip)
+    fi
     if [[ $(echo "$ip" | wc -l) -ne 1 ]]; then
         return 0
     fi
