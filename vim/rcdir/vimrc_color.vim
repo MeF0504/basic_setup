@@ -105,8 +105,8 @@ function! <SID>my_color_set()
         if ((exists("g:l_bd_month") && (month == g:l_bd_month))
             \&& (exists("g:l_bd_day") && (day == g:l_bd_day)) )
             "" Birthday
-            highlight StatusLine cterm=None ctermfg=185 ctermbg=136
-            highlight WildMenu cterm=Bold ctermfg=136 ctermbg=185
+            highlight StatusLine cterm=None ctermfg=194 ctermbg=136
+            highlight WildMenu cterm=Bold ctermfg=136 ctermbg=194
         else
             let s:stl_br = (dow==6 ? 0 : dow)   " 土日は0
             let s:stl_bg = (month-1)%6

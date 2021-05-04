@@ -440,10 +440,7 @@ if ((exists("g:l_bd_month") && (str2nr(strftime("%b")) == g:l_bd_month))
     \&& (exists("g:l_bd_day") && (str2nr(strftime("%d")) == g:l_bd_day)) )
     "" Birthday
     if s:sushi == 1
-        autocmd deinLocal BufWinEnter *
-                \ highlight StatusLine ctermfg=233 ctermbg=246 guifg=Grey7 guibg=Grey58
-                \ | highlight WildMenu ctermfg=246 ctermbg=233 guifg=Grey58 guibg=Grey7
-                \ |  Sushibar
+        autocmd deinLocal BufWinEnter * Sushibar
     endif
 endif
 """ }}}
