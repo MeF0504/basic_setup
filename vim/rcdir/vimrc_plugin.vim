@@ -1107,10 +1107,10 @@ function! Mygrep(...)
     "dir ... search directory.
     "e.g. :GREgrep wd=hoge ex=.vim dir=%:h/../../
     "e.g. :GREgrep wd=fuga ex=.py
-    if &modified == 1
-        echo "file not saved!"
-        return
-    endif
+    " if &modified == 1
+    "     echo "file not saved!"
+    "     return
+    " endif
     if a:0 == '0'
         let l:word = expand('<cword>')
         let l:ft = '.' . expand('%:e')
@@ -1145,20 +1145,17 @@ function! Mygrep(...)
             echo 'searching file is not supported for grepprg=internal'
             return
         endif
-        execute 'grep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
+        execute 'vimgrep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
     elseif &grepprg == "grep\ -nriI"
         let l:dir=substitute(l:dir, ' ', '\\ ', 'g')
-        let l:tabnum = tabpagenr()
         cclose
         "wincmd b
         "vsplit
         tabnew
-        execute 'grep --include=\*' . l:ft . ' "' . l:word . '" ' .l:dir
+        execute 'grep! --include=\*' . l:ft . ' "' . l:word . '" ' .l:dir
         cclose
         quit
-        execute "normal! " . l:tabnum . "gt"
         botright copen
-        unlet l:tabnum
     else
         echo "not supported grepprg"
     endif

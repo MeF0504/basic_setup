@@ -102,15 +102,16 @@ function! <SID>my_color_set()
         let month = str2nr(strftime("%b"))
         let day = str2nr(strftime("%d"))
         let dow = str2nr(strftime("%w"))
+        let s:stl_br = (dow==6 ? 0 : dow)   " 土日は0
+        let s:stl_bg = (month-1)%6
+        let s:stl_bb = abs((day+4)%10-5)    " 0 1 2 3 4 5 4 3 2 1 0 ...
+
         if ((exists("g:l_bd_month") && (month == g:l_bd_month))
             \&& (exists("g:l_bd_day") && (day == g:l_bd_day)) )
             "" Birthday
             highlight StatusLine cterm=None ctermfg=194 ctermbg=136
             highlight WildMenu cterm=Bold ctermfg=136 ctermbg=194
         else
-            let s:stl_br = (dow==6 ? 0 : dow)   " 土日は0
-            let s:stl_bg = (month-1)%6
-            let s:stl_bb = abs((day+4)%10-5)    " 0 1 2 3 4 5 4 3 2 1 0 ...
             let bg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
             if s:isdark(s:stl_br, s:stl_bg, s:stl_bb) == 1
                 let fg = has('gui_running') ? '#eeeeee' : 255
