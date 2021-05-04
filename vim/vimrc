@@ -449,6 +449,12 @@ autocmd local WinLeave * if &buftype != 'quickfix' | setlocal statusline=%!Set_s
 
 " 辞書（というか英辞郎）で検索 {{{
 function! s:eijiro(word)
+    if exists('g:l_dic_file') && filereadable(g:l_dic_file)
+        " localに辞書ファイルがある場合はそれを参照
+        execute "vimgrep /\\<".a:word."\\>/j ".g:l_dic_file
+        return
+    endif
+
     let url = '"https://eowf.alc.co.jp/search?q='.a:word.'"'
     if has('win32')
         let web_cmd = 'start'
