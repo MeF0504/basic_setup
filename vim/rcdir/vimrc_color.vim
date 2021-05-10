@@ -58,6 +58,10 @@ function! <SID>my_color_set()
     endif
 
     " general settings
+    " link
+    highlight link VimFunction Identifier
+    highlight link VimUserFunc MFdef    " from MFtags
+    highlight link vimIsCommand SpecialChar
     " corsor line
     highlight CursorLine cterm=underline ctermfg=None ctermbg=None
     highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15
