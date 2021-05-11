@@ -1088,7 +1088,7 @@ EOF
     delcommand TmpPython
 endfunction
 
-command! -nargs=* DiffLine call <SID>diff_line(<f-args>)
+command! -nargs=* -complete=file DiffLine call <SID>diff_line(<f-args>)
 
 " }}}
 
