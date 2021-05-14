@@ -102,6 +102,9 @@ function! <SID>my_color_set()
     highlight hitspopNormal ctermfg=224 ctermbg=238
     highlight hitspopErrorMsg ctermfg=9 ctermbg=238
 
+    " ParenMatch
+    highlight link ParenMatch MatchParen
+
     if exists('*strftime')
         let month = str2nr(strftime("%b"))
         let day = str2nr(strftime("%d"))

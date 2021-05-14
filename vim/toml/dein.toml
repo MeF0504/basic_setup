@@ -589,3 +589,18 @@ let g:translate_target = 'ja'
 " }}}
 '''
 
+# カッコの強調を，処理を落として高速化
+# https://itchyny.hatenablog.com/entry/2016/03/30/210000
+[[plugins]]
+repo = 'itchyny/vim-parenmatch'
+hook_add = '''
+" デフォルト機能をoff
+let g:loaded_matchparen = 1
+" デフォルトのhighlightをoff
+let g:parenmatch_highlight = 0
+'''
+
+# カーソル下の変数と同じ変数に下線
+[[plugins]]
+repo = 'itchyny/vim-cursorword'
+
