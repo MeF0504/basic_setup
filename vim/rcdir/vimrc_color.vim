@@ -45,6 +45,10 @@ function! <SID>my_color_set_shiki()
     highlight Directory ctermfg=34
 endfunction
 
+function! <SID>my_color_set_primary()
+    highlight Normal ctermfg=255
+endfunction
+
 function! s:SID()
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfunction
