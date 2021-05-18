@@ -322,13 +322,20 @@ endif
 " vim only
 if has('terminal')
     " vimのterminalでterminal modeを抜けずに移動
-    " termwinkey = <c-l>
-    tnoremap g<Right> <c-l>gt
-    tnoremap g<Left> <c-l>gT
-    tnoremap s<Up> <c-l>k
-    tnoremap s<Down> <c-l>j
-    tnoremap s<Right> <c-l>l
-    tnoremap s<Left> <c-l>h
+    execute "tnoremap g\<Right\> ".&termwinkey."gt"
+    execute "tnoremap g\<Left\> ".&termwinkey."gT"
+    execute "tnoremap s\<Up\> ".&termwinkey."k"
+    execute "tnoremap s\<Down\> ".&termwinkey."j"
+    execute "tnoremap s\<Right\> ".&termwinkey."l"
+    execute "tnoremap s\<Left\> ".&termwinkey."h"
+elseif has('nvim')
+    " NeoVimのterminalで(terminal modeを抜けずに)移動
+    tnoremap g<Right> <c-\><c-n>gt
+    tnoremap g<Left> <c-\><c-n>gT
+    tnoremap s<Up> <c-\><c-n><c-w>k
+    tnoremap s<Down> <c-\><c-n><c-w>j
+    tnoremap s<Right> <c-\><c-n><c-w>l
+    tnoremap s<Left> <c-\><c-n><c-w>h
 endif
 
 " }}}
