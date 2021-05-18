@@ -27,8 +27,13 @@ augroup local
         autocmd BufCreate * echo 'BuffCreate' | sleep 1
         autocmd FileType * echo 'FileType' | sleep 1
         autocmd Syntax * echo 'Syntax' | sleep 1
+        autocmd ColorScheme * echo 'ColorScheme' | sleep 1
         autocmd WinNew * echo 'WinNew' | sleep 1
+        autocmd WinEnter * echo 'WinEnter' | sleep 1
+        autocmd WinLeave * echo 'WinLeave' | sleep 1
         autocmd TabNew * echo 'TabNew' | sleep 1
+        autocmd TabEnter * echo 'TabEnter' | sleep 1
+        autocmd TabLeave * echo 'TabLeave' | sleep 1
         " }}}
     endif
 augroup END
