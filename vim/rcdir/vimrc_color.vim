@@ -46,7 +46,22 @@ function! <SID>my_color_set_shiki()
 endfunction
 
 function! <SID>my_color_set_primary()
-    highlight Normal ctermfg=255
+    highlight Normal ctermfg=254
+    highlight Identifier ctermbg=None
+    " highlight String ctermbg=None
+    highlight PreProc ctermbg=None
+    highlight Function ctermbg=None
+    highlight Statement ctermbg=None
+    highlight Number ctermbg=None
+    highlight Comment ctermbg=None
+    highlight Keyword ctermbg=None
+    highlight Conditional ctermbg=None
+    highlight Operator ctermbg=None
+    highlight Repeat ctermbg=None
+    highlight Exception ctermbg=None
+    highlight Type ctermbg=None
+    highlight Structure ctermbg=None
+    highlight Macro ctermbg=None
 endfunction
 
 function! s:SID()
