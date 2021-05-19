@@ -62,6 +62,7 @@ function! <SID>my_color_set_primary()
     highlight Type ctermbg=None
     highlight Structure ctermbg=None
     highlight Macro ctermbg=None
+    highlight SpecialKey ctermbg=None
 endfunction
 
 function! s:SID()
