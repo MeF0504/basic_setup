@@ -102,7 +102,8 @@ def main_hdf5(fpath, args):
         if isinstance(obj, h5py.Dataset):
             if not args_chk(args, 'interactive'):
                 if args_chk(args, 'verbose'):
-                    print("--- {} ---\n{}".format(name, h5_file[name][()]))
+                    print_key(name)
+                    print("{}".format(h5_file[name][()]))
                 elif args_chk(args, 'key') and len(args.key)==0:
                     print(name)
 
@@ -133,7 +134,7 @@ def main_hdf5(fpath, args):
             print_key(k)
             show_hdf5(k)
             print()
-    else:
+    elif not args_chk(args, 'verbose'):
         show_tree(list_tree)
 
     h5_file.close()
