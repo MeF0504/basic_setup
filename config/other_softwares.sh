@@ -24,6 +24,9 @@ which pip3
 # pip3 install healpy     # 球面解析用ライブラリ？
 # pip3 install camb       # CMB パワースペクトル計算用ライブラリ
 # pip3 install corner     # 相関プロット用ライブラリ？
+# pip3 install pillow     # 画像処理用ライブラリ
+# pip3 install rawpy      # raw画像用ライブラリ
+# pip3 insatll tabulate   # table 作成／表示ライブラリ
 echo
 
 ## go
@@ -48,4 +51,18 @@ echo 'which gem'
 which gem
 
 # gem install tw      # 端末上でtwitterを見るツール
+echo
+
+## other tools
+INSTALL_DIR=${1:-$HOME/opt/bin}
+if [ ! -d $INSTALL_DIR ]; then
+    echo 'no such directory: '$INSTALL_DIR
+    exit
+fi
+echo $INSTALL_DIR
+
+echo 'which curl'
+which curl
+
+# curl -L -o ${INSTALL_DIR}/hterm-show-file.sh https://raw.githubusercontent.com/libapps/libapps-mirror/main/hterm/etc/hterm-show-file.sh && chmod u+x $HOME/workspace/opt/bin/hterm-show-file.sh    # hterm (html terminal?)上で画像を見るためのスクリプト。githunはミラーで元のリポジトリは多分 https://chromium.googlesource.com/apps/libapps/+/master/hterm/etc/hterm-show-file.sh
 
