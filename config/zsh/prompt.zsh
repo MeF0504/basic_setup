@@ -179,27 +179,27 @@ set_prompt() {
         else
             _GLOBAL_IP=$(get_ip 3)
             # path
-            _PS_PATH="%F{255}%K{19}%d%f%k"
+            local _PS_PATH="%F{255}%K{19}%d%f%k"
             # exec time
-            _PS_EXTIME=' $(ret_cmd_exec_time)'
+            local _PS_EXTIME=' $(ret_cmd_exec_time)'
             # new line
-            _PS_NEWLINE=$'\n'
+            local _PS_NEWLINE=$'\n'
             if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
                 # host name in ssh server
-                _PS_HOST="%F{14}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%f%k "
+                local _PS_HOST="%F{14}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%f%k "
             fi
             # time
-            _PS_TIME="%F{42}%D{%H:%M}%f%k"
+            local _PS_TIME="%F{42}%D{%H:%M}%f%k"
             # user name (bold)
-            _PS_USER=" %F{160}%B%n%b%f%k"
+            local _PS_USER=" %F{160}%B%n%b%f%k"
             # change the color to magenta if the previous command was failed.
             # https://blog.8-p.info/2009/01/red-prompt
-            _PS_END="%(?. >> . %F{125}>>%f%k "
+            local _PS_END="%(?. >> . %F{125}>>%f%k "
         fi
         # ip_color
-        _PS_IPCOLOR='$(ip_color $_GLOBAL_IP)'
+        local _PS_IPCOLOR='$(ip_color $_GLOBAL_IP)'
         # ip_color for IPv6
-        _PS_IPCOLOR2='$(ip_color2 $_GLOBAL_IP)'
+        local _PS_IPCOLOR2='$(ip_color2 $_GLOBAL_IP)'
 
         export PROMPT="${_PS_IPCOLOR}${_PS_HOST}${_PS_PATH}${_PS_EXTIME}${_PS_NEWLINE}${_PS_IPCOLOR2}${_PS_TIME}${_PS_USER}${_PS_END}"
 
