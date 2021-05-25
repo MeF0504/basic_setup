@@ -1150,14 +1150,11 @@ function! Mygrep(...)
         execute 'vimgrep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
     elseif &grepprg == "grep\ -nriI"
         let l:dir=substitute(l:dir, ' ', '\\ ', 'g')
-        cclose
+        " cclose
         "wincmd b
-        "vsplit
-        tabnew
         execute 'grep! --include=\*' . l:ft . ' "' . l:word . '" ' .l:dir
-        cclose
-        quit
-        botright copen
+        " botright copen
+        " set statusline="%t%{exists('w:quickfix_title')? ' '.w:quickfix_title : ' '} "
     else
         echo "not supported grepprg"
     endif

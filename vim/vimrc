@@ -128,6 +128,7 @@ let g:l_statusline = [
             \"%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]",
             \]
 
+" パスを除くファイル名 修正フラグ 読込専用 ヘルプ preview_window
 let g:l_statusline_off = ["%t%m%{&readonly?'[RO]':''}%h%w"]
 """ control statusline showing
 let g:l_st_width_level = [30, 50]
