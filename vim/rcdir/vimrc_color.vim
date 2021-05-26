@@ -32,7 +32,7 @@ function! <SID>my_color_set_inkpot()
     highlight LineNr ctermfg=243
     highlight Title ctermfg=197
     highlight PreProc ctermfg=35    " for gui environment
-    highlight SpecialKey cterm=bold ctermfg=255 ctermbg=236
+    highlight SpecialKey cterm=bold ctermfg=243 ctermbg=233
     if has('nvim')
         highlight link Whitespace SpecialKey
     endif
@@ -62,7 +62,7 @@ function! <SID>my_color_set_primary()
     highlight Type ctermbg=None
     highlight Structure ctermbg=None
     highlight Macro ctermbg=None
-    highlight SpecialKey ctermbg=None
+    highlight SpecialKey ctermfg=242 ctermbg=None
 endfunction
 
 function! s:SID()
