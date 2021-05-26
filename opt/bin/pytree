@@ -63,7 +63,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('root', help='root directory', nargs='?', default='.')
     parser.add_argument('-a', dest='all', help='do not ignore entries starting with .', action='store_true')
-    parser.add_argument('-maxdepth', help='specify the level of directory. If set 0, show all directories.', nargs='?', type=int, default=0)
+    parser.add_argument('-maxdepth', help='specify the level of directory. If set 0, show all directories.', type=int, default=0)
     # parser.add_argument('--walk', help='use os.walk', action='store_true')
     args = parser.parse_args()
     if is_old:
