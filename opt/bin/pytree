@@ -3,6 +3,7 @@
 
 import os
 import argparse
+import re
 from pathlib import Path
 
 from libtree import show_tree
@@ -28,6 +29,9 @@ def get_file_list(args):
         if debug:
             print('<--{}-->'.format(gp))
         for cpath in top_path.glob(gp):
+            if (args.exclude is not None) and re.search(args.exclude, str(cpath)):
+                continue
+
             if not args.all:
                 if cpath.name.startswith('.'): continue
                 cpath_ignore = False
@@ -64,10 +68,8 @@ if __name__ == '__main__':
     parser.add_argument('root', help='root directory', nargs='?', default='.')
     parser.add_argument('-a', dest='all', help='do not ignore entries starting with .', action='store_true')
     parser.add_argument('-maxdepth', help='specify the level of directory. If set 0, show all directories.', type=int, default=0)
+    parser.add_argument('-exclude', help='specify excluding files using regular expression.', type=str)
     # parser.add_argument('--walk', help='use os.walk', action='store_true')
     args = parser.parse_args()
-    if is_old:
-        main_old(args)
-    else:
-        main(args)
+    main(args)
 
