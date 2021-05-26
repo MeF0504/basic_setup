@@ -3,20 +3,9 @@
 
 import os
 import argparse
-try:
-    from pathlib import Path
-    use_pathlib = True
-except ImportError:
-    use_pathlib = False
+from pathlib import Path
 
-if use_pathlib:
-    try:
-        from libtree import show_tree
-        is_old = False
-    except ImportError as e:
-        is_old = True
-else:
-    is_old = True
+from libtree import show_tree
 
 debug = False
 
@@ -65,88 +54,6 @@ def get_file_list(args):
             else:
                 tmp_list.append(str(cpath.name))
     return root, file_list
-
-# this is a old function. I will remove this in a future.
-def get_file_list_pathlib(args):
-    # get list of directories and files by using pathlib
-    file_list = {}
-    top_path = Path(args.root).resolve()
-    root = str(top_path)
-    file_list[str(top_path)] = []
-    if args.maxdepth == 0:
-        glob_path = ['**/*']
-    else:
-        glob_path = []
-        for i in range(args.maxdepth):
-            glob_path.append('*/'*i)
-            glob_path[i] += '*'
-
-    for gp in glob_path:
-        for cpath in top_path.glob(gp):
-            if not args.all:
-                if cpath.name.startswith('.'): continue
-                cpath_ignore = False
-                for d in cpath.parents:
-                    if d == top_path:
-                        break
-                    if str(d.name).startswith('.'):
-                        cpath_ignore = True
-                        break
-                if cpath_ignore: continue
-
-            if cpath.is_dir():
-                file_list[str(cpath)] = []
-            else:
-                file_list[str(cpath.parent)].append(str(cpath.name))
-    return root, file_list
-
-# this is a old function. I will remove this in a future.
-def get_file_list_walk(args):
-    # get list of directories and files
-    file_list = {}
-    root = os.path.abspath(args.root)
-    dnum_root = root.count(os.sep)
-    for cpath,dirs,files in os.walk(root):
-        cdir = os.path.basename(cpath)
-        cpath_ignore = False
-        cpath_parents = cpath.split(os.sep)
-        for d in cpath_parents[len(cpath_parents)-dnum_root:]:
-            if d.startswith('.'):
-                cpath_ignore = True
-                break
-        if cpath_ignore and not args.all:
-            continue
-
-        file_list[cpath] = []
-        for f in files:
-            if f[0]!='.' or args.all:
-                file_list[cpath].append(f)
-    return root, file_list
-
-# this is a old function. I will remove this in a future.
-def main_old(args):
-    global use_pathlib
-    # if args.walk: use_pathlib=False
-    if use_pathlib:
-        root, file_list = get_file_list_pathlib(args)
-    else:
-        root, file_list = get_file_list_walk(args)
-    # show the files and directories
-    dnum_root = root.count(os.sep)
-    for cdir in sorted(file_list.keys()):
-        # show directory
-        if cdir == root:
-            dnum = 0
-            print(args.root)
-        else:
-            dnum = cdir.count(os.sep) - dnum_root
-            if (dnum < (args.maxdepth+1)) or (args.maxdepth==0):
-                print('{}|__ {}/'.format('|   '*(dnum-1), os.path.basename(cdir)))
-        # show files
-        if (dnum < args.maxdepth) or (args.maxdepth==0):
-            for f in sorted(file_list[cdir]):
-                print('{}|__ {}'.format('|   '*(dnum), os.path.basename(f)))
-    return
 
 def main(args):
     root, file_list = get_file_list(args)
