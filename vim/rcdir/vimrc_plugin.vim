@@ -740,11 +740,11 @@ function! s:open_term(bufname) abort
     let bufn = bufnr(a:bufname)
     if bufn == -1
         " throw 'E94: No matching buffer for ' . a:bufname
-        echo 'No matching buffer for "' . a:bufname . '"'
+        echoerr 'No matching buffer for "' . a:bufname . '"'
         return 1        " 以上終了ということにしよう
     elseif exists('*term_list') && index(term_list(), bufn) == -1
         " throw a:bufname . 'is not a terminal buffer'
-        echo '"' . a:bufname . '"is not a terminal buffer'
+        echoerr '"' . a:bufname . '"is not a terminal buffer'
         return 1        " 以上終了ということにしよう
     endif
     let winids = win_findbuf(bufn)
@@ -791,7 +791,7 @@ endfunction
 
 function! s:Terminal(...) abort
     if !has('terminal') && !has('nvim')
-        echo "this vim doesn't support terminal!!"
+        echoerr "this vim doesn't support terminal!!"
         return
     endif
 
@@ -1033,7 +1033,7 @@ function! <SID>diff_line(...) abort
     elseif has('python')
         command! -nargs=1 TmpPython python <args>
     else
-        echo 'this command requires python or python3.'
+        echoerr 'this command requires python or python3.'
         return
     endif
 

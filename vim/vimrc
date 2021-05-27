@@ -68,10 +68,8 @@ let s:basicrc = g:vimdir . 'rcdir/vimrc_basic.vim'
 if filereadable(s:basicrc)
     execute "source " . s:basicrc
 else
-    echohl Error
-    echo "basic setup Run Command file can't be readed!!!"
-    echo "end setting"
-    echohl None
+    echoerr "basic setup Run Command file can't be readed!!!"
+    echoerr "end setting"
     finish
 endif
 
