@@ -69,7 +69,7 @@ if filereadable(s:basicrc)
     execute "source " . s:basicrc
 else
     echoerr "basic setup Run Command file can't be readed!!!"
-    echoerr "end setting"
+    echo "end setting"
     finish
 endif
 
