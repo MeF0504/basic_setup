@@ -12,15 +12,15 @@ fi
 # useful: https://qiita.com/hmmrjn/items/60d2a64c9e5bf7c0fe60
 # color & format: https://misc.flogisoft.com/bash/tip_colors_and_formatting
 # path
-export _PS_PATH='\[\e[97m\]\[\e[104m\]${PWD}\[\e[0m\]'
+_PS_PATH='\[\e[97m\]\[\e[104m\]${PWD}\[\e[0m\]'
 if [[ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]]; then
     # host name
-    export _PS_HOST='\[\e[36m\]${HOSTNAME%%.*}\[\e[0m\] '
+    _PS_HOST='\[\e[36m\]${HOSTNAME%%.*}\[\e[0m\] '
 fi
 # time
-export _PS_TIME='\[\e[92m\]\D{%H:%M}\[\e[0m\]'
+_PS_TIME='\[\e[92m\]\D{%H:%M}\[\e[0m\]'
 # user name (bold)
-export _PS_USER=' \[\e[1m\e[31m\]\u\[\e[0m\]'
+_PS_USER=' \[\e[1m\e[31m\]\u\[\e[0m\]'
 
 # git information
 GITPROMPT=${HOME}/.bash/git-prompt.sh
@@ -28,12 +28,12 @@ if [[ -f $GITPROMPT ]]; then
     # unstaged (*) and staged (+) are shown
     export GIT_PS1_SHOWDIRTYSTATE=1
     source $GITPROMPT
-    export _PS_GIT='$(__git_ps1 " (%s)")'
+    _PS_GIT='$(__git_ps1 " (%s)")'
 fi
 
 # change red if the previous command was failed.
 # https://qiita.com/rtakasuke/items/4b50e156ab82b0824676
-export _PS_END=" \`
+_PS_END=" \`
 if [ \$? = 0 ]; then
     echo '\$';
 else
@@ -41,7 +41,7 @@ else
 fi
 \` "
 
-export _PS_SHINFO="\[\e[33m\][${SHELL_INFO}]\[\e[0m\] "
+_PS_SHINFO="\[\e[33m\][${SHELL_INFO}]\[\e[0m\] "
 
 export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}\n${_PS_TIME}${_PS_USER}${_PS_GIT}${_PS_END}"
 

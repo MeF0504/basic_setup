@@ -31,7 +31,7 @@ else
     export SHELL_INFO='??'
 fi
 # vim上で開いてたらv, 他はshellの深さ -> https://www.atmarkit.co.jp/flinux/rensai/linuxtips/529shelldep.html
-if [[ -n $VIM_TERMINAL ]]; then
+if [[ -n $VIM ]]; then
     export SHELL_INFO="${SHELL_INFO}-v"
 else
     export SHELL_INFO="${SHELL_INFO}-${SHLVL}"
