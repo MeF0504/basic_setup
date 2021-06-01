@@ -449,7 +449,7 @@ endif
 # 検索時にhit数をcountしてくれるplugin
 [[plugins]]
 repo = 'osyo-manga/vim-anzu'
-if = '''!exists('*searchcount')'''  # if exists => use vim-hitspop
+if = '''!(exists('*searchcount') && exists('*popup_create'))'''  # if exists => use vim-hitspop
 hook_add = '''
 """ vim-anzu {{{
 " max search count
@@ -567,7 +567,7 @@ repo = 'tpope/vim-commentary'
 # 検索のhit数を右上にpopupで表示するplugin
 [[plugins]]
 repo = 'obcat/vim-hitspop'
-if = '''exists('*searchcount')'''   # if not exists => use vim-anzu
+if = '''exists('*searchcount') && exists('*popup_create')'''   # if not exists => use vim-anzu
 hook_add = '''
 " {{{
 " https://zenn.dev/obcat/articles/4ef6822de53b643bbd01
