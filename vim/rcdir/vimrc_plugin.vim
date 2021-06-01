@@ -1097,7 +1097,8 @@ function! <SID>echo_gregrep_help()
     echo "usage..."
     echo ":GREgrep [wd=word] [dir=dir_path] [ex=extention]"
     echo "wd ... search word."
-    echo "dir ... path to root directory for search."
+    echo "dir ... path to root directory or file for search."
+    echo "        if dir=opened, search files in buffer"
     echo "ex ... file extention of target files."
     echo "       if ex=None, search all files."
 endfunction
@@ -1136,8 +1137,12 @@ function! Mygrep(...)
     endif
 
     let is_file = 0
+    let is_opened = 0
     if filereadable(l:dir)
         let is_file = 1
+    elseif l:dir == 'opened'
+        let is_file = 1
+        let is_opened = 1
     elseif !isdirectory(l:dir)
         echo 'input directory "' . l:dir . '" does not exist.'
         return
@@ -1149,7 +1154,20 @@ function! Mygrep(...)
         endif
         execute 'vimgrep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
     elseif &grepprg == "grep\ -nriI"
-        let l:dir=substitute(l:dir, ' ', '\\ ', 'g')
+        if is_opened == 1
+            let l:dir = ''
+            for i in range(1, tabpagenr('$'))
+                let bufnrs = tabpagebuflist(i)
+                for bn in bufnrs
+                    let bufname = bufname(bn)
+                    if match(l:dir, bufname) == -1
+                        let l:dir .= ' '.bufname
+                    endif
+                endfor
+            endfor
+        else
+            let l:dir=substitute(l:dir, ' ', '\\ ', 'g')
+        endif
         " cclose
         "wincmd b
         execute 'grep! --include=\*' . l:ft . ' "' . l:word . '" ' .l:dir
