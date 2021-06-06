@@ -15,25 +15,27 @@ augroup local
     if s:echo_auto == 1
         " {{{
         " autocmdを表示
-        autocmd VimEnter * echo 'VimEnter' | sleep 1
-        autocmd FileReadPre * echo 'FileReadPre' | sleep 1
-        autocmd FileReadPost * echo 'FileReadPost' | sleep 1
-        autocmd BufRead * echo 'BufRead' | sleep 1
-        autocmd BufReadPre * echo 'BufReadPre' | sleep 1
-        autocmd BufReadPost * echo 'BufReadPost' | sleep 1
-        autocmd BufEnter * echo 'BuffEnter' | sleep 1
-        autocmd BufWinEnter * echo 'BufWinEnter' | sleep 1
-        autocmd BufAdd * echo 'BuffAdd' | sleep 1
-        autocmd BufCreate * echo 'BuffCreate' | sleep 1
-        autocmd FileType * echo 'FileType' | sleep 1
-        autocmd Syntax * echo 'Syntax' | sleep 1
-        autocmd ColorScheme * echo 'ColorScheme' | sleep 1
-        autocmd WinNew * echo 'WinNew' | sleep 1
-        autocmd WinEnter * echo 'WinEnter' | sleep 1
-        autocmd WinLeave * echo 'WinLeave' | sleep 1
-        autocmd TabNew * echo 'TabNew' | sleep 1
-        autocmd TabEnter * echo 'TabEnter' | sleep 1
-        autocmd TabLeave * echo 'TabLeave' | sleep 1
+        autocmd VimEnter * echo 'VimEnter' | sleep 300ms
+        autocmd FileReadPre * echo 'FileReadPre' | sleep 300ms
+        autocmd FileReadPost * echo 'FileReadPost' | sleep 300ms
+        autocmd BufRead * echo 'BufRead' | sleep 300ms
+        autocmd BufReadPre * echo 'BufReadPre' | sleep 300ms
+        autocmd BufReadPost * echo 'BufReadPost' | sleep 300ms
+        autocmd BufEnter * echo 'BuffEnter' | sleep 300ms
+        autocmd BufWinEnter * echo 'BufWinEnter' | sleep 300ms
+        autocmd BufAdd * echo 'BuffAdd' | sleep 300ms
+        autocmd BufCreate * echo 'BuffCreate' | sleep 300ms
+        autocmd BufLeave * echo 'BufLeave' | sleep 300ms
+        autocmd BufDelete * echo 'BufDelete' | sleep 300ms
+        autocmd FileType * echo 'FileType' | sleep 300ms
+        autocmd Syntax * echo 'Syntax' | sleep 300ms
+        autocmd ColorScheme * echo 'ColorScheme' | sleep 300ms
+        autocmd WinNew * echo 'WinNew' | sleep 300ms
+        autocmd WinEnter * echo 'WinEnter' | sleep 300ms
+        autocmd WinLeave * echo 'WinLeave' | sleep 300ms
+        autocmd TabNew * echo 'TabNew' | sleep 300ms
+        autocmd TabEnter * echo 'TabEnter' | sleep 300ms
+        autocmd TabLeave * echo 'TabLeave' | sleep 300ms
         " }}}
     endif
 augroup END
