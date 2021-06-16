@@ -1177,7 +1177,8 @@ function! Mygrep(...)
         echo "not supported grepprg"
     endif
 endfunction
-command! -nargs=? GREgrep call Mygrep(<f-args>)
+command! -nargs=? Gregrep call Mygrep(<f-args>)
+command! -nargs=? GREgrep Gregrep
 
 
 " }}}
