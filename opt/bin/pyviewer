@@ -88,6 +88,12 @@ def print_key(key_name):
 
 def main_hdf5(fpath, args):
     import h5py
+    try:
+        import numpy as np
+    except ImportError as e:
+        imp_np = False
+    else:
+        imp_np = True
 
     def show_hdf5(cpath):
         data = h5_file[cpath]
@@ -95,7 +101,24 @@ def main_hdf5(fpath, args):
             for k in data.keys():
                 print(k)
         elif isinstance(data, h5py.Dataset):
-            print(data[()])
+            data = data[()]
+            print(data)
+            if hasattr(data, 'shape'):
+                print('shape: {}'.format(data.shape))
+                is_array = True
+            elif hasattr(data, '__len__'):
+                print('len: {}'.format(len(data)))
+                is_array = True
+            else:
+                is_array = False
+            if imp_np and is_array:
+                print('mean: {}'.format(np.nanmean(data)))
+                print('max: {}'.format(np.nanmax(data)))
+                print('min: {}'.format(np.nanmin(data)))
+                print('std: {}'.format(np.nanstd(data)))
+                if hasattr(data, 'shape'):
+                    nan_rate = np.sum(np.isnan(data))/np.prod(data.shape)
+                    print('nan rate: {:.1f}%'.format(nan_rate*100))
 
     list_tree = [{}]
     def make_list(name, obj):
@@ -280,11 +303,11 @@ def main_numpy(fpath, args):
                 d_mean = np.nanmean(data)
                 d_max  = np.nanmax(data)
                 d_min  = np.nanmin(data)
-                nan_rate = 1 - np.sum(np.isnan(data))/np.prod(data.shape)
+                nan_rate = np.sum(np.isnan(data))/np.prod(data.shape)
                 prt_str = '''mean     : {}
 max      : {}
 min      : {}
-nan raet : {:.1f}%'''.format(d_mean, d_max, d_min, 100*nan_rate)
+nan rate : {:.1f}%'''.format(d_mean, d_max, d_min, 100*nan_rate)
             else:
                 # normal data
                 d_mean = np.mean(data)
