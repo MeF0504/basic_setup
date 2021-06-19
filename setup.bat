@@ -80,7 +80,8 @@ if exist %vimcon%\toml (
 )
 copy %curdir%\vim\toml\* %vimcon%\toml\
 
-echo bashrc
+echo posixshellrc and bashrc
+copy %curdir%\config\posixShellRC %homedrive%%homepath%\.posixShellRC
 copy %curdir%\config\bashrc %homedrive%%homepath%\.bashrc
 
 pause
