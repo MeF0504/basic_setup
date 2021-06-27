@@ -82,9 +82,13 @@ function! <SID>my_color_set()
     highlight link VimFunction Identifier
     highlight link VimUserFunc MFdef    " from MFtags
     highlight link vimIsCommand SpecialChar
-    " corsor line
-    highlight CursorLine cterm=underline ctermfg=None ctermbg=None
-    highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15
+    if g:colors_name =~ 'pjsekai_*'
+        SeiyaDisable
+    else
+        " corsor line
+        highlight CursorLine cterm=underline ctermfg=None ctermbg=None
+        highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15
+    endif
 
     " tab line
     highlight TabLine cterm=None ctermfg=248 ctermbg=16
@@ -125,6 +129,11 @@ function! <SID>my_color_set()
     " ParenMatch
     highlight link ParenMatch MatchParen
 
+    " CursorWord
+    " actually this is for gVim
+    highlight CursorWord1 ctermbg=None
+
+    " day-by-day StatusLine Color
     if exists('*strftime')
         let month = str2nr(strftime("%b"))
         let day = str2nr(strftime("%d"))
