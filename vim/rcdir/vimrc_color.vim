@@ -73,38 +73,32 @@ function! s:SID()
 endfunction
 
 function! <SID>my_color_set()
-    let local_scheme_func = '<SNR>'.s:SID().'_my_color_set_'.g:colors_name
-    if exists('*'.local_scheme_func)
-        execute "call ".local_scheme_func.'()'
-    else
-        " echo "color scheme: " . g:colors_name
-    endif
-
-    " general settings
-    " link
+    """ general settings
+    " link {{{
     highlight link VimFunction Identifier
     highlight link VimUserFunc MFdef    " from MFtags
     highlight link vimIsCommand SpecialChar
-    if g:colors_name =~ 'pjsekai_*'
-        if exists(':SeiyaDisable')
-            SeiyaDisable
-        endif
-    else
-        " corsor line
+    " }}}
+
+    " corsor line {{{
+    if g:colors_name !~ 'pjsekai_*'
         highlight CursorLine cterm=underline ctermfg=None ctermbg=None
         highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15
     endif
+    " }}}
 
-    " tab line
+    " tab line {{{
     highlight TabLine cterm=None ctermfg=248 ctermbg=16
     highlight TabLineSel cterm=Bold,underline ctermfg=15 ctermbg=243
     highlight TabLineFill cterm=Bold ctermfg=45 ctermbg=16
     highlight TabLineDir cterm=Bold ctermfg=24 ctermbg=250
+    " }}}
 
-    "全角スペース表示
+    " 全角スペース表示 {{{
     highlight ZenkakuSpace cterm=None ctermfg=None ctermbg=241
+    " }}}
 
-    "statusline color setting
+    " statusline color setting {{{
     highlight StatusLine cterm=bold ctermfg=234 ctermbg=75
     highlight StatusLineNC cterm=None ctermfg=244 ctermbg=235
     if !has('nvim')
@@ -121,25 +115,38 @@ function! <SID>my_color_set()
     highlight Mode_R cterm=bold ctermfg=234 ctermbg=3
     highlight Mode_T cterm=bold ctermfg=234 ctermbg=10
     highlight Mode_ELSE cterm=bold ctermfg=253 ctermbg=8
+    " }}}
 
     """ plugin highlights
-    " NERDTree
+    " NERDTree {{{
     highlight NERDTreeBookmarksLeader ctermfg=32
     highlight NERDTreeBookmark ctermfg=107
+    " }}}
 
-    " hitspop
+    " hitspop {{{
     highlight hitspopNormal ctermfg=224 ctermbg=238
     highlight hitspopErrorMsg ctermfg=9 ctermbg=238
+    " }}}
 
-    " ParenMatch
+    " ParenMatch {{{
     highlight link ParenMatch MatchParen
+    " }}}
+
+    " Untitled {{{
+    if g:colors_name =~ 'pjsekai_*'
+        if exists(':SeiyaDisable')
+            SeiyaDisable
+        endif
+    endif
+    " }}}
 
     " CursorWord {{{
     " actually this is for gVim
     highlight CursorWord1 ctermbg=None
     " }}}
 
-    " day-by-day StatusLine Color
+    """ day-by-day StatusLine Color 
+    " {{{
     if exists('*strftime')
         let month = str2nr(strftime("%b"))
         let day = str2nr(strftime("%d"))
@@ -168,8 +175,16 @@ function! <SID>my_color_set()
             endif
         endif
     endif
-    "default ... highlight StatusLine term=bold,reverse cterm=bold ctermfg=247 ctermbg=235
+    " default ... highlight StatusLine term=bold,reverse cterm=bold ctermfg=247 ctermbg=235
+    " }}}
 
+    " colorscheme specified setings
+    let local_scheme_func = '<SNR>'.s:SID().'_my_color_set_'.g:colors_name
+    if exists('*'.local_scheme_func)
+        execute "call ".local_scheme_func.'()'
+    else
+        " echo "color scheme: " . g:colors_name
+    endif
 endfunction
 
 function! ShowBG()
