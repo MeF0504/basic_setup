@@ -39,6 +39,9 @@ function! <SID>my_color_set_inkpot()
     highlight Normal ctermfg=255
     highlight PmenuThumb ctermbg=55
     highlight MatchParen ctermfg=14 ctermbg=18 cterm=Bold
+
+    highlight CursorWord1 ctermbg=235 cterm=None
+    highlight CursorWord0 ctermbg=None cterm=underline
 endfunction
 
 function! <SID>my_color_set_shiki()
@@ -83,7 +86,9 @@ function! <SID>my_color_set()
     highlight link VimUserFunc MFdef    " from MFtags
     highlight link vimIsCommand SpecialChar
     if g:colors_name =~ 'pjsekai_*'
-        SeiyaDisable
+        if exists(':SeiyaDisable')
+            SeiyaDisable
+        endif
     else
         " corsor line
         highlight CursorLine cterm=underline ctermfg=None ctermbg=None
