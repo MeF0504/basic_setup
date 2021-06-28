@@ -497,6 +497,10 @@ else
 endif
 " }}}
 
+" Spell check {{{
+command! Spell if &spell!=1 | setlocal spell | else | setlocal nospell | endif
+" }}}
+
 " self-made plugin/functionファイル読み込み
 let s:plugin_file = g:vimdir . "rcdir/vimrc_plugin.vim"
 if filereadable(s:plugin_file)
