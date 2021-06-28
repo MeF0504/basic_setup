@@ -479,14 +479,15 @@ endfunction
 command -nargs=1 Eijiro call s:eijiro(<f-args>)
 " }}}
 
-" conflict commentを検索
+" conflict commentを検索 {{{
 command! SearchConf /<<<<<<<\|=======\|>>>>>>>
+" }}}
 
-" expandを打つのがめんどくさい
+" expandを打つのがめんどくさい {{{
 command! -nargs=1 Echopand echo expand(<f-args>)
+" }}}
 
-" ipython を呼ぶ用
-" {{{
+" ipython を呼ぶ用 {{{
 command! Ipython2 botright terminal ipython2
 command! Ipython3 botright terminal ipython3
 if exists('&pyxversion') && &pyxversion == 2
@@ -502,13 +503,15 @@ if filereadable(s:plugin_file)
     execute "source " . s:plugin_file
 endif
 
+" map leader にmapされているmapを表示 {{{
 " nnoremap <Leader><Leader> :map mapleader<CR>
 function! <SID>leader_map()
     map <Leader>
 endfunction
 nnoremap <silent> <Leader><Leader> :call <SID>leader_map()<CR>
+" }}}
 
-" 要らない？user関数を消す
+" 要らない？user関数を消す {{{
 function! s:del_comds()
     let del_commands = get(g:, 'del_commands', [])
     for dc in del_commands
@@ -527,6 +530,7 @@ if v:vim_did_enter
 else
     autocmd local VimEnter * call s:del_comds()
 endif
+" }}}
 
 " }}}
 
