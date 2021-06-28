@@ -134,9 +134,10 @@ function! <SID>my_color_set()
     " ParenMatch
     highlight link ParenMatch MatchParen
 
-    " CursorWord
+    " CursorWord {{{
     " actually this is for gVim
     highlight CursorWord1 ctermbg=None
+    " }}}
 
     " day-by-day StatusLine Color
     if exists('*strftime')

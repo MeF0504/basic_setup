@@ -603,4 +603,8 @@ let g:parenmatch_highlight = 0
 # カーソル下の変数と同じ変数に下線
 [[plugins]]
 repo = 'itchyny/vim-cursorword'
+hook_add = '''
+" デフォルトのhighlightをoff
+let g:cursorword_highlight = 0
+'''
 
