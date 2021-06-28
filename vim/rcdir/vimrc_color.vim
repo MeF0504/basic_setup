@@ -41,7 +41,6 @@ function! <SID>my_color_set_inkpot()
     highlight MatchParen ctermfg=14 ctermbg=18 cterm=Bold
 
     highlight CursorWord1 ctermbg=235 cterm=None
-    highlight CursorWord0 ctermbg=None cterm=underline
 endfunction
 
 function! <SID>my_color_set_shiki()
@@ -141,8 +140,8 @@ function! <SID>my_color_set()
     " }}}
 
     " CursorWord {{{
-    " actually this is for gVim
-    highlight CursorWord1 ctermbg=None
+    highlight CursorWord1 ctermfg=None ctermbg=None cterm=None
+    highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline
     " }}}
 
     """ day-by-day StatusLine Color 
