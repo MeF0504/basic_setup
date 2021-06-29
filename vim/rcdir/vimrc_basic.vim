@@ -299,6 +299,7 @@ nnoremap <silent> \ :nohlsearch<CR>
 
 " 1行複製をよく使うので...
 nnoremap yp yyp
+nnoremap yP yyP
 
 " preview , nofile, quickfix windowはqで閉じる
 function! <SID>close_con()
