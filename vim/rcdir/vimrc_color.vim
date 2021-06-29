@@ -65,6 +65,7 @@ function! <SID>my_color_set_primary()
     highlight Structure ctermbg=None
     highlight Macro ctermbg=None
     highlight SpecialKey ctermfg=242 ctermbg=None
+    highlight CursorWord1 ctermbg=233 cterm=None
 endfunction
 
 function! s:SID()
