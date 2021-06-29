@@ -53,6 +53,15 @@ which gem
 # gem install tw      # 端末上でtwitterを見るツール
 echo
 
+## node.js
+echo 'which npm'
+which npm
+# set install directory
+npm set prefix $HOME/workspace/node.js  # globalのインストール場所を設定
+
+# npm install -g @marp-team/marp-cli    # markdownからスライドを作成するツール
+# npm install -g terminalizer           # ターミナル録画ツール
+
 ## other tools
 INSTALL_DIR=${1:-$HOME/opt/bin}
 if [ ! -d $INSTALL_DIR ]; then
