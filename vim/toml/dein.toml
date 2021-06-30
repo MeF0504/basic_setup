@@ -77,6 +77,10 @@ let g:word_color_highlight = {
 " }}}
 '''
 
+# Project Sekai inspired plugin
+[[plugins]]
+repo = 'MeF0504/untitled.vim'
+
 # neosnippet用のsnipets
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
