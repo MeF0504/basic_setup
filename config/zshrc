@@ -222,7 +222,6 @@ zshaddhistory() {
 if [ "$(uname)" = "Darwin" ]; then
     # https://pc-karuma.net/mac-dock-insert-space/
     alias ad_space="defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type=\"spacer-tile\";}' && killall Dock"
-    alias ldd="otool -L"
     # https://book.mynavi.jp/macfan/detail_summary/id=78208
     alias rm_shadow="defaults write com.apple.screencapture disable-shadow -boolean true && killall SystemUIServer"
 

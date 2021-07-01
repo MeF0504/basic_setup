@@ -41,10 +41,12 @@ fi
 
 ##{{{ Alias configuration
 
+# search command
 alias where="command -v"
 
 alias j="jobs -l"
 
+# ls
 case "$(uname)" in
 FreeBSD*|Darwin*)
     alias ls="ls -G -w"
@@ -57,6 +59,8 @@ esac
 alias la="ls -a"
 alias lf="ls -F"
 alias ll="ls -l"
+
+# shortcut
 alias l="ls"
 alias c="cd"
 
@@ -97,6 +101,13 @@ fi
 
 alias global_ip="curl ifconfig.io 2> /dev/null"
 alias iv='for i in {4..1}; do; echo -n $i..\ ;sleep 1;done; echo'
+
+# OS specified aliases
+if [ "$(uname)" = "Darwin" ]; then
+    alias ldd="echo 'in macOS, ldd doesn't exist. && echo 'Use otool -L instead.' && echo '----------' &&  otool -L"
+elif [ "$(uname)" = "Linux" ]; then
+    # do nothing now.
+fi
 
 #}}}
 
