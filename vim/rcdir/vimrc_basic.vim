@@ -301,12 +301,13 @@ nnoremap <silent> \ :nohlsearch<CR>
 nnoremap yp yyp
 nnoremap yP yyP
 
-" preview , nofile, quickfix windowはqで閉じる
+" preview , nofile, quickfix window, help windowはqで閉じる
 function! <SID>close_con()
     return
             \ (&previewwindow==1)
             \ || (&buftype=='nofile')
             \ || (&filetype=='qf')
+            \ || (&filetype=='help')
 endfunction
 nnoremap <silent> <expr> q <SID>close_con()==1 ? ':quit<CR>' : 'q'
 
