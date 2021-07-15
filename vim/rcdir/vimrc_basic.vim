@@ -342,3 +342,23 @@ endif
 
 " }}}
 
+"local設定ファイル (basic用)
+if exists('g:vimdir')
+    let s:localrc = g:vimdir.'rcdir/vimrc_basic.mine'
+elseif has('nvim')
+    if exists("$XDG_CONFIG_HOME")
+        let s:localrc = expand($XDG_CONFIG_HOME)."/nvim/rcdir/vimrc_basic.mine"
+    else
+        let s:localrc = expand('~/.config/nvim/rcdir/vimrc_basic.mine')
+    endif
+else
+    if has('win32')
+        let s:localrc = expand('~/vimfiles/rcdir/vimrc_basic.mine')
+    else
+        let s:localrc = expand('~/.vim/rcdir/vimrc_basic.mine')
+    endif
+endif
+if filereadable(s:localrc)
+    execute "source " . s:localrc
+endif
+

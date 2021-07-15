@@ -18,8 +18,9 @@ else
     let s:dein_dir = $XDG_CONFIG_HOME . '/nvim/'
 endif
 
-let s:toml_file = s:dein_dir . '/toml/dein.toml'
-let s:lazy_file = s:dein_dir . '/toml/dein_lazy.toml'
+let s:light_file = s:dein_dir . 'toml/dein_light.toml'
+let s:toml_file  = s:dein_dir . '/toml/dein.toml'
+let s:lazy_file  = s:dein_dir . '/toml/dein_lazy.toml'
 
 " update the settings reffering to https://knowledge.sakura.ad.jp/23248/
 " Required: dein install check
@@ -31,17 +32,24 @@ endif
 if dein#load_state(s:dein_dir . '/dein/')
   call dein#begin(s:dein_dir . '/dein/')
 
-  call dein#load_toml(s:toml_file, {'lazy':0})
-  call dein#load_toml(s:lazy_file, {'lazy':1})
-
   " Let dein manage dein
   " Required:
-  "call dein#add('Shougo/dein.vim')
+  call dein#add('Shougo/dein.vim')
 
   " Add or remove your plugins here:
 
   " You can specify revision/branch/tag.
   "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+
+  if filereadable(s:light_file)
+      call dein#load_toml(s:light_file, {'lazy':0})
+  endif
+  if filereadable(s:toml_file)
+      call dein#load_toml(s:toml_file, {'lazy':0})
+  endif
+  if filereadable(s:lazy_file)
+      call dein#load_toml(s:lazy_file, {'lazy':1})
+  endif
 
   " Required:
   call dein#end()
