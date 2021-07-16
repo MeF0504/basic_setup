@@ -4,9 +4,9 @@
 # Please uncomment and run this script.
 
 ## python
-echo 'which python3'
+echo '- which python3'
 which python3
-echo 'which pip3'
+echo '- which pip3'
 which pip3
 
 # pip3 install numpy      # 数値計算ライブラリ
@@ -30,9 +30,9 @@ which pip3
 echo
 
 ## go
-echo 'which go'
+echo '- which go'
 which go
-echo GOPATH
+echo '- where is GOPATH'
 echo $GOPATH
 
 # go get github.com/jhchen/ansize                 # ascii art化ツール
@@ -45,33 +45,39 @@ echo $GOPATH
 echo
 
 ## ruby
-echo 'which ruby'
+echo '- which ruby'
 which ruby
-echo 'which gem'
+echo '- which gem'
 which gem
 
 # gem install tw      # 端末上でtwitterを見るツール
 echo
 
 ## node.js
-echo 'which npm'
+echo '- which npm'
 which npm
 # set install directory
-npm set prefix $HOME/workspace/node.js  # globalのインストール場所を設定
+# npm set prefix $HOME/workspace/node.js  # globalのインストール場所を設定
+echo "- check the prefix (and other) setting(s)"
+npm config list
 
 # npm install -g @marp-team/marp-cli    # markdownからスライドを作成するツール
 # npm install -g terminalizer           # ターミナル録画ツール
+echo
 
 ## other tools
+echo '- other tools gettable by curl'
 INSTALL_DIR=${1:-$HOME/opt/bin}
 if [ ! -d $INSTALL_DIR ]; then
-    echo 'no such directory: '$INSTALL_DIR
+    echo 'no such install directory: '$INSTALL_DIR
     exit
 fi
 echo $INSTALL_DIR
 
-echo 'which curl'
+echo '- which curl'
 which curl
 
-# curl -L -o ${INSTALL_DIR}/hterm-show-file.sh https://raw.githubusercontent.com/libapps/libapps-mirror/main/hterm/etc/hterm-show-file.sh && chmod u+x $HOME/workspace/opt/bin/hterm-show-file.sh    # hterm (html terminal?)上で画像を見るためのスクリプト。githunはミラーで元のリポジトリは多分 https://chromium.googlesource.com/apps/libapps/+/master/hterm/etc/hterm-show-file.sh
+# curl -L -o ${INSTALL_DIR}/hterm-show-file.sh https://raw.githubusercontent.com/libapps/libapps-mirror/main/hterm/etc/hterm-show-file.sh && chmod u+x ${INSTALL_DIR}/hterm-show-file.sh    # hterm (html terminal?)上で画像を見るためのスクリプト。githunはミラーで元のリポジトリは多分 https://chromium.googlesource.com/apps/libapps/+/master/hterm/etc/hterm-show-file.sh
+
+# curl -L -o ${INSTALL_DIR}/imgcat https://iterm2.com/utilities/imgcat && chmod u+x ${INSTALL_DIR}/imgcat     # iterm2上で画像を見る用のscript. 詳細-> https://iterm2.com/documentation-images.html
 
