@@ -171,7 +171,8 @@ function! s:qrun_markdown()
             let ret .= "-exec '".l:open_server."' "
             let ret .= "-exec '%c ".exec_opt." --server %s:h' "
             let ret .= "-runner 'terminal' "
-            let ret .= "-runner/opener 'botright new'"
+            " let ret .= "-runner/opener 'botright new'"
+            let ret .= "-runner/opener 'tabnew'"
         else
             if has('mac')
                 let l:open_pdf = 'open %s:r.pdf'
