@@ -89,6 +89,13 @@ function ip_color2() {
         return 0
     fi
     if [[ $ip == *:* ]]; then
+        for cnt in {1..8}; do
+            tmp_str=$(echo "$ip" | cut -f ${cnt} -d ":")
+            # 4文字以上があったら弾く
+            if [[ "$tmp_str" =~ ^......*$ ]]; then
+                return 0
+            fi
+        done
         ip1f=$(( 0x$(echo "$ip" | cut -f 5 -d ":") & 0xFF))
         ip1b=$(( 0x$(echo "$ip" | cut -f 5 -d ":") >> 8))
         ip2f=$(( 0x$(echo "$ip" | cut -f 6 -d ":") & 0xFF))
