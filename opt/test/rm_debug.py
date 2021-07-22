@@ -43,9 +43,9 @@ usage: rm_debug.py directory''')
         try:
             with open(fy, 'r') as f:
                 for line in f:
-                    if re.match(debug_str_st, line):
+                    if re.search(debug_str_st, line):
                         is_debug_file = 1
-                    if re.match(debug_str_end, line) and is_debug_file==1:
+                    if re.search(debug_str_end, line) and is_debug_file==1:
                         is_debug_file = 2
         except UnicodeDecodeError as e:
             continue
@@ -66,10 +66,10 @@ usage: rm_debug.py directory''')
             dst_f = open(fy, 'w')
             with open(raw_file, 'r') as f:
                 for line in f:
-                    if re.match(debug_str_st, line):
+                    if re.search(debug_str_st, line):
                         debug_line = True
                         continue
-                    if re.match(debug_str_end, line) and debug_line:
+                    if re.search(debug_str_end, line) and debug_line:
                         debug_line = False
                         continue
                     if not debug_line:
