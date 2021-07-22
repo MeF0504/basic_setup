@@ -88,5 +88,6 @@ $RECYCLE.BIN/
 
 ########## my own settings
 tmp/*
+legacy/*
 *tag_syntax.vim
 
