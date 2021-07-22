@@ -35,6 +35,8 @@ usage: rm_debug.py directory''')
         # print(fy)
         if os.path.isdir(fy):
             continue
+        if '/legacy/' in fy:
+            continue
 
         # check there are start line and end line.
         is_debug_file = 0
@@ -52,6 +54,14 @@ usage: rm_debug.py directory''')
         debug_line = False
         if is_debug_file == 2:
             raw_file = os.path.join(copy_dir, os.path.basename(fy))
+            if os.path.exists(raw_file):
+                cnt = 1
+                while True:
+                    if not os.path.exists(raw_file+'_{:d}'.format(cnt)):
+                        raw_file = raw_file+'_{:d}'.format(cnt)
+                        break
+                    cnt += 1
+            print('mv {} => {}'.format(fy, raw_file))
             shutil.move(fy, raw_file)
             dst_f = open(fy, 'w')
             with open(raw_file, 'r') as f:
