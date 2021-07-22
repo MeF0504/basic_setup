@@ -3,7 +3,7 @@
 # functions of ip address and ip-color {{{
 
 function get_ip() {
-    local to=${1:-$CURLTIMEOUT}
+    local to=${1:-$PROMPTTO}
     if [[ "$(which timeout &> /dev/null; echo $?)" == 0 ]]; then
         local ip="$( timeout "$to" curl ifconfig.io 2> /dev/null)"
     elif [[ "$(which timeout_local &> /dev/null; echo $?)" == 0 ]]; then
@@ -16,7 +16,7 @@ function get_ip() {
 
 function ip_color() {
     # {{{
-    if [ $CURLTIMEOUT -eq -1 ]; then
+    if [ $PROMPTTO -eq -1 ]; then
         local ip=$1
     else
         local ip=$(get_ip)
@@ -80,7 +80,7 @@ function ip_color() {
 function ip_color2() {
     # {{{
     # only for IPv6
-    if [ $CURLTIMEOUT -eq -1 ]; then
+    if [ $PROMPTTO -eq -1 ]; then
         local ip=$1
     else
         local ip=$(get_ip)
