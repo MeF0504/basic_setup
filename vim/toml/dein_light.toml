@@ -3,6 +3,10 @@
 [[plugins]]
 repo = 'MeF0504/untitled.vim'
 
+# vim plugin like chrome://dino
+[[plugins]]
+repo = 'MeF0504/dino.vim'
+
 # colorscheme
 [[plugins]]
 repo = 'MeF0504/vim-monoTone'
