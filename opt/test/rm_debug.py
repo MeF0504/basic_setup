@@ -13,8 +13,8 @@ import glob
 from datetime import date
 import shutil
 
-debug_str_st = "... DEBUG START"
-debug_str_end = "... DEBUG END"
+debug_str_st = "( |\t)*\S\S\S DEBUG START"
+debug_str_end = "( |\t)*\S\S\S DEBUG END"
 
 def main():
     if len(sys.argv) < 2:
@@ -42,11 +42,13 @@ usage: rm_debug.py directory''')
         is_debug_file = 0
         try:
             with open(fy, 'r') as f:
-                for line in f:
-                    if re.search(debug_str_st, line):
+                for n,line in enumerate(f):
+                    if re.match(debug_str_st, line):
                         is_debug_file = 1
-                    if re.search(debug_str_end, line) and is_debug_file==1:
+                        # print('1={}/{}'.format(fy, n+1))
+                    if re.match(debug_str_end, line) and is_debug_file==1:
                         is_debug_file = 2
+                        # print('2={}/{}'.format(fy, n+1))
         except UnicodeDecodeError as e:
             continue
 
@@ -66,10 +68,10 @@ usage: rm_debug.py directory''')
             dst_f = open(fy, 'w')
             with open(raw_file, 'r') as f:
                 for line in f:
-                    if re.search(debug_str_st, line):
+                    if re.match(debug_str_st, line):
                         debug_line = True
                         continue
-                    if re.search(debug_str_end, line) and debug_line:
+                    if re.match(debug_str_end, line) and debug_line:
                         debug_line = False
                         continue
                     if not debug_line:
