@@ -16,7 +16,7 @@ function get_ip() {
 
 function ip_color() {
     # {{{
-    if [ $PROMPTTO -eq -1 ]; then
+    if [[ $PROMPTTO -eq -1 ]]; then
         local ip=$1
     else
         local ip=$(get_ip)
@@ -80,7 +80,7 @@ function ip_color() {
 function ip_color2() {
     # {{{
     # only for IPv6
-    if [ $PROMPTTO -eq -1 ]; then
+    if [[ $PROMPTTO -eq -1 ]]; then
         local ip=$1
     else
         local ip=$(get_ip)
