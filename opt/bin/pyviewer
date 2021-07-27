@@ -61,6 +61,7 @@ def get_image_viewer(args):
         else:
             # external command
             img_viewer = os.path.expanduser(img_viewer)
+            img_viewer = os.path.expandvars(img_viewer)
             if os.path.isfile(img_viewer) and os.access(img_viewer, os.X_OK):
                 if debug:
                     print('find image_viewer: {}'.format(img_viewer))
