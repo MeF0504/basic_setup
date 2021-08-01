@@ -94,19 +94,19 @@ if [ "$SSH_CLIENT" != "" ]; then
     alias sudo=''
 fi
 
-if [[ ${VIM_TERMINAL}  != "" ]]; then
-    alias vim="echo already opened vim. "
-    alias vi="echo already opened vim. "
+if [ "${VIM_TERMINAL}"  != "" ]; then
+    alias vim="echo 'already opened vim.'"
+    alias vi="echo 'already opened vim.'"
 fi
 
 alias global_ip="curl ifconfig.io 2> /dev/null"
-alias iv='for i in {4..1}; do; echo -n $i..\ ;sleep 1;done; echo'
+alias iv='for iv in {4..1}; do; echo -n ${iv}..\ ;sleep 1;done; echo'
 
 # OS specified aliases
 if [ "$(uname)" = "Darwin" ]; then
     alias ldd="echo 'in macOS, ldd doesn't exist. && echo 'Use otool -L instead.' && echo '----------' &&  otool -L"
 elif [ "$(uname)" = "Linux" ]; then
-    # do nothing now.
+    : # do nothing now.
 fi
 
 #}}}
