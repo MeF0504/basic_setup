@@ -187,7 +187,7 @@ function! <SID>my_color_set()
     endif
 endfunction
 
-function! ShowBG()
+function! ShowStatusLineBG()
     let echo_str  = 'red:'.s:stl_br
     let echo_str .= ' green:'.s:stl_bg
     let echo_str .= ' blue:'.s:stl_bb
