@@ -151,9 +151,9 @@ function! <SID>my_color_set()
         let month = str2nr(strftime("%b"))
         let day = str2nr(strftime("%d"))
         let dow = str2nr(strftime("%w"))
-        let s:stl_br = (dow==6 ? 0 : dow)   " 土日は0
-        let s:stl_bg = (month-1)%6
-        let s:stl_bb = abs((day+4)%10-5)    " 0 1 2 3 4 5 4 3 2 1 0 ...
+        let s:stl_br = (dow==6 ? 0 : dow)       " 土日は0
+        let s:stl_bg = ((month*10+day)/10-1)%6  " 月+日の十の位で計算
+        let s:stl_bb = abs((day+5-1)%10-5)      " 0 1 2 3 4 5 4 3 2 1 0 ...
 
         if ((exists("g:l_bd_month") && (month == g:l_bd_month))
             \&& (exists("g:l_bd_day") && (day == g:l_bd_day)) )
