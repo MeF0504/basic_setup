@@ -15,27 +15,31 @@ augroup local
     if s:echo_auto == 1
         " {{{
         " autocmdを表示
-        autocmd VimEnter * echo 'VimEnter' | sleep 300ms
-        autocmd FileReadPre * echo 'FileReadPre' | sleep 300ms
-        autocmd FileReadPost * echo 'FileReadPost' | sleep 300ms
-        autocmd BufRead * echo 'BufRead' | sleep 300ms
-        autocmd BufReadPre * echo 'BufReadPre' | sleep 300ms
-        autocmd BufReadPost * echo 'BufReadPost' | sleep 300ms
-        autocmd BufEnter * echo 'BuffEnter' | sleep 300ms
-        autocmd BufWinEnter * echo 'BufWinEnter' | sleep 300ms
-        autocmd BufAdd * echo 'BuffAdd' | sleep 300ms
-        autocmd BufCreate * echo 'BuffCreate' | sleep 300ms
-        autocmd BufLeave * echo 'BufLeave' | sleep 300ms
-        autocmd BufDelete * echo 'BufDelete' | sleep 300ms
-        autocmd FileType * echo 'FileType' | sleep 300ms
-        autocmd Syntax * echo 'Syntax' | sleep 300ms
-        autocmd ColorScheme * echo 'ColorScheme' | sleep 300ms
-        autocmd WinNew * echo 'WinNew' | sleep 300ms
-        autocmd WinEnter * echo 'WinEnter' | sleep 300ms
-        autocmd WinLeave * echo 'WinLeave' | sleep 300ms
-        autocmd TabNew * echo 'TabNew' | sleep 300ms
-        autocmd TabEnter * echo 'TabEnter' | sleep 300ms
-        autocmd TabLeave * echo 'TabLeave' | sleep 300ms
+        let s:autocmd_events = ['VimEnter',
+                    \ 'FileReadPre *',
+                    \ 'FileReadPost *',
+                    \ 'BufRead *',
+                    \ 'BufReadPre *',
+                    \ 'BufReadPost *',
+                    \ 'BufEnter *',
+                    \ 'BufWinEnter *',
+                    \ 'BufAdd *',
+                    \ 'BufCreate *',
+                    \ 'BufLeave *',
+                    \ 'BufDelete *',
+                    \ 'FileType *',
+                    \ 'Syntax *',
+                    \ 'ColorScheme *',
+                    \ 'WinNew *',
+                    \ 'WinEnter *',
+                    \ 'WinLeave *',
+                    \ 'TabNew *',
+                    \ 'TabEnter *',
+                    \ 'TabLeave *',
+                    \ ]
+        for s:ae in s:autocmd_events
+            execute 'autocmd ' . s:ae . ' echomsg "'.s:ae . '" | sleep 300ms'
+        endfor
         " }}}
     endif
 augroup END
