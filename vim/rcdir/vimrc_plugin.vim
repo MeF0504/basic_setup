@@ -1224,3 +1224,73 @@ command! CCP call <SID>chk_current_position()
 nnoremap <silent> <leader>c :CCP<CR>
 " }}}
 
+" ファイル内の特定のkeywordを探してlistする {{{
+function! s:show_table_of_contents()
+    if &filetype == 'toml'
+        let tables = {
+                    \ 'plugins': '^repo',
+                    \ }
+    elseif &filetype == 'python'
+        let tables = {
+                    \ 'functions': '^\s*def',
+                    \ 'classes': '^\s*class',
+                    \ }
+    else
+        let tables = {}
+    endif
+    if exists('g:ToC_add_tables')
+        for k in g:ToC_add_tables
+            let tables[k] = g:ToC_add_tables[k]
+        endfor
+    endif
+
+    if len(tables) == 0
+        return
+    endif
+
+    let res_table = {}
+    let res_table['filename'] = expand('%') " (for jumping, future plan?)
+    for k in keys(tables)
+        let tmp_res = []
+        for lnum in range(1, line('$'))
+            let l_str = getline(lnum)
+            if match(l_str, tables[k]) != -1
+                let tmp_res = add(tmp_res, "\t".l_str.' @ '.lnum)
+            endif
+        endfor
+        let res_table[k] = tmp_res
+    endfor
+
+    pclose
+    silent 10split Table_of_Contents
+    0,$delete _
+    setlocal noswapfile
+    setlocal nobackup
+    setlocal noundofile
+    setlocal buftype=nofile
+    setlocal nowrap
+    setlocal nobuflisted
+    setlocal previewwindow
+    setlocal nofoldenable
+
+    for k in keys(res_table)
+        if k == 'filename'
+            continue
+        endif
+        if len(res_table[k]) == 0
+            continue
+        endif
+        execute "syntax keyword ToCkeys ".k
+        call append(line('$'), k)
+        call append(line('$'), res_table[k])
+    endfor
+    0delete _
+    0   " move to top
+
+    " map test
+    " nnoremap <buffer> <CR> :echo 1<CR>
+    wincmd p
+endfunction
+command! ShowTableOfContents call s:show_table_of_contents()
+" }}}
+

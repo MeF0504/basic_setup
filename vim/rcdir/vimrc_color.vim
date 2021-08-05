@@ -117,6 +117,10 @@ function! <SID>my_color_set()
     highlight Mode_ELSE cterm=bold ctermfg=253 ctermbg=8
     " }}}
 
+    " その他 {{{
+    highlight ToCkeys ctermfg=10
+    " }}}
+
     """ plugin highlights
     " NERDTree {{{
     highlight NERDTreeBookmarksLeader ctermfg=32
