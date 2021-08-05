@@ -1,14 +1,18 @@
 # set prompt
 
+export PROMPTTO=1   # default value
 # functions of ip address and ip-color {{{
 
 function get_ip() {
     local to=${1:-$PROMPTTO}
-    if [[ "$(which timeout &> /dev/null; echo $?)" == 0 ]]; then
+    if [[ "$(which timeout &> /dev/null; echo $?)" -eq 0 ]]; then
+        # echo "1-${to}" >&2
         local ip="$( timeout "$to" curl ifconfig.io 2> /dev/null)"
-    elif [[ "$(which timeout_local &> /dev/null; echo $?)" == 0 ]]; then
+    elif [[ "$(which timeout_local &> /dev/null; echo $?)" -eq 0 ]]; then
+        # echo "2-${to}" >&2
         local ip="$( timeout_local "$to" curl ifconfig.io 2> /dev/null)"
     else
+        # echo "3-${to}" >&2
         local ip="$(curl --max-time "$to" ifconfig.io 2> /dev/null)"
     fi
     echo "$ip"
