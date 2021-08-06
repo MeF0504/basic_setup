@@ -89,7 +89,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         return
     name1 = op.basename(file1)
     name2 = op.basename(file2)
-    mkdir(op.dirname(file2))
+    cpdir = op.dirname(file2)
 
     if 'test' in kwargs:
         test = kwargs['test']
@@ -101,11 +101,17 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
     else:
         condition = True
 
+    if not test:
+        mkdir(cpdir)
+    else:
+        if not os.path.exists(cpdir):
+            print('process check:: mkdir {}'.format(cpdir))
+
     if op.lexists(file2):
         exist = True
         if op.islink(file2):
             islink = True
-            linkpath = op.join(op.dirname(file2), os.readlink(file2))
+            linkpath = op.join(cpdir, os.readlink(file2))
             if not op.exists(linkpath):
                 # broken link
                 os.unlink(file2)
@@ -175,22 +181,28 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             fcopy_main(cmd, comment, test)
 #}}}
 
-def get_files(fpath, args_type):
+def get_files(fpath, args_type, prefix):
     if fpath is None:
         return None
 
     fpath = op.expanduser(fpath)
     fpath = op.expandvars(fpath)
     if not op.exists(fpath):
-        print("setup_file {} doesn't find. copy default files.".format(fpath))
+        print("setup_file {} doesn't find. use default settings.".format(fpath))
         return None
 
     with open(fpath, 'r') as f:
         set_dict = json.load(f)
     if args_type in set_dict:
-        return set_dict[args_type]
+        res_files = {}
+        for src in set_dict[args_type]:
+            dest = set_dict[args_type][src]
+            if '$PREFIX' in dest:
+                dest = dest.replace('$PREFIX', prefix)
+            res_files[src] = dest
+        return res_files
     else:
-        print("{} is not in {}. copy default files.".format(args_type, fpath))
+        print("{} is not in {}. use default settings.".format(args_type, fpath))
         return None
 
 def main_opt(args):
@@ -201,7 +213,7 @@ def main_opt(args):
     libdir = op.join(optdir, 'lib')
     print('\n@ '+optdir+'\n')
 
-    files = get_files(args.setup_file, 'opt')
+    files = get_files(args.setup_file, 'opt', args.prefix)
     if files is None:
         files = {}
 
@@ -269,7 +281,7 @@ def main_conf(args):
                   'gitignore_global':'~/.gitignore_global', \
                 }
 
-    files = get_files(args.setup_file, 'config')
+    files = get_files(args.setup_file, 'config', args.prefix)
     if files is None:
         if args.type == 'min':
             files = files_min
@@ -360,7 +372,7 @@ def main_vim(args):
     tmpath = op.join(vim_config_path, 'toml')
     mkdir(op.join(vim_config_path, "swp"))
 
-    files = get_files(args.setup_file, 'vim')
+    files = get_files(args.setup_file, 'vim', args.prefix)
     if uname == 'Windows':
         vimrc = op.expanduser('~/_vimrc')
     else:
