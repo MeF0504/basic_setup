@@ -1235,6 +1235,10 @@ function! s:show_table_of_contents()
                     \ 'functions': '^\s*def',
                     \ 'classes': '^\s*class',
                     \ }
+    elseif &filetype == 'sshconfig'
+        let tables = {
+                    \ 'Hosts': '^Host\>',
+                    \ }
     else
         let tables = {}
     endif
