@@ -392,25 +392,25 @@ def main_vim(args):
                 fname = op.basename(fy)
                 files[fy] = op.join(tmpath, fname)
 
-        if (args.type != 'min') and args.download and chk_cmd('sh', True):
-            print('\nclone dein')
-            mkdir(op.join(vim_config_path, 'dein'))
+    if (args.type != 'min') and args.download and chk_cmd('sh', True):
+        print('\nclone dein')
+        mkdir(op.join(vim_config_path, 'dein'))
 
-            if hasattr(tempfile, 'TemporaryDirectory'):
-                with tempfile.TemporaryDirectory() as tmpdir:
-                    os.chdir(tmpdir)
-                    urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
-                    subprocess.call('sh installer.sh {}'.format(op.join(vim_config_path, 'dein')), shell=True)
-                    os.chdir(args.fpath)
-            else:
-                tmpdir = tempfile.mkdtemp()
+        if hasattr(tempfile, 'TemporaryDirectory'):
+            with tempfile.TemporaryDirectory() as tmpdir:
                 os.chdir(tmpdir)
                 urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
                 subprocess.call('sh installer.sh {}'.format(op.join(vim_config_path, 'dein')), shell=True)
                 os.chdir(args.fpath)
-                shutil.rmtree(tmpdir)
+        else:
+            tmpdir = tempfile.mkdtemp()
+            os.chdir(tmpdir)
+            urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
+            subprocess.call('sh installer.sh {}'.format(op.join(vim_config_path, 'dein')), shell=True)
+            os.chdir(args.fpath)
+            shutil.rmtree(tmpdir)
 
-            print('\nremoved download tmp files')
+        print('\nremoved download tmp files')
 
     for fy in files:
         vimpath = op.join(vimdir, fy)
