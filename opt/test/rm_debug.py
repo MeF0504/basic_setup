@@ -25,6 +25,7 @@ usage: rm_debug.py directory''')
     in_dir = os.path.expanduser(sys.argv[1])
     if not os.path.exists(in_dir):
         print('input directory "{}" doesn\'t exist.'.format(in_dir))
+        return 0
 
     tdy = "%02d%02d%02d" % (date.today().year, date.today().month, date.today().day)
     copy_dir = os.path.join(in_dir, 'legacy', tdy)
