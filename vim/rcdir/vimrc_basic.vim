@@ -300,6 +300,8 @@ nnoremap <silent> \ :nohlsearch<CR>
 " 1行複製をよく使うので...
 nnoremap yp yyp
 nnoremap yP yyP
+nnoremap dp ddp
+nnoremap dP ddkP
 
 " preview , nofile, quickfix window, help windowはqで閉じる
 function! <SID>close_con()
