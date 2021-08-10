@@ -147,10 +147,15 @@ def main_hdf5(fpath, args):
 
     def show_hdf5(cpath):
         data = h5_file[cpath]
+        cprint('attrs', fg='k', bg='w')
+        for attr in data.attrs:
+            print('{}: {}'.format(attr, data.attrs[attr]))
         if isinstance(data, h5py.Group):
+            cprint('contents', fg='k', bg='w')
             for k in data.keys():
                 print(k)
         elif isinstance(data, h5py.Dataset):
+            cprint('value', fg='k', bg='w')
             data = data[()]
             print(data)
             if hasattr(data, 'shape'):
