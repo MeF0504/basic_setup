@@ -201,8 +201,8 @@ function! ShowStatusLineBG()
     let echo_str .= '+'.s:stl_bg.'*'.printf('%.1f', s:w_g)
     let echo_str .= '+'.s:stl_bb.'*'.printf('%.1f', s:w_b).')'
     let echo_str .= printf('%s%.1f%s%.1f%s%.1f%s', '/(', s:w_r, '+', s:w_g, '+', s:w_b, ')')
-    let echo_str .= ' = '.printf('%.1f', (s:stl_br*s:w_r+s:stl_bg*s:w_g+s:stl_bb*s:w_b)/(s:w_r+s:w_g+s:w_b))
-    let echo_str .= ' < '.printf('%.2f', s:thsd)
+    let echo_str .= ' = '.printf('%.3f', (s:stl_br*s:w_r+s:stl_bg*s:w_g+s:stl_bb*s:w_b)/(s:w_r+s:w_g+s:w_b))
+    let echo_str .= ' < '.printf('%.3f', s:thsd)
     echo echo_str
 endfunction
 
