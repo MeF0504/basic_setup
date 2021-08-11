@@ -139,7 +139,7 @@ let g:quickrun_config.markdown = {
             \ 'exec' : s:exe
             \}
 
-function! s:qrun_markdown()
+function! s:qrun_markdown() abort
     let l:is_marp = 0
     for l:ln in getline(1, 5)
         if stridx(l:ln, 'marp') != -1
@@ -206,30 +206,33 @@ if has('mac')
                 \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" %s -output-directory %s:h', s:open_pdf.'%s:r.pdf']
                 \ }
 
-    function! s:qrun_tex()
+    function! s:qrun_tex() abort
+        " fileの場所まで移動はQucickRunの後にcd出来なかったので断念
+        " let cur_dir = getcwd()
+        " cd %:h
         " texの中間ファイルはbuild dirに突っ込む
-        let s:build_dir = expand('%:h').'/__build__'
-        if !isdirectory(s:build_dir)
-            call mkdir(s:build_dir, 'p')
+        let build_dir = expand('%:h').'/__build__'
+        if !isdirectory(build_dir)
+            call mkdir(build_dir, 'p')
         endif
 
         " main.texがあったらそっちをコンパイル
         if filereadable(expand('%:h').'/main.tex')
-            let s:main_file = expand('%:h').'/main.tex'
-            let s:pdf_file = fnamemodify(s:main_file, ':r').'.pdf'
-            let s:build_pdf = s:build_dir.'/'.fnamemodify(s:pdf_file, ':t')
+            let main_file = expand('%:h').'/main.tex'
+            let pdf_file = fnamemodify(main_file, ':r').'.pdf'
+            let build_pdf = build_dir.'/'.fnamemodify(pdf_file, ':t')
         else
-            let s:main_file = expand('%')
-            let s:pdf_file = expand('%:r').'.pdf'
-            let s:build_pdf = s:build_dir.'/'.expand('%:t:r').'.pdf'
+            let main_file = expand('%')
+            let pdf_file = expand('%:r').'.pdf'
+            let build_pdf = build_dir.'/'.expand('%:t:r').'.pdf'
         endif
         " bibliography があり，かつ.bibがmain.texより新しければbibもコンパイル
         let cmp_bib = 0
-        let bib_line = match(readfile(s:main_file), 'bibliography')
+        let bib_line = match(readfile(main_file), 'bibliography')
         if bib_line != -1
-            let bra_idx = match(readfile(s:main_file)[bib_line+1], '{')
-            let bib_file = readfile(s:main_file)[bib_line+1][bra_idx+1:-2].'.bib'
-            if getftime(s:main_file) < getftime(bib_file)
+            let bra_idx = match(readfile(main_file)[bib_line+1], '{')
+            let bib_file = readfile(main_file)[bib_line+1][bra_idx+1:-2].'.bib'
+            if getftime(main_file) < getftime(bib_file)
                 let cmp_bib = 1
             endif
         endif
@@ -237,14 +240,15 @@ if has('mac')
 
         let ret = "QuickRun -command 'ptex2pdf' "
         if cmp_bib == 1
-            let ret .= "-exec 'uplatex -output-directory ".s:build_dir." ".fnamemodify(s:main_file, ':r')."' "
-            let ret .= "-exec 'upbibtex ".s:build_dir."/".fnamemodify(s:main_file, ':r')."' "
-            let ret .= "-exec 'uplatex -output-directory ".s:build_dir." ".fnamemodify(s:main_file, ':r')."' "
+            let ret .= "-exec 'uplatex -output-directory ".build_dir." ".fnamemodify(main_file, ':r')."' "
+            let ret .= "-exec 'upbibtex ".build_dir."/".fnamemodify(main_file, ':r')."' "
+            let ret .= "-exec 'uplatex -output-directory ".build_dir." ".fnamemodify(main_file, ':r')."' "
         endif
-        let ret .= "-exec '%c -l -u -ot \"-synctex=1 -interaction=nonstopmode\" ".s:main_file." -output-directory ".s:build_dir."' "
-        let ret .= "-exec 'mv ".s:build_pdf." ".s:pdf_file."' "
-        let ret .= "-exec 'echo \"\\\\n move from ".s:build_pdf." to ". s:pdf_file."\"' "
-        let ret .= "-exec '".s:open_pdf.s:pdf_file."'"
+        let ret .= "-exec '%c -l -u -ot \"-synctex=1 -interaction=nonstopmode\" ".main_file." -output-directory ".build_dir."' "
+        let ret .= "-exec 'mv ".build_pdf." ".pdf_file."' "
+        let ret .= "-exec 'echo \"\\\\n move from ".build_pdf." to ". pdf_file."\"' "
+        let ret .= "-exec '".s:open_pdf.pdf_file."'"
+        " let ret .= " | cd ".cur_dir   " 動かない？
         return ret
     endfunction
 endif
