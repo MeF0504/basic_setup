@@ -1239,11 +1239,15 @@ function! s:show_table_of_contents()
         let tables = {
                     \ 'Hosts': '^Host\>',
                     \ }
+    elseif &filetype == 'bib'
+        let tables = {
+                    \ 'articles' : '^@article',
+                    \ }
     else
         let tables = {}
     endif
     if exists('g:ToC_add_tables')
-        for k in g:ToC_add_tables
+        for k in keys(g:ToC_add_tables)
             let tables[k] = g:ToC_add_tables[k]
         endfor
     endif
@@ -1276,6 +1280,8 @@ function! s:show_table_of_contents()
     setlocal nobuflisted
     setlocal previewwindow
     setlocal nofoldenable
+    setlocal foldmethod=indent
+    setlocal foldenable
 
     for k in keys(res_table)
         if k == 'filename'
