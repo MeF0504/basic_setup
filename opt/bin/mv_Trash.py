@@ -2,12 +2,13 @@
 
 from send2trash import send2trash
 import sys
-import os.path as op
+import os
 
 files = sys.argv[1:]
 
 for fy in files:
-    if op.exists(fy):
+    if os.path.exists(fy):
+        os.utime(fy)    # update time stamp
         send2trash(fy)
     else:
         print("[" + fy + "] not found.")

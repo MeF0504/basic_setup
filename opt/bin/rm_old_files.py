@@ -16,8 +16,7 @@ def get_args():
     return args
 
 def main(args):
-    top_dir = os.path.expandvars(args.dir)
-    top_dir = os.path.expanduser(args.dir)
+    top_dir = os.path.expandvars(os.path.expanduser(args.dir))
     tdy = datetime.datetime.today()
 
     # if args.verbose:
@@ -30,7 +29,7 @@ def main(args):
 
         if (tdy - dt).days > args.day:
             if args.verbose:
-                print(' - {} [{}/{}]'.format(os.path.basename(fy), dt.month, dt.day))
+                print(' - "{}" [{}/{}/{}]'.format(os.path.basename(fy), dt.month, dt.day, dt.year))
             rm_files.append(fy)
 
     if len(rm_files) == 0:
