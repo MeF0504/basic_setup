@@ -105,7 +105,32 @@ autocmd local BufEnter *zshrc* set filetype=zsh
 
 " Neovimでterminalに入ったときにstartinsertする
 if has('nvim')
-    autocmd local BufEnter term://* startinsert
+    let s:term_on = {}
+    function! Term_pre() abort
+        let res = ""
+        if mode() == 't'
+            let s:term_on[win_getid()] = 1
+            " stopinsert
+            let res = "\<C-\>\<C-n>"
+        elseif expand('%')[:6] == 'term://'
+            let s:term_on[win_getid()] = 0
+        endif
+        return res
+    endfunction
+
+    nnoremap <expr> g<Right>    Term_pre().'gt'
+    nnoremap <expr> g<Left>     Term_pre().'gT'
+    nnoremap <expr> s<Up>       Term_pre().'<C-w>k'
+    nnoremap <expr> s<Down>     Term_pre().'<C-w>j'
+    nnoremap <expr> s<Right>    Term_pre().'<C-w>l'
+    nnoremap <expr> s<Left>     Term_pre().'<C-w>h'
+    tnoremap <expr> g<Right>    Term_pre().'gt'
+    tnoremap <expr> g<Left>     Term_pre().'gT'
+    tnoremap <expr> s<Up>       Term_pre().'<C-w>k'
+    tnoremap <expr> s<Down>     Term_pre().'<C-w>j'
+    tnoremap <expr> s<Right>    Term_pre().'<C-w>l'
+    tnoremap <expr> s<Left>     Term_pre().'<C-w>h'
+    autocmd local BufEnter term://* if has_key(s:term_on, win_getid()) && (s:term_on[win_getid()]==1) | startinsert | endif
 endif
 
 "autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
