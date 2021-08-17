@@ -36,6 +36,9 @@ augroup local
                     \ 'TabNew *',
                     \ 'TabEnter *',
                     \ 'TabLeave *',
+                    \ 'InsertEnter *',
+                    \ 'InsertLeave *',
+                    \ 'InsertLeavePre *',
                     \ ]
         for s:ae in s:autocmd_events
             execute 'autocmd ' . s:ae . ' echomsg "'.s:ae . '" | sleep 300ms'
