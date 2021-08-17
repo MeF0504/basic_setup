@@ -68,6 +68,10 @@ function! <SID>my_color_set_primary()
     highlight CursorWord1 ctermbg=239 cterm=None
 endfunction
 
+function! <SID>my_color_set_PaperColor()
+    highlight Search ctermbg=36
+endfunction
+
 function! s:SID()
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfunction
