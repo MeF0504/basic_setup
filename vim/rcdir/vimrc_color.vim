@@ -33,9 +33,6 @@ function! <SID>my_color_set_inkpot()
     highlight Title ctermfg=197
     highlight PreProc ctermfg=35    " for gui environment
     highlight SpecialKey cterm=bold ctermfg=243 ctermbg=233
-    if has('nvim')
-        highlight link Whitespace SpecialKey
-    endif
     highlight Normal ctermfg=255
     highlight PmenuThumb ctermbg=55
     highlight MatchParen ctermfg=14 ctermbg=18 cterm=Bold
@@ -70,6 +67,7 @@ endfunction
 
 function! <SID>my_color_set_PaperColor()
     highlight Search ctermbg=36
+    highlight SpecialKey cterm=Underline ctermfg=245 ctermbg=233
 endfunction
 
 function! s:SID()
@@ -82,6 +80,9 @@ function! <SID>my_color_set()
     highlight link VimFunction Identifier
     highlight link VimUserFunc MFdef    " from MFtags
     highlight link vimIsCommand SpecialChar
+    if has('nvim')
+        highlight link Whitespace SpecialKey
+    endif
     " }}}
 
     " corsor line {{{
