@@ -1296,6 +1296,7 @@ function! s:show_table_of_contents()
     endfor
     0delete _
     0   " move to top
+    normal! zR
 
     " map test
     " nnoremap <buffer> <CR> :echo 1<CR>
