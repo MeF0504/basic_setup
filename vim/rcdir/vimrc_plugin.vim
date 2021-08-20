@@ -1299,8 +1299,19 @@ function! s:show_table_of_contents()
     normal! zR
 
     " map test
-    " nnoremap <buffer> <CR> :echo 1<CR>
+    nnoremap <silent> <buffer> <expr> <CR> <SID>jump_line().'<CR>'
     wincmd p
+endfunction
+
+function! <SID>jump_line()
+    let line = getline('.')
+    let idx = strridx(line, '@')
+    if idx == -1
+        return ''
+    endif
+    let lnum = line[idx+2:]
+    let ret = ':wincmd p | '.lnum
+    return ret
 endfunction
 command! ShowTableOfContents call s:show_table_of_contents()
 " }}}
