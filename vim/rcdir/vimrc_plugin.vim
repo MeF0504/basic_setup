@@ -696,6 +696,7 @@ function! s:complete_term(arglead, cmdline, cursorpos) abort
     let arglead = tolower(a:arglead)
     let cmdline = tolower(a:cmdline)
     let opt_idx = strridx(cmdline, '-')
+    let end_space_idx = strridx(cmdline, ' ')
     " return ['-1-'.a:arglead, '-2-'.a:cmdline, '-3-'.a:cursorpos, '-4-'.a:cmdline[opt_idx:]]
     if arglead[0] == '-'
         " select option
@@ -704,9 +705,9 @@ function! s:complete_term(arglead, cmdline, cursorpos) abort
             let res += ['-'.opt]
         endfor
         return filter(res, '!stridx(tolower(v:val), arglead)')
-    elseif cmdline[opt_idx:opt_idx+3] == '-win'
+    elseif cmdline[opt_idx:end_space_idx-1] == '-win'
         return s:term_win_opts
-    elseif cmdline[opt_idx:opt_idx+4] == '-term'
+    elseif cmdline[opt_idx:end_space_idx-1] == '-term'
         if exists('*term_list')
             let term_names = filter(map(term_list(), 'bufname(v:val)'), '!stridx(tolower(v:val), arglead)')
         else
