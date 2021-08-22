@@ -28,8 +28,9 @@ set visualbell t_vb=
 
 "}}}
 
+let s:vimdir = llib#get_conf_dir()
 " "色設定
-let s:color_file = g:vimdir . "rcdir/gvimrc_color.vim"
+let s:color_file = s:vimdir . "rcdir/gvimrc_color.vim"
 if filereadable(s:color_file)
     execute "source " . s:color_file
 endif
@@ -47,7 +48,7 @@ function! Hide(...)
 endfunction
 
 "local設定ファイル
-let s:localgrc = g:vimdir . 'rcdir/gvimrc.mine'
+let s:localgrc = s:vimdir . 'rcdir/gvimrc.mine'
 if filereadable(s:localgrc)
     execute "source " . s:localgrc
 endif

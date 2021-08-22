@@ -46,6 +46,9 @@ scriptencoding utf-8
 "" }}}
 
 ""##########基本設定 "{{{
+if exists('*llib#get_conf_dir')
+    let s:vimdir = llib#get_conf_dir()
+endif
 " 左端に数字を表示
 set number
 " 常にステータスラインを表示
@@ -113,8 +116,8 @@ set splitright
 " Leaderを<space>に設定
 let mapleader = "\<space>"
 " doc directoryを追加
-if exists('g:vimdir') && isdirectory(g:vimdir . 'doc')
-    execute "helptags " . g:vimdir . "doc"
+if exists('s:vimdir') && isdirectory(s:vimdir . 'doc')
+    execute "helptags " . s:vimdir . "doc"
 endif
 " ファイル名が=で切られないようにする (ファイル名に=は使わないよな...)
 set isfname-==
@@ -125,11 +128,11 @@ set cursorline
 " swp fileあり、backup, undoなし
 set swapfile
 " 作れればswp用のdirectoryをvimdir配下に作る
-if exists('g:vimdir')
-    if !isdirectory(g:vimdir . 'swp')
-        call mkdir(g:vimdir . 'swp')
+if exists('s:vimdir')
+    if !isdirectory(s:vimdir . 'swp')
+        call mkdir(s:vimdir . 'swp')
     endif
-    let &directory = g:vimdir . "swp"
+    let &directory = s:vimdir . "swp"
 endif
 set nobackup
 set noundofile
@@ -157,11 +160,11 @@ endif
 " spell checkする言語
 set spelllang=en_us
 " spell checkされた単語リストファイル
-if exists('g:vimdir')
-    if !isdirectory(g:vimdir.'spell')
-        call mkdir(g:vimdir.'spell')
+if exists('s:vimdir')
+    if !isdirectory(s:vimdir.'spell')
+        call mkdir(s:vimdir.'spell')
     endif
-    let &spellfile = g:vimdir.'spell/local.'.&encoding.'.add'
+    let &spellfile = s:vimdir.'spell/local.'.&encoding.'.add'
 endif
 
 " terminal mode設定
@@ -189,7 +192,7 @@ endif
 set statusline=%f%m%r%h%w%<%=%y\ %l/%L\ [%P]
 
 " In case vim don't read vimrc_color.vim
-if !exists('g:vimdir')
+if !exists('s:vimdir')
     colorscheme desert
 endif
 
@@ -345,8 +348,8 @@ endif
 " }}}
 
 "local設定ファイル (basic用)
-if exists('g:vimdir')
-    let s:localrc = g:vimdir.'rcdir/vimrc_basic.mine'
+if exists('s:vimdir')
+    let s:localrc = s:vimdir.'rcdir/vimrc_basic.mine'
 elseif has('nvim')
     if exists("$XDG_CONFIG_HOME")
         let s:localrc = expand($XDG_CONFIG_HOME)."/nvim/rcdir/vimrc_basic.mine"

@@ -48,32 +48,20 @@ augroup local
 augroup END
 
 "neovim, windiws, unix系で分岐
-if has('nvim')
-    if exists("$XDG_CONFIG_HOME")
-        let g:vimdir = expand($XDG_CONFIG_HOME . "/nvim/")
-    else
-        let g:vimdir = expand('~/.config/nvim/')
-    endif
-else
-    if has('win32')
-        let g:vimdir = expand('~/vimfiles/')
-    else
-        let g:vimdir = expand('~/.vim/')
-    endif
-endif
+let s:vimdir = llib#get_conf_dir()
 
 if exists('$VIM_TERMINAL')
     echo 'Warning!! vim is already opened!!'
 endif
 
 "local設定ファイル (1st)
-let s:initrc = g:vimdir . 'rcdir/init.vim.mine'
+let s:initrc = s:vimdir . 'rcdir/init.vim.mine'
 if filereadable(s:initrc)
     execute "source " . s:initrc
 endif
 
 " basic setup (set, map系) 読み込み
-let s:basicrc = g:vimdir . 'rcdir/vimrc_basic.vim'
+let s:basicrc = s:vimdir . 'rcdir/vimrc_basic.vim'
 if filereadable(s:basicrc)
     execute "source " . s:basicrc
 else
@@ -539,7 +527,7 @@ command! Spell if &spell!=1 | setlocal spell | else | setlocal nospell | endif
 " }}}
 
 " self-made plugin/functionファイル読み込み
-let s:plugin_file = g:vimdir . "rcdir/vimrc_plugin.vim"
+let s:plugin_file = s:vimdir . "rcdir/vimrc_plugin.vim"
 if filereadable(s:plugin_file)
     execute "source " . s:plugin_file
 endif
@@ -593,7 +581,7 @@ set path+=../include
 " endif
 
 " test用directoryを追加
-let s:test_vim_dir = g:vimdir . 'test'
+let s:test_vim_dir = s:vimdir . 'test'
 if !isdirectory(s:test_vim_dir)
     call mkdir(s:test_vim_dir)
 endif
@@ -602,13 +590,13 @@ execute 'set runtimepath^=' . s:test_vim_dir
 
 ""##########ファイル読み込み "{{{
 "dein directoryがあれば読み込み
-let s:dein_file = g:vimdir . "rcdir/vimrc_dein.vim"
-if isdirectory(g:vimdir . 'dein') && filereadable(s:dein_file)
+let s:dein_file = s:vimdir . "rcdir/vimrc_dein.vim"
+if isdirectory(s:vimdir . 'dein') && filereadable(s:dein_file)
     execute "source " . s:dein_file
 endif
 
 "カラーの変更
-let s:color_file = g:vimdir . "rcdir/vimrc_color.vim"
+let s:color_file = s:vimdir . "rcdir/vimrc_color.vim"
 if !has('gui_running')
     if filereadable(s:color_file) && (&t_Co == 256)
         execute "source " . s:color_file
@@ -616,7 +604,7 @@ if !has('gui_running')
 endif
 
 "local設定ファイル (2nd)
-let s:localrc = g:vimdir . 'rcdir/vimrc.mine'
+let s:localrc = s:vimdir . 'rcdir/vimrc.mine'
 if filereadable(s:localrc)
     execute "source " . s:localrc
 endif
