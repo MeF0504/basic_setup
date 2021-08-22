@@ -449,14 +449,16 @@ repo = 'osyo-manga/vim-anzu'
 if = '''!(exists('*searchcount') && exists('*popup_create'))'''  # if exists => use vim-hitspop
 hook_add = '''
 """ vim-anzu {{{
-" max search count
-let g:anzu_search_limit = 3000
-" mapping
-nmap n <Plug>(anzu-n-with-echo)
-nmap N <Plug>(anzu-N-with-echo)
+if !(exists('*searchcount') && exists('*popup_create'))
+    " max search count
+    let g:anzu_search_limit = 3000
+    " mapping
+    nmap n <Plug>(anzu-n-with-echo)
+    nmap N <Plug>(anzu-N-with-echo)
 
-" clear status
-" nmap <ESC><ESC> <Plug>(anzu-clear-search-status)
+    " clear status
+    " nmap <ESC><ESC> <Plug>(anzu-clear-search-status)
+endif
 " }}}
 '''
 
