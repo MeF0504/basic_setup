@@ -12,25 +12,26 @@ if !exists("$XDG_CONFIG_HOME")
     let $XDG_CONFIG_HOME = expand("~/.config")
 endif
 
-if has('win32')
-    let s:dein_dir = expand("~/vimfiles/")
+let s:vim_dir = llib#get_conf_dir()
+if has('nvim')
+    let s:dein_dir = s:vim_dir. 'dein_nvim/'
 else
-    let s:dein_dir = $XDG_CONFIG_HOME . '/nvim/'
+    let s:dein_dir = s:vim_dir. 'dein_vim/'
 endif
 
-let s:light_file = s:dein_dir . 'toml/dein_light.toml'
-let s:toml_file  = s:dein_dir . '/toml/dein.toml'
-let s:lazy_file  = s:dein_dir . '/toml/dein_lazy.toml'
+let s:light_file = s:vim_dir . 'toml/dein_light.toml'
+let s:toml_file  = s:vim_dir . '/toml/dein.toml'
+let s:lazy_file  = s:vim_dir . '/toml/dein_lazy.toml'
 
 " update the settings reffering to https://knowledge.sakura.ad.jp/23248/
 " Required: dein install check
 if &runtimepath !~# '/dein.vim'
-    execute "set runtimepath+=" . s:dein_dir . "/dein/repos/github.com/Shougo/dein.vim"
+    execute "set runtimepath+=" . s:dein_dir . "repos/github.com/Shougo/dein.vim"
 endif
 
 " Required: begin settings
-if dein#load_state(s:dein_dir . '/dein/')
-  call dein#begin(s:dein_dir . '/dein/')
+if dein#load_state(s:dein_dir)
+  call dein#begin(s:dein_dir)
 
   " Let dein manage dein
   " Required:

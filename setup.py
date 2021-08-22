@@ -398,19 +398,24 @@ def main_vim(args):
 
     if (args.type != 'min') and args.download and chk_cmd('sh', True):
         print('\nclone dein')
-        mkdir(op.join(vim_config_path, 'dein'))
+        dein_path_vim = op.join(vim_config_path, 'dein_vim')
+        dein_path_nvim = op.join(vim_config_path, 'dein_nvim')
+        mkdir(dein_path_vim)
+        mkdir(dein_path_nvim)
 
         if hasattr(tempfile, 'TemporaryDirectory'):
             with tempfile.TemporaryDirectory() as tmpdir:
                 os.chdir(tmpdir)
                 urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
-                subprocess.call('sh installer.sh {}'.format(op.join(vim_config_path, 'dein')), shell=True)
+                subprocess.call('sh installer.sh {}'.format(dein_path_vim), shell=True)
+                subprocess.call('sh installer.sh {}'.format(dein_path_nvim), shell=True)
                 os.chdir(args.fpath)
         else:
             tmpdir = tempfile.mkdtemp()
             os.chdir(tmpdir)
             urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
-            subprocess.call('sh installer.sh {}'.format(op.join(vim_config_path, 'dein')), shell=True)
+            subprocess.call('sh installer.sh {}'.format(dein_path_vim), shell=True)
+            subprocess.call('sh installer.sh {}'.format(dein_path_nvim), shell=True)
             os.chdir(args.fpath)
             shutil.rmtree(tmpdir)
 
