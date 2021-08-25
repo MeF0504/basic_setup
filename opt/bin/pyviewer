@@ -166,14 +166,25 @@ def main_hdf5(fpath, args):
                 is_array = True
             else:
                 is_array = False
-            if imp_np and is_array:
-                print('mean: {}'.format(np.nanmean(data)))
-                print('max: {}'.format(np.nanmax(data)))
-                print('min: {}'.format(np.nanmin(data)))
-                print('std: {}'.format(np.nanstd(data)))
+            if imp_np and is_array and (len(data)!=0):
+                try: dmean = np.nanmean(data)
+                except Exception as e: dmean = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                print('mean : {}'.format(dmean))
+                try: dmax = np.nanmax(data)
+                except Exception as e: dmax = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                print(' max : {}'.format(dmax))
+                try: dmin = np.nanmin(data)
+                except Exception as e: dmin = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                print(' min : {}'.format(dmin))
+                try: dstd = np.nanstd(data)
+                except Exception as e: dstd = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                print(' std : {}'.format(dstd))
                 if hasattr(data, 'shape'):
-                    nan_rate = np.sum(np.isnan(data))/np.prod(data.shape)
-                    print('nan rate: {:.1f}%'.format(nan_rate*100))
+                    try:
+                        nan_rate = np.sum(np.isnan(data))/np.prod(data.shape)
+                        print('nan rate: {:.1f}%'.format(nan_rate*100))
+                    except Exception as e:
+                        pass
 
     list_tree = [{}]
     def make_list(name, obj):
@@ -319,8 +330,14 @@ def main_pickle(fpath, args):
                             else:
                                 cprint('output::', '\n{}'.format(tmp_data[k]), bg='r')
                                 if imp_np:
-                                    if type(tmp_data[k])==np.ndarray:
-                                        print('>> shape: {}, mean: {:.2e}, median: {:.2e}, std: {:.2e}'.format(tmp_data[k].shape, np.mean(tmp_data[k]), np.median(tmp_data[k]), np.std(tmp_data[k])))
+                                    if (type(tmp_data[k])==np.ndarray) and (len(tmp_data[k])!=0):
+                                        try: dmean = np.mean(tmp_data[k])
+                                        except Exception as e: dmean = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                                        try: dmedian = np.median(tmp_data[k])
+                                        except Exception as e: dmedian = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                                        try: dstd = np.std(tmp_data[k])
+                                        except Exception as e: dstd = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                                        print('>> shape: {}, mean: {:.2e}, median: {:.2e}, std: {:.2e}'.format(tmp_data[k].shape, dmean, dmedian, dstd))
                                 print('')
                     if not find_key:
                         cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
@@ -355,19 +372,28 @@ def main_numpy(fpath, args):
         try:
             if np.any(np.isnan(data)):
                 # including np.nan
-                d_mean = np.nanmean(data)
-                d_max  = np.nanmax(data)
-                d_min  = np.nanmin(data)
-                nan_rate = np.sum(np.isnan(data))/np.prod(data.shape)
+                try: d_mean = np.nanmean(data)
+                except Exception as e: d_mean = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                try: d_max = np.nanmax(data)
+                except Exception as e: d_max = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                try: d_min = np.nanmin(data)
+                except Exception as e: d_min = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                try:
+                    nan_rate = np.sum(np.isnan(data))/np.prod(data.shape)
+                except Exception as e:
+                    nan_rate = '{}: {}'.format(str(type(e)).split("'")[1], e)
                 prt_str = '''mean     : {}
 max      : {}
 min      : {}
 nan rate : {:.1f}%'''.format(d_mean, d_max, d_min, 100*nan_rate)
             else:
                 # normal data
-                d_mean = np.mean(data)
-                d_max  = np.max(data)
-                d_min  = np.min(data)
+                try: d_mean = np.mean(data)
+                except Exception as e: d_mean = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                try: d_max = np.max(data)
+                except Exception as e: d_max = '{}: {}'.format(str(type(e)).split("'")[1], e)
+                try: d_min = np.min(data)
+                except Exception as e: d_min = '{}: {}'.format(str(type(e)).split("'")[1], e)
                 prt_str = '''mean     : {}
 max      : {}
 min      : {}'''.format(d_mean, d_max, d_min)
