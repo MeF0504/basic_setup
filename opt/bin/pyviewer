@@ -7,7 +7,7 @@ import sys
 import argparse
 import tarfile
 import platform
-from pathlib import PurePath, Path
+from pathlib import PurePath
 try:
     # to use this, libmagic.* should be in /opt/local/lib/, /usr/local/lib, /opt/homebrew/lib or /usr/local/Cellar/libmagic/*/lib in darwin system (macOS).
     import magic
@@ -83,7 +83,8 @@ def get_filetype(fpath):
 def get_filetype_magic(fpath):
     mime = magic.from_file(fpath, mime=True)
     if mime == 'inode/symlink':
-        fpath = str(Path(fpath).resolve())
+        fpath = os.path.realpath(fpath)
+        # fpath = os.readlink(fpath) which is better?
         mime = magic.from_file(fpath, mime=True)
     ext = fpath[fpath.rfind('.')+1:].lower()
 
