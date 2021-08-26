@@ -7,7 +7,15 @@ import sys
 import argparse
 import tarfile
 import platform
-from pathlib import PurePath
+from pathlib import PurePath, Path
+try:
+    # to use this, libmagic.* should be in /opt/local/lib/, /usr/local/lib, /opt/homebrew/lib or /usr/local/Cellar/libmagic/*/lib in darwin system (macOS).
+    import magic
+except ImportError as e:
+    import mimetypes
+    use_magic = False
+else:
+    use_magic = True
 
 from libtree import tree_viewer, show_tree, branch_str
 
@@ -48,6 +56,63 @@ def cprint(str1, str2='', fg=None, bg=None, **kwargs):
             print_str += END
     print_str += str2
     print(print_str, **kwargs)
+
+def get_filetype(fpath):
+    ext = fpath[fpath.rfind('.')+1:].lower()
+    if ext == 'hdf5':
+        return 'hdf5'
+    elif ext == 'pkl' or ext == 'pickle':
+        return 'pickle'
+    elif ext in 'npy npz'.split(' '):
+        return 'numpy'
+    elif tarfile.is_tarfile(fpath):
+        return 'tar'
+    elif ext == 'zip':
+        return 'zip'
+    elif ext in 'db db3 sql sql3 sqlite sqlite3'.split(' '):
+        return 'sqlite3'
+    elif ext in 'raw nef nrw cr3 cr2 crw tif arw'.split(' '):   # nikon, canon, sony
+        return 'raw_image'
+    elif ext == 'ipynb':
+        return 'jupyter'
+    elif ext == 'py':
+        return 'text'
+    else:
+        return None
+
+def get_filetype_magic(fpath):
+    mime = magic.from_file(fpath, mime=True)
+    if mime == 'inode/symlink':
+        fpath = str(Path(fpath).resolve())
+        mime = magic.from_file(fpath, mime=True)
+    ext = fpath[fpath.rfind('.')+1:].lower()
+
+    if tarfile.is_tarfile(fpath):
+        return 'tar'
+    elif mime == 'application/x-hdf':
+        return 'hdf5'
+    elif mime == 'application/x-numpy-data':
+        return 'numpy'
+    elif mime == 'application/zip':
+        if ext == 'npz':
+            return 'numpy'
+        else:
+            return 'zip'
+    elif mime == 'application/x-sqlite3':
+        return 'sqlite3'
+    elif mime == 'image/tiff':
+        return 'raw_image'
+    elif (mime=='application/json') or (mime=='text/x-tex'):
+        return 'jupyter'
+    elif mime == 'text/plain':
+        if ext == 'pkl' or ext == 'pickle':
+            return 'pickle'
+        else:
+            return 'text'
+    elif 'text' in mime:
+        return 'text'
+    else:
+        return None
 
 def get_image_viewer(args):
     if args_chk(args, 'image_viewer'):
@@ -948,35 +1013,26 @@ def main_jupyter(fpath, args):
 
 def main(args):
 
-    fpath = os.path.expanduser(args.file)
+    fpath = os.path.expandvars(os.path.expanduser(args.file))
     if not os.path.exists(fpath):
         print("file doesn't exists!")
         return
+    if os.path.isdir(fpath):
+        print("{} is a directory.".format(fpath))
+        return
 
     if not args_chk(args, 'type'):
-        ext = fpath[fpath.rfind('.')+1:].lower()
-        if ext == 'hdf5':
-            args.type = 'hdf5'
-        elif ext == 'pkl' or ext == 'pickle':
-            args.type = 'pickle'
-        elif ext in 'npy npz'.split(' '):
-            args.type = 'numpy'
-        elif tarfile.is_tarfile(fpath):
-            args.type = 'tar'
-        elif ext == 'zip':
-            args.type = 'zip'
-        elif ext in 'db db3 sql sql3 sqlite sqlite3'.split(' '):
-            args.type = 'sqlite3'
-        elif ext in 'raw nef nrw cr3 cr2 crw tif arw'.split(' '):   # nikon, canon, sony
-            args.type = 'raw_image'
-        elif ext == 'ipynb':
-            args.type = 'jupyter'
-        elif ext == 'py':
-            if 'ja_JP' in os.environ['LANG']:
-                print('vimでも使ってろ！')
-            else:
-                print("Why Don't you use vim???")
-            return
+        if use_magic:
+            args.type = get_filetype_magic(fpath)
+        else:
+            args.type = get_filetype(fpath)
+
+    if args.type == 'text':
+        if 'ja_JP' in os.environ['LANG']:
+            print('vimでも使ってろ！')
+        else:
+            print("Why Don't you use vim???")
+        return
 
     if args.type == 'hdf5':
         main_hdf5(fpath, args)
