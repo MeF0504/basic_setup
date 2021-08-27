@@ -498,7 +498,9 @@ hook_add = '''
 " {{{
 " https://gorilla.netlify.app/articles/20190427-vim-help-jp.html
 " helpを日本語優先にする
-set helplang=ja
+if !has('nvim')
+    set helplang=ja
+endif
 " }}}
 '''
 
@@ -559,11 +561,13 @@ repo = 'obcat/vim-hitspop'
 if = '''exists('*searchcount') && exists('*popup_create')'''   # if not exists => use vim-anzu
 hook_add = '''
 " {{{
-" https://zenn.dev/obcat/articles/4ef6822de53b643bbd01
-" :nohlsearch で消える→ 自分は\で消える
-" 右下に表示
-let g:hitspop_line = 'winbot'
-let g:hitspop_column = 'winright'
+if exists('*searchcount') && exists('*popup_create')
+    " https://zenn.dev/obcat/articles/4ef6822de53b643bbd01
+    " :nohlsearch で消える→ 自分は\で消える
+    " 右下に表示
+    let g:hitspop_line = 'winbot'
+    let g:hitspop_column = 'winright'
+endif
 " }}}
 '''
 

@@ -591,11 +591,7 @@ execute 'set runtimepath^=' . s:test_vim_dir
 ""##########ファイル読み込み "{{{
 "dein directoryがあれば読み込み
 let s:dein_file = s:vimdir . "rcdir/vimrc_dein.vim"
-if has('nvim')
-    let s:dein_dir = s:vimdir.'dein_nvim/'
-else
-    let s:dein_dir = s:vimdir.'dein_vim/'
-endif
+let s:dein_dir = s:vimdir.'dein/'
 if isdirectory(s:dein_dir) && filereadable(s:dein_file)
     execute "source " . s:dein_file
 endif

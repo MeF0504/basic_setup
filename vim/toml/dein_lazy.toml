@@ -38,22 +38,24 @@ if = '''has('python3') && ((v:version>=801) || (has('nvim')&&has('nvim-0.3.0')))
 on_event = 'InsertEnter'
 hook_source = '''
 "{{{ "deoplete
-let g:deoplete#enable_at_startup = 1
-inoremap <expr><tab> pumvisible() ? "\<C-n>" :
-        \ neosnippet#expandable_or_jumpable() ?
-        \    "\<Plug>(neosnippet_expand_or_jump)" : "\<tab>"
-inoremap <expr><S-tab> pumvisible() ? "\<C-p>" :
-        \ neosnippet#expandable_or_jumpable() ?
-        \    "\<Plug>(neosnippet_expand_or_jump)" : "\<S-tab>"
+if has('python3') && ((v:version>=801) || (has('nvim')&&has('nvim-0.3.0')))
+    let g:deoplete#enable_at_startup = 1
+    inoremap <expr><tab> pumvisible() ? "\<C-n>" :
+            \ neosnippet#expandable_or_jumpable() ?
+            \    "\<Plug>(neosnippet_expand_or_jump)" : "\<tab>"
+    inoremap <expr><S-tab> pumvisible() ? "\<C-p>" :
+            \ neosnippet#expandable_or_jumpable() ?
+            \    "\<Plug>(neosnippet_expand_or_jump)" : "\<S-tab>"
 
-""" test
-autocmd deinLocal FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd deinLocal FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd deinLocal FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd deinLocal FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd deinLocal FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-" auto close preview window.
-autocmd deinLocal CompleteDone * silent! pclose!
+    """ test
+    autocmd deinLocal FileType css setlocal omnifunc=csscomplete#CompleteCSS
+    autocmd deinLocal FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+    autocmd deinLocal FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+    autocmd deinLocal FileType python setlocal omnifunc=pythoncomplete#Complete
+    autocmd deinLocal FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+    " auto close preview window.
+    autocmd deinLocal CompleteDone * silent! pclose!
+endif
 
 "}}}
 '''

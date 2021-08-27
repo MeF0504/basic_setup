@@ -13,11 +13,7 @@ if !exists("$XDG_CONFIG_HOME")
 endif
 
 let s:vim_dir = llib#get_conf_dir()
-if has('nvim')
-    let s:dein_dir = s:vim_dir. 'dein_nvim/'
-else
-    let s:dein_dir = s:vim_dir. 'dein_vim/'
-endif
+let s:dein_dir = s:vim_dir. 'dein/'
 
 let s:light_file = s:vim_dir . 'toml/dein_light.toml'
 let s:toml_file  = s:vim_dir . '/toml/dein.toml'
@@ -36,6 +32,10 @@ if dein#load_state(s:dein_dir)
   " Let dein manage dein
   " Required:
   call dein#add('Shougo/dein.vim')
+  " update
+  " :call dein#update()
+  " 何かおかしいとき
+  " :call dein#recache_runtimepath()
 
   " Add or remove your plugins here:
 
