@@ -1029,7 +1029,7 @@ def main(args):
             args.type = get_filetype(fpath)
 
     if args.type == 'text':
-        if 'ja_JP' in os.environ['LANG']:
+        if ('LANG' in os.environ) and ('ja_JP' in os.environ['LANG']):
             print('vimでも使ってろ！')
         else:
             print("Why Don't you use vim???")
