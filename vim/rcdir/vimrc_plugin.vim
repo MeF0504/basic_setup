@@ -762,14 +762,14 @@ endfunction
 let s:term_cnt = 1
 function! s:open_term_win(opts)
     " 日本語Windowsの場合`ja`が設定されるので、入力ロケールに合わせたUTF-8に設定しなおす
-    " コマンドの存在確認はあとで考える
-    let l:env = {
-                \ 'LANG': systemlist('"locale.exe" -iU')[0],
-                \ }
+    let env = {}
+    if executable('locale.exe')
+        let env['LANG'] = systemlist('"locale.exe" -iU')[0]
+    endif
 
     " remote連携のための設定
     if has('clientserver')
-        call extend(l:env, {
+        call extend(env, {
                     \ 'GVIM': $VIMRUNTIME,
                     \ 'VIM_SERVERNAME': v:servername,
                     \ })
@@ -779,13 +779,16 @@ function! s:open_term_win(opts)
     let term_opt = split(a:opts, ' ')
     if len(term_opt) == 0
         let term_opt = ['bash.exe', '-l']
+        let term_fin = 'close'
+    else
+        let term_fin = 'open'
     endif
     call term_start(term_opt, {
-                \ 'term_name': '!Git_'.s:term_cnt,
-                \ 'term_finish': 'close',
+                \ 'term_name': '!'.term_opt[0].'_'.s:term_cnt,
+                \ 'term_finish': term_fin,
                 \ 'curwin': v:true,
                 \ 'cwd': $USERPROFILE,
-                \ 'env': l:env,
+                \ 'env': env,
                 \ })
     let s:term_cnt += 1
 endfunction
