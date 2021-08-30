@@ -1133,7 +1133,7 @@ function! Mygrep(...)
         else
             let l:word = expand('<cword>')
         endif
-        let l:ft = has_key(arg, "ex") ? (arg["ex"]=="None" ? "" : arg["ex"]) : expand('%:e')
+        let l:ft =  has_key(arg,  "ex") ? arg["ex"] : expand('%:e')
         let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : '.'
     endif
 
@@ -1153,8 +1153,11 @@ function! Mygrep(...)
             echo 'searching file is not supported for grepprg=internal'
             return
         endif
-        execute 'vimgrep /' . l:word . '/j ' . l:dir . '**/*' . l:ft
-    elseif &grepprg == "grep\ -nriI"
+        if l:ft == 'None'
+            let l:ft = ''
+        endif
+        execute 'vimgrep /'.l:word.'/j '.l:dir.'/**/*'.l:ft
+    elseif &grepprg =~ "grep\ -[a-z]*r[a-z]*"
         if is_opened == 1
             let l:dir = ''
             for i in range(1, tabpagenr('$'))
@@ -1171,7 +1174,12 @@ function! Mygrep(...)
         endif
         " cclose
         "wincmd b
-        execute 'grep! --include=\*' . l:ft . ' "' . l:word . '" ' .l:dir
+        if l:ft == 'None'
+            let l:ft = ''
+        else
+            let l:ft = ' --include=\*' . l:ft
+        endif
+        execute 'grep!'.l:ft.' "'.l:word.'" '.l:dir
         " botright copen
         " set statusline="%t%{exists('w:quickfix_title')? ' '.w:quickfix_title : ' '} "
     else
