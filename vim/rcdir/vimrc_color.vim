@@ -104,12 +104,21 @@ function! <SID>my_color_set()
     " }}}
 
     " statusline color setting {{{
-    highlight StatusLine cterm=bold ctermfg=234 ctermbg=75
+    if exists('*strftime')
+        " day-by-day StatusLine Color
+        call <SID>Day_by_Day_StatusLine()
+    else
+        highlight StatusLine cterm=bold ctermfg=234 ctermbg=75
+        if !has('nvim')
+            highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
+        endif
+    endif
+
     highlight StatusLineNC cterm=None ctermfg=244 ctermbg=235
     if !has('nvim')
-        highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
         highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249
     endif
+
     highlight StatusLine_FT cterm=bold ctermfg=253 ctermbg=17
     highlight StatusLine_FF cterm=bold ctermfg=253 ctermbg=88
     highlight StatusLine_LN cterm=bold ctermfg=253 ctermbg=29
@@ -157,45 +166,41 @@ function! <SID>my_color_set()
     highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline
     " }}}
 
-    """ day-by-day StatusLine Color 
-    " {{{
-    if exists('*strftime')
-        let month = str2nr(strftime("%b"))
-        let day = str2nr(strftime("%d"))
-        let dow = str2nr(strftime("%w"))
-        let s:stl_br = (dow==6 ? 0 : dow)       " 土日は0
-        let s:stl_bg = ((month*10+day)/10-1)%6  " 月+日の十の位で計算
-        let s:stl_bb = abs((day+5-1)%10-5)      " 0 1 2 3 4 5 4 3 2 1 0 ...
-
-        if ((exists("g:l_bd_month") && (month == g:l_bd_month))
-            \&& (exists("g:l_bd_day") && (day == g:l_bd_day)) )
-            "" Birthday
-            highlight StatusLine cterm=None ctermfg=194 ctermbg=136
-            highlight WildMenu cterm=Bold ctermfg=136 ctermbg=194
-        else
-            let bg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
-            if s:isdark(s:stl_br, s:stl_bg, s:stl_bb) == 1
-                let fg = has('gui_running') ? '#eeeeee' : 255
-            else    " light background
-                let fg = has('gui_running') ? '#1c1c1c' : 234
-            endif
-            " echo 'color:' . s:stl_br . '=' . s:stl_bg . '=' . s:stl_bb . '=' . bg . '=' . fg
-            execute 'highlight StatusLine cterm=Bold ctermfg='.fg.' ctermbg='.bg
-            execute 'highlight WildMenu cterm=Bold ctermfg='.bg.' ctermbg='.fg
-            if !has('nvim')
-                highlight! link StatusLineTerm StatusLine
-            endif
-        endif
-    endif
-    " default ... highlight StatusLine term=bold,reverse cterm=bold ctermfg=247 ctermbg=235
-    " }}}
-
     " colorscheme specified setings
     let local_scheme_func = '<SNR>'.s:SID().'_my_color_set_'.g:colors_name
     if exists('*'.local_scheme_func)
         execute "call ".local_scheme_func.'()'
     else
         " echo "color scheme: " . g:colors_name
+    endif
+endfunction
+
+function! <SID>Day_by_Day_StatusLine()
+    let month = str2nr(strftime("%b"))
+    let day = str2nr(strftime("%d"))
+    let dow = str2nr(strftime("%w"))
+    let s:stl_br = (dow==6 ? 0 : dow)       " 土日は0
+    let s:stl_bg = (month+(day-1)/10-1)%6  " 月+(日-1)の十の位で計算
+    let s:stl_bb = abs((day+5-1)%10-5)      " 0 1 2 3 4 5 4 3 2 1 0 ...
+
+    if ((exists("g:l_bd_month") && (month == g:l_bd_month))
+        \&& (exists("g:l_bd_day") && (day == g:l_bd_day)) )
+        "" Birthday
+        highlight StatusLine cterm=None ctermfg=194 ctermbg=136
+        highlight WildMenu cterm=Bold ctermfg=136 ctermbg=194
+    else
+        let bg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
+        if s:isdark(s:stl_br, s:stl_bg, s:stl_bb) == 1
+            let fg = has('gui_running') ? '#eeeeee' : 255
+        else    " light background
+            let fg = has('gui_running') ? '#1c1c1c' : 234
+        endif
+        " echo 'color:' . s:stl_br . '=' . s:stl_bg . '=' . s:stl_bb . '=' . bg . '=' . fg
+        execute 'highlight StatusLine cterm=Bold ctermfg='.fg.' ctermbg='.bg
+        execute 'highlight WildMenu cterm=Bold ctermfg='.bg.' ctermbg='.fg
+        if !has('nvim')
+            highlight! link StatusLineTerm StatusLine
+        endif
     endif
 endfunction
 
