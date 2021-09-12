@@ -20,7 +20,7 @@ else:
 from libtree import tree_viewer, show_tree, branch_str
 
 try:
-    from color_test import BG, FG, END
+    from local_lib_color import BG, FG, END
 except ImportError:
     print_color = False
 else:

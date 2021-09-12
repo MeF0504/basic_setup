@@ -23,7 +23,7 @@ else:
 
 from local_lib import mkdir, chk_cmd
 try:
-    from color_test import FG256, END
+    from local_lib_color import FG256, END
     is_color = True
 except ImportError:
     is_color = False

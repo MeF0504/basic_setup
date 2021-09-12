@@ -5,7 +5,7 @@ import subprocess
 import argparse
 
 try:
-    from color_test import BG, FG, END
+    from local_lib_color import BG, FG, END
     bg = BG['c']
 except ImportError as e:
     bg = ''

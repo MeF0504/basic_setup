@@ -5,7 +5,7 @@
         "bin/pyviewer": "~/opt/bin/pyviewer",
         "lib/local_lib.py": "$PREFIX/lib/local_lib.py",
         "lib/libtree.py": "$PREFIX/lib/libtree.py",
-        "lib/color_test.py": "$PREFIX/lib/color_test.py"
+        "lib/local_lib_color.py": "$PREFIX/lib/local_lib_color.py"
     },
    "config": {
         "posixShellRC": "~/.posixShellRC",
