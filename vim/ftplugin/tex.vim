@@ -55,6 +55,8 @@ command! -nargs=? AddEnv call Add_env(<q-args>)
 " $VIMRUNTIME/ftplugin あたりで上書きされてそうなのでautocmd化する
 autocmd texvim BufEnter *.tex set suffixesadd+=.tex
 autocmd texvim BufEnter *.tex set suffixesadd+=.bib
+" tex fileでも改行時に自動コメントアウト
+autocmd texvim BufEnter *.tex set formatoptions+=or
 
 function! s:replace_words()
     let l = line('.')
