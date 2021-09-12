@@ -18,16 +18,20 @@ class XPMLoader():
         with open(xpm_file) as f:
             for line in f:
                 line = line.replace("\t", "")
+                # // comment
                 if re.match(" *//", line) is not None: continue
-                if line.endswith('*/\n'):
+                # ~~~ */
+                if re.match(".*\*/ *\n", line) is not None:
                     if com_line == 1:
                         com_line = 0
                         continue
-                    elif line.startswith('/*'):
+                    elif re.match(" */\*", line) is not None:
                         continue
-                if line.startswith('/*'):
+                # /* ~~~
+                if re.match(" */\*", line) is not None:
                     com_line = 1
                     continue
+                # comment line
                 if com_line == 1:
                     continue
                 tmpline = line.replace("\n", "")
