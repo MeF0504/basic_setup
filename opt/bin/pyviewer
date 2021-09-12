@@ -75,6 +75,8 @@ def get_filetype(fpath):
         return 'raw_image'
     elif ext == 'ipynb':
         return 'jupyter'
+    elif ext == 'xpm':
+        return 'xpm'
     elif ext == 'py':
         return 'text'
     else:
@@ -87,6 +89,8 @@ def get_filetype_magic(fpath):
         # fpath = os.readlink(fpath) which is better?
         mime = magic.from_file(fpath, mime=True)
     ext = fpath[fpath.rfind('.')+1:].lower()
+    if debug:
+        print('mime: {}'.format(mime))
 
     if tarfile.is_tarfile(fpath):
         return 'tar'
@@ -103,11 +107,15 @@ def get_filetype_magic(fpath):
         return 'sqlite3'
     elif mime == 'image/tiff':
         return 'raw_image'
-    elif (mime=='application/json') or (mime=='text/x-tex'):
+    elif mime in 'application/json text/x-tex'.split(' '):
         return 'jupyter'
+    elif mime in 'image/x-xpmi image/x-xpixmap'.split(' '):
+        return 'xpm'
     elif mime == 'text/plain':
         if ext == 'pkl' or ext == 'pickle':
             return 'pickle'
+        elif ext == 'xpm':
+            return 'xpm'
         else:
             return 'text'
     elif 'text' in mime:
@@ -151,10 +159,12 @@ def get_image_viewer(args):
         try:
             from PIL import Image
             global Image
+            if debug: print(' => image_viewer: PIL')
         except ImportError:
             try:
                 import matplotlib.pyplot as plt
                 global plt
+                if debug: print(' => image_viewer: matplotlib')
             except ImportError:
                 img_viewer = None
             else:
@@ -1012,6 +1022,52 @@ def main_jupyter(fpath, args):
         if not args_chk(args, 'verbose'):
             input(' >>> Press ENTER to continue')
 
+def main_xpm(fpath, args):
+    try:
+        from xpm_loader import XPMLoader
+    except ImportError:
+        if debug: print('global xpm_loader is not found. search __file__/../lib.')
+        try:
+            sys.path.append(op.join(op.dirname(__file__), '../lib'))
+            from xpm_loader import XPMLoader
+        except ImportError:
+            print("I can't find xpm_loader.")
+            return
+
+    img_lib = get_image_viewer(args)
+    if img_lib is None:
+        print("I can't find any libraries to show image. Please install Pillow or matplotlib.")
+        return
+
+    xpms = XPMLoader()
+    xpms.load_xpm(fpath)
+    xpms.xpm_to_ndarray()
+    data = xpms.xpms[0]['ndarray']
+    width = xpms.xpms[0]['info']['width']
+    height = xpms.xpms[0]['info']['height']
+
+    if debug:
+        print(data.shape)
+        print('use {}'.format(img_lib))
+    if img_lib == 'PIL':
+        img = Image.fromarray(data)
+        img.show(title=os.path.basename(fpath))
+    elif img_lib == 'matplotlib':
+        fig1 = plt.figure(figsize=(width/100, height/100))
+        # full display
+        ax1 = fig1.add_axes((0, 0, 1, 1))
+        ax1.imshow(data)
+        # not display axes
+        ax1.xaxis.set_visible(False)
+        ax1.yaxis.set_visible(False)
+        ax1.spines['top'].set_visible(False)
+        ax1.spines['bottom'].set_visible(False)
+        ax1.spines['right'].set_visible(False)
+        ax1.spines['left'].set_visible(False)
+        plt.show()
+    else:
+        print('Sorry, extra command is not supported in xpm type.')
+
 def main(args):
 
     fpath = os.path.expandvars(os.path.expanduser(args.file))
@@ -1051,6 +1107,8 @@ def main(args):
         main_raw(fpath, args)
     elif args.type == 'jupyter':
         main_jupyter(fpath, args)
+    elif args.type == 'xpm':
+        main_xpm(fpath, args)
     else:
         print('this file is not supported.')
 

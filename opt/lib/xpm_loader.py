@@ -114,7 +114,7 @@ class XPMLoader():
             height = xpm['info']['height']
             byte = xpm['info']['byte_per_col']
             # RGBA
-            data = np.zeros((height, width, 4), dtype=int)
+            data = np.zeros((height, width, 4), dtype=np.uint8)
             for i in range(height):
                 for j in range(width):
                     char = xpm['body'][i][j*byte:(j+1)*byte]
