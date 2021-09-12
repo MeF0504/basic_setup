@@ -1,6 +1,4 @@
 
-import os
-import sys
 import re
 
 from local_lib_color import convert_color_name, convert_fullcolor_to_256
@@ -132,11 +130,12 @@ class XPMLoader():
             xpm['ndarray'] = data
 
 if __name__ == '__main__':
+    import sys
+    import matplotlib.pyplot as plt
     xpm_file = sys.argv[1]
     xpms = XPMLoader()
     xpms.load_xpm(xpm_file)
     xpms.xpm_to_ndarray()
-    import matplotlib.pyplot as plt
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.imshow(xpms.xpms[0]['ndarray'])
