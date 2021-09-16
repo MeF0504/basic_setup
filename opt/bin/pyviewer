@@ -1115,7 +1115,7 @@ def main(args):
     return
 
 if __name__ == "__main__":
-    supported_type = 'hdf5, pickle, numpy, tar, zip, sqlite3, raw_image, jupyter'
+    supported_type = 'hdf5, pickle, numpy, tar, zip, sqlite3, raw_image, jupyter, xpm'
     parser = argparse.ArgumentParser(description="show the constitution of a file. support file types ... {}".format(supported_type))
     parser.add_argument('file', help='input file')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(', '))
