@@ -91,13 +91,49 @@ let g:NERDTreeDirArrowCollapsible = '!'
 "右側に表示
 let g:NERDTreeWinPos="right"
 
-"参考:https://kamiya555.github.io/2015/10/14/nerdtree-command/
 "local mapping
 nnoremap <silent> <Leader>n :NERDTreeToggle<CR>
 
-"]でnerdtreeから抜け
-"autocmd deinLocal FileType nerdtree nnoremap <buffer> <Esc> <c-w>p
-"autocmd deinLocal FileType nerdtree nnoremap <buffer> ] <c-w>l <c-w>k
+function! <SID>open_file_nerdtree(file_name) abort
+    let open_cmd = ""
+    if has('osxdarwin')
+        let open_cmd = 'open '
+    elseif has('win32')
+        let open_cmd = 'start '
+    endif
+
+    if open_cmd == ''
+        return ''
+    endif
+    if !isdirectory(a:file_name)
+        return ":!".open_cmd.a:file_name."\<CR>"
+    else
+        return ""
+    endif
+endfunction
+
+function! <SID>search_file_nerdtree(cur_file, search_file) abort
+    if !isdirectory(a:cur_file)
+        return
+    endif
+
+    let file_list = glob(a:cur_file."/**", 0, 1, 1)
+    let idx = -1
+    while 1
+        let idx = match(file_list, a:search_file, idx+1)
+        if idx >= 0
+            echo file_list[idx]
+        else
+            break
+        endif
+    endwhile
+endfunction
+
+autocmd deinLocal FileType nerdtree nnoremap <buffer> <expr> <c-t>
+    \ <SID>open_file_nerdtree(g:NERDTreeFileNode.GetSelected().path.str())
+autocmd deinLocal FileType nerdtree command! -nargs=1 -buffer SearchNERD
+    \ call <SID>search_file_nerdtree(g:NERDTreeFileNode.GetSelected().path.str(), <f-args>)
+
 "}}}
 '''
 
