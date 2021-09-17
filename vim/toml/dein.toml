@@ -105,11 +105,7 @@ function! <SID>open_file_nerdtree(file_name) abort
     if open_cmd == ''
         return ''
     endif
-    if !isdirectory(a:file_name)
-        return ":!".open_cmd.a:file_name."\<CR>"
-    else
-        return ""
-    endif
+    return ":!".open_cmd.a:file_name."\<CR>"
 endfunction
 
 function! <SID>search_file_nerdtree(cur_file, search_file) abort
