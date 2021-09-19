@@ -390,12 +390,43 @@ set showtabline=2 " 常にタブラインを表示
 " }}}
 
 "開いているファイル情報を表示（ざっくり）{{{
-if has('win32')
-    let s:ls = 'dir '
-else
-    let s:ls='ls -l '
-endif
-command! FileInfo execute "!" . s:ls . expand('%')
+function! s:fileinfo() abort
+    let file = expand('%')
+    if file == ''
+        return
+    endif
+    if !has('pythonx')
+        if has('win32')
+            let s:ls = 'dir '
+        else
+            let s:ls='ls -l '
+        endif
+        execute "!" . s:ls . file
+        return
+    else
+        pythonx << EOL
+import vim
+import os
+
+fname = vim.eval('file')
+res = ''
+if os.access(fname, os.R_OK): res += 'r'
+else: res += '-'
+if os.access(fname, os.W_OK): res += 'w'
+else: res += '-'
+if os.access(fname, os.X_OK): res += 'x'
+else: res += '-'
+
+res += '  '+fname
+
+if os.path.islink(fname):
+    res += ' => '+os.path.realpath(fname)
+
+print(res)
+EOL
+    endif
+endfunction
+command! FileInfo call s:fileinfo()
 "}}}
 
 " 新しいtabで関数ジャンプする {{{
