@@ -1,0 +1,40 @@
+/* @theme MeFtheme */
+
+@import "gaia";
+
+/* 共通設定 */
+/* 参考: https://qiita.com/takeshisakuma/items/5a61e6eac123d28602fb */
+section {
+  /* font */
+  font-family:"Hiragino Kaku Gothic ProN", Arial;
+
+  /* スライドサイズ */
+  width: 100%;
+  height: 100%;
+}
+
+/* required:
+ * title
+ * section
+ * normal slide
+ * large slide
+ * small slide?
+ */
+
+/* title class */
+section.title {
+  background-color: yellow;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+section.title h1 {
+  color: slategray;
+  font-size: 2rem;
+}
+
+section.title h2 {
+  color: red;
+}
+

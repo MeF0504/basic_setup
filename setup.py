@@ -256,6 +256,7 @@ def main_conf(args):
                 'matplotlibrc':'~/.matplotlib/matplotlibrc', \
                 'gitignore_global':'~/.gitignore_global', \
                 'screenrc':'~/.screenrc', \
+                'marp/marp_MeFtheme.css':'~/.marp/marp_MeFtheme.css', \
                 }
 
     files_linux = {\

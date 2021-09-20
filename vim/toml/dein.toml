@@ -188,6 +188,9 @@ function! s:qrun_markdown() abort
             let exec_cmd = 'npx'
             let exec_opt = "\\\\\\@marp-team/marp-cli"
         endif
+        let marp_theme_dir = get(g:, 'marp_dir', expand('$HOME/.marp'))
+        if isdirectory(marp_theme_dir)
+            let exec_opt .= ' --theme-set '.marp_theme_dir
         let ret = "QuickRun -command '".exec_cmd."' "
 
         if has('terminal') " || has('nvim')
