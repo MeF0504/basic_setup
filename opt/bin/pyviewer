@@ -44,6 +44,12 @@ def args_chk(args, attr):
         return args.interactive
     elif attr == 'image_viewer':
         return args.image_viewer is not None
+    elif attr == 'opts':
+        return args.opts is not None
+    elif attr == 'encoding':
+        return args.encoding is not None
+    else:
+        return False
 
 def cprint(str1, str2='', fg=None, bg=None, **kwargs):
     print_str = str1
@@ -348,10 +354,14 @@ def main_pickle(fpath, args):
         imp_np = False
     else:
         imp_np = True
+
+    if args_chk(args, 'encoding'): encoding = args.encoding
+    else: encoding = 'ASCII'
     try:
         with open(fpath, 'rb') as f:
-            data = pickle.load(f)
+            data = pickle.load(f, encoding=encoding)
     except UnicodeDecodeError:
+        if debug: print('decode error: encoding={}'.format(encoding))
         with open(fpath, 'rb') as f:
             data = pickle.load(f, encoding='latin1')
 
@@ -711,7 +721,9 @@ def main_zip(fpath, args):
                         return
 
     # make list_tree
-    if uname == 'Windows':
+    if args_chk(args, 'encoding'):
+        zip_codec = args.encoding
+    elif uname == 'Windows':
         zip_codec = 'cp932' # test codec.
     else:
         zip_codec = 'cp437' # test codec.
@@ -719,7 +731,7 @@ def main_zip(fpath, args):
         tmp_list = list_tree
         depth = 1
         znames = z.filename.split('/')
-        if debug: print('cpath: {}'.format(t.name))
+        if debug: print('cpath: {}'.format(z.filename))
         for p in znames:
             try:
                 # try to decode
@@ -1068,6 +1080,25 @@ def main_xpm(fpath, args):
     else:
         print('Sorry, extra command is not supported in xpm type.')
 
+def add_options(args):
+    for opt in args.opts:
+        if opt == 'help':
+            print('''
+Currently available options;
+help                show this help message and exit.
+debug:True/False    enable/disable debug message.
+encoding:enc_name   set encoding.''')
+            return False
+        elif ':' in opt:
+            key, value = opt.split(':')
+            if key == 'debug':
+                global debug
+                if value == 'True': debug = True
+                elif value == 'False': debug = False
+            elif key == 'encoding':
+                args.encoding = value
+    return True
+
 def main(args):
 
     fpath = os.path.expandvars(os.path.expanduser(args.file))
@@ -1120,11 +1151,14 @@ if __name__ == "__main__":
     parser.add_argument('file', help='input file')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(', '))
     parser.add_argument('-iv', '--image_viewer', help="set image viewer. supported args are 'matplotlib' (use matplotlib.pyplot.imshow), 'PIL' (use PIL.Image.show), and other string is treated as an external command (e.g. gosr, open).")
+    parser.add_argument('--opts', help="Other options. Usually, users don't need to use this option. You can set option by '--opts Option:Value Option2:Value2'.", nargs='+')
     ex_group = parser.add_mutually_exclusive_group()
     ex_group.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='show details')
     ex_group.add_argument('-k', '--key', dest='key', help='Dictionary key name in a pickle, path to a Group/Dataset in hdf5, a path to a file/dictionary in tar/zip, a table[/column[,column2...]] in sqlite3 or a key name in npz. If no key is specified, return the list of keys.', nargs='*')
     ex_group.add_argument('-i', '--interactive', dest='interactive', help='open a file with interactive mode. support pickle, hdf5, tar, zip, sqlite3.', action='store_true')
     args = parser.parse_args()
 
+    if args_chk(args, 'opts'):
+        if not add_options(args): sys.exit()
     main(args)
 
