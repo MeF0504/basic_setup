@@ -28,7 +28,7 @@ else:
 
 debug = False
 inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
-image_ext = 'png jpg jpeg bmp'.split(' ')
+image_ext = 'png jpg jpeg bmp gif'.split(' ')
 uname = platform.system()
 
 def args_chk(args, attr):
@@ -561,7 +561,7 @@ def main_tar(fpath, args):
                     with tempfile.TemporaryDirectory() as tmpdir:
                         tar_file.extractall(path=tmpdir, members=[tarinfo])
                         tmpfile = os.path.join(tmpdir, cpath)
-                        subprocess.call('{} {}'.format(img_viewer, tmpfile), shell=True)
+                        subprocess.run([img_viewer, tmpfile])
                         # wait to open file. this is for, e.g., open command on Mac OS.
                         time.sleep(3)
 
@@ -697,7 +697,7 @@ def main_zip(fpath, args):
                     with tempfile.TemporaryDirectory() as tmpdir:
                         zip_file.extract(zipinfo, path=tmpdir)
                         tmpfile = os.path.join(tmpdir, cpath)
-                        subprocess.call('{} {}'.format(img_viewer, tmpfile), shell=True)
+                        subprocess.run([img_viewer, tmpfile])
                         # wait to open file. this is for, e.g., open command on Mac OS.
                         time.sleep(3)
 
@@ -1000,7 +1000,7 @@ def main_jupyter(fpath, args):
                             else:
                                 with tempfile.NamedTemporaryFile(suffix='.png') as tmp:
                                     tmp.write(img_bin)
-                                    subprocess.call('{} {}'.format(img_viewer, tmp.name), shell=True)
+                                    subprocess.run([img_viewer, tmp.name])
                                     time.sleep(3)
 
         elif cell['cell_type'] == 'markdown':
