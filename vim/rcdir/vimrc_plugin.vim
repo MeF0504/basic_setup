@@ -1190,6 +1190,11 @@ function! s:show_table_of_contents()
     else
         let tables = {}
     endif
+
+    if exists('g:l_table_of_contents')
+        cal extend(tables, g:l_table_of_contents, 'force')
+    endif
+
     if exists('g:ToC_add_tables')
         for k in keys(g:ToC_add_tables)
             let tables[k] = g:ToC_add_tables[k]
