@@ -956,6 +956,7 @@ def main_jupyter(fpath, args):
         if 'colab' in meta:
             print('colab : {}'.format(meta['colab']['name']))
 
+    tmp_images = []
     for cell in data['cells']:
         if debug:
             print(' ---- cell ----')
@@ -1010,10 +1011,10 @@ def main_jupyter(fpath, args):
                                 ax11.spines['left'].set_visible(False)
                                 plt.show()
                             else:
-                                with tempfile.NamedTemporaryFile(suffix='.png') as tmp:
-                                    tmp.write(img_bin)
-                                    subprocess.run([img_viewer, tmp.name])
-                                    time.sleep(3)
+                                tmp = tempfile.NamedTemporaryFile(suffix='.png')
+                                tmp_images.append(tmp)
+                                tmp.write(img_bin)
+                                subprocess.run([img_viewer, tmp.name])
 
         elif cell['cell_type'] == 'markdown':
             cprint('markdown', fg='g')
@@ -1033,6 +1034,10 @@ def main_jupyter(fpath, args):
 
         if not args_chk(args, 'verbose'):
             input(' >>> Press ENTER to continue')
+
+    for tmp in tmp_images:
+        if debug: print('close {}'.format(tmp.name))
+        tmp.close()
 
 def main_xpm(fpath, args):
     try:
