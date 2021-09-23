@@ -1127,6 +1127,11 @@ def main_xpm(fpath, args):
         ax1.spines['right'].set_visible(False)
         ax1.spines['left'].set_visible(False)
         plt.show()
+    elif img_lib == 'OpenCV':
+        img = data[:,:,[2,1,0,3]] # RGBA -> BGRA
+        cv2.imshow(os.path.basename(fpath), img)
+        cv2.waitKey(0)
+        # cv2.destroyAllWindows()
     else:
         print('Sorry, extra command is not supported in xpm type.')
 
