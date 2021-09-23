@@ -15,7 +15,7 @@ class XPMLoader():
 
         with open(xpm_file) as f:
             for line in f:
-                line = line.replace("\t", "")
+                line = line.replace("\t", " ")
                 # // comment
                 if re.match(" *//", line) is not None: continue
                 # ~~~ */
@@ -37,28 +37,43 @@ class XPMLoader():
 
         res = res[res.find('{')+1:res.rfind('}')]
         res = eval("["+res+']')
-        width, height, colors, byte_per_col = [int(x) for x in res[0].split(' ', 3)]
+        info_list = [int(s) for s in re.split(' +', res[0]) if s != '']
+        if len(info_list) == 4:
+            width, height, colors, char_per_pixel = info_list
+        elif len(info_list) == 6:
+            width, height, colors, char_per_pixel, x_hot, y_hot = info_list
+        else:
+            print('{}: fail to load xpm file (color settings).'.format(xpm_file))
+            return
         info = { \
                 'width'  : width, \
                 'height' : height, \
                 'colors' : colors, \
-                'byte_per_col' : byte_per_col \
+                'char_per_pixel' : char_per_pixel \
                 }
-        # print(width, height, colors, byte_per_col)
+        # print(width, height, colors, char_per_pixel)
 
         tmp_color_settings = res[1:colors+1]
         color_settings = {}
         for cs in tmp_color_settings:
-            # char = cs[0]
-            # color = cs[cs.rfind(' ')+1:]
-            char, color = cs.split(' c ')
-            color_settings[char] = color
+            char = cs[:char_per_pixel]
+            cs_tmp = re.split(' +', cs)
+            color_settings[char] = {}
+            for i,c in enumerate(cs_tmp[1:]):
+                if c == 'c':
+                    color_settings[char]['color'] = cs_tmp[i+1+1].lower()
+                elif c == 's':
+                    color_settings[char]['str'] = cs_tmp[i+1+1]
+                elif c == 'm':
+                    color_settings[char]['mono'] = cs_tmp[i+1+1]
+                elif c == 'g':
+                    color_settings[char]['gray'] = cs_tmp[i+1+1]
         # print(color_settings)
 
         body = res[colors+1:]
         # print(body[:3])
         assert height == len(body)
-        assert width*byte_per_col == len(body[0])
+        assert width*char_per_pixel == len(body[0])
 
         self.xpms.append({\
                 'file_name' : xpm_file, \
@@ -81,12 +96,12 @@ class XPMLoader():
             color_setting = xpm['color_settings']
             color_settings_full = {}
             for char in color_setting:
-                if color_setting[char] == 'None':
-                    color_settings_full[char] = 'None'
-                elif color_setting[char].startswith('#'):
-                    color_settings_full[char] = color_setting[char]
+                if color_setting[char]['color'] == 'none':
+                    color_settings_full[char] = 'none'
+                elif color_setting[char]['color'].startswith('#'):
+                    color_settings_full[char] = color_setting[char]['color']
                 else:
-                    color_full = convert_color_name(color_setting[char].lower(), 'full', True)
+                    color_full = convert_color_name(color_setting[char]['color'], 'full', True)
                     if color_full is None:
                         color_full = '#000000'
                     color_settings_full[char] = color_full
@@ -112,14 +127,14 @@ class XPMLoader():
                 continue
             width = xpm['info']['width']
             height = xpm['info']['height']
-            byte = xpm['info']['byte_per_col']
+            cpp = xpm['info']['char_per_pixel']
             # RGBA
             data = np.zeros((height, width, 4), dtype=np.uint8)
             for i in range(height):
                 for j in range(width):
-                    char = xpm['body'][i][j*byte:(j+1)*byte]
+                    char = xpm['body'][i][j*cpp:(j+1)*cpp]
                     col_id = xpm['color_settings_full'][char]
-                    if col_id == 'None':
+                    if col_id == 'none':
                         data[i][j] = [0, 0, 0, 0]
                     else:
                         r = int(col_id[1:3], 16)
