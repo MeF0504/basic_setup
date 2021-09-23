@@ -138,6 +138,9 @@ def get_image_viewer(args):
         elif img_viewer == 'matplotlib':
             import matplotlib.pyplot as plt
             global plt
+        elif img_viewer == 'OpenCV':
+            import cv2
+            global cv2
         else:
             # external command
             img_viewer = os.path.expanduser(img_viewer)
@@ -172,7 +175,15 @@ def get_image_viewer(args):
                 global plt
                 if debug: print(' => image_viewer: matplotlib')
             except ImportError:
-                img_viewer = None
+                try:
+                    import cv2
+                    global cv2
+                    if debug: print(' => image_viewer: OpenCV')
+                except ImportError:
+                    if debug: print("can't find image_viewer")
+                    img_viewer = None
+                else:
+                    img_viewer = 'OpenCV'
             else:
                 img_viewer = 'matplotlib'
         else:
@@ -518,7 +529,8 @@ def main_tar(fpath, args):
     img_viewer = get_image_viewer(args)
     if img_viewer != 'PIL':
         import tempfile
-    if (img_viewer != 'PIL') and (img_viewer != 'matplotlib'):
+    # if img_viewer != 'PIL') and (img_viewer != 'matplotlib'):
+    if img_viewer not in 'PIL matplotlib OpenCV'.split(' '):
         import subprocess
         import time
 
@@ -567,13 +579,21 @@ def main_tar(fpath, args):
                     ax11.spines['right'].set_visible(False)
                     ax11.spines['left'].set_visible(False)
                     plt.show()
+                elif img_viewer == 'OpenCV':
+                    with tempfile.TemporaryDirectory() as tmpdir:
+                        tar_file.extractall(path=tmpdir, members=[tarinfo])
+                        tmpfile = os.path.join(tmpdir, cpath)
+                        img = cv2.imread(tmpfile)
+                    cv2.imshow(os.path.basename(cpath), img)
+                    cv2.waitKey(0)
+                    # cv2.destroyAllWindows()
                 else:
                     with tempfile.TemporaryDirectory() as tmpdir:
                         tar_file.extractall(path=tmpdir, members=[tarinfo])
                         tmpfile = os.path.join(tmpdir, cpath)
                         subprocess.run([img_viewer, tmpfile])
                         # wait to open file. this is for, e.g., open command on Mac OS.
-                        time.sleep(3)
+                        input('Press Enter to continue')
 
             # text file?
             else:
@@ -703,13 +723,21 @@ def main_zip(fpath, args):
                     ax11.spines['right'].set_visible(False)
                     ax11.spines['left'].set_visible(False)
                     plt.show()
+                elif img_viewer == 'OpenCV':
+                    with tempfile.TemporaryDirectory() as tmpdir:
+                        zip_file.extract(zipinfo, path=tmpdir)
+                        tmpfile = os.path.join(tmpdir, cpath)
+                        img = cv2.imread(tmpfile)
+                    cv2.imshow(os.path.basename(cpath), img)
+                    cv2.waitKey(0)
+                    # cv2.destroyAllWindows()
                 else:
                     with tempfile.TemporaryDirectory() as tmpdir:
                         zip_file.extract(zipinfo, path=tmpdir)
                         tmpfile = os.path.join(tmpdir, cpath)
                         subprocess.run([img_viewer, tmpfile])
                         # wait to open file. this is for, e.g., open command on Mac OS.
-                        time.sleep(3)
+                        input('Press Enter to continue')
 
             # text file?
             else:
@@ -923,6 +951,11 @@ def main_raw(fpath, args):
         ax1.spines['right'].set_visible(False)
         ax1.spines['left'].set_visible(False)
         plt.show()
+    elif img_lib == 'OpenCV':
+        img = rgb[:,:,::-1] # RGB -> BGR
+        cv2.imshow(os.path.basename(fpath), img)
+        cv2.waitKey(0)
+        # cv2.destroyAllWindows()
     else:
         print('Sorry, extra command is not supported in raw_image type.')
 
@@ -1010,11 +1043,19 @@ def main_jupyter(fpath, args):
                                 ax11.spines['right'].set_visible(False)
                                 ax11.spines['left'].set_visible(False)
                                 plt.show()
+                            elif img_viewer == 'OpenCV':
+                                with tempfile.NamedTemporaryFile(suffix='.png') as tmp:
+                                    tmp.write(img_bin)
+                                    img = cv2.imread(tmp.name)
+                                cv2.imshow('Out [{}]'.format(cnt), img)
+                                cv2.waitKey(500)
                             else:
                                 tmp = tempfile.NamedTemporaryFile(suffix='.png')
                                 tmp_images.append(tmp)
                                 tmp.write(img_bin)
                                 subprocess.run([img_viewer, tmp.name])
+                                if args_chk(args, 'verbose'):
+                                    time.sleep(1.)
 
         elif cell['cell_type'] == 'markdown':
             cprint('markdown', fg='g')
@@ -1035,9 +1076,13 @@ def main_jupyter(fpath, args):
         if not args_chk(args, 'verbose'):
             input(' >>> Press ENTER to continue')
 
+    # image closing
     for tmp in tmp_images:
         if debug: print('close {}'.format(tmp.name))
         tmp.close()
+    if img_viewer == 'OpenCV':
+        if args_chk(args, 'verbose'): cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 def main_xpm(fpath, args):
     try:
@@ -1155,7 +1200,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="show the constitution of a file. support file types ... {}".format(supported_type))
     parser.add_argument('file', help='input file')
     parser.add_argument('-t', '--type', dest='type', help='file type', choices=supported_type.split(', '))
-    parser.add_argument('-iv', '--image_viewer', help="set image viewer. supported args are 'matplotlib' (use matplotlib.pyplot.imshow), 'PIL' (use PIL.Image.show), and other string is treated as an external command (e.g. gosr, open).")
+    parser.add_argument('-iv', '--image_viewer', help="set image viewer. supported args are 'matplotlib' (use matplotlib.pyplot.imshow), 'PIL' (use PIL.Image.show), 'OpenCV' (use cv2.imshow), and other string is treated as an external command (e.g. gosr, open).")
     parser.add_argument('--opts', help="Other options. Usually, users don't need to use this option. You can set option by '--opts Option:Value Option2:Value2'.", nargs='+')
     ex_group = parser.add_mutually_exclusive_group()
     ex_group.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='show details')
