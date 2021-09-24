@@ -407,9 +407,12 @@ function! s:fileinfo() abort
         pythonx << EOL
 import vim
 import os
+import datetime
 
 fname = vim.eval('file')
 res = ''
+
+# access
 if os.access(fname, os.R_OK): res += 'r'
 else: res += '-'
 if os.access(fname, os.W_OK): res += 'w'
@@ -417,8 +420,20 @@ else: res += '-'
 if os.access(fname, os.X_OK): res += 'x'
 else: res += '-'
 
-res += '  '+fname
+# time stamp
+stat = os.stat(fname)
+# meta data update (UNIX), created (Windows)
+# dt = datetime.datetime.fromtimestamp(stat.st_ctime)
+# created (some OS)
+# dt = datetime.datetime.fromtimestamp(stat.st_birthtime)
+# last update
+dt = datetime.datetime.fromtimestamp(stat.st_mtime)
+# last access
+# dt = datetime.datetime.fromtimestamp(stat.st_atime)
+res += dt.strftime(' %Y/%m/%d-%H:%M:%S')
 
+# file name
+res += '  '+fname
 if os.path.islink(fname):
     res += ' => '+os.path.realpath(fname)
 
