@@ -191,6 +191,7 @@ function! s:qrun_markdown() abort
         let marp_theme_dir = get(g:, 'marp_dir', expand('$HOME/.marp'))
         if isdirectory(marp_theme_dir)
             let exec_opt .= ' --theme-set '.marp_theme_dir
+        endif
         let ret = "QuickRun -command '".exec_cmd."' "
 
         if has('terminal') " || has('nvim')
