@@ -290,7 +290,6 @@ function! s:my_tabline()
     let all_files = 0
     let all_wins = 0
     let is_edit = 0
-    let l_opened_bn = []
     let tab_len = 16 " max(header + footer) = 12+2+2
     let tab_fin_l = 0
     let tab_fin_r = 0
@@ -298,22 +297,22 @@ function! s:my_tabline()
     let cdir = ' @'.s:get_cwd_path()
     let tab_len += len(cdir)
 
+    " count listed buffers
+    for bn in range(1, bufnr('$'))
+        if buflisted(bn)
+            let all_files += 1
+            if getbufvar(bn, '&modified')
+                let is_edit += 1
+            endif
+        endif
+    endfor
+
     for i in range(1, tabpagenr('$'))
         " left side of current tab page (include current tab page).
         let ctn_l = cur_tab_no - (i-1)
         if ctn_l > 0
-            " count all / edited files
-            let bufnrs = tabpagebuflist(ctn_l)
-            for bn in bufnrs
-                let all_wins += 1
-                if (match(l_opened_bn, bn) == -1) && (getbufvar(bn, '&buftype') == '')
-                    let all_files += 1
-                    call add(l_opened_bn, bn)
-                    if getbufvar(bn, '&modified')
-                        let is_edit += 1
-                    endif
-                endif
-            endfor
+            " count windows
+            let all_wins += tabpagewinnr(ctn_l, '$')
             " add title to tabline if possible
             if tab_fin_l == 0
                 let title = s:get_title(ctn_l)
@@ -341,18 +340,8 @@ function! s:my_tabline()
         " right side if current tab page.
         let ctn_r = cur_tab_no + i
         if ctn_r <= tabpagenr('$')
-            " count all / edited files
-            let bufnrs = tabpagebuflist(ctn_r)
-            for bn in bufnrs
-                let all_wins += 1
-                if (match(l_opened_bn, bn) == -1) && (getbufvar(bn, '&buftype') == '')
-                    let all_files += 1
-                    call add(l_opened_bn, bn)
-                    if getbufvar(bn, '&modified')
-                        let is_edit += 1
-                    endif
-                endif
-            endfor
+            " count windows
+            let all_wins += tabpagewinnr(ctn_r, '$')
             " add title to tabline if possible
             if tab_fin_r == 0
                 let title = s:get_title(ctn_r)
