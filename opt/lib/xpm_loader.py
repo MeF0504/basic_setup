@@ -144,6 +144,51 @@ class XPMLoader():
 
             xpm['ndarray'] = data
 
+    def get_vim_setings(self, index=None, gui=True):
+        if index is None:
+            index = range(len(self.xpms))
+        elif not hasattr(index, '__iter__'):
+            index = [index]
+
+        if gui: term = 'gui'
+        else: term = 'cterm'
+
+        self.get_color_settings_full(index)
+
+        for i in index:
+            xpm = self.xpms[i]
+            if 'vim' in xpm:
+                continue
+            color_setting = xpm['color_settings_full']
+            xpm['vim'] = []
+            xpm_vim = xpm['vim']
+            for j,char in enumerate(color_setting):
+                xpm_vim.append({})
+                col = color_setting[char].upper()
+                if col == 'NONE':
+                    # get Normal highlight if possible.
+                    hi_cmd  = 'try | '
+                    hi_cmd += 'highlight link Xpmcolor{:d} Normal'.format(j)
+                    hi_cmd += ' | highlight Xpmcolor{:d} {}fg=bg'.format(j, term)
+                    hi_cmd += ' | catch'
+                    hi_cmd += ' | highlight Xpmcolor{:d} {}fg=NONE {}bg=NONE'.format(j, term, term)
+                    hi_cmd += ' | endtry'
+                elif not gui:
+                    r = int(col[1:3], 16)
+                    g = int(col[3:5], 16)
+                    b = int(col[5:7], 16)
+                    col = convert_fullcolor_to_256(r, g, b)
+                    hi_cmd = 'highlight Xpmcolor{:d} {}fg={} {}bg={}'.format(j, term, col, term, col)
+                else:
+                    hi_cmd = 'highlight Xpmcolor{:d} {}fg={} {}bg={}'.format(j, term, col, term, col)
+                xpm_vim[-1]['highlight'] = hi_cmd
+
+                for sp_char in "' \" $ . ~ ^ / [ ]".split(' '):
+                    if sp_char in char:
+                        char = char.replace(sp_char, '\\'+sp_char)
+                match_cmd = 'syntax match Xpmcolor{:d} /{}/ contained'.format(j, char)
+                xpm_vim[-1]['match'] = match_cmd
+
 if __name__ == '__main__':
     import sys
     import matplotlib.pyplot as plt

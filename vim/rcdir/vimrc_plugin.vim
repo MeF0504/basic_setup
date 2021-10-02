@@ -1265,3 +1265,40 @@ endfunction
 command! ShowTableOfContents call s:show_table_of_contents()
 " }}}
 
+function <SID>xpm_loader()
+    let file = expand('%')
+    if has('gui_running')
+        let is_gui = 1
+    else
+        let is_gui = 0
+    endif
+    pythonx << EOL
+import vim
+from xpm_loader import XPMLoader
+
+xpm_file = vim.eval('file')
+is_gui = int(vim.eval('is_gui'))
+if is_gui != 0: is_gui = True
+else: is_gui = False
+
+xpms = XPMLoader()
+xpms.load_xpm(xpm_file)
+xpms.get_vim_setings(gui=is_gui)
+
+match_cluster = 'syntax cluster Xpmcolors contains='
+for i,xpm_vim in enumerate(xpms.xpms[0]['vim']):
+    hi = xpm_vim['highlight']
+    match = xpm_vim['match']
+    # print(hi)
+    # print(match)
+    vim.command(match)
+    vim.command(hi)
+    match_cluster += 'Xpmcolor{:d},'.format(i)
+
+match_cluster = match_cluster[:-1]
+# print(match_cluster)
+vim.command(match_cluster)
+EOL
+endfunction
+command! XPMLoader call <SID>xpm_loader()
+
