@@ -66,13 +66,13 @@ hook_add = '''
 let g:word_color_mapping = '//'
 if has('gui_running')
     let g:word_color_highlight = {
-                \ 'bg': [  1,   2,   3,   4,   5,   6,   7,   9,  10,  11,  12,  13,  14,  15],
-                \ 'fg': [255, 233, 233, 233, 233, 233, 233, 255, 233, 233, 233, 233, 233, 233],
+                \ 'bg': ['Maroon', 'Green', 'Olive', 'Navy', 'Purple', 'Teal', 'Silver', 'Grey', 'Red', 'Lime', 'Yellow', 'Blue', 'Fuchsia', 'Aqua', 'White'],
+                \ 'fg': ['White', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'White', 'White', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black'],
                 \ }
 else
     let g:word_color_highlight = {
-                \ 'bg': ['Maroon', 'Green', 'Olive', 'Navy', 'Purple', 'Teal', 'Silver', 'Grey', 'Red', 'Lime', 'Yellow', 'Blue', 'Fuchsia', 'Aqua', 'White'],
-                \ 'fg': ['White', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'White', 'White', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black'],
+                \ 'bg': [  1,   2,   3,   4,   5,   6,   7,   9,  10,  11,  12,  13,  14,  15],
+                \ 'fg': [255, 233, 233, 233, 233, 233, 233, 255, 233, 233, 233, 233, 233, 233],
                 \ }
 endif
 
