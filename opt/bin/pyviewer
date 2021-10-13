@@ -527,12 +527,13 @@ min      : {}'''.format(d_mean, d_max, d_min)
 
 def main_tar(fpath, args):
     img_viewer = get_image_viewer(args)
-    if img_viewer != 'PIL':
+    if img_viewer == 'matplotlib':
         import tempfile
-    # if img_viewer != 'PIL') and (img_viewer != 'matplotlib'):
-    if img_viewer not in 'PIL matplotlib OpenCV'.split(' '):
+    elif img_viewer == 'OpenCV':
+        import tempfile
+    else:
+        import tempfile
         import subprocess
-        import time
 
     if not tarfile.is_tarfile(fpath):
         print('{} is not a tar file.'.format(fpath))
@@ -665,10 +666,11 @@ def main_zip(fpath, args):
         import io
     elif img_viewer == 'matplotlib':
         import tempfile
+    elif img_viewer == 'OpenCV':
+        import tempfile
     else:
         import tempfile
         import subprocess
-        import time
 
     if not zipfile.is_zipfile(fpath):
         print('{} is not a zip file.'.format(fpath))
@@ -967,6 +969,8 @@ def main_jupyter(fpath, args):
     if img_viewer == 'PIL':
         import io
     elif img_viewer == 'matplotlib':
+        import tempfile
+    elif img_viewer == 'OpenCV':
         import tempfile
     else:
         import tempfile
