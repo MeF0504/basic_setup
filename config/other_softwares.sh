@@ -3,7 +3,7 @@
 # This file is the installer for software that I think to good.
 # Please uncomment and run this script.
 
-## python
+## python {{{
 echo '- which python3'
 which python3
 echo '- which pip3'
@@ -28,8 +28,9 @@ which pip3
 # pip3 install rawpy      # raw画像用ライブラリ
 # pip3 insatll tabulate   # table 作成／表示ライブラリ
 echo
+# }}}
 
-## go
+## go {{{
 echo '- which go'
 which go
 echo '- where is GOPATH'
@@ -43,8 +44,9 @@ echo $GOPATH
 # cd pst/
 # go install
 echo
+# }}}
 
-## ruby
+## ruby {{{
 echo '- which ruby'
 which ruby
 echo '- which gem'
@@ -52,8 +54,9 @@ which gem
 
 # gem install tw      # 端末上でtwitterを見るツール
 echo
+# }}}
 
-## node.js
+## node.js {{{
 echo '- which npm'
 which npm
 # set install directory
@@ -64,8 +67,9 @@ npm config list
 # npm install -g @marp-team/marp-cli    # markdownからスライドを作成するツール
 # npm install -g terminalizer           # ターミナル録画ツール
 echo
+# }}}
 
-## other tools
+## other tools {{{
 echo '- other tools gettable by curl'
 INSTALL_DIR=${1:-$HOME/opt/bin}
 if [ ! -d $INSTALL_DIR ]; then
@@ -77,7 +81,8 @@ echo $INSTALL_DIR
 echo '- which curl'
 which curl
 
-# curl -L -o ${INSTALL_DIR}/hterm-show-file.sh https://raw.githubusercontent.com/libapps/libapps-mirror/main/hterm/etc/hterm-show-file.sh && chmod u+x ${INSTALL_DIR}/hterm-show-file.sh    # hterm (html terminal?)上で画像を見るためのスクリプト。githunはミラーで元のリポジトリは多分 https://chromium.googlesource.com/apps/libapps/+/master/hterm/etc/hterm-show-file.sh
+# curl -L -o ${INSTALL_DIR}/hterm-show-file.sh https://raw.githubusercontent.com/libapps/libapps-mirror/main/hterm/etc/hterm-show-file.sh && chmod u+x ${INSTALL_DIR}/hterm-show-file.sh    # hterm (html terminal?)上で画像を見るためのスクリプト。githubはミラーで元のリポジトリは多分 https://chromium.googlesource.com/apps/libapps/+/master/hterm/etc/hterm-show-file.sh
 
 # curl -L -o ${INSTALL_DIR}/imgcat https://iterm2.com/utilities/imgcat && chmod u+x ${INSTALL_DIR}/imgcat     # iterm2上で画像を見る用のscript. 詳細-> https://iterm2.com/documentation-images.html
+# }}}
 
