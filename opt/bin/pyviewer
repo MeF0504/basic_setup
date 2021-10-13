@@ -190,6 +190,80 @@ def get_image_viewer(args):
             img_viewer = 'PIL'
     return img_viewer
 
+def make_bitmap(filename, rgb, args):
+    if rgb.shape[-1] == 4:
+        rgb = rgb[:,:,[0,1,2]]
+
+    height, width, cols = rgb.shape
+    if debug:
+        print('{}x{}x{}'.format(height, width, cols))
+
+    # make color table (it doesn't need in 24bmp format.)
+    q_bit = 256
+    color_table = []
+    # for r in range(q_bit):
+    #     for g in range(q_bit):
+    #         for b in range(q_bit):
+    #             color_table += [int(b), int(g), int(r), int(0)]
+    # if debug:
+    #     print('color table: ({}); {}...'.format(len(color_table), color_table[:10]))
+    len_cols = len(color_table)
+    num_cols = len(color_table)>>2
+
+    # make pixel data
+    img_data = []
+    for i in range(height):
+        line_data = []
+        for j in range(width):
+            r, g, b = rgb[height-i-1,j]     # starts from left botom
+            line_data += [b, g, r]
+        # line length should be a multiple of 4 bytes (long).
+        padding = 4*(int((len(line_data)-1)/4)+1)-len(line_data)
+        for k in range(padding):
+            line_data.append(0)
+        img_data += line_data
+    if debug:
+        print_st = '{}, '.format(img_data[0])
+        print_end = '{}'.format(img_data[-1])
+        for i in range(1,6):
+            print_st += '{}, '.format(img_data[i])
+            print_end = '{}, '.format(img_data[-i-1]) + print_end
+        print('pixel data: ({}); [{} ... {}]'.format(len(img_data), print_st, print_end))
+    len_data = len(img_data)
+
+    offset = 0x0e+0x28+len_cols
+    file_size = offset+len_data
+
+    # make binary data
+    # FILE_HEADER
+    b = bytearray([0x42, 0x4d])                 # signature 'BM'
+    b.extend(file_size.to_bytes(4, 'little'))   # file size
+    b.extend((0).to_bytes(2, 'little'))         # reserved
+    b.extend((0).to_bytes(2, 'little'))         # reserved
+    b.extend(offset.to_bytes(4, 'little'))      # offset
+
+    # INFO_HEADER
+    b.extend((0x28).to_bytes(4, 'little'))      # size of header
+    b.extend(width.to_bytes(4, 'little'))       # width [dot]
+    b.extend(height.to_bytes(4, 'little'))      # height [dot]
+    b.extend((1).to_bytes(2, 'little'))         # number of planes
+    b.extend((8*3).to_bytes(2, 'little'))       # byte/1pixel
+    b.extend((0).to_bytes(4, 'little'))         # type of compression (0=BI_RGB, no compression)
+    b.extend(len_data.to_bytes(4, 'little'))     # size of image
+    b.extend((0).to_bytes(4, 'little'))         # horizontal resolution
+    b.extend((0).to_bytes(4, 'little'))         # vertical resolution
+    b.extend(num_cols.to_bytes(4, 'little'))    # number of colors (not used for 24bmp)
+    b.extend((0).to_bytes(4, 'little'))         # import colors (0=all)
+
+    # COLOR_TABLES
+    b.extend(color_table)
+
+    # DATA
+    b.extend(img_data)
+
+    with open(filename, 'wb') as f:
+        f.write(b)
+
 def interactive_view(tree, fname, show_func):
     cpath = PurePath('.')
     inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
@@ -916,6 +990,9 @@ def main_raw(fpath, args):
     if img_lib is None:
         print("I can't find any libraries to show image. Please install Pillow or matplotlib.")
         return
+    elif img_lib not in 'PIL matplotlib OpenCV'.split(' '):
+        import tempfile
+        import subprocess
 
     try:
         from screeninfo import get_monitors
@@ -959,7 +1036,11 @@ def main_raw(fpath, args):
         cv2.waitKey(0)
         # cv2.destroyAllWindows()
     else:
-        print('Sorry, extra command is not supported in raw_image type.')
+        with tempfile.NamedTemporaryFile(suffix='.bmp') as tmp:
+            make_bitmap(tmp.name, rgb, args)
+            subprocess.run([img_lib, tmp.name])
+            # wait to open file. this is for, e.g., open command on Mac OS.
+            input('Press Enter to continue')
 
 def main_jupyter(fpath, args):
     import json
@@ -1104,6 +1185,9 @@ def main_xpm(fpath, args):
     if img_lib is None:
         print("I can't find any libraries to show image. Please install Pillow or matplotlib.")
         return
+    elif img_lib not in 'PIL matplotlib OpenCV'.split(' '):
+        import tempfile
+        import subprocess
 
     xpms = XPMLoader()
     xpms.load_xpm(fpath)
@@ -1137,7 +1221,11 @@ def main_xpm(fpath, args):
         cv2.waitKey(0)
         # cv2.destroyAllWindows()
     else:
-        print('Sorry, extra command is not supported in xpm type.')
+        with tempfile.NamedTemporaryFile(suffix='.bmp') as tmp:
+            make_bitmap(tmp.name, data, args)
+            subprocess.run([img_lib, tmp.name])
+            # wait to open file. this is for, e.g., open command on Mac OS.
+            input('Press Enter to continue')
 
 def add_options(args):
     for opt in args.opts:
