@@ -264,6 +264,20 @@ def make_bitmap(filename, rgb, args):
     with open(filename, 'wb') as f:
         f.write(b)
 
+    if debug:
+        filesize = os.path.getsize(filename)
+        prefix = ''
+        if filesize > 1024**3:
+            filesize /= 1024**3
+            prefix = 'G'
+        elif filesize > 1024**2:
+            filesize /= 1024**2
+            prefix = 'M'
+        elif filesize > 1024:
+            filesize /= 1024
+            prefix = 'k'
+        print('size of made file: {:.1f} {}B'.format(filesize, prefix))
+
 def interactive_view(tree, fname, show_func):
     cpath = PurePath('.')
     inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
