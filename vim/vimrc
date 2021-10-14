@@ -421,6 +421,20 @@ dt = datetime.datetime.fromtimestamp(stat.st_mtime)
 # dt = datetime.datetime.fromtimestamp(stat.st_atime)
 res += dt.strftime(' %Y/%m/%d-%H:%M:%S')
 
+# file size
+filesize = os.path.getsize(fname)
+prefix = ''
+if filesize > 1024**3:
+    filesize /= 1024**3
+    prefix = 'G'
+elif filesize > 1024**2:
+    filesize /= 1024**2
+    prefix = 'M'
+elif filesize > 1024:
+    filesize /= 1024
+    prefix = 'k'
+res += ' ({:.1f} {}B)'.format(filesize, prefix)
+
 # file name
 res += '  '+fname
 if os.path.islink(fname):
