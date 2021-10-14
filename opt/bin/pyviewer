@@ -191,7 +191,7 @@ def get_image_viewer(args):
             img_viewer = 'PIL'
     return img_viewer
 
-def make_bitmap(filename, rgb, args):
+def make_bitmap(filename, rgb):
     if rgb.shape[-1] == 4:
         rgb = rgb[:,:,[0,1,2]]
 
@@ -1064,7 +1064,7 @@ def main_raw(fpath, args):
         else:
             opt = []
         with tempfile.NamedTemporaryFile(suffix='.bmp') as tmp:
-            make_bitmap(tmp.name, rgb, args)
+            make_bitmap(tmp.name, rgb)
             subprocess.run([img_lib]+opt+[tmp.name])
             # wait to open file. this is for, e.g., open command on Mac OS.
             input('Press Enter to continue')
@@ -1257,7 +1257,7 @@ def main_xpm(fpath, args):
         else:
             opt = []
         with tempfile.NamedTemporaryFile(suffix='.bmp') as tmp:
-            make_bitmap(tmp.name, data, args)
+            make_bitmap(tmp.name, data)
             subprocess.run([img_lib]+opt+[tmp.name])
             # wait to open file. this is for, e.g., open command on Mac OS.
             input('Press Enter to continue')
