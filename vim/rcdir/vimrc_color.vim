@@ -114,7 +114,7 @@ function! <SID>my_color_set()
         endif
     endif
 
-    highlight StatusLineNC cterm=None ctermfg=244 ctermbg=235
+    highlight StatusLineNC cterm=underline ctermfg=244 ctermbg=232
     if !has('nvim')
         highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249
     endif
