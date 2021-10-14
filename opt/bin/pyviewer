@@ -12,7 +12,6 @@ try:
     # to use this, libmagic.* should be in /opt/local/lib/, /usr/local/lib, /opt/homebrew/lib or /usr/local/Cellar/libmagic/*/lib in darwin system (macOS).
     import magic
 except ImportError as e:
-    import mimetypes
     use_magic = False
 else:
     use_magic = True
@@ -48,6 +47,8 @@ def args_chk(args, attr):
         return args.opts is not None
     elif attr == 'encoding':
         return args.encoding is not None
+    elif attr == 'opt_arg':
+        return args.opt_arg is not None
     else:
         return False
 
@@ -677,10 +678,14 @@ def main_tar(fpath, args):
                     cv2.waitKey(0)
                     # cv2.destroyAllWindows()
                 else:
+                    if args_chk(args, 'opt_arg'):
+                        opt = args.opt_arg
+                    else:
+                        opt = []
                     with tempfile.TemporaryDirectory() as tmpdir:
                         tar_file.extractall(path=tmpdir, members=[tarinfo])
                         tmpfile = os.path.join(tmpdir, cpath)
-                        subprocess.run([img_viewer, tmpfile])
+                        subprocess.run([img_viewer]+opt+[tmpfile])
                         # wait to open file. this is for, e.g., open command on Mac OS.
                         input('Press Enter to continue')
 
@@ -822,10 +827,14 @@ def main_zip(fpath, args):
                     cv2.waitKey(0)
                     # cv2.destroyAllWindows()
                 else:
+                    if args_chk(args, 'opt_arg'):
+                        opt = args.opt_arg
+                    else:
+                        opt = []
                     with tempfile.TemporaryDirectory() as tmpdir:
                         zip_file.extract(zipinfo, path=tmpdir)
                         tmpfile = os.path.join(tmpdir, cpath)
-                        subprocess.run([img_viewer, tmpfile])
+                        subprocess.run([img_viewer]+opt+[tmpfile])
                         # wait to open file. this is for, e.g., open command on Mac OS.
                         input('Press Enter to continue')
 
@@ -1050,9 +1059,13 @@ def main_raw(fpath, args):
         cv2.waitKey(0)
         # cv2.destroyAllWindows()
     else:
+        if args_chk(args, 'opt_arg'):
+            opt = args.opt_arg
+        else:
+            opt = []
         with tempfile.NamedTemporaryFile(suffix='.bmp') as tmp:
             make_bitmap(tmp.name, rgb, args)
-            subprocess.run([img_lib, tmp.name])
+            subprocess.run([img_lib]+opt+[tmp.name])
             # wait to open file. this is for, e.g., open command on Mac OS.
             input('Press Enter to continue')
 
@@ -1149,10 +1162,14 @@ def main_jupyter(fpath, args):
                                 cv2.imshow('Out [{}]'.format(cnt), img)
                                 cv2.waitKey(500)
                             else:
+                                if args_chk(args, 'opt_arg'):
+                                    opt = args.opt_arg
+                                else:
+                                    opt = []
                                 tmp = tempfile.NamedTemporaryFile(suffix='.png')
                                 tmp_images.append(tmp)
                                 tmp.write(img_bin)
-                                subprocess.run([img_viewer, tmp.name])
+                                subprocess.run([img_viewer]+opt+[tmp.name])
                                 if args_chk(args, 'verbose'):
                                     time.sleep(1.)
 
@@ -1235,9 +1252,13 @@ def main_xpm(fpath, args):
         cv2.waitKey(0)
         # cv2.destroyAllWindows()
     else:
+        if args_chk(args, 'opt_arg'):
+            opt = args.opt_arg
+        else:
+            opt = []
         with tempfile.NamedTemporaryFile(suffix='.bmp') as tmp:
             make_bitmap(tmp.name, data, args)
-            subprocess.run([img_lib, tmp.name])
+            subprocess.run([img_lib]+opt+[tmp.name])
             # wait to open file. this is for, e.g., open command on Mac OS.
             input('Press Enter to continue')
 
@@ -1248,7 +1269,8 @@ def add_options(args):
 Currently available options;
 help                show this help message and exit.
 debug:True/False    enable/disable debug message.
-encoding:enc_name   set encoding.''')
+encoding:enc_name   set encoding.
+arg:arguments       set optional arguments for external image viewer.''')
             return False
         elif ':' in opt:
             key, value = opt.split(':')
@@ -1258,6 +1280,8 @@ encoding:enc_name   set encoding.''')
                 elif value == 'False': debug = False
             elif key == 'encoding':
                 args.encoding = value
+            elif key == 'arg':
+                args.opt_arg = value.split(' ')
     return True
 
 def main(args):
