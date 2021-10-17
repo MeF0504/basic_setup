@@ -1263,6 +1263,7 @@ def main_xpm(fpath, args):
             input('Press Enter to continue')
 
 def add_options(args):
+    space_str = '<<space>>'
     for opt in args.opts:
         if opt == 'help':
             print('''
@@ -1278,10 +1279,23 @@ arg:arguments       set optional arguments for external image viewer.''')
                 global debug
                 if value == 'True': debug = True
                 elif value == 'False': debug = False
+                if debug:
+                    print('debug: True')
             elif key == 'encoding':
                 args.encoding = value
+                if debug:
+                    print('set encoding={}'.args.encoding)
             elif key == 'arg':
-                args.opt_arg = value.split(' ')
+                if space_str in value:
+                    cprint('optional arguments may not work as expected', fg='y', file=sys.stderr)
+                value = value.replace('\ ', space_str)
+                vals = value.split(' ')
+                for i in range(len(vals)):
+                    if space_str in vals[i]:
+                        vals[i] = vals[i].replace(space_str, ' ')
+                if debug:
+                    print('additional arguments of image viewer', vals)
+                args.opt_arg = vals
     return True
 
 def main(args):
