@@ -15,7 +15,7 @@ endif
 let s:vim_dir = llib#get_conf_dir()
 let s:dein_dir = s:vim_dir. 'dein/'
 
-let s:light_file = s:vim_dir . 'toml/dein_light.toml'
+let s:light_file = s:vim_dir . 'toml/dein_min.toml'
 let s:toml_file  = s:vim_dir . '/toml/dein.toml'
 let s:lazy_file  = s:vim_dir . '/toml/dein_lazy.toml'
 
