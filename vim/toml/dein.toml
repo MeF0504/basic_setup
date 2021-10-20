@@ -585,13 +585,13 @@ repo = 'fxn/vim-monochrome'
 # vim でneovim 用 pluginを動かすためのplugin
 [[plugins]]
 repo = 'roxma/nvim-yarp'
-if = '''!has('nvim')'''
+if = '''!has('nvim') && !has('patch-8.2.3081')'''
 
 # for deoplete
 # vim でneovim 用 pluginを動かすためのplugin
 [[plugins]]
 repo = 'roxma/vim-hug-neovim-rpc'
-if = '''!has('nvim')'''
+if = '''!has('nvim') && !has('patch-8.2.3081')'''
 
 # visual modeで選択した範囲をgcでコメントアウトしてくれるplugin
 [[plugins]]
@@ -634,4 +634,10 @@ hook_add = '''
 let g:cursorword_highlight = 0
 " }}}
 '''
+
+# An ecosystem of Vim/Neovim which allows developers to write plugins in Deno. だそうです
+# for ddc.vim
+[[plugins]]
+repo = 'vim-denops/denops.vim'
+if = '''executable('deno') && (has('patch-8.2.3081') || has('nvim-0.5.0'))'''
 

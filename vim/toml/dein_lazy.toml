@@ -31,10 +31,15 @@ autocmd deinLocal VimEnter,BufWinEnter dein*.toml call s:syntax_range_dein()
 repo = 'inkarkat/vim-ingo-library'
 on_source = ['vim-SyntaxRange']
 
+# vim でsnippet を使う用の plugin (framework?)
+[[plugins]]
+repo = 'Shougo/neosnippet.vim'
+on_source = ['ddc.vim', 'deoplete.vim']
+
 # dark powered 補完plugin
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
-if = '''has('python3') && ((v:version>=801) || (has('nvim')&&has('nvim-0.3.0')))'''
+if = '''has('python3') && (((v:version>=801)&&!has('patch-8.2.3081')) || (has('nvim')&&has('nvim-0.3.0')&&!has('nvim-0.5.0')))'''
 on_event = 'InsertEnter'
 hook_source = '''
 "{{{ "deoplete
@@ -60,12 +65,7 @@ endif
 "}}}
 '''
 
-# vim でsnippet を使う用の plugin (framework?)
-[[plugins]]
-repo = 'Shougo/neosnippet.vim'
-on_ft = 'snippet'
-
-### plugins for deoplete (from here)
+### plugins for deoplete (from here) {{{
 # https://github.com/Shougo/deoplete.nvim/wiki/Completion-Sources
 
 # syntax file から補完候補を作成
@@ -97,7 +97,7 @@ repo = 'deoplete-plugins/deoplete-zsh'
 on_source = ['deoplete.nvim']
 on_ft = 'zsh'
 
-### (to here)
+### (to here) }}}
 
 # vimの編集履歴を表示／適用してくれる plugin
 [[plugins]]
@@ -232,4 +232,85 @@ endfunction
 command! -nargs=* -complete=customlist,s:jupyter_arg_list Jupyter call s:jupyter_wrapper(<f-args>)
 " }}}
 '''
+
+# 新世代(2021) dark deno-powered completion framework
+[[plugins]]
+repo = 'Shougo/ddc.vim'
+depends = ['denops.vim']
+on_event = 'InsertEnter'
+hook_post_source = '''
+"""""ddc.vim {{{
+" add sources
+call ddc#custom#patch_global('sources', ['neosnippet', 'file', 'around'])
+" set basic options
+call ddc#custom#patch_global(
+    \ 'sourceOptions', {
+        \ '_': {
+            \ 'matchers': ['matcher_head'],
+            \ 'sorters': ['sorter_rank']
+        \ },
+    \ })
+
+" set sorce-specific options
+call ddc#custom#patch_global(
+    \ 'sourceOptions', {
+        \ 'around': {
+            \ 'mark': 'A',
+        \ },
+        \ 'file': {
+            \ 'mark': 'F',
+            \ 'isVolatile': v:true,
+            \ 'forceCompletionPattern': '\S/\S*',
+        \ },
+        \ 'neosnippet': {
+            \ 'mark': 'ns',
+            \ 'dup': v:true,
+        \ },
+    \ })
+
+" set filetype-specific options
+call ddc#custom#patch_filetype(['ps1', 'dosbatch', 'autohotkey', 'registry'], {
+    \ 'sourceOptions': {
+        \ 'file': {
+            \ 'forceCompletionPattern': '\S\\\S*',
+        \ },
+    \ },
+        \ 'sourceParams': {
+            \ 'file': {
+                \ 'mode': 'win32',
+            \ },
+        \ }
+    \ })
+" Mappings
+" <TAB>: completion.
+inoremap <silent><expr> <TAB>
+\ pumvisible() ? '<C-n>' :
+\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+\ '<TAB>' : ddc#map#manual_complete()
+
+" <S-TAB>: completion back.
+inoremap <expr><S-TAB>  pumvisible() ? '<C-p>' : '<C-h>'
+
+" on.
+call ddc#enable()
+" }}}
+'''
+
+# plugins for ddc.vim {{{
+[[plugins]]
+repo = 'Shougo/ddc-around'
+on_source = ['ddc.vim']
+
+[[plugins]]
+repo = 'Shougo/ddc-matcher_head'
+on_source = ['ddc.vim']
+
+[[plugins]]
+repo = 'Shougo/ddc-sorter_rank'
+on_source = ['ddc.vim']
+
+[[plugins]]
+repo = 'LumaKernel/ddc-file'
+on_source = ['ddc.vim']
+# }}}
 

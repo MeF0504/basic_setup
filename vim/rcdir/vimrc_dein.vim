@@ -82,3 +82,5 @@ if len(s:removed_plugins) > 0
     autocmd deinLocal VimEnter * call s:RemovePlugins()
 endif
 
+autocmd deinLocal VimEnter * call dein#call_hook('post_source')
+
