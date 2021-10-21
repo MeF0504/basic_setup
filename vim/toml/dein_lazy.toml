@@ -8,7 +8,7 @@ on_ft = 'toml'
 [[plugins]]
 repo = 'inkarkat/vim-SyntaxRange'
 on_ft = 'toml'
-hook_add = '''
+hook_post_source = '''
 " {{{
 " https://qiita.com/tmsanrinsha/items/9670628aef3144c7919b
 " Insertで戻る... 要検討 ... とりあえず:e!で再表示
@@ -20,6 +20,7 @@ function! s:syntax_range_dein() abort
     call SyntaxRange#Include(printf(start, '"""'), '"""', 'vim', '')
 endfunction
 
+call s:syntax_range_dein()
 " autocmdのタイミングが悪い (vim-tomlに上書きされる)ので，調整
 " autocmd deinLocal BufNewFile,BufRead dein*.toml call s:syntax_range_dein()
 autocmd deinLocal VimEnter,BufWinEnter dein*.toml call s:syntax_range_dein()
