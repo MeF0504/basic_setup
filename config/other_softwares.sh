@@ -9,24 +9,27 @@ which python3
 echo '- which pip3'
 which pip3
 
-# pip3 install numpy      # 数値計算ライブラリ
-# pip3 install scipy      # 高機能数値計算ライブラリ
-# pip3 install pandas     # テーブル型データ解析ライブラリ？
-# pip3 install matplotlib # 画像描画ライブラリ
-# pip3 install ipython    # 高機能対話型python環境
-# pip3 install sympy      # 数式計算ライブラリ
-# pip3 install h5py       # hdf5 ファイル用ライブラリ
-# pip3 install jupyter    # データ解析／表示ツール
-# pip3 install send2trash # ゴミ箱を利用するためのライブラリ
-# pip3 install tqdm       # 進捗バー表示ライブラリ
-# pip3 install pynvim     # neovim用ライブラリ
-# pip3 install pymc pymc3 # MCMC用ライブラリ
-# pip3 install healpy     # 球面解析用ライブラリ？
-# pip3 install camb       # CMB パワースペクトル計算用ライブラリ
-# pip3 install corner     # 相関プロット用ライブラリ？
-# pip3 install pillow     # 画像処理用ライブラリ
-# pip3 install rawpy      # raw画像用ライブラリ
-# pip3 insatll tabulate   # table 作成／表示ライブラリ
+# pip3 install --upgrade pip
+# pip3 install numpy          # 数値計算ライブラリ
+# pip3 install scipy          # 高機能数値計算ライブラリ
+# pip3 install pandas         # テーブル型データ解析ライブラリ？
+# pip3 install matplotlib     # 画像描画ライブラリ
+# pip3 install ipython        # 高機能対話型python環境
+# pip3 install sympy          # 数式計算ライブラリ
+# pip3 install h5py           # hdf5 ファイル用ライブラリ
+# pip3 install jupyter        # データ解析／表示ツール
+# pip3 install send2trash     # ゴミ箱を利用するためのライブラリ
+# pip3 install tqdm           # 進捗バー表示ライブラリ
+# pip3 install pynvim         # neovim用ライブラリ
+# pip3 install pymc pymc3     # MCMC用ライブラリ
+# pip3 install healpy         # 球面解析用ライブラリ？
+# pip3 install camb           # CMB パワースペクトル計算用ライブラリ
+# pip3 install corner         # 相関プロット用ライブラリ？
+# pip3 install pillow         # 画像処理用ライブラリ
+# pip3 install rawpy          # raw画像用ライブラリ
+# pip3 insatll tabulate       # table 作成／表示ライブラリ
+# pip3 install python-magic   # magic (file type判定)用ライブラリ
+# pip3 install opencv-python  # Open CV package for python
 echo
 # }}}
 
