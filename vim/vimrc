@@ -396,7 +396,12 @@ function! s:fileinfo() abort
         pythonx << EOL
 import vim
 import os
-import datetime
+try:
+    import datetime
+except ImportError as e:
+    datetime_ok = False
+else:
+    datetime_ok = True
 
 fname = vim.eval('file')
 res = ''
@@ -410,16 +415,19 @@ if os.access(fname, os.X_OK): res += 'x'
 else: res += '-'
 
 # time stamp
-stat = os.stat(fname)
-# meta data update (UNIX), created (Windows)
-# dt = datetime.datetime.fromtimestamp(stat.st_ctime)
-# created (some OS)
-# dt = datetime.datetime.fromtimestamp(stat.st_birthtime)
-# last update
-dt = datetime.datetime.fromtimestamp(stat.st_mtime)
-# last access
-# dt = datetime.datetime.fromtimestamp(stat.st_atime)
-res += dt.strftime(' %Y/%m/%d-%H:%M:%S')
+if datetime_ok:
+    stat = os.stat(fname)
+    # meta data update (UNIX), created (Windows)
+    # dt = datetime.datetime.fromtimestamp(stat.st_ctime)
+    # created (some OS)
+    # dt = datetime.datetime.fromtimestamp(stat.st_birthtime)
+    # last update
+    dt = datetime.datetime.fromtimestamp(stat.st_mtime)
+    # last access
+    # dt = datetime.datetime.fromtimestamp(stat.st_atime)
+    res += dt.strftime(' %Y/%m/%d-%H:%M:%S')
+else:
+    res += ' ????/??/??-?:?:?'
 
 # file size
 filesize = os.path.getsize(fname)
