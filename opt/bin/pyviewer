@@ -16,7 +16,13 @@ except ImportError as e:
 else:
     use_magic = True
 
-from libtree import tree_viewer, show_tree, branch_str
+try:
+    from libtree3 import tree_viewer, show_tree, branch_str
+except ImportError as e:
+    available_libtree = False
+    branch_str  = '|__ '
+else:
+    available_libtree = True
 
 try:
     from local_lib_color import BG, FG, END
@@ -280,6 +286,9 @@ def make_bitmap(filename, rgb):
         print('size of made file: {:.1f} {}B'.format(filesize, prefix))
 
 def interactive_view(tree, fname, show_func):
+    if not available_libtree:
+        cprint('libtree is not available. exit.', fg='r', file=sys.stderr)
+        return
     cpath = PurePath('.')
     inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
     tv = tree_viewer(tree, '.')
@@ -319,6 +328,9 @@ def print_key(key_name):
     cprint('<<< {} >>>'.format(key_name), '', fg='k', bg='y')
 
 def main_hdf5(fpath, args):
+    if not available_libtree:
+        cprint('libtree is not available. exit.', fg='r', file=sys.stderr)
+        return
     import h5py
     try:
         import numpy as np
@@ -615,6 +627,9 @@ min      : {}'''.format(d_mean, d_max, d_min)
             show_numpy(data)
 
 def main_tar(fpath, args):
+    if not available_libtree:
+        cprint('libtree is not available. exit.', fg='r', file=sys.stderr)
+        return
     img_viewer = get_image_viewer(args)
     if img_viewer == 'matplotlib':
         import tempfile
@@ -753,6 +768,9 @@ def main_tar(fpath, args):
     tar_file.close()
 
 def main_zip(fpath, args):
+    if not available_libtree:
+        cprint('libtree is not available. exit.', fg='r', file=sys.stderr)
+        return
     import zipfile
     img_viewer = get_image_viewer(args)
     if img_viewer == 'PIL':
