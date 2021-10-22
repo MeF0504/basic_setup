@@ -237,7 +237,7 @@ command! -nargs=* -complete=customlist,s:jupyter_arg_list Jupyter call s:jupyter
 # 新世代(2021) dark deno-powered completion framework
 [[plugins]]
 repo = 'Shougo/ddc.vim'
-depends = ['denops.vim']
+if = '''exists('g:loaded_denops') && g:loaded_denops==1'''
 on_event = 'InsertEnter'
 hook_post_source = '''
 """""ddc.vim {{{
