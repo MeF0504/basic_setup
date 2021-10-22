@@ -17,7 +17,7 @@ else:
     use_magic = True
 
 try:
-    from libtree3 import tree_viewer, show_tree, branch_str
+    from libtree import tree_viewer, show_tree, branch_str
 except ImportError as e:
     available_libtree = False
     branch_str  = '|__ '
