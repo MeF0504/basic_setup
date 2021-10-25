@@ -306,10 +306,11 @@ function! <SID>quickrun_wrapper()
         let res = ':cclose | '
         execute 'let res .= '.qrun_ft_func.'()'
         " execute 'let res = ":echo '.qrun_ft_func.'()"'
-        return res
     else
-        return ':cclose | QuickRun'
+        let res = ':cclose | QuickRun'
     endif
+    echomsg res
+    return res
 endfunction
 
 " nnoremap <silent> <Leader>q <SID>quickrun_wrapper()
