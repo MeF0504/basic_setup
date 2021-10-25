@@ -37,6 +37,12 @@ on_source = ['vim-SyntaxRange']
 repo = 'Shougo/neosnippet.vim'
 on_source = ['ddc.vim', 'deoplete.vim']
 
+# vim script 用補完 plugin
+[[plugins]]
+repo = 'Shougo/neco-vim'
+on_source = ['ddc.vim', 'deoplete.vim']
+on_ft = 'vim'
+
 # dark powered 補完plugin
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
@@ -73,12 +79,6 @@ endif
 [[plugins]]
 repo = 'Shougo/neco-syntax'
 on_source = ['deoplete.nvim']
-
-# vim script 用補完 plugin
-[[plugins]]
-repo = 'Shougo/neco-vim'
-on_source = ['deoplete.nvim']
-on_ft = 'vim'
 
 # c言語用補完 plugin
 [[plugins]]
@@ -242,7 +242,7 @@ on_event = 'InsertEnter'
 hook_post_source = '''
 """""ddc.vim {{{
 " add sources
-call ddc#custom#patch_global('sources', ['neosnippet', 'file', 'around'])
+call ddc#custom#patch_global('sources', ['file', 'around', 'neosnippet'])
 " set basic options
 call ddc#custom#patch_global(
     \ 'sourceOptions', {
@@ -267,7 +267,20 @@ call ddc#custom#patch_global(
             \ 'mark': 'ns',
             \ 'dup': v:true,
         \ },
-    \ })
+        \ 'tabnine': {
+            \ 'mark': 'TN',
+            \ 'maxCandidate': 5,
+            \ 'isVolatile': v:true,
+        \ },
+    \ },
+    \ 'sourceParams', {
+        \ 'tabnine': {
+            \ 'maxNumResults': 10,
+            \ 'storageDir': expand('~/.cache/ddc-tabline'),
+        \ },
+    \ }
+\ )
+" storageDir doesn't work??
 
 " set filetype-specific options
 call ddc#custom#patch_filetype(['ps1', 'dosbatch', 'autohotkey', 'registry'], {
@@ -276,12 +289,25 @@ call ddc#custom#patch_filetype(['ps1', 'dosbatch', 'autohotkey', 'registry'], {
             \ 'forceCompletionPattern': '\S\\\S*',
         \ },
     \ },
-        \ 'sourceParams': {
-            \ 'file': {
-                \ 'mode': 'win32',
-            \ },
-        \ }
-    \ })
+    \ 'sourceParams': {
+        \ 'file': {
+            \ 'mode': 'win32',
+        \ },
+    \ }
+\ })
+call ddc#custom#patch_filetype(['vim', 'toml'], {
+    \ 'sources': ['necovim'],
+    \ 'sourceOptions': {
+        \ 'necovim': {
+            \ 'mark': 'vim',
+            \ 'maxCandidate': 5,
+        \},
+    \}
+\ })
+call ddc#custom#patch_filetype(['python', 'c', 'cpp'], {
+    \ 'sources': ['tabnine'],
+\ })
+
 " Mappings
 " <TAB>: completion.
 inoremap <silent><expr> <TAB>
@@ -312,6 +338,10 @@ on_source = ['ddc.vim']
 
 [[plugins]]
 repo = 'LumaKernel/ddc-file'
+on_source = ['ddc.vim']
+
+[[plugins]]
+repo = 'LumaKernel/ddc-tabnine'
 on_source = ['ddc.vim']
 # }}}
 
