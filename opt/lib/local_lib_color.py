@@ -410,10 +410,15 @@ def convert_256_to_fullcolor(color_index):
         r_index = int((color_index-16)/36)
         g_index = int((color_index-16-36*r_index)/6)
         b_index = int( color_index-16-36*r_index-6*g_index)
-        print('r:{}, g:{}, b:{}'.format(r_index, g_index, b_index))
-        return '#{:02x}{:02x}{:02x}'.format(55+40*r_index, 55+40*g_index, 55+40*b_index)
+        if r_index != 0:
+            r_index = 55+40*r_index
+        if g_index != 0:
+            g_index = 55+40*g_index
+        if b_index != 0:
+            b_index = 55+40*b_index
+        return '#{:02x}{:02x}{:02x}'.format(r_index, g_index, b_index)
     elif color_index < 256:
-        gray_level = 8*10*(color_index-232)
+        gray_level = 8+10*(color_index-232)
         return '#{:02x}{:02x}{:02x}'.format(gray_level, gray_level, gray_level)
 
 def convert_fullcolor_to_256(r, g, b):
