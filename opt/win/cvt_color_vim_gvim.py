@@ -1,18 +1,8 @@
 
 import sys
 import os
-
-def cvt_256_fc(color):
-    try:
-        color = int(color)
-    except ValueError:
-        if color == 'None':
-            return 'NONE'
-        return color
-    fc_256_file = os.path.join(os.path.dirname(sys.argv[0]), 'FullColor_256.txt')
-    with open(fc_256_file, 'r') as f:
-        line = f.readlines()[color+1]
-    return line.split()[2]
+sys.path.append(os.path.join(os.path.dirname(__file__), '../lib'))
+from local_lib_color import convert_256_to_fullcolor as cvt_256_fc
 
 def main():
     vim_color = sys.argv[1]
@@ -31,13 +21,19 @@ def main():
                         if st > end:
                             end = -1
                         opt = line[st:end]
-                        tmp_gline += ' ' + cterm.replace('cterm', 'gui') + cvt_256_fc(opt)
+                        try:
+                            opt = int(opt)
+                        except ValueError:
+                            if opt == 'None':
+                                opt = 'NONE'
+                        else:
+                            opt = cvt_256_fc(opt)
+                        tmp_gline += ' ' + cterm.replace('cterm', 'gui') + opt
                 if end != -1:
                     tmp_gline += line[end:]
                 gline.append(tmp_gline.replace('\n', ''))
             else:
                 gline.append(line.replace('\n', ''))
-            # print(gline[-1])
 
     with open(gvim_color, 'w', encoding='utf-8') as gvimf:
         for l in gline:
