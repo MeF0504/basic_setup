@@ -146,6 +146,7 @@ hook_add = '''
 """ vim-quick_run {{{
 let g:quickrun_no_default_key_mappings = 1
 
+" default configs {{{
 let g:quickrun_config = get(g:, 'quickrun_config', {})  " 変数がなければ初期化
 " show errors in quickfix window
 let g:quickrun_config._ = {
@@ -155,13 +156,12 @@ let g:quickrun_config._ = {
     \ 'outputter/error/error'   : 'multi',
     \ }
 
-" {{{ python
+" python
 let g:quickrun_config.python = {
             \ 'command' : 'python3'
             \ }
-" }}}
 
-" {{{ markdown
+" markdown
 if has('mac')
     let s:cmd = 'open'
     let s:exe = '%c %s -a Google\ Chrome'
@@ -177,7 +177,26 @@ let g:quickrun_config.markdown = {
             \ 'exec' : s:exe
             \}
 
+" tex
+if has('mac')
+    " macOSでlatex (ptex2pdf)を使う場合
+    " https://texwiki.texjp.org/?quickrun
+    if isdirectory('/Applications/Skim.app')
+        let s:open_tex_pdf = 'open -a Skim '
+    else
+        let s:open_tex_pdf = 'open '
+    endif
+    let g:quickrun_config.tex = {
+                \ 'command' : 'ptex2pdf',
+                \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" %s -output-directory %s:h', s:open_tex_pdf.'%s:r.pdf']
+                \ }
+endif
+" }}}
+
+" wrapper functions {{{
+" markdown {{{
 function! s:qrun_markdown() abort
+    let q_config = {}
     let l:is_marp = 0
     for l:ln in getline(1, 5)
         if stridx(l:ln, 'marp') != -1
@@ -198,56 +217,39 @@ function! s:qrun_markdown() abort
         if isdirectory(marp_theme_dir)
             let exec_opt .= ' --theme-set '.marp_theme_dir
         endif
-        let ret = "QuickRun -command '".exec_cmd."' "
+        let q_config['command'] = exec_cmd
 
         if has('terminal') " || has('nvim')
             " http://chrome.half-moon.org/43.html
             if has('mac')
-                let l:open_server = 'open -n -a Google\\ Chrome --args -incognito http://localhost:8080/'
+                let open_server = 'open -n -a Google\\ Chrome --args -incognito http://localhost:8080/'
             elseif has('win32')
-                let l:open_server = '"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe" --new-window --incognito http://localhost:8080/'
+                let open_server = '"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe" --new-window --incognito http://localhost:8080/'
             else
-                let l:open_server = 'firefox http://localhost:8080/ &'
+                let open_server = 'firefox http://localhost:8080/ &'
             endif
 
-            let ret .= "-exec '".l:open_server."' "
-            let ret .= "-exec '%c ".exec_opt." --server %s:h' "
-            let ret .= "-runner 'terminal' "
-            " let ret .= "-runner/opener 'botright new'"
-            let ret .= "-runner/opener 'tabnew'"
+            let q_config['exec'] = [open_server, '%c '.exec_opt.' --server %s:h']
+            let q_config['runner'] = 'terminal'
+            let q_config['runner/opener'] = 'tabnew'
         else
             if has('mac')
-                let l:open_pdf = 'open %s:r.pdf'
+                let open_pdf = 'open %s:r.pdf'
             elseif has('win32')
-                let l:open_pdf = 'start %s:r.pdf'
+                let open_pdf = 'start %s:r.pdf'
             else
-                let l:open_pdf = 'evince %s:r.pdf'
+                let open_pdf = 'evince %s:r.pdf'
             endif
 
-            let ret .= "-exec '%c ".exec_opt." %s --pdf --allow-local-files' "
-            let ret .= "-exec '".l:open_pdf."'"
+            let q_config['exec'] = ['%c '.exec_opt.' --pdf --allow-local-files', open_pdf]
         endif
-        return ret
-    else
-        return 'QuickRun'
     endif
+    call quickrun#run(q_config)
 endfunction
 " }}}
 
 " {{{ tex
 if has('mac')
-    " macOSでlatex (ptex2pdf)を使う場合
-    " https://texwiki.texjp.org/?quickrun
-    if isdirectory('/Applications/Skim.app')
-        let s:open_pdf = 'open -a Skim '
-    else
-        let s:open_pdf = 'open '
-    endif
-    let g:quickrun_config.tex = {
-                \ 'command' : 'ptex2pdf',
-                \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" %s -output-directory %s:h', s:open_pdf.'%s:r.pdf']
-                \ }
-
     function! s:qrun_tex() abort
         " fileの場所まで移動はQucickRunの後にcd出来なかったので断念
         " let cur_dir = getcwd()
@@ -280,18 +282,25 @@ if has('mac')
         endif
 
 
-        let ret = "QuickRun -command 'ptex2pdf' "
+        let q_config = {
+            \ 'command': 'ptex2pdf',
+            \ 'exec'   : [],
+            \ }
         if cmp_bib == 1
-            let ret .= "-exec 'uplatex -output-directory ".build_dir." ".fnamemodify(main_file, ':r')."' "
-            let ret .= "-exec 'upbibtex ".build_dir."/".fnamemodify(main_file, ':r')."' "
-            let ret .= "-exec 'uplatex -output-directory ".build_dir." ".fnamemodify(main_file, ':r')."' "
+            let q_config['exec'] += [
+                \ 'uplatex -output-directory '.build_dir.' '.fnamemodify(main_file, ':r'),
+                \ 'upbibtex '.build_dir.'/'.fnamemodify(main_file, ':r'),
+                \ 'uplatex -output-directory '.build_dir.' '.fnamemodify(main_file, ':r'),
+                \ ]
         endif
-        let ret .= "-exec '%c -l -u -ot \"-synctex=1 -interaction=nonstopmode\" ".main_file." -output-directory ".build_dir."' "
-        let ret .= "-exec 'mv ".build_pdf." ".pdf_file."' "
-        let ret .= "-exec 'echo \"\\\\n move from ".build_pdf." to ". pdf_file."\"' "
-        let ret .= "-exec '".s:open_pdf.pdf_file."'"
-        " let ret .= " | cd ".cur_dir   " 動かない？
-        return ret
+        let q_config['exec'] += [
+            \ '%c -l -u -ot "-synctex=1 -interaction=nonstopmode" '.main_file.' -output-directory '.build_dir,
+            \ 'mv '.build_pdf.' '.pdf_file,
+            \ 'echo "\\n move from '.build_pdf.' to '.pdf_file.'"',
+            \ s:open_tex_pdf.pdf_file,
+            \ ]
+
+        call quickrun#run(q_config)
     endfunction
 endif
 " }}}
@@ -299,22 +308,18 @@ endif
 function! <SID>quickrun_wrapper()
     if &modified
         echo 'file is not saved.'
-        return ''
     endif
+    cclose
     let qrun_ft_func = expand('<SID>').'qrun_'.&filetype
     if exists('*'.qrun_ft_func)
-        let res = ':cclose | '
-        execute 'let res .= '.qrun_ft_func.'()'
-        " execute 'let res = ":echo '.qrun_ft_func.'()"'
+        execute 'call '.qrun_ft_func.'()'
     else
-        let res = ':cclose | QuickRun'
+        QuickRun
     endif
-    echomsg res
-    return res
 endfunction
+" }}}
 
-" nnoremap <silent> <Leader>q <SID>quickrun_wrapper()
-nnoremap <silent> <expr> <Leader>q <SID>quickrun_wrapper().'<CR>'
+nnoremap <silent> <Leader>q :call <SID>quickrun_wrapper()<CR>
 " }}}
 '''
 
