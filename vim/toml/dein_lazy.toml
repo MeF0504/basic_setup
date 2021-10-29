@@ -296,7 +296,7 @@ call ddc#custom#patch_filetype(['ps1', 'dosbatch', 'autohotkey', 'registry'], {
     \ }
 \ })
 call ddc#custom#patch_filetype(['vim', 'toml'], {
-    \ 'sources': ['necovim'],
+    \ 'sources': ['necovim', 'file', 'around'],
     \ 'sourceOptions': {
         \ 'necovim': {
             \ 'mark': 'vim',
@@ -305,7 +305,7 @@ call ddc#custom#patch_filetype(['vim', 'toml'], {
     \}
 \ })
 call ddc#custom#patch_filetype(['python', 'c', 'cpp'], {
-    \ 'sources': ['tabnine'],
+    \ 'sources': ['file', 'around', 'tabnine'],
 \ })
 
 " Mappings
