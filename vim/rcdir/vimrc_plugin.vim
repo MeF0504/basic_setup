@@ -1263,6 +1263,7 @@ function! <SID>jump_line()
     return ret
 endfunction
 command! ShowTableOfContents call s:show_table_of_contents()
+nnoremap <silent> <leader>y :ShowTableOfContents<CR>
 " }}}
 
 function <SID>xpm_loader()
