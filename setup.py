@@ -73,15 +73,6 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             yn = input(input_str)
         return yn
 
-    def home_cut(path):
-        home = op.expandvars('$HOME')
-        home2 = op.realpath(home)   # if home is symbolic link.
-        if home2 in path:
-            path = path.replace(home2, '~')
-        elif home in path:
-            path = path.replace(home, '~')
-        return path
-
     file1 = op.expanduser(file1)
     file2 = op.expanduser(file2)
     if not op.exists(file1):
@@ -134,9 +125,9 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             print(shift+"condition doesn't match" )
         elif exist:
             if islink and filecmp.cmp(file1, file2):
-                print(shift+'[ {} ] is already linked. ({})'.format(home_cut(file2), name1))
+                print(shift+'[ {} ] is already linked.'.format(home_cut(file2)))
             else:
-                print(shift+'[ {} ] is already exist, cannot link! ({})'.format(home_cut(file2), name1))
+                print(shift+'[ {} ] is already exist, cannot link!'.format(home_cut(file2)))
         else:
             fcopy_main(cmd,comment,test)
 
@@ -148,16 +139,16 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
             print(shift+"condition doesn't match" )
         elif force:
             if islink:
-                print(shift+'[ {} ] is a link file, cannot copy! ({})'.format(home_cut(file2), name1))
+                print(shift+'[ {} ] is a link file, cannot copy!'.format(home_cut(file2)))
             else:
                 fcopy_main(cmd, comment, test)
         elif exist:
             if filecmp.cmp(file1, file2) and islink:
-                print(shift+'[ {} ] is linked. ({})'.format(home_cut(file2), name1))
+                print(shift+'[ {} ] is linked.'.format(home_cut(file2)))
             elif filecmp.cmp(file1, file2):
-                print(shift+'[ {} ] is already copied. ({})'.format(home_cut(file2), name1))
+                print(shift+'[ {} ] is already copied.'.format(home_cut(file2)))
             elif islink:
-                print(shift+'[ {} ] is a link file, cannot copy! ({})'.format(home_cut(file2), name1))
+                print(shift+'[ {} ] is a link file, cannot copy!'.format(home_cut(file2)))
             else:
                 is_diff = False
                 while True:
@@ -180,6 +171,15 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         else:
             fcopy_main(cmd, comment, test)
 #}}}
+
+def home_cut(path):
+    home = op.expandvars('$HOME')
+    home2 = op.realpath(home)   # if home is symbolic link.
+    if home2 in path:
+        path = path.replace(home2, '~')
+    elif home in path:
+        path = path.replace(home, '~')
+    return path
 
 def get_files(fpath, args_type, prefix):
     if fpath is None:
@@ -204,6 +204,19 @@ def get_files(fpath, args_type, prefix):
     else:
         print("{} is not in {}. use default settings.".format(args_type, fpath))
         return None
+
+def show_target_files(file_dict):
+    if is_color:
+        fg = FG256(2)
+        end = END
+    else:
+        fg = ''
+        end = ''
+
+    print(fg+'target files'+end)
+    for key in sorted(file_dict.keys()):
+        print('{} => {}'.format(op.relpath(key), home_cut(file_dict[key])))
+    print(fg+'=~=~=~=~=~=~=~=~=~='+end)
 
 def main_opt(args):
     binpath = op.join(args.prefix,'bin')
@@ -234,7 +247,8 @@ def main_opt(args):
                 if not fname.endswith('pyc'):
                     files[lfy] = op.join(libpath, fname)
 
-    for fy in files:
+    show_target_files(files)
+    for fy in sorted(files.keys()):
         optpath = op.join(optdir, fy)
         fcopy(optpath, files[fy], link=args.link, force=args.force, test=args.test)
 
@@ -301,7 +315,8 @@ def main_conf(args):
         mkdir(bashdir)
         urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', op.join(bashdir, 'git-prompt.sh'))
 
-    for fy in files:
+    show_target_files(files)
+    for fy in sorted(files.keys()):
         spath = op.join(setdir,fy)
         fy_dir = op.dirname(op.expanduser(files[fy]))
         if op.exists(fy_dir):
@@ -418,7 +433,8 @@ def main_vim(args):
 
         print('\nremoved download tmp files')
 
-    for fy in files:
+    show_target_files(files)
+    for fy in sorted(files.keys()):
         vimpath = op.join(vimdir, fy)
         fcopy(vimpath, files[fy], link=args.link, force=args.force, test=args.test)
 
