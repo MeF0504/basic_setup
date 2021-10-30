@@ -1,5 +1,6 @@
 
 import re
+import sys
 
 from local_lib_color import convert_color_name, convert_fullcolor_to_256
 
@@ -11,28 +12,37 @@ class XPMLoader():
 
     def load_xpm(self, xpm_file):
         res = ''
-        com_line = 0
+        com_lines = False
 
         with open(xpm_file) as f:
             for line in f:
                 line = line.replace("\t", " ")
-                # // comment
-                if re.match(" *//", line) is not None: continue
-                # ~~~ */
-                if re.match(".*\*/ *\n", line) is not None:
-                    if com_line == 1:
-                        com_line = 0
-                        continue
-                    elif re.match(" */\*", line) is not None:
-                        continue
-                # /* ~~~
-                if re.match(" */\*", line) is not None:
-                    com_line = 1
-                    continue
-                # comment line
-                if com_line == 1:
-                    continue
-                tmpline = line.replace("\n", "")
+                tmpline = ''
+                for i,char in enumerate(line):
+                    if char == '/':
+                        if line[i+1] == '/':
+                            # comment line; //
+                            break
+                        elif line[i+1] == '*':
+                            # comment lines; /*
+                            com_lines = True
+                        elif line[i-1] == '*':
+                            # already passed; */
+                            continue
+                        else:
+                            if not com_lines:
+                                tmpline += char
+                    elif char == '*':
+                        if line[i+1] == '/':
+                            # end of comment lines; */
+                            com_lines = False
+                        else:
+                            if not com_lines:
+                                tmpline += char
+                    else:
+                        if not com_lines:
+                            tmpline += char
+                tmpline = tmpline.replace("\n", "")
                 res += tmpline
 
         res = res[res.find('{')+1:res.rfind('}')]
@@ -43,7 +53,7 @@ class XPMLoader():
         elif len(info_list) == 6:
             width, height, colors, char_per_pixel, x_hot, y_hot = info_list
         else:
-            print('{}: fail to load xpm file (color settings).'.format(xpm_file))
+            print('{}: fail to load xpm file (color settings).'.format(xpm_file), file=sys.stderr)
             return
         info = { \
                 'width'  : width, \
@@ -168,11 +178,11 @@ class XPMLoader():
                 if col == 'NONE':
                     # get Normal highlight if possible.
                     hi_cmd  = 'try | '
-                    hi_cmd += 'highlight link Xpmcolor{:d} Normal'.format(j)
-                    hi_cmd += ' | highlight Xpmcolor{:d} {}fg=bg'.format(j, term)
-                    hi_cmd += ' | catch'
-                    hi_cmd += ' | highlight Xpmcolor{:d} {}fg=NONE {}bg=NONE'.format(j, term, term)
-                    hi_cmd += ' | endtry'
+                    hi_cmd += 'highlight link Xpmcolor{:d} Normal | '.format(j)
+                    hi_cmd += 'highlight Xpmcolor{:d} {}fg=bg | '.format(j, term)
+                    hi_cmd += 'catch | '
+                    hi_cmd += 'highlight Xpmcolor{:d} {}fg=NONE {}bg=NONE | '.format(j, term, term)
+                    hi_cmd += 'endtry'
                 elif not gui:
                     r = int(col[1:3], 16)
                     g = int(col[3:5], 16)
@@ -193,12 +203,12 @@ if __name__ == '__main__':
     import sys
     import matplotlib.pyplot as plt
     xpm_file = sys.argv[1]
-    xpms = XPMLoader()
-    xpms.load_xpm(xpm_file)
-    xpms.xpm_to_ndarray()
+    XL = XPMLoader()
+    XL.load_xpm(xpm_file)
+    XL.xpm_to_ndarray()
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.imshow(xpms.xpms[0]['ndarray'])
+    ax.imshow(XL.xpms[0]['ndarray'])
     ax.grid(False)
     ax.set_xticks([])
     ax.set_yticks([])
