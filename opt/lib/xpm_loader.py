@@ -22,7 +22,8 @@ class XPMLoader():
                     if char == '/':
                         if line[i+1] == '/':
                             # comment line; //
-                            break
+                            if not com_lines:
+                                break
                         elif line[i+1] == '*':
                             # comment lines; /*
                             com_lines = True
