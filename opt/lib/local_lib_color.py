@@ -345,11 +345,12 @@ def convert_color_name(color_name, color_type, verbose=False):
 
         try:
             import matplotlib.colors as mcolors
-            named_colors = mcolors.get_named_colors_mapping()
-            col_list.update(named_colors)
         except ImportError as e:
             if verbose:
                 print('matplotlib is not imported.')
+        else:
+            named_colors = mcolors.get_named_colors_mapping()
+            col_list.update(named_colors)
 
     for i in range(101):
         if 'gray{:d}'.format(i) in col_list:
@@ -510,12 +511,8 @@ def main_test(num):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--num', help='0... no fg, 1... show number, 2... is_dark', choices=[0,1,2], type=int)
+    parser.add_argument('--num', help='0... no fg, 1... show number, 2... is_dark', choices=[0,1,2], type=int, default=0)
     args = parser.parse_args()
 
-    if hasattr(args, 'num') and (args.num is not None):
-        num = args.num
-    else:
-        num = 0
-    main_test(num)
+    main_test(args.num)
 
