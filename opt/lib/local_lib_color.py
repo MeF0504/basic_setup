@@ -352,13 +352,12 @@ def convert_color_name(color_name, color_type, verbose=False):
             named_colors = mcolors.get_named_colors_mapping()
             col_list.update(named_colors)
 
-    for i in range(101):
-        if 'gray{:d}'.format(i) in col_list:
-            continue
-        gray_level = int(255*i/100+0.5)
-        col_list['gray{:d}'.format(i)] = {'256':None, 'full': '#{:02x}{:02x}{:02x}'.format(gray_level, gray_level, gray_level)}
-        col_list['grey{:d}'.format(i)] = {'256':None, 'full': '#{:02x}{:02x}{:02x}'.format(gray_level, gray_level, gray_level)}
-        # print(col_list)
+        for i in range(101):
+            if 'gray{:d}'.format(i) in col_list:
+                continue
+            gray_level = int(255*i/100+0.5)
+            col_list['gray{:d}'.format(i)] = {'256':None, 'full': '#{:02x}{:02x}{:02x}'.format(gray_level, gray_level, gray_level)}
+            col_list['grey{:d}'.format(i)] = {'256':None, 'full': '#{:02x}{:02x}{:02x}'.format(gray_level, gray_level, gray_level)}
 
     if not color_name in col_list:
         if verbose:
