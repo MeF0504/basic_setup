@@ -53,8 +53,8 @@ def args_chk(args, attr):
         return args.opts is not None
     elif attr == 'encoding':
         return args.encoding is not None
-    elif attr == 'opt_arg':
-        return args.opt_arg is not None
+    elif attr == 'exec':
+        return args.exec is not None
     else:
         return False
 
@@ -196,6 +196,22 @@ def get_image_viewer(args):
         else:
             img_viewer = 'PIL'
     return img_viewer
+
+def get_exec_cmds(args, fname):
+    if args_chk(args, 'exec'):
+        res = []
+        for cmd in args.exec:
+            if cmd == '%s':
+                res.append(fname)
+            elif cmd == '%c':
+                res.append(args.image_viewer)
+            else:
+                res.append(cmd)
+    else:
+        res = [args.image_viewer, fname]
+    if debug:
+        print('executed command: {}'.format(res))
+    return res
 
 def make_bitmap(filename, rgb):
     if rgb.shape[-1] == 4:
@@ -693,14 +709,11 @@ def main_tar(fpath, args):
                     cv2.waitKey(0)
                     # cv2.destroyAllWindows()
                 else:
-                    if args_chk(args, 'opt_arg'):
-                        opt = args.opt_arg
-                    else:
-                        opt = []
                     with tempfile.TemporaryDirectory() as tmpdir:
                         tar_file.extractall(path=tmpdir, members=[tarinfo])
                         tmpfile = os.path.join(tmpdir, cpath)
-                        subprocess.run([img_viewer]+opt+[tmpfile])
+                        cmds = get_exec_cmds(args, tmpfile)
+                        subprocess.run(cmds)
                         # wait to open file. this is for, e.g., open command on Mac OS.
                         input('Press Enter to continue')
 
@@ -845,14 +858,11 @@ def main_zip(fpath, args):
                     cv2.waitKey(0)
                     # cv2.destroyAllWindows()
                 else:
-                    if args_chk(args, 'opt_arg'):
-                        opt = args.opt_arg
-                    else:
-                        opt = []
                     with tempfile.TemporaryDirectory() as tmpdir:
                         zip_file.extract(zipinfo, path=tmpdir)
                         tmpfile = os.path.join(tmpdir, cpath)
-                        subprocess.run([img_viewer]+opt+[tmpfile])
+                        cmds = get_exec_cmds(args, tmpfile)
+                        subprocess.run(cmds)
                         # wait to open file. this is for, e.g., open command on Mac OS.
                         input('Press Enter to continue')
 
@@ -1027,11 +1037,11 @@ def main_raw(fpath, args):
         print("I can't find rawpy.")
         return
 
-    img_lib = get_image_viewer(args)
-    if img_lib is None:
+    img_viewer = get_image_viewer(args)
+    if img_viewer is None:
         print("I can't find any libraries to show image. Please install Pillow or matplotlib.")
         return
-    elif img_lib not in 'PIL matplotlib OpenCV'.split(' '):
+    elif img_viewer not in 'PIL matplotlib OpenCV'.split(' '):
         import tempfile
         import subprocess
 
@@ -1047,11 +1057,11 @@ def main_raw(fpath, args):
 
     if debug:
         print(rgb.shape)
-        print('use {}'.format(img_lib))
-    if img_lib == 'PIL':
+        print('use {}'.format(img_viewer))
+    if img_viewer == 'PIL':
         img = Image.fromarray(rgb)
         img.show(title=os.path.basename(fpath))
-    elif img_lib == 'matplotlib':
+    elif img_viewer == 'matplotlib':
         if get_screen:
             height = get_monitors()[0].height
         else:
@@ -1071,19 +1081,16 @@ def main_raw(fpath, args):
         ax1.spines['right'].set_visible(False)
         ax1.spines['left'].set_visible(False)
         plt.show()
-    elif img_lib == 'OpenCV':
+    elif img_viewer == 'OpenCV':
         img = rgb[:,:,::-1] # RGB -> BGR
         cv2.imshow(os.path.basename(fpath), img)
         cv2.waitKey(0)
         # cv2.destroyAllWindows()
     else:
-        if args_chk(args, 'opt_arg'):
-            opt = args.opt_arg
-        else:
-            opt = []
         with tempfile.NamedTemporaryFile(suffix='.bmp') as tmp:
             make_bitmap(tmp.name, rgb)
-            subprocess.run([img_lib]+opt+[tmp.name])
+            cmds = get_exec_cmds(args, tmp.name)
+            subprocess.run(cmds)
             # wait to open file. this is for, e.g., open command on Mac OS.
             input('Press Enter to continue')
 
@@ -1180,14 +1187,11 @@ def main_jupyter(fpath, args):
                                 cv2.imshow('Out [{}]'.format(cnt), img)
                                 cv2.waitKey(500)
                             else:
-                                if args_chk(args, 'opt_arg'):
-                                    opt = args.opt_arg
-                                else:
-                                    opt = []
                                 tmp = tempfile.NamedTemporaryFile(suffix='.png')
                                 tmp_images.append(tmp)
                                 tmp.write(img_bin)
-                                subprocess.run([img_viewer]+opt+[tmp.name])
+                                cmds = get_exec_cmds(args, tmp.name)
+                                subprocess.run(cmds)
                                 if args_chk(args, 'verbose'):
                                     time.sleep(1.)
 
@@ -1230,11 +1234,11 @@ def main_xpm(fpath, args):
             print("I can't find xpm_loader.")
             return
 
-    img_lib = get_image_viewer(args)
-    if img_lib is None:
+    img_viewer = get_image_viewer(args)
+    if img_viewer is None:
         print("I can't find any libraries to show image. Please install Pillow or matplotlib.")
         return
-    elif img_lib not in 'PIL matplotlib OpenCV'.split(' '):
+    elif img_viewer not in 'PIL matplotlib OpenCV'.split(' '):
         import tempfile
         import subprocess
 
@@ -1247,11 +1251,11 @@ def main_xpm(fpath, args):
 
     if debug:
         print(data.shape)
-        print('use {}'.format(img_lib))
-    if img_lib == 'PIL':
+        print('use {}'.format(img_viewer))
+    if img_viewer == 'PIL':
         img = Image.fromarray(data)
         img.show(title=os.path.basename(fpath))
-    elif img_lib == 'matplotlib':
+    elif img_viewer == 'matplotlib':
         fig1 = plt.figure(figsize=(width/100, height/100))
         # full display
         ax1 = fig1.add_axes((0, 0, 1, 1))
@@ -1264,19 +1268,16 @@ def main_xpm(fpath, args):
         ax1.spines['right'].set_visible(False)
         ax1.spines['left'].set_visible(False)
         plt.show()
-    elif img_lib == 'OpenCV':
+    elif img_viewer == 'OpenCV':
         img = data[:,:,[2,1,0,3]] # RGBA -> BGRA
         cv2.imshow(os.path.basename(fpath), img)
         cv2.waitKey(0)
         # cv2.destroyAllWindows()
     else:
-        if args_chk(args, 'opt_arg'):
-            opt = args.opt_arg
-        else:
-            opt = []
         with tempfile.NamedTemporaryFile(suffix='.bmp') as tmp:
             make_bitmap(tmp.name, data)
-            subprocess.run([img_lib]+opt+[tmp.name])
+            cmds = get_exec_cmds(args, tmp.name)
+            subprocess.run(cmds)
             # wait to open file. this is for, e.g., open command on Mac OS.
             input('Press Enter to continue')
 
@@ -1289,7 +1290,7 @@ Currently available options;
 help                show this help message and exit.
 debug:True/False    enable/disable debug message.
 encoding:enc_name   set encoding.
-arg:arguments       set optional arguments for external image viewer.''')
+exec:exec_cmds      set executed commands for external image viewer. %c=>image_viewer, %s=>target_file''')
             return False
         elif ':' in opt:
             key, value = opt.split(':')
@@ -1303,17 +1304,15 @@ arg:arguments       set optional arguments for external image viewer.''')
                 args.encoding = value
                 if debug:
                     print('set encoding={}'.args.encoding)
-            elif key == 'arg':
+            elif key == 'exec':
                 if space_str in value:
-                    cprint('optional arguments may not work as expected', fg='y', file=sys.stderr)
+                    cprint('executed commands may not work as expected', fg='y', file=sys.stderr)
                 value = value.replace('\ ', space_str)
                 vals = value.split(' ')
                 for i in range(len(vals)):
                     if space_str in vals[i]:
                         vals[i] = vals[i].replace(space_str, ' ')
-                if debug:
-                    print('additional arguments of image viewer', vals)
-                args.opt_arg = vals
+                args.exec = vals
     return True
 
 def main(args):
