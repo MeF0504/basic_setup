@@ -235,6 +235,7 @@ function! s:SID_PREFIX()
 endfunction
 
 " Set tabline.
+let g:l_show_cwd_tab = get(g:, 'l_show_cwd_tab', 1)
 function! s:get_title(tabnr)
     let bufnrs = tabpagebuflist(a:tabnr)
     let bufnr = bufnrs[tabpagewinnr(a:tabnr)-1]
@@ -294,8 +295,12 @@ function! s:my_tabline()
     let tab_fin_l = 0
     let tab_fin_r = 0
 
-    let cdir = ' @'.s:get_cwd_path()
-    let tab_len += len(cdir)
+    if g:l_show_cwd_tab == 1
+        let cdir = ' @'.s:get_cwd_path()
+        let tab_len += len(cdir)
+    else
+        let cdir = ''
+    endif
 
     " count listed buffers
     for bn in range(1, bufnr('$'))
