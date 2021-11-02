@@ -234,6 +234,23 @@ command! -nargs=* -complete=customlist,s:jupyter_arg_list Jupyter call s:jupyter
 " }}}
 '''
 
+[[plugins]]
+repo = 'prabirshrestha/vim-lsp'
+on_event = 'VimEnter'
+hook_source = '''
+""" vim-lsp {{{
+" https://qiita.com/kitagry/items/216c2cf0066ff046d200
+" errorとかwarning表示はとりあえずoff
+let g:lsp_diagnostics_enabled = 0
+" highlightはvim-cursorwordで表示しているので使わない
+let g:lsp_document_highlight_enabled = 0
+""" }}}
+'''
+
+[[plugins]]
+repo = 'mattn/vim-lsp-settings'
+on_source = 'vim-lsp'
+
 # 新世代(2021) dark deno-powered completion framework
 [[plugins]]
 repo = 'Shougo/ddc.vim'
@@ -242,7 +259,7 @@ on_event = 'InsertEnter'
 hook_post_source = '''
 """""ddc.vim {{{
 " add sources
-call ddc#custom#patch_global('sources', ['file', 'around', 'neosnippet'])
+call ddc#custom#patch_global('sources', ['file', 'vim-lsp', 'around', 'neosnippet'])
 " set basic options
 call ddc#custom#patch_global(
     \ 'sourceOptions', {
@@ -271,6 +288,9 @@ call ddc#custom#patch_global(
             \ 'mark': 'TN',
             \ 'maxCandidate': 5,
             \ 'isVolatile': v:true,
+        \ },
+        \ 'vim-lsp': {
+            \ 'mark': 'lsp',
         \ },
     \ },
     \ 'sourceParams', {
@@ -305,7 +325,7 @@ call ddc#custom#patch_filetype(['vim', 'toml'], {
     \}
 \ })
 call ddc#custom#patch_filetype(['python', 'c', 'cpp'], {
-    \ 'sources': ['file', 'around', 'tabnine'],
+    \ 'sources': ['file', 'vim-lsp', 'around', 'tabnine'],
 \ })
 
 " Mappings
@@ -344,6 +364,10 @@ on_source = ['ddc.vim']
 
 [[plugins]]
 repo = 'LumaKernel/ddc-tabnine'
+on_source = ['ddc.vim']
+
+[[plugins]]
+repo = 'shun/ddc-vim-lsp'
 on_source = ['ddc.vim']
 # }}}
 

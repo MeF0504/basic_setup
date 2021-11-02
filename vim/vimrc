@@ -462,6 +462,10 @@ command! FileInfo call s:fileinfo()
 
 " 新しいtabで関数ジャンプする {{{
 function! <SID>Tab_Jump()
+    if exists(':LspPeekDefinition') == 2
+        LspPeekDefinition
+        return
+    endif
     let l:ctabnr = tabpagenr()
     let l:cword = expand('<cword>')
     silent cd %:h
@@ -482,6 +486,11 @@ endfunction
 "jump先をnew tabで開く
 nnoremap <silent> <c-j> :call <SID>Tab_Jump()<CR>
 
+" vim-lspがあればjumpもそっちを使う
+nnoremap <silent> <expr> <c-]>
+            \ exists(':LspReferences')==2
+            \ ? ':LspReferences<CR>'
+            \ : 'g<c-]>'
 " }}}
 
 "clipboardを新しいwindowに保存{{{
