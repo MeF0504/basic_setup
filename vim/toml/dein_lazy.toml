@@ -244,6 +244,22 @@ hook_source = '''
 let g:lsp_diagnostics_enabled = 0
 " highlightはvim-cursorwordで表示しているので使わない
 let g:lsp_document_highlight_enabled = 0
+'''
+hook_post_source = '''
+" reference: lsp_settings#profile#status()
+function! <SID>chk_lsp_running()
+    for active_server in lsp#get_allowed_servers()
+        if lsp#get_server_status(active_server) == 'running'
+            return 1
+        endif
+    endfor
+    return 0
+endfunction
+" lsp server が動いていればc-]でreferenceを開いて，c-jで定義をpopupで開く
+let s:map1 =  maparg('<c-]>', 'n')
+let s:map2 =  maparg('<c-j>', 'n')
+execute "nnoremap <silent> <expr> <c-]> <SID>chk_lsp_running()==1 ? ':LspReferences<CR>' : '".s:map1."'"
+execute "nnoremap <silent> <expr> <c-j> <SID>chk_lsp_running()==1 ? ':LspPeekDefinition<CR>' : '".s:map2."'"
 """ }}}
 '''
 
