@@ -257,7 +257,13 @@ function! <SID>chk_lsp_running()
 endfunction
 " lsp server が動いていればc-]でreferenceを開いて，c-jで定義をpopupで開く
 let s:map1 =  maparg('<c-]>', 'n')
+if empty(s:map1)
+    let s:map1 = '<c-]>'
+endif
 let s:map2 =  maparg('<c-j>', 'n')
+if empty(s:map2)
+    let s:map2 = '<c-j>'
+endif
 execute "nnoremap <silent> <expr> <c-]> <SID>chk_lsp_running()==1 ? ':LspReferences<CR>' : '".s:map1."'"
 execute "nnoremap <silent> <expr> <c-j> <SID>chk_lsp_running()==1 ? ':LspPeekDefinition<CR>' : '".s:map2."'"
 """ }}}
