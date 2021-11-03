@@ -422,58 +422,36 @@ repo = 'MeF0504/vim-shiki'
 # current lineの関数表示用plugin (StatusLine用)
 [[plugins]]
 repo = 'tyru/current-func-info.vim'
-hook_add = '''
+hook_post_source = '''
 """" current-func-info.vim {{{
-" let s:cfi_st = "[%{cfi#get_func_name()}] "
-let s:cfi_st = "%#StatusLine_CFI# %{cfi#get_func_name()} "
-function! <SID>add_cfi_sl()
-
-    function! s:clear_cfi_sl()
-        let l:st_tmp = g:l_statusline
-        let g:l_statusline = []
-        for i in range(len(l:st_tmp))
-            if i!=2
-                let g:l_statusline += [l:st_tmp[i]]
-            endif
-        endfor
-    endfunction
-
-    " support file type: c, pc++, ython, 
-    if ((&filetype != 'c') &&
-       \(&filetype != 'cpp') &&
-       \(&filetype != 'python')
-       \)
-        if g:l_statusline[2] == s:cfi_st
-            call s:clear_cfi_sl()
-        endif
+let s:bufid = -1
+let s:popid = -1
+let g:l_cfi_on = get(g:, 'l_cfi_on', 1)
+function! <SID>Show_cfi()
+    if g:l_cfi_on == 0
         return
     endif
-    " if file is long enough, don't show in statusline.
-    if line('$') > 10000
-        if g:l_statusline[2] == s:cfi_st
-            call s:clear_cfi_sl()
-        endif
+    if cfi#supported_filetype(&filetype) == 0
         return
     endif
-
-    " do nothing if already set.
-    if g:l_statusline[2] == s:cfi_st
-        return
+    if has('nvim')
+        let line = 0
+    else
+        let line = 1
     endif
-
-    let l:st_tmp = g:l_statusline
-    let g:l_statusline = []
-    for i in range(len(l:st_tmp))
-        if i == 2
-            let g:l_statusline += [s:cfi_st]
-            let g:l_statusline += [l:st_tmp[i]]
-        else
-            let g:l_statusline += [l:st_tmp[i]]
-        endif
-    endfor
+    let cfi = cfi#get_func_name()
+    let config = {
+        \ 'relative': 'win',
+        \ 'line': line,
+        \ 'col': winwidth(0),
+        \ 'pos': 'topright',
+        \ 'highlight': 'CFIPopup',
+        \ }
+    let [s:bufid, s:popid] = llib#popup_wrapper(s:bufid, s:popid, [cfi], config)
 endfunction
-
-autocmd deinLocal BufEnter * call <SID>add_cfi_sl()
+autocmd deinLocal CursorMoved * call <SID>Show_cfi()
+autocmd deinLocal WinLeave * call llib#popup_close(s:popid) | let s:popid=-1
+autocmd deinLocal QuitPre * call llib#popup_close(s:popid)
 " }}}
 '''
 

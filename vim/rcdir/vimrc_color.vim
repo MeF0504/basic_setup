@@ -123,7 +123,6 @@ function! <SID>my_color_set()
     highlight StatusLine_FT cterm=bold ctermfg=253 ctermbg=17
     highlight StatusLine_FF cterm=bold ctermfg=253 ctermbg=88
     highlight StatusLine_LN cterm=bold ctermfg=253 ctermbg=29
-    highlight StatusLine_CFI cterm=bold ctermfg=233 ctermbg=11
     highlight Mode_N cterm=bold ctermfg=253 ctermbg=0
     highlight Mode_I cterm=bold ctermfg=253 ctermbg=9
     highlight Mode_V cterm=bold ctermfg=253 ctermbg=13
@@ -165,6 +164,10 @@ function! <SID>my_color_set()
     " CursorWord {{{
     highlight CursorWord1 ctermfg=None ctermbg=None cterm=None
     highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline
+    " }}}
+
+    " current-func-info {{{
+    highlight CFIPopup ctermbg=11 ctermfg=233 cterm=bold
     " }}}
 
     " colorscheme specified setings
