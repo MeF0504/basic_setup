@@ -256,16 +256,21 @@ function! <SID>chk_lsp_running()
     return 0
 endfunction
 " lsp server が動いていればc-]でreferenceを開いて，c-jで定義をpopupで開く
-let s:map1 =  maparg('<c-]>', 'n')
-if empty(s:map1)
-    let s:map1 = '<c-]>'
+let s:lsp_map1 =  maparg('<c-]>', 'n')
+if empty(s:lsp_map1)
+    let s:lsp_map1 = '<c-]>'
 endif
-let s:map2 =  maparg('<c-j>', 'n')
-if empty(s:map2)
-    let s:map2 = '<c-j>'
+let s:lsp_map2 =  maparg('<c-j>', 'n')
+if empty(s:lsp_map2)
+    let s:lsp_map2 = '<c-j>'
 endif
-execute "nnoremap <silent> <expr> <c-]> <SID>chk_lsp_running()==1 ? ':LspReferences<CR>' : '".s:map1."'"
-execute "nnoremap <silent> <expr> <c-j> <SID>chk_lsp_running()==1 ? ':LspPeekDefinition<CR>' : '".s:map2."'"
+let s:lsp_map3 =  maparg('<c-p>', 'n')
+if empty(s:lsp_map3)
+    let s:lsp_map3 = '<c-p>'
+endif
+execute "nnoremap <silent> <expr> <c-]> <SID>chk_lsp_running()==1 ? ':LspDefinition<CR>' : '".s:lsp_map1."'"
+execute "nnoremap <silent> <expr> <c-j> <SID>chk_lsp_running()==1 ? ':LspReferences<CR>' : '".s:lsp_map2."'"
+execute "nnoremap <silent> <expr> <c-p> <SID>chk_lsp_running()==1 ? ':LspPeekDefinition<CR>' : '".s:lsp_map3."'"
 """ }}}
 '''
 
