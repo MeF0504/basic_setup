@@ -451,7 +451,9 @@ function! <SID>Show_cfi()
 endfunction
 autocmd deinLocal CursorMoved * call <SID>Show_cfi()
 autocmd deinLocal WinLeave * call llib#popup_close(s:popid) | let s:popid=-1
-autocmd deinLocal QuitPre * call llib#popup_close(s:popid)
+if !has('nvim')
+    autocmd deinLocal QuitPre * call llib#popup_close(s:popid)
+endif
 " }}}
 '''
 
