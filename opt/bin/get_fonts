@@ -1,0 +1,35 @@
+#! /usr/bin/env python3
+
+import os
+import sys
+import argparse
+
+try:
+    import matplotlib.font_manager as fm
+except ImportError as e:
+    print('fail to import matplotlib.font_manager.', file=sys.stderr)
+    sys.exit(1)
+
+def main(args):
+    fonts = fm.findSystemFonts(fontpaths=args.dir, fontext=args.ext)
+    res = {}
+    for ft in fonts:
+        f_dir = os.path.dirname(ft)
+        if f_dir in res:
+            res[f_dir].append(os.path.basename(ft))
+        else:
+            res[f_dir] = [os.path.basename(ft)]
+
+    for f_dir in sorted(res.keys()):
+        print('@ {}'.format(f_dir))
+        for font in sorted(res[f_dir]):
+            print(font)
+        print()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-e', dest='ext', help='specify the extension', type=str, default='ttf')
+    parser.add_argument('-d', dest='dir', help='specify the directory of fonts', type=str)
+    args = parser.parse_args()
+
+    main(args)
