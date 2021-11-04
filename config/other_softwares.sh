@@ -30,6 +30,7 @@ which pip3
 # pip3 insatll tabulate       # table 作成／表示ライブラリ
 # pip3 install python-magic   # magic (file type判定)用ライブラリ
 # pip3 install opencv-python  # Open CV package for python
+# pip3 install 'python-lsp-server[all]'     # python用 Language Server
 echo
 # }}}
 
