@@ -268,9 +268,14 @@ let s:lsp_map3 =  maparg('<c-p>', 'n')
 if empty(s:lsp_map3)
     let s:lsp_map3 = '<c-p>'
 endif
+let s:lsp_map4 =  maparg('<c-p><c-p>', 'n')
+if empty(s:lsp_map4)
+    let s:lsp_map4 = '<c-p><c-p>'
+endif
 execute "nnoremap <silent> <expr> <c-]> <SID>chk_lsp_running()==1 ? ':LspDefinition<CR>' : '".s:lsp_map1."'"
 execute "nnoremap <silent> <expr> <c-j> <SID>chk_lsp_running()==1 ? ':LspReferences<CR>' : '".s:lsp_map2."'"
 execute "nnoremap <silent> <expr> <c-p> <SID>chk_lsp_running()==1 ? ':LspHover<CR>' : '".s:lsp_map3."'"
+execute "nnoremap <silent> <expr> <c-p><c-p> <SID>chk_lsp_running()==1 ? ':LspPeekDefinition<CR>' : '".s:lsp_map4."'"
 """ }}}
 '''
 
