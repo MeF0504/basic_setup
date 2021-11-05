@@ -439,7 +439,8 @@ function! <SID>Show_cfi()
     else
         let line = 1
     endif
-    let cfi = cfi#get_func_name()
+    " let cfi = cfi#get_func_name()
+    let cfi = cfi#format("%s()", "Top")
     let config = {
         \ 'relative': 'win',
         \ 'line': line,
@@ -451,9 +452,7 @@ function! <SID>Show_cfi()
 endfunction
 autocmd deinLocal CursorMoved * call <SID>Show_cfi()
 autocmd deinLocal WinLeave * call llib#popup_close(s:popid) | let s:popid=-1
-if !has('nvim')
-    autocmd deinLocal QuitPre * call llib#popup_close(s:popid)
-endif
+autocmd deinLocal QuitPre * call llib#popup_close(s:popid) | let s:popid=-1
 " }}}
 '''
 
