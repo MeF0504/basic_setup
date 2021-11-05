@@ -7,6 +7,7 @@ import sys
 import argparse
 import tarfile
 import platform
+import mimetypes
 from pathlib import PurePath
 try:
     # to use this, libmagic.* should be in /opt/local/lib/, /usr/local/lib, /opt/homebrew/lib or /usr/local/Cellar/libmagic/*/lib in darwin system (macOS).
@@ -33,7 +34,6 @@ else:
 
 debug = False
 inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
-image_ext = 'png jpg jpeg bmp gif'.split(' ')
 uname = platform.system()
 
 def args_chk(args, attr):
@@ -135,6 +135,13 @@ def get_filetype_magic(fpath):
         return 'text'
     else:
         return None
+
+def is_image(path):
+    mime = mimetypes.guess_type(path)[0]
+    if mime.split('/')[0] == 'image':
+        return True
+    else:
+        return False
 
 def get_image_viewer(args):
     if args_chk(args, 'image_viewer'):
@@ -678,7 +685,7 @@ def main_tar(fpath, args):
         if tarinfo.isfile():
 
             # image file
-            if cpath.lower().endswith(tuple(image_ext)):
+            if is_image(cpath):
                 if img_viewer is None:
                     print('There are no way to show image.')
                 elif img_viewer == 'PIL':
@@ -827,7 +834,7 @@ def main_zip(fpath, args):
 
         # file
         else:
-            if cpath.lower().endswith(tuple(image_ext)):
+            if is_image(cpath):
                 if img_viewer is None:
                     print('There are no way to show image.')
                 elif img_viewer == 'PIL':
