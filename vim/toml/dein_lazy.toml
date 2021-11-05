@@ -244,8 +244,14 @@ hook_source = '''
 let g:lsp_diagnostics_enabled = 0
 " highlightはvim-cursorwordで表示しているので使わない
 let g:lsp_document_highlight_enabled = 0
+" LspPeekDefinition で表示する位置
+let g:lsp_peek_alignment = 'top'
+" 文字入力中にhelpを出さないようにしている？
+let g:lsp_signature_help_enabled = 0
+""" }}}
 '''
 hook_post_source = '''
+""" vim-lsp {{{
 " reference: lsp_settings#profile#status()
 function! <SID>chk_lsp_running()
     for active_server in lsp#get_allowed_servers()
