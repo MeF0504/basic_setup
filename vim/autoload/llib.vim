@@ -243,9 +243,13 @@ function! llib#popup_close(popids)
             continue
         endif
         if has('popupwin')
-            call popup_close(popid)
+            if match(popup_list(), popid) != -1
+                call popup_close(popid)
+            endif
         elseif has('nvim')
-            call nvim_win_close(popid, v:false)
+            if (match(nvim_list_wins(),popid)!=-1) && !empty(nvim_win_get_config(popid)['relative'])
+                call nvim_win_close(popid, v:false)
+            endif
         endif
     endfor
 endfunction
