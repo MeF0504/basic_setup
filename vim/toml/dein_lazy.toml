@@ -254,9 +254,17 @@ hook_post_source = '''
 """ vim-lsp {{{
 " reference: lsp_settings#profile#status()
 function! <SID>chk_lsp_running()
-    for active_server in lsp#get_allowed_servers()
-        if lsp#get_server_status(active_server) == 'running'
+    let active_servers = lsp#get_allowed_servers()
+    if empty(active_servers)
+        echomsg 'no Language server'
+        return 0
+    endif
+    for active_server in active_servers
+        let lsp_status = lsp#get_server_status(active_server)
+        if lsp_status == 'running'
             return 1
+        else
+            echomsg lsp_status
         endif
     endfor
     return 0
