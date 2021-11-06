@@ -197,6 +197,10 @@ add_env() {
                 ;;
         esac
     done
+    if [[ ${in_dir: -1:1} = '/' ]]; then
+        # remove '/' at end
+        in_dir=${in_dir%/}
+    fi
 
     find "$in_dir" -mindepth 1 -maxdepth 1 \( -type d -o -type l \) \
         | while read -r basedir
