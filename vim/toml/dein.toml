@@ -429,6 +429,8 @@ let s:popid = -1
 let g:l_cfi_on = get(g:, 'l_cfi_on', 1)
 function! <SID>Show_cfi()
     if g:l_cfi_on == 0
+        call llib#popup_close(s:popid)
+        let s:popid = -1
         return
     endif
     if cfi#supported_filetype(&filetype) == 0
