@@ -224,7 +224,13 @@ def main_opt(args):
     optdir = op.join(args.fpath,'opt')
     bindir = op.join(optdir,'bin')
     libdir = op.join(optdir, 'lib')
-    print('\n@ '+optdir+'\n')
+    if is_color:
+        fg = FG256(11)
+        end = END
+    else:
+        fg = ''
+        end = ''
+    print('\n'+fg+'@ '+optdir+end+'\n')
 
     files = get_files(args.setup_file, 'opt', args.prefix)
     if files is None:
@@ -256,7 +262,13 @@ def main_conf(args):
     binpath = op.join(args.prefix,'bin')
     libpath = op.join(args.prefix,'lib')
     setdir = op.join(args.fpath,'config')
-    print('\n@ '+setdir+'\n')
+    if is_color:
+        fg = FG256(11)
+        end = END
+    else:
+        fg = ''
+        end = ''
+    print('\n'+fg+'@ '+setdir+end+'\n')
 
     files_mac = {\
                 'zshrc':'~/.zshrc', \
@@ -377,7 +389,13 @@ def main_conf(args):
 
 def main_vim(args):
     vimdir = op.join(args.fpath,'vim')
-    print('\n@ '+vimdir+'\n')
+    if is_color:
+        fg = FG256(11)
+        end = END
+    else:
+        fg = ''
+        end = ''
+    print('\n'+fg+'@ '+vimdir+end+'\n')
 
     if uname == 'Windows':
         vim_config_path = op.expanduser('~/vimfiles')
