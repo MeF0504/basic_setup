@@ -130,14 +130,15 @@ endif
 command! LS 0tabnew .
 
 ""statusline setting {{{
-let g:l_st_fileformat = {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRLF"}
-let g:l_st_mode = {'n':'NORMAL',
-            \'v':'VISUAL', "\<C-V>":'VISUAL-B', 'V':'VISUAL-L',
-            \'i':'INSERT',
-            \'R':'REPLACE',
-            \'t':'TERMINAL',
-            \'c':'COMMAND',
-            \}
+call llib#set_local_var('st_fileformat', {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRLF"})
+call llib#set_local_var('st_mode',
+            \ {'n':'NORMAL',
+            \ 'v':'VISUAL', "\<C-V>":'VISUAL-B', 'V':'VISUAL-L',
+            \ 'i':'INSERT',
+            \ 'R':'REPLACE',
+            \ 't':'TERMINAL',
+            \ 'c':'COMMAND',
+            \})
 " mode
 " ファイル名 修正フラグ 読込専用 ヘルプ preview_window
 " 切り詰め位置 右端に表示
@@ -145,29 +146,30 @@ let g:l_st_mode = {'n':'NORMAL',
 " file format
 " 今の行/全体の行-今の列 [%表示]
 """ the variable to administer statusline
-let g:l_statusline = [
-            \" %f%m%{&readonly?'[RO]':''}%h%w ",
-            \"%<%=",
-            \"%#StatusLine_FT# %{&filetype} ",
-            \"%#StatusLine_FF# %{g:l_st_fileformat[&fileformat]}:%{&fileencoding} ",
-            \"%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]",
-            \]
+call llib#set_local_var('statusline', [
+            \ " %f%m%{&readonly?'[RO]':''}%h%w ",
+            \ "%<%=",
+            \ "%#StatusLine_FT# %{&filetype} ",
+            \ "%#StatusLine_FF# %{llib#get_local_var('st_fileformat', '')[&fileformat]}:%{&fileencoding} ",
+            \ "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]",
+            \ ])
 
 " パスを除くファイル名 修正フラグ 読込専用 ヘルプ preview_window
-let g:l_statusline_off = ["%t%m%{&readonly?'[RO]':''}%h%w"]
+call llib#set_local_var('statusline_off', ["%t%m%{&readonly?'[RO]':''}%h%w"])
 """ control statusline showing
-let g:l_st_width_level = [30, 50]
-let g:l_st_showmode = 1
+call llib#set_local_var('st_width_level', [30, 50])
+call llib#set_local_var('st_showmode', 1)
 function! Set_statusline(cur_win, ...)
     if a:0 == 0
-        let l:st_list1 = g:l_statusline
+        let l:st_list1 = llib#get_local_var('statusline', ["%f%m%{&readonly?'[RO]':''}%h%w"])
     else
         let l:st_list1 = a:1
     endif
 
-    if winwidth(".") < g:l_st_width_level[0]
+    let st_width_level = llib#get_local_var('st_width_level', [30,50])
+    if winwidth(".") < st_width_level[0]
         let l:st_list2 = [l:st_list1[0]]
-    elseif winwidth(".") < g:l_st_width_level[1]
+    elseif winwidth(".") < st_width_level[1]
         if len(st_list1) >= 3
             let l:st_list2 = [l:st_list1[0], l:st_list1[1], l:st_list1[-1]]
         else
@@ -182,10 +184,11 @@ function! Set_statusline(cur_win, ...)
         let l:st_str .= l:st
     endfor
 
-    if (g:l_st_showmode != 0) && (a:cur_win != 0)
+    if (llib#get_local_var('st_showmode', 1) != 0) && (a:cur_win != 0)
+        let st_modes = llib#get_local_var('st_mode', {})
         let modec = mode()
         " mode string setting
-        let st_mode = has_key(g:l_st_mode, modec) ? g:l_st_mode[modec] : modec
+        let st_mode = has_key(st_modes, modec) ? st_modes[modec] : modec
         " color setting
         let st_mode .= ' %#StatusLine#'
         if modec =~ 'i'
@@ -207,8 +210,8 @@ function! Set_statusline(cur_win, ...)
     return l:st_str
 endfunction
 set statusline=%!Set_statusline(1)
-" g:l_st_showmode != 0 なら(statuslineに表示されるので) showmode をoffにする
-autocmd local VimEnter * if g:l_st_showmode!=0 | set noshowmode | endif
+" st_showmode != 0 なら(statuslineに表示されるので) showmode をoffにする
+autocmd local VimEnter * if llib#get_local_var('st_showmode', 1)!=0 | set noshowmode | endif
 
 "}}}
 
@@ -235,7 +238,6 @@ function! s:SID_PREFIX()
 endfunction
 
 " Set tabline.
-let g:l_show_cwd_tab = get(g:, 'l_show_cwd_tab', 1)
 function! s:get_title(tabnr)
     let bufnrs = tabpagebuflist(a:tabnr)
     let bufnr = bufnrs[tabpagewinnr(a:tabnr)-1]
@@ -295,7 +297,7 @@ function! s:my_tabline()
     let tab_fin_l = 0
     let tab_fin_r = 0
 
-    if g:l_show_cwd_tab == 1
+    if llib#get_local_var('show_cwd_tab', 1) == 1
         let cdir = ' @'.s:get_cwd_path()
         let tab_len += len(cdir)
     else
@@ -509,15 +511,15 @@ nnoremap <Leader>p :call Show_clipboard()<CR>
 "}}}
 
 " 関数じゃないけどInsertを抜けるときに日本語入力をoff {{{
-if !exists('$SSH_CONNECTION') && exists('g:l_auto_ime_off')   " ※ssh先ではhostのを変えるので意味なし
+if !exists('$SSH_CONNECTION') && llib#get_local_var('auto_ime_off', 0)==1   " ※ssh先ではhostのを変えるので意味なし
     if has('win32')
         autocmd local InsertLeave * set iminsert=0
     elseif has('mac')
             " 参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
         if has('nvim')
             " nvimはjob_startが無い？っぽいのでとりあえず昔の方法で
-            let g:l_imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
-            autocmd local InsertLeave * :call system(g:l_imeoff)
+            let s:imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
+            autocmd local InsertLeave * call system(s:imeoff)
         else
             " 参考2: https://moyapro.com/2019/04/14/disable-ime-on-mac-vim/
             " 非同期で動かせるらしい
@@ -533,18 +535,17 @@ endif
 
 "" active window {{{
 
-"let g:l_cur_winnr = 1
-"autocmd local WinEnter let g:l_cur_winnr = winnr()
 autocmd local WinEnter * if &buftype != 'quickfix' | set statusline=%!Set_statusline(1) | endif
-autocmd local WinLeave * if &buftype != 'quickfix' | setlocal statusline=%!Set_statusline(0,g:l_statusline_off) | endif
+autocmd local WinLeave * if &buftype != 'quickfix' | setlocal statusline=%!Set_statusline(0,llib#get_local_var('statusline_off',[])) | endif
 
 ""}}}
 
 " 辞書（というか英辞郎）で検索 {{{
 function! s:eijiro(word)
-    if exists('g:l_dic_file') && filereadable(g:l_dic_file)
+    let dic_file = llib#get_local_var('dic_file', '')
+    if filereadable(dic_file)
         " localに辞書ファイルがある場合はそれを参照
-        execute "vimgrep /\\<".a:word."\\>/j ".g:l_dic_file
+        execute "vimgrep /\\<".a:word."\\>/j "..dic_file
         return
     endif
 
@@ -629,11 +630,10 @@ endif
 autocmd local BufRead * let b:cfile = expand("%:p")
 autocmd local BufRead * let b:cdir = expand("%:p:h")
 
-let g:l_last_file = {'win':'', 'tab':''}
-autocmd local WinLeave * let g:l_last_file['win'] = expand("%:p")
-autocmd local TabClosed * let g:l_last_file['tab'] = g:l_last_file['win']
-command! LastTab execute "tabnew " . g:l_last_file['tab']
-command! LastWin execute "vsplit " . g:l_last_file['win']
+autocmd local WinLeave * call llib#set_local_var('last_file_win', expand("%:p"))
+autocmd local TabClosed * call llib#set_local_var('last_file_tab', llib#get_local_var('last_file_win', ''))
+command! LastTab execute "tabnew " . llib#get_local_var('last_file_tab', '')
+command! LastWin execute "vsplit " . llib#get_local_var('last_file_win', '')
 
 "検索pathを追加
 set path+=../include

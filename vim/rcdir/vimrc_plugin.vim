@@ -110,7 +110,7 @@ command! BinMode call <SID>BinaryMode()
 " }}}
 
 " 開いているfile一覧 {{{
-let g:l_cur_winID = win_getid()
+let s:cur_winID = win_getid()
 
 function! s:file_list() abort
     let l:fnames = {}
@@ -173,7 +173,7 @@ function! s:file_list() abort
             return
         " move to previous tab
         elseif l:tabnr == "p"
-            let l:tabnr = win_id2tabwin(g:l_cur_winID)[0]
+            let l:tabnr = win_id2tabwin(s:cur_winID)[0]
         " check l:tabnr is number
         elseif str2nr(l:tabnr) != 0
             let l:tabnr = str2nr(l:tabnr)
@@ -184,7 +184,7 @@ function! s:file_list() abort
         endif
         if (1 <= l:tabnr ) && (l:tabnr <= tabpagenr("$") )
             " get current page number
-            let g:l_cur_winID = win_getid()
+            let s:cur_winID = win_getid()
             execute("normal! " . l:tabnr . "gt")
             redraw!
             return
@@ -196,110 +196,6 @@ command! Tls call s:file_list()
 
 nnoremap <silent> <leader>l :Tls<CR>
 
-" }}}
-
-" window setiing function {{{
-function! s:window_mode() abort
-    if !exists("s:wmode_on")
-        let s:wmode_on = 1
-        "save old map
-        let g:l_wmode_old_map = {}
-        let g:l_wmode_map_strs = ["<right>", "l", "<left>", "h", "<up>", "k", "<down>", "j", "i", "a", "s", "I", "A", "S", "R","+","-"]
-        for st in g:l_wmode_map_strs
-            let g:l_wmode_old_map[st] = maparg(st, 'n',0,1)
-        endfor
-
-        "map change window
-        nnoremap <right> <c-w>>
-        nnoremap l <c-w>>
-        nnoremap <left> <c-w><
-        nnoremap h <c-w><
-        nnoremap <up> <c-w>+
-        nnoremap k <c-w>+
-        nnoremap <down> <c-w>-
-        nnoremap j <c-w>-
-        nnoremap i <Nop>
-        nnoremap a <Nop>
-        nnoremap s <Nop>
-        nnoremap I <Nop>
-        nnoremap A <Nop>
-        nnoremap S <Nop>
-        nnoremap R <Nop>
-
-        "change gui font size
-        if has("gui")
-            function! s:set_font_size(pm)
-                let l:fl = strridx(&guifont, 'h')
-                let l:font_size = str2nr(&guifont[fl+1:])
-                if a:pm == '-'
-                    let l:font_size -= 1
-                elseif a:pm == '+'
-                    let l:font_size += 1
-                else
-                    return
-                endif
-                execute("set guifont=" . &guifont[:l:fl] . l:font_size)
-            endfunction
-
-            command! WMPlus call s:set_font_size('+')
-            command! WMMinus call s:set_font_size('-')
-            nnoremap <silent> + :WMPlus<CR>
-            nnoremap <silent> - :WMMinus<CR>
-        else
-            nmap + +
-            nmap - -
-        endif
-
-        "show mode in statusline
-        "set statusline+=\ [WM]
-        let s:old_st = &statusline
-        let &statusline = "%f%m%r%h%w  %=[wimdow mode on]"
-    else
-        unlet s:wmode_on
-        "remap
-        for st in g:l_wmode_map_strs
-            let l:st_map = g:l_wmode_old_map[st]
-            if l:st_map == {}
-                execute( "unmap " . st )
-            else
-                let l:opt = ''
-                if l:st_map['silent']
-                    let l:opt .= ' <silent> '
-                endif
-                if l:st_map['buffer']
-                    let l:opt .= ' <buffer> '
-                endif
-                if l:st_map['nowait']
-                    let l:opt .= ' <nowait> '
-                endif
-                if l:st_map['expr']
-                    let l:opt .= ' <expr> '
-                endif
-                if l:st_map['noremap']
-                    let l:map_str = 'nnoremap '
-                else
-                    let l:map_str = 'nmap '
-                endif
-                execute(l:map_str . l:opt . l:st_map['lhs'] . " " . l:st_map['rhs'] )
-            endif
-        endfor
-        "delete changing font size command
-        if has('gui')
-            delcommand WMPlus
-            delcommand WMMinus
-        endif
-
-        "unlet global variables
-        unlet g:l_wmode_old_map
-        unlet g:l_wmode_map_strs
-
-        "set statusline-=\ [WM]
-        let &statusline = s:old_st
-    endif
-endfunction
-
-command! Wmode call s:window_mode()
-nnoremap <silent> <Leader>w :Wmode<CR>
 " }}}
 
 """ #で行末から括弧を見つけたり、次のcase文を見つけたりしてとぶ {{{
@@ -741,8 +637,8 @@ function! s:Terminal(...) abort
 
     if has_key(opts, 'win')
         let win_opt = opts['win'][0]
-    elseif exists('g:l_term_default')
-        let win_opt = g:l_term_default
+    elseif !empty(llib#get_local_var('term_default', ''))
+        let win_opt = llib#get_local_var('term_default', 'S')
     else
         let win_opt = 'S'
     endif
@@ -1191,9 +1087,7 @@ function! s:show_table_of_contents()
         let tables = {}
     endif
 
-    if exists('g:l_table_of_contents')
-        cal extend(tables, g:l_table_of_contents, 'force')
-    endif
+    cal extend(tables, llib#get_local_var('table_of_contents', {}), 'force')
 
     if exists('g:ToC_add_tables')
         for k in keys(g:ToC_add_tables)

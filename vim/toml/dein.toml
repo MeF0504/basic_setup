@@ -426,9 +426,8 @@ hook_post_source = '''
 """" current-func-info.vim {{{
 let s:bufid = -1
 let s:popid = -1
-let g:l_cfi_on = get(g:, 'l_cfi_on', 1)
 function! <SID>Show_cfi()
-    if g:l_cfi_on == 0
+    if llib#get_local_var('cfi_on', 0) == 0
         call llib#popup_close(s:popid)
         let s:popid = -1
         return
@@ -464,8 +463,8 @@ repo = 'pocke/sushibar.vim'
 hook_add = '''
 """ sushibar.vim {{{
 let s:sushi = 1
-if ((exists("g:l_bd_month") && (str2nr(strftime("%b")) == g:l_bd_month))
-    \&& (exists("g:l_bd_day") && (str2nr(strftime("%d")) == g:l_bd_day)) )
+if (str2nr(strftime("%b")) == llib#get_local_var('bd_month', 0)
+    \ && str2nr(strftime("%d")) == llib#get_local_var('bd_day', 0))
     "" Birthday
     if s:sushi == 1
         autocmd deinLocal BufWinEnter * Sushibar

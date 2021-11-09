@@ -20,6 +20,26 @@ function! llib#get_conf_dir()
     return vimdir
 endfunction
 
+function! llib#set_local_var(var_name, val)
+    execute "let s:"..a:var_name.." = a:val"
+endfunction
+
+function! llib#get_local_var(var_name, default)
+    if empty(a:var_name)
+        for var in sort(keys(s:))
+            echohl Identifier
+            echo var..': '
+            echohl None
+            echon s:[var]
+        endfor
+    elseif exists("s:"..a:var_name)
+        execute "return s:"..a:var_name
+    else
+        " execute "let s:"..a:var_name.." = a:default"
+        return a:default
+    endif
+endfunction
+
 " 関数の引数解析用関数 (key=arg)
 function! llib#analythis_args_eq(arg) abort
     let args = split(a:arg, ' ')
