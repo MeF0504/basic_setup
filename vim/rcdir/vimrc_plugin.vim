@@ -1089,12 +1089,6 @@ function! s:show_table_of_contents()
 
     cal extend(tables, llib#get_local_var('table_of_contents', {}), 'force')
 
-    if exists('g:ToC_add_tables')
-        for k in keys(g:ToC_add_tables)
-            let tables[k] = g:ToC_add_tables[k]
-        endfor
-    endif
-
     if len(tables) == 0
         return
     endif

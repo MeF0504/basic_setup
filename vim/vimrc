@@ -605,7 +605,7 @@ nnoremap <silent> <Leader><Leader> :call <SID>leader_map()<CR>
 
 " 要らない？user関数を消す {{{
 function! s:del_comds()
-    let del_commands = get(g:, 'del_commands', [])
+    let del_commands = llib#get_local_var('del_commands', [])
     for dc in del_commands
         if exists(':'.dc) == 2
             execute 'delcommand '.dc
