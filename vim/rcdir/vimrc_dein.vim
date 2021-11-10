@@ -68,9 +68,13 @@ endif
 
 " Plugin remove check
 let s:removed_plugins = dein#check_clean()
+let s:already_removed = 0
 if len(s:removed_plugins) > 0
     function! s:RemovePlugins()
         " call map(s:removed_plugins, "delete(v:val, 'rf')")
+        if s:already_removed == 1
+            return
+        endif
         for s:rmp in s:removed_plugins
             let yn = input('remove '.s:rmp.'? (y/[n])')
             if yn=='y'
@@ -78,6 +82,7 @@ if len(s:removed_plugins) > 0
             endif
         endfor
         call dein#recache_runtimepath()
+        let s:already_removed = 1
     endfunction
     autocmd deinLocal VimEnter * call s:RemovePlugins()
 endif
