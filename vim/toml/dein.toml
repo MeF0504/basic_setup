@@ -84,62 +84,6 @@ endif
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
 
-# file tree
-[[plugins]]
-repo = 'scrooloose/nerdtree'
-hook_add = '''
-"""""NERDTree "{{{
-"Bookmarkをデフォルト表示
-let g:NERDTreeShowBookmarks=1
-"見栄え
-let g:NERDTreeDirArrows = 1
-let g:NERDTreeDirArrowExpandable  = '>'
-let g:NERDTreeDirArrowCollapsible = '!'
-"右側に表示
-let g:NERDTreeWinPos="right"
-
-"local mapping
-nnoremap <silent> <Leader>n :NERDTreeToggle<CR>
-
-function! <SID>open_file_nerdtree(file_name) abort
-    let open_cmd = ""
-    if has('osxdarwin')
-        let open_cmd = 'open '
-    elseif has('win32')
-        let open_cmd = 'start '
-    endif
-
-    if open_cmd == ''
-        return ''
-    endif
-    return ":!".open_cmd.a:file_name."\<CR>"
-endfunction
-
-function! <SID>search_file_nerdtree(cur_file, search_file) abort
-    if !isdirectory(a:cur_file)
-        return
-    endif
-
-    let file_list = glob(a:cur_file."/**", 0, 1, 1)
-    let idx = -1
-    while 1
-        let idx = match(file_list, a:search_file, idx+1)
-        if idx >= 0
-            echo file_list[idx]
-        else
-            break
-        endif
-    endwhile
-endfunction
-
-autocmd deinLocal FileType nerdtree nnoremap <buffer> <expr> <c-t>
-    \ <SID>open_file_nerdtree(g:NERDTreeFileNode.GetSelected().path.str())
-autocmd deinLocal FileType nerdtree command! -nargs=1 -buffer SearchNERD
-    \ call <SID>search_file_nerdtree(g:NERDTreeFileNode.GetSelected().path.str(), <f-args>)
-
-"}}}
-'''
-
 # コード実行plugin
 [[plugins]]
 repo = 'thinca/vim-quickrun'
@@ -628,4 +572,64 @@ let g:cursorword_highlight = 0
 [[plugins]]
 repo = 'vim-denops/denops.vim'
 if = '''executable('deno') && (has('patch-8.2.3081') || has('nvim-0.5.0'))'''
+
+# Filer
+[[plugins]]
+repo = 'lambdalisue/fern.vim'
+hook_add = '''
+""" Fern {{{
+" default keymap off
+let g:fern#disable_default_mappings = 1
+" 見た目の設定
+let g:fern#renderer#default#root_symbol = '@ '
+let g:fern#renderer#default#collapsed_symbol = '|> '
+let g:fern#renderer#default#expanded_symbol = '|= '
+let g:fern#renderer#default#leaf_symbol = '|  '
+let g:fern#keepalt_on_edit = 1
+
+" Fern-local map
+function! s:set_fern_map()
+    nmap <buffer> <CR> <Plug>(fern-action-open-or-enter)
+    " Enterでopen/expand/collapse
+    nmap <buffer><expr>
+            \ <Plug>(fern-my-open-or-expand-or-collapse)
+            \ fern#smart#leaf(
+            \   "<Plug>(fern-action-open:select)",
+            \   "<Plug>(fern-action-expand)",
+            \   "<Plug>(fern-action-collapse)",
+            \ )
+    nmap <buffer> <CR> <Plug>(fern-my-open-or-expand-or-collapse)
+    " shift-→ でexpand
+    nmap <buffer> <S-Right> <Plug>(fern-action-expand)
+    " shift-← でcollapse
+    nmap <buffer> <S-Left> <Plug>(fern-action-collapse)
+    " shift-↑ でleave
+    nmap <buffer> <S-Up> <Plug>(fern-action-leave)
+    " shift-↓ でenter
+    nmap <buffer> <S-Down> <Plug>(fern-action-enter)
+    " <c-t> でtabで開く
+    nmap <buffer> <c-t> <Plug>(fern-action-open:tabedit)
+    " <c-g> でゴミ箱
+    nmap <buffer> <c-g> <Plug>(fern-action-trash)
+    " <c-s> でsystemで開く
+    nmap <buffer> <c-s> <Plug>(fern-action-open:system)
+endfunction
+autocmd deinLocal FileType fern call s:set_fern_map()
+
+" host map
+nnoremap <silent> <leader>n <cmd>Fern . -drawer -toggle -reveal=% -right<CR>
+
+" 色設定
+function! s:set_fern_hi()
+    highlight FernMarkedText ctermfg=196
+    highlight FernRootSymbol ctermfg=11
+    highlight FernRootText ctermfg=3
+    highlight FernBranchSymbol ctermfg=10
+    highlight FernBranchText ctermfg=2
+    highlight FernLeafSymbol ctermfg=22
+    " highlight FernLeafText ctermfg=41
+endfunction
+autocmd deinLocal User FernHighlight call s:set_fern_hi()
+""" }}}
+'''
 
