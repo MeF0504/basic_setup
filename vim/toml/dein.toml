@@ -364,10 +364,10 @@ function! Open_taglist()
         let l:tlist_right_old = 0
     endif
     " guiの時はいらないかも？↓
-    if winwidth(winnr()) > s:Max_WinWidth*2
+    if winwidth(winnr()) > s:Max_WinWidth*3
         let g:Tlist_WinWidth = s:Max_WinWidth
     else
-        let g:Tlist_WinWidth = (winwidth(winnr())/11)*5
+        let g:Tlist_WinWidth = (winwidth(winnr())/16)*5
     endif
 
     " 右端だと右側に開く
