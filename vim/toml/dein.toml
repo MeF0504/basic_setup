@@ -541,7 +541,7 @@ repo = 'altercation/vim-colors-solarized'
 # command line と検索時に補完してくれるplugin
 [[plugins]]
 repo = 'gelguy/wilder.nvim'
-hook_add = '''
+hook_post_source = '''
 " {{{
 " from https://github.com/gelguy/wilder.nvim
 call wilder#enable_cmdline_enter()
