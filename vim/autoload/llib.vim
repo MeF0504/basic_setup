@@ -2,7 +2,7 @@
 scriptencoding utf-8
 
 " get vim config directory
-function! llib#get_conf_dir()
+function! llib#get_conf_dir() abort
     if has('nvim')
         if exists("$XDG_CONFIG_HOME")
             let vimdir = expand($XDG_CONFIG_HOME . "/nvim/")
@@ -20,11 +20,11 @@ function! llib#get_conf_dir()
     return vimdir
 endfunction
 
-function! llib#set_local_var(var_name, val)
+function! llib#set_local_var(var_name, val) abort
     execute "let s:"..a:var_name.." = a:val"
 endfunction
 
-function! llib#get_local_var(var_name, default)
+function! llib#get_local_var(var_name, default) abort
     if empty(a:var_name)
         for var in sort(keys(s:))
             echohl Identifier
@@ -106,7 +106,7 @@ function! llib#analythis_args_hyp(args, args_config) abort
     return res
 endfunction
 
-function! llib#popup_wrapper(bufid, popid, str_list, config)
+function! llib#popup_wrapper(bufid, popid, str_list, config) abort
     " popid < 0; create new popup window, >= 0; update contents
     " bufid is not required in Vim. 
     " (vim) config <=> nvim config
@@ -252,7 +252,7 @@ function! llib#popup_wrapper(bufid, popid, str_list, config)
     return [bufid, popid]
 endfunction
 
-function! llib#popup_close(popids)
+function! llib#popup_close(popids) abort
     if type(a:popids) != type([])
         let popids = [a:popids]
     else
@@ -272,5 +272,16 @@ function! llib#popup_close(popids)
             endif
         endif
     endfor
+endfunction
+
+" search top directory of this project
+function! llib#get_top_dir(cwd) abort
+    for repo_dir in ['.git', 'svn']
+        let top_dir = finddir(repo_dir..'/..', a:cwd..';')
+        if !empty(top_dir)
+            return top_dir
+        endif
+    endfor
+    return ''
 endfunction
 

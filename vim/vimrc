@@ -641,6 +641,13 @@ set path+=../include
 " if exists("$LD_LIBRARY_PATH")
 "     execute "set path+=".substitute($LD_LIBRARY_PATH, ':', ',', 'g')
 " endif
+" あればproject top dirを追加
+if llib#get_local_var('get_top_dir', 0) == 1
+    let s:top_dir = llib#get_top_dir('.')
+    if !empty(s:top_dir)
+        let &path..=','..s:top_dir..'/**/include'
+    endif
+endif
 
 " test用directoryを追加
 let s:test_vim_dir = s:vimdir . 'test'

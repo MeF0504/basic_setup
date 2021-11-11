@@ -15,39 +15,6 @@ let g:mftag_exe_option = '-R --exclude="tmp/*"'
 
 nnoremap <silent> <Leader>m :MFfunclist<CR>
 
-function! s:AddPath()
-    if exists("b:mftag_save_dir")
-        if b:mftag_save_dir != "/"
-            let l:save_dir = substitute(b:mftag_save_dir, " ", "\\\\ ", "g")
-            execute "set path+=" . l:save_dir . "**/include"
-        endif
-    endif
-endfunction
-autocmd deinLocal BufRead * call s:AddPath()
-
-" GREgrep wrapper
-if exists('*Mygrep') == 1
-    function! s:gregrep_wrapper(...)
-        if a:0 == 1
-            if (!(match(a:1, 'wd=')+1) && !(match(a:1, 'ex=')+1) && !(match(a:1, 'dir=')+1))
-                " no arguments
-                call Mygrep('-h')
-                return
-            endif
-
-            let res = a:1
-            let st = match(a:1, 'dir=')
-            if st == -1
-                let res .= ' dir=' . substitute(substitute(MFsearch_dir(g:mftag_dir), '\', '\\\\', 'g'), ' ', '\\\\ ', 'g')
-            endif
-        else
-            let res = ' dir=' . substitute(substitute(MFsearch_dir(g:mftag_dir), '\', '\\\\', 'g'), ' ', '\\\\ ', 'g')
-        endif
-        execute 'call ' . 'Mygrep("' . res . '")'
-    endfunction
-    command! -nargs=? GREgrep call s:gregrep_wrapper(<f-args>)
-endif
-
 "}}}
 '''
 

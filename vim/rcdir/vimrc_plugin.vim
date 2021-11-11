@@ -946,10 +946,17 @@ function! Mygrep(...)
     "     echo "file not saved!"
     "     return
     " endif
+    let def_dir = '.'
+    if llib#get_local_var('get_top_dir', 0) == 1
+        let top_dir = llib#get_top_dir(expand('%:h'))
+        if !empty(top_dir)
+            let def_dir = top_dir
+        endif
+    endif
     if a:0 == '0'
         let l:word = expand('<cword>')
         let l:ft = '.' . expand('%:e')
-        let l:dir = '.'
+        let l:dir = def_dir
     else
         let arg = llib#analythis_args_eq(a:1)
 
