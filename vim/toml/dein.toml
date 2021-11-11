@@ -600,3 +600,14 @@ autocmd deinLocal User FernHighlight call s:set_fern_hi()
 """ }}}
 '''
 
+# fern plugins {{{
+[[plugins]]
+repo = 'lambdalisue/fern-hijack.vim'
+
+[[plugins]]
+repo = 'lambdalisue/fern-ssh'
+
+[[plugins]]
+repo = 'lambdalisue/fern-mapping-project-top.vim'
+
+# }}}
