@@ -584,7 +584,7 @@ endfunction
 autocmd deinLocal FileType fern call s:set_fern_map()
 
 " host map
-nnoremap <silent> <leader>n <cmd>Fern . -drawer -toggle -reveal=% -right<CR>
+nnoremap <silent> <leader>n <cmd>Fern . -drawer -toggle -reveal=%<CR>
 
 " 色設定
 function! s:set_fern_hi()
