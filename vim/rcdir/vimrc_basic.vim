@@ -166,6 +166,8 @@ if exists('s:vimdir')
     endif
     let &spellfile = s:vimdir.'spell/local.'.&encoding.'.add'
 endif
+" <c-a>, <c-x>の対称を10進数 (default)，16進数，2進数，unsignedにする
+set nrformats=hex,bin,unsigned
 
 " terminal mode設定
 " Nothing
