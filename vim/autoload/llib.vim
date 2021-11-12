@@ -20,22 +20,23 @@ function! llib#get_conf_dir() abort
     return vimdir
 endfunction
 
+let s:local_var_dict = {}
 function! llib#set_local_var(var_name, val) abort
-    execute "let s:"..a:var_name.." = a:val"
+    let s:local_var_dict[a:var_name] = a:val
 endfunction
 
 function! llib#get_local_var(var_name, default) abort
     if empty(a:var_name)
-        for var in sort(keys(s:))
+        for var in sort(keys(s:local_var_dict))
             echohl Identifier
             echo var..': '
             echohl None
-            echon s:[var]
+            echon s:local_var_dict[var]
         endfor
-    elseif exists("s:"..a:var_name)
-        execute "return s:"..a:var_name
+    elseif has_key(s:local_var_dict, a:var_name)
+        return s:local_var_dict[a:var_name]
     else
-        " execute "let s:"..a:var_name.." = a:default"
+        " let s:local_var_dict[a:var_name] = a:default
         return a:default
     endif
 endfunction
