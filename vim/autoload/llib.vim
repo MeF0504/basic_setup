@@ -107,9 +107,11 @@ function! llib#analythis_args_hyp(args, args_config) abort
     return res
 endfunction
 
+let s:pop_index = 0
 function! llib#popup_wrapper(bufid, popid, str_list, config) abort
     " popid < 0; create new popup window, >= 0; update contents
-    " bufid is not required in Vim. 
+    " bufid < 0; create new buffer, >= 0; use this buffer.
+    " NOTE: currently this function is not aim to display normal buffer.
     " (vim) config <=> nvim config
     " (line, col) <= relative
     " line => row
@@ -152,10 +154,10 @@ function! llib#popup_wrapper(bufid, popid, str_list, config) abort
     " filtermode
     " callback
 
+    let bufid = -1
     let popid = -1
 
     if has('popupwin')
-        let bufid = -1
         let v_config = deepcopy(a:config)
 
         if has_key(a:config, 'relative')
@@ -181,13 +183,19 @@ function! llib#popup_wrapper(bufid, popid, str_list, config) abort
                 let v_config.col = a:config.col+wshift-1
             endif
         endif
+        if a:bufid < 0
+            let bufid = bufadd('[llib_pop_'..s:pop_index..']')
+            let s:pop_index += 1
+        else
+            let bufid = a:bufid
+        endif
         if a:popid < 0
-            let popid = popup_create(a:str_list, v_config)
+            let popid = popup_create(bufid, v_config)
         else
             let popid = a:popid
             call popup_setoptions(popid, v_config)
-            call popup_settext(popid, a:str_list)
         endif
+        call popup_settext(popid, a:str_list)
 
     elseif has('nvim')
         if !has_key(a:config, 'relative') || !has_key(a:config, 'line') || !has_key(a:config, 'col')
