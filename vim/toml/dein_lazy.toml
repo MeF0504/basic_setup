@@ -290,6 +290,15 @@ execute "nnoremap <silent> <expr> <c-]> <SID>chk_lsp_running()==1 ? ':LspDefinit
 execute "nnoremap <silent> <expr> <c-j> <SID>chk_lsp_running()==1 ? ':LspReferences<CR>' : '".s:lsp_map2."'"
 execute "nnoremap <silent> <expr> <c-p> <SID>chk_lsp_running()==1 ? ':LspHover<CR>' : '".s:lsp_map3."'"
 execute "nnoremap <silent> <expr> <c-p><c-p> <SID>chk_lsp_running()==1 ? ':LspPeekDefinition<CR>' : '".s:lsp_map4."'"
+
+" normal modeでmouseが使えないとscroll出来ないので，とりあえず対処。
+" lsp_float_closed がvimだとpopupが閉じても叩かれない？ので，qで閉じるようにする
+autocmd User lsp_float_opened nnoremap <buffer> <expr> <c-d> lsp#scroll(+5)
+autocmd User lsp_float_opened nnoremap <buffer> <expr> <c-u> lsp#scroll(-5)
+autocmd User lsp_float_opened nmap <buffer> <silent> q <Plug>(lsp-preview-close)
+autocmd User lsp_float_closed nunmap <buffer> <c-d>
+autocmd User lsp_float_closed nunmap <buffer> <c-u>
+autocmd User lsp_float_closed nunmap <buffer> q
 """ }}}
 '''
 
