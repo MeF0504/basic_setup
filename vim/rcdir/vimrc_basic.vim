@@ -19,7 +19,7 @@ scriptencoding utf-8
 " :set termcap  ... Show all terminal options.
 " :map          ... Show all mapping settings.
 " :highlight    ... Show all highlight settings.
-" command       ... Show all user commands.
+" :command       ... Show all user commands.
 
 " ##### spell check
 " information; :h spell or https://vim-jp.org/vimdoc-ja/spell.html
@@ -42,6 +42,11 @@ scriptencoding utf-8
 " about SID
 " :scriptnames          ... List all sourced script names
 " :echo expand('<SID>') ... Get the current file SID
+
+" about <Cmd>
+" mapping でcmd modeに移るときは : よりも <Cmd> の方が良さそう
+" :h map-cmd
+" 使用できるのは ver. 8.2 && patch-1978 以降
 
 "" }}}
 
