@@ -583,6 +583,8 @@ function! s:set_fern_map()
     nmap <buffer> <c-g> <Plug>(fern-action-trash)
     " <c-s> でsystemで開く
     nmap <buffer> <c-s> <Plug>(fern-action-open:system)
+    " <c-f> で検索
+    nmap <buffer> <c-f> <Plug>(fern-action-search-ctrlp)
 endfunction
 autocmd deinLocal FileType fern call s:set_fern_map()
 
@@ -619,5 +621,8 @@ depends = ['fern.vim']
 [[plugins]]
 repo = 'MeF0504/fern-mapping-search-ctrlp.vim'
 depends = ['fern.vim', 'ctrlp.vim']
+hook_add = '''
+let g:fern_search_ctrlp_root = 1
+'''
 
 # }}}
