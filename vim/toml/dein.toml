@@ -606,11 +606,18 @@ autocmd deinLocal User FernHighlight call s:set_fern_hi()
 # fern plugins {{{
 [[plugins]]
 repo = 'lambdalisue/fern-hijack.vim'
+depends = ['fern.vim']
 
 [[plugins]]
 repo = 'lambdalisue/fern-ssh'
+depends = ['fern.vim']
 
 [[plugins]]
 repo = 'lambdalisue/fern-mapping-project-top.vim'
+depends = ['fern.vim']
+
+[[plugins]]
+repo = 'MeF0504/fern-mapping-search-ctrlp.vim'
+depends = ['fern.vim', 'ctrlp.vim']
 
 # }}}
