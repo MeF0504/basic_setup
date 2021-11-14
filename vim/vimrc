@@ -539,7 +539,12 @@ autocmd local WinEnter * if &buftype != 'quickfix' | set statusline=%!Set_status
 autocmd local WinLeave * if &buftype != 'quickfix' | setlocal statusline=%!Set_statusline(0,llib#get_local_var('statusline_off',[])) | endif
 
 " 長過ぎたらstausline の最初をファイル名のみにする
-autocmd local WinEnter * if len(expand('%'))*0.9 > winwidth(0) | call llib#set_local_var('statusline', [" %t%m%{&readonly?'[RO]':''}%h%w "], [0]) | endif
+autocmd local WinEnter * 
+            \ if len(expand('%'))*0.9 > winwidth(0) |
+            \ call llib#set_local_var('statusline', [" %t%m%{&readonly?'[RO]':''}%h%w "], [0]) |
+            \ else | 
+            \ call llib#set_local_var('statusline', [" %f%m%{&readonly?'[RO]':''}%h%w "], [0]) |
+            \ endif
 
 ""}}}
 
