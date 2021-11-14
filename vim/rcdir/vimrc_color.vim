@@ -88,9 +88,9 @@ function! <SID>my_color_set()
 
     " corsor line {{{
     if g:colors_name !~ 'pjsekai_*'
-        highlight CursorLine cterm=underline ctermfg=None ctermbg=None
         highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15
     endif
+    highlight CursorLine cterm=underline ctermfg=None ctermbg=None
     " }}}
 
     " tab line {{{
@@ -133,14 +133,12 @@ function! <SID>my_color_set()
 
     " その他 {{{
     highlight ToCkeys ctermfg=10
+    if (&background == 'light') && exists(':SeiyaDisable')
+        SeiyaDisable
+    endif
     " }}}
 
     """ plugin highlights
-    " NERDTree {{{
-    highlight NERDTreeBookmarksLeader ctermfg=32
-    highlight NERDTreeBookmark ctermfg=107
-    " }}}
-
     " hitspop {{{
     highlight hitspopNormal ctermfg=224 ctermbg=238
     highlight hitspopErrorMsg ctermfg=9 ctermbg=238
