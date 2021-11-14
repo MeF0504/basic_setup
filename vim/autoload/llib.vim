@@ -21,8 +21,15 @@ function! llib#get_conf_dir() abort
 endfunction
 
 let s:local_var_dict = {}
-function! llib#set_local_var(var_name, val) abort
-    let s:local_var_dict[a:var_name] = a:val
+function! llib#set_local_var(var_name, val, ...) abort
+    " 3つめにindex / key nameが指定されたらvar_nameの[index / key]に値を設定
+    if a:0 == 0
+        let s:local_var_dict[a:var_name] = a:val
+    else
+        for i in range(a:0)
+            let s:local_var_dict[a:var_name][a:1[i]] = a:val[i]
+        endfor
+    endif
 endfunction
 
 function! llib#get_local_var(var_name, default) abort
