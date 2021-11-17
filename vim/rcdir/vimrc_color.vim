@@ -38,6 +38,7 @@ function! <SID>my_color_set_inkpot()
     highlight MatchParen ctermfg=14 ctermbg=18 cterm=Bold
 
     highlight CursorWord1 ctermbg=235 cterm=None
+    highlight Quote ctermfg=183 ctermbg=None
 endfunction
 
 function! <SID>my_color_set_shiki()
@@ -136,6 +137,7 @@ function! <SID>my_color_set()
     if (&background == 'light') && exists(':SeiyaDisable')
         SeiyaDisable
     endif
+    highlight default link Quote String
     " }}}
 
     """ plugin highlights
@@ -231,6 +233,9 @@ augroup colorLocal
 
     "全角スペース表示
     autocmd BufEnter * match ZenkakuSpace /　/
+    " :h :syn-matchgroup
+    " " と' にも色を付ける (test)
+    autocmd Syntax * syntax region String matchgroup=Quote start=+\("\|'\)+ skip=+\\\("\|'\)+ end=+\("\|'\)+
 augroup END
 
 try
