@@ -239,7 +239,9 @@ augroup colorLocal
     autocmd BufEnter * match ZenkakuSpace /　/
     " :h :syn-matchgroup
     " " と' にも色を付ける (test)
-    autocmd Syntax * syntax region String matchgroup=Quote start=+\("\|'\)+ skip=+\\\("\|'\)+ end=+\("\|'\)+
+    " autocmd Syntax * syntax region String matchgroup=Quote start=+\("\|'\)+ skip=+\\\("\|'\)+ end=+\("\|'\)+
+    " vim だと"はコメントアウトもhitしちゃうので'だけにする
+    autocmd Syntax * syntax region String matchgroup=Quote start="'" skip="\\'" end="'"
 augroup END
 
 try
