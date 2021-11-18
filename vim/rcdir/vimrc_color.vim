@@ -159,9 +159,6 @@ function! <SID>my_color_set()
         if exists(':SeiyaDisable')
             SeiyaDisable
         endif
-        if &background == 'dark'
-            highlight Normal ctermbg=233
-        endif
     endif
     " }}}
 
