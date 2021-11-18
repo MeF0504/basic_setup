@@ -200,7 +200,8 @@ set statusline=%f%m%r%h%w%<%=%y\ %l/%L\ [%P]
 
 " In case vim don't read vimrc_color.vim
 if !exists('s:vimdir')
-    colorscheme desert
+    colorscheme evening
+    highlight Normal ctermbg=8 guibg=Black
 endif
 
 " tex flavor

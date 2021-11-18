@@ -71,6 +71,10 @@ function! <SID>my_color_set_PaperColor()
     highlight SpecialKey cterm=Underline ctermfg=245 ctermbg=233
 endfunction
 
+function! <SID>my_color_set_evening()
+    highlight Normal ctermbg=233
+endfunction
+
 function! s:SID()
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfunction
@@ -241,6 +245,6 @@ augroup END
 try
     colorscheme inkpot
 catch
-    colorscheme desert
+    colorscheme evening
 endtry
 
