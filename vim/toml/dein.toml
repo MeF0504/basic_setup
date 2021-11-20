@@ -68,6 +68,10 @@ let g:quickrun_config._ = {
     \ 'outputter/error/error'   : 'multi',
     \ 'hook/time/enable'        : 1,
     \ }
+if has('job')
+    let g:quickrun_config._.runner = 'job'
+    call llib#set_local_var('statusline', llib#get_local_var('statusline', '')+["%#StatusLine_QR#%{quickrun#is_running()?'rng...':''}%#StatusLine#"])
+endif
 
 " python
 let g:quickrun_config.python = {
