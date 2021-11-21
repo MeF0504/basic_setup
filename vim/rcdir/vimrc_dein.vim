@@ -41,6 +41,8 @@ if dein#load_state(s:dein_dir)
 
     " You can specify revision/branch/tag.
     " call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+    let s:dein_status = "%#StatusLine_CHK#%{empty(dein#get_progress())?'':'↑↑..'}%#StatusLine#"
+    call llib#set_local_var('statusline', llib#get_local_var('statusline', '')+[s:dein_status])
 
     if filereadable(s:light_file)
         call dein#load_toml(s:light_file, {'lazy':0})

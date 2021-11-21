@@ -128,7 +128,7 @@ function! <SID>my_color_set()
     highlight StatusLine_FT cterm=bold ctermfg=253 ctermbg=17
     highlight StatusLine_FF cterm=bold ctermfg=253 ctermbg=88
     highlight StatusLine_LN cterm=bold ctermfg=253 ctermbg=29
-    highlight StatusLine_QR cterm=bold ctermfg=233 ctermbg=190
+    highlight StatusLine_CHK cterm=bold ctermfg=233 ctermbg=190
     highlight Mode_N cterm=bold ctermfg=253 ctermbg=0
     highlight Mode_I cterm=bold ctermfg=253 ctermbg=9
     highlight Mode_V cterm=bold ctermfg=253 ctermbg=13
