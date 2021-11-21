@@ -326,6 +326,40 @@ let g:ctrlp_map = '<leader>s'
 let g:ctrlp_by_filename = 0
 let g:ctrlp_match_window = 'order:ttb,min:1,max:7,results:15'
 let g:ctrlp_switch_buffer = 'e'
+
+let s:ctrlp_help_bufid = -1
+let s:ctrlp_help_popid = -1
+let s:ctrlp_help = [
+        \ "<c-d>: Toggle between full-path search and filename only search.",
+        \ "<c-r>: Toggle between the string mode and full regexp mode.",
+        \ "<c-f>, <c-up>  : Scroll to the 'next' search mode in the sequence.",
+        \ "<c-b>, <c-down>: Scroll to the 'previous' search mode in the sequence.",
+        \ "<tab>: Auto-complete directory names under the current working directory inside the prompt.",
+        \ "<s-tab>: Toggle the focus between the match window and the prompt.",
+        \ "<esc>, <c-c>: Exit CtrlP.",
+        \ "<c-a>: Move the cursor to the 'start' of the prompt.",
+        \ "<c-e>: Move the cursor to the 'end' of the prompt.",
+        \ "<c-w>: Delete a preceding inner word.",
+        \ "<c-u>: Clear the input field.",
+        \ "<c-n>: Next string in the prompt's history.",
+        \ "<c-p>: Previous string in the prompt's history.",
+        \ "<cr>:  Open the selected file in the 'current' window if possible.",
+        \ "<c-t>: Open the selected file in a new 'tab'.",
+        \ "<c-v>: Open the selected file in a 'vertical' split.",
+        \ "<c-x>: Open the selected file in a 'horizontal' split.",
+        \ "<c-y>: Create a new file and its parent directories.",
+        \ ]
+function! <SID>show_ctrlp_help()
+    let config = {
+        \ 'relative': 'editor',
+        \ 'line': &lines-7-&cmdheight-2,
+        \ 'col': &columns-3,
+        \ 'pos': 'botright',
+        \ }
+    let [s:ctrlp_help_bufid, s:ctrlp_help_popid] = llib#popup_wrapper(s:ctrlp_help_bufid, s:ctrlp_help_popid, s:ctrlp_help, config)
+endfunction
+autocmd FileType ctrlp call <SID>show_ctrlp_help()
+autocmd CmdlineLeave : if s:ctrlp_help_popid!=-1 | call llib#popup_close(s:ctrlp_help_popid) | let s:ctrlp_help_popid = -1 | endif
 "}}}
 '''
 
@@ -342,12 +376,12 @@ repo = 'MeF0504/vim-shiki'
 repo = 'tyru/current-func-info.vim'
 hook_post_source = '''
 """" current-func-info.vim {{{
-let s:bufid = -1
-let s:popid = -1
+let s:cfi_bufid = -1
+let s:cfi_popid = -1
 function! <SID>Show_cfi()
     if llib#get_local_var('cfi_on', 0) == 0
-        call llib#popup_close(s:popid)
-        let s:popid = -1
+        call llib#popup_close(s:cfi_popid)
+        let s:cfi_popid = -1
         return
     endif
     if cfi#supported_filetype(&filetype) == 0
@@ -367,11 +401,11 @@ function! <SID>Show_cfi()
         \ 'pos': 'topright',
         \ 'highlight': 'CFIPopup',
         \ }
-    let [s:bufid, s:popid] = llib#popup_wrapper(s:bufid, s:popid, [cfi], config)
+    let [s:cfi_bufid, s:cfi_popid] = llib#popup_wrapper(s:cfi_bufid, s:cfi_popid, [cfi], config)
 endfunction
 autocmd deinLocal CursorMoved * call <SID>Show_cfi()
-autocmd deinLocal WinLeave * call llib#popup_close(s:popid) | let s:popid=-1
-autocmd deinLocal QuitPre * call llib#popup_close(s:popid) | let s:popid=-1
+autocmd deinLocal WinLeave * call llib#popup_close(s:cfi_popid) | let s:cfi_popid=-1
+autocmd deinLocal QuitPre * call llib#popup_close(s:cfi_popid) | let s:cfi_popid=-1
 " }}}
 '''
 
