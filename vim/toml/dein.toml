@@ -351,6 +351,11 @@ let s:ctrlp_help = [
         \ "<c-y>: Create a new file and its parent directories.",
         \ ]
 function! <SID>show_ctrlp_help()
+    if s:ctrlp_help_popid != -1
+        call llib#popup_close(s:ctrlp_help_popid)
+        let s:ctrlp_help_popid = -1
+        return
+    endif
     let config = {
         \ 'relative': 'editor',
         \ 'line': &lines-7-&cmdheight-2,
@@ -359,8 +364,7 @@ function! <SID>show_ctrlp_help()
         \ }
     let [s:ctrlp_help_bufid, s:ctrlp_help_popid] = llib#popup_wrapper(s:ctrlp_help_bufid, s:ctrlp_help_popid, s:ctrlp_help, config)
 endfunction
-autocmd FileType ctrlp call <SID>show_ctrlp_help()
-autocmd CmdlineLeave : if s:ctrlp_help_popid!=-1 | call llib#popup_close(s:ctrlp_help_popid) | let s:ctrlp_help_popid = -1 | endif
+autocmd deinLocal FileType ctrlp ++once nnoremap <buffer> <silent> ? :call <SID>show_ctrlp_help()<CR>
 "}}}
 '''
 
