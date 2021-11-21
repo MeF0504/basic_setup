@@ -1,7 +1,7 @@
 "vim script encording setting
 scriptencoding utf-8
 if &compatible
-  set nocompatible               " Be iMproved
+    set nocompatible               " Be iMproved
 endif
 
 augroup deinLocal
@@ -27,34 +27,34 @@ endif
 
 " Required: begin settings
 if dein#load_state(s:dein_dir)
-  call dein#begin(s:dein_dir)
+    call dein#begin(s:dein_dir)
 
-  " Let dein manage dein
-  " Required:
-  call dein#add('Shougo/dein.vim')
-  " update
-  " :call dein#update()
-  " 何かおかしいとき
-  " :call dein#recache_runtimepath()
+    " Let dein manage dein
+    " Required:
+    call dein#add('Shougo/dein.vim')
+    " update
+    " :call dein#update()
+    " 何かおかしいとき
+    " :call dein#recache_runtimepath()
 
-  " Add or remove your plugins here:
+    " Add or remove your plugins here:
 
-  " You can specify revision/branch/tag.
-  "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+    " You can specify revision/branch/tag.
+    " call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
 
-  if filereadable(s:light_file)
-      call dein#load_toml(s:light_file, {'lazy':0})
-  endif
-  if filereadable(s:toml_file)
-      call dein#load_toml(s:toml_file, {'lazy':0})
-  endif
-  if filereadable(s:lazy_file)
-      call dein#load_toml(s:lazy_file, {'lazy':1})
-  endif
+    if filereadable(s:light_file)
+        call dein#load_toml(s:light_file, {'lazy':0})
+    endif
+    if filereadable(s:toml_file)
+        call dein#load_toml(s:toml_file, {'lazy':0})
+    endif
+    if filereadable(s:lazy_file)
+        call dein#load_toml(s:lazy_file, {'lazy':1})
+    endif
 
-  " Required:
-  call dein#end()
-  call dein#save_state()
+    " Required:
+    call dein#end()
+    call dein#save_state()
 endif
 
 " Required:
@@ -63,7 +63,7 @@ syntax enable
 
 " If you want to install not installed plugins on startup.
 if dein#check_install()
-  call dein#install()
+    call dein#install()
 endif
 
 " Plugin remove check
