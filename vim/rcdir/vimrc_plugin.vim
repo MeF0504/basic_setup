@@ -1162,6 +1162,7 @@ command! ShowTableOfContents call s:show_table_of_contents()
 nnoremap <silent> <leader>y :ShowTableOfContents<CR>
 " }}}
 
+"  XPM test function {{{
 function <SID>xpm_loader()
     let file = expand('%')
     if has('gui_running')
@@ -1198,4 +1199,5 @@ vim.command(match_cluster)
 EOL
 endfunction
 command! XPMLoader call <SID>xpm_loader()
+" }}}
 
