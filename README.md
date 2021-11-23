@@ -21,6 +21,9 @@ basic_setup/
 |   |__ test_setup.sh
 |   |__ zlogin
 |   |__ zshrc
+|   |__ marp/
+|   |   |__ marp_MeFtheme.css
+|   |   |__ marp_template.md
 |   |__ zsh/
 |   |   |__ alias.zsh
 |   |   |__ complete.zsh
@@ -31,6 +34,7 @@ basic_setup/
 |   |   |__ copy_date.py
 |   |   |__ envar
 |   |   |__ fnum
+|   |   |__ get_fonts
 |   |   |__ lsn
 |   |   |__ mv_Trash.py
 |   |   |__ optlink
@@ -41,11 +45,12 @@ basic_setup/
 |   |   |__ shows
 |   |   |__ version.py
 |   |__ lib/
-|   |   |__ color_test.py
 |   |   |__ libtree.py
 |   |   |__ local_lib.py
+|   |   |__ local_lib_color.py
 |   |   |__ mycurses.py
 |   |   |__ runge_kutta.py
+|   |   |__ xpm_loader.py
 |   |__ test/
 |   |   |__ rm_debug.py
 |   |   |__ setup_file_template.json
@@ -54,13 +59,14 @@ basic_setup/
 |   |   |__ test_script.py
 |   |   |__ test_script.vim
 |   |__ win/
-|   |   |__ FullColor_256.txt
 |   |   |__ cvt_color_vim_gvim.py
 |   |   |__ ssh_hosts.ttl
 |__ vim/
 |   |__ README.md
 |   |__ gvimrc
 |   |__ vimrc
+|   |__ autoload/
+|   |   |__ llib.vim
 |   |__ ftplugin/
 |   |   |__ css.vim
 |   |   |__ html.vim
@@ -70,14 +76,18 @@ basic_setup/
 |   |   |__ qf.vim
 |   |   |__ tex.vim
 |   |__ rcdir/
-|   |   |__ debug.vim
-|   |   |__ vimrc_basic.vim
+|   |   |__ vimrc_autocmds.vim
 |   |   |__ vimrc_color.vim
+|   |   |__ vimrc_commands.vim
 |   |   |__ vimrc_dein.vim
+|   |   |__ vimrc_maps.vim
+|   |   |__ vimrc_options.vim
 |   |   |__ vimrc_plugin.vim
+|   |   |__ vimrc_statusline.vim
+|   |   |__ vimrc_tabline.vim
 |   |__ toml/
 |   |   |__ dein.toml
 |   |   |__ dein_lazy.toml
-|   |   |__ dein_light.toml
+|   |   |__ dein_min.toml
 ```
 
