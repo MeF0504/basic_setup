@@ -2,7 +2,6 @@
 scriptencoding utf-8
 "" vim map(key) settings
 
-set nocompatible
 " 誤って使うとまずいkeymapを削除
 " 保存して終了 :h ZZ
 nnoremap ZZ <Nop>
