@@ -10,6 +10,16 @@ augroup slLocal
     autocmd!
 augroup END
 
+" Anywhere SID.
+function! s:SID_PREFIX() " tentative
+  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
+endfunction
+if empty(expand('<SID>'))
+    let s:sid = s:SID_PREFIX()
+else
+    let s:sid = expand('<SID>')
+endif
+
 function! <SID>get_fileformat(os)
     if a:os == 'unix'
         return 'unix,LF'
@@ -65,8 +75,8 @@ let s:st_level1 .= "%<%="
 let s:st_normal .= "%#StatusLine_FT# %{&filetype} "
 let s:st_level1 .= "%#StatusLine_FT# %{&filetype} "
 " file format
-let s:st_normal .= "%#StatusLine_FF# %{"..expand('<SID>').."get_fileformat(&fileformat)}:%{&fileencoding} "
-let s:st_level1 .= "%#StatusLine_FF# %{"..expand('<SID>').."get_fileformat(&fileformat)}:%{&fileencoding} "
+let s:st_normal .= "%#StatusLine_FF# %{"..s:sid.."get_fileformat(&fileformat)}:%{&fileencoding} "
+let s:st_level1 .= "%#StatusLine_FF# %{"..s:sid.."get_fileformat(&fileformat)}:%{&fileencoding} "
 " 今の行/全体の行-今の列 [%表示]
 let s:st_normal .= "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]"
 " winwidthが60より短い時は列と%はなし
@@ -110,9 +120,9 @@ function! <SID>Set_statusline(cur_win)
 
     return st_str
 endfunction
-let &statusline = '%!'..expand('<SID>')..'Set_statusline(1)'
+let &statusline = '%!'..s:sid..'Set_statusline(1)'
 
 " on/off 設定
-autocmd slLocal WinEnter * if &buftype != 'quickfix' | let &statusline='%!'..expand('<SID>')..'Set_statusline(1)' | endif
-autocmd slLocal WinLeave * if &buftype != 'quickfix' | execute 'setlocal statusline=%!'..expand('<SID>')..'Set_statusline(0)' | endif
+autocmd slLocal WinEnter * if &buftype != 'quickfix' | let &statusline='%!'..s:sid..'Set_statusline(1)' | endif
+autocmd slLocal WinLeave * if &buftype != 'quickfix' | execute 'setlocal statusline=%!'..s:sid..'Set_statusline(0)' | endif
 

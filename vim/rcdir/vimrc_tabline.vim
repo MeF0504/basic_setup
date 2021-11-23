@@ -2,6 +2,16 @@
 scriptencoding utf-8
 "" vim tab line setting
 
+" Anywhere SID.
+function! s:SID_PREFIX() " tentative
+  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
+endfunction
+if empty(expand('<SID>'))
+    let s:sid = s:SID_PREFIX()
+else
+    let s:sid = expand('<SID>')
+endif
+
 " Set tabline.
 function! s:get_title(tabnr)
     let bufnrs = tabpagebuflist(a:tabnr)
@@ -146,6 +156,6 @@ function! s:set_tabline()
     return s
 endfunction
 
-let &tabline = '%!'..expand('<SID>')..'set_tabline()'
+let &tabline = '%!'..s:sid..'set_tabline()'
 set showtabline=2 " 常にタブラインを表示
 

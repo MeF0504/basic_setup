@@ -2,6 +2,16 @@
 scriptencoding utf-8
 "" vim color settings
 
+" Anywhere SID.
+function! s:SID_PREFIX() " tentative
+  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
+endfunction
+if empty(expand('<SID>'))
+    let s:sid = s:SID_PREFIX()
+else
+    let s:sid = expand('<SID>')
+endif
+
 function! <SID>get_colorid(r, g, b)
     if has('gui_running')
         let gui_r = a:r==0 ? 0 : 55+40*a:r
@@ -169,7 +179,7 @@ function! <SID>my_color_set()
     " }}}
 
     " colorscheme specified setings
-    let local_scheme_func = expand('<SID>')..'my_color_set_'..g:colors_name
+    let local_scheme_func = s:sid..'my_color_set_'..g:colors_name
     if exists('*'.local_scheme_func)
         execute "call ".local_scheme_func.'()'
     else
