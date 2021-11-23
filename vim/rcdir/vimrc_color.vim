@@ -1,6 +1,6 @@
-"vim script encording setting
+" vim script encoding setting
 scriptencoding utf-8
-"" vim color setting
+"" vim color settings
 
 function! <SID>get_colorid(r, g, b)
     if has('gui_running')
@@ -73,10 +73,6 @@ endfunction
 
 function! <SID>my_color_set_evening()
     highlight Normal ctermbg=233
-endfunction
-
-function! s:SID()
-    return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfunction
 
 function! <SID>my_color_set()
@@ -173,7 +169,7 @@ function! <SID>my_color_set()
     " }}}
 
     " colorscheme specified setings
-    let local_scheme_func = '<SNR>'.s:SID().'_my_color_set_'.g:colors_name
+    let local_scheme_func = expand('<SID>')..'my_color_set_'..g:colors_name
     if exists('*'.local_scheme_func)
         execute "call ".local_scheme_func.'()'
     else

@@ -1,5 +1,7 @@
-"vim script encording setting
+" vim script encoding setting
 scriptencoding utf-8
+"" vim dein (plugin manager) setting
+
 if &compatible
     set nocompatible               " Be iMproved
 endif
@@ -19,7 +21,7 @@ let s:light_file = s:vim_dir . 'toml/dein_min.toml'
 let s:toml_file  = s:vim_dir . '/toml/dein.toml'
 let s:lazy_file  = s:vim_dir . '/toml/dein_lazy.toml'
 
-" update the settings reffering to https://knowledge.sakura.ad.jp/23248/
+" update the settings referring to https://knowledge.sakura.ad.jp/23248/
 " Required: dein install check
 if &runtimepath !~# '/dein.vim'
     execute "set runtimepath+=" . s:dein_dir . "repos/github.com/Shougo/dein.vim"
@@ -42,7 +44,7 @@ if dein#load_state(s:dein_dir)
     " You can specify revision/branch/tag.
     " call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
     let s:dein_status = "%#StatusLine_CHK#%{empty(dein#get_progress())?'':'↑↑..'}%#StatusLine#"
-    call llib#set_local_var('statusline', llib#get_local_var('statusline', '')+[s:dein_status])
+    call llib#set_local_var('statusline', llib#get_local_var('statusline', [''])+[s:dein_status])
 
     if filereadable(s:light_file)
         call dein#load_toml(s:light_file, {'lazy':0})
@@ -84,5 +86,5 @@ if len(s:removed_plugins) > 0
     autocmd deinLocal VimEnter * ++once call s:RemovePlugins()
 endif
 
-autocmd deinLocal VimEnter * call dein#call_hook('post_source')
+autocmd deinLocal VimEnter * ++once call dein#call_hook('post_source')
 

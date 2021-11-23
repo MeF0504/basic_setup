@@ -4,6 +4,14 @@ scriptencoding utf-8
 
 " vim (almost) self-made function file
 
+" map leader にmapされているmapを表示 {{{
+" nnoremap <Leader><Leader> :map mapleader<CR>
+function! <SID>leader_map()
+    map <Leader>
+endfunction
+nnoremap <silent> <Leader><Leader> :call <SID>leader_map()<CR>
+" }}}
+
 "単語のハイライト情報をget "{{{
 "from http://cohama.hateblo.jp/entry/2013/08/11/020849
 function! s:get_syn_id(transparent)
@@ -790,12 +798,6 @@ command! -nargs=? ChkExist call <SID>ChkFileExist(<f-args>)
 vnoremap <Leader>f v:ChkExist<CR>
 nnoremap <expr> <Leader>f ':ChkExist ' . expand('<cfile>') . '<CR>'
 " }}}
-
-"diff系command {{{
-
-command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
-command! -nargs=1 -complete=file Diff vertical diffsplit <args>
-"}}}
 
 " 行単位で差分を取る {{{
 

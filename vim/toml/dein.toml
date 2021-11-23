@@ -501,12 +501,13 @@ repo = 'gelguy/wilder.nvim'
 hook_post_source = '''
 " {{{
 " from https://github.com/gelguy/wilder.nvim
-call wilder#enable_cmdline_enter()
+" call wilder#enable_cmdline_enter()
 
 set wildcharm=<Tab>
 
 " 検索時のみ補完する
 call wilder#setup({
+    \ 'enable_cmdline_enter': v:true,
     \ 'modes': ['/', '?'],
     \ 'next_key': '<Tab>',
     \ 'previous_key': '<S-Tab>',
@@ -577,6 +578,8 @@ hook_add = '''
 " {{{
 " デフォルトのhighlightをoff
 let g:cursorword_highlight = 0
+highlight CursorWord1 ctermfg=None ctermbg=None cterm=None
+highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline
 " }}}
 '''
 

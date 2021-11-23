@@ -8,692 +8,91 @@ set fileencodings=utf-8
 " encoding setting for vim script
 scriptencoding utf-8
 
-"vimrcを再読込する際にautocmdが重複しないようにautocmdをすべて解除
-let s:echo_auto = 0
-augroup local
-    autocmd!
-    if s:echo_auto == 1
-        " {{{
-        " autocmdを表示
-        let s:autocmd_events = ['VimEnter',
-                    \ 'FileReadPre *',
-                    \ 'FileReadPost *',
-                    \ 'BufRead *',
-                    \ 'BufReadPre *',
-                    \ 'BufReadPost *',
-                    \ 'BufEnter *',
-                    \ 'BufWinEnter *',
-                    \ 'BufAdd *',
-                    \ 'BufCreate *',
-                    \ 'BufLeave *',
-                    \ 'BufDelete *',
-                    \ 'BufNew *',
-                    \ 'Bufunload *',
-                    \ 'BufHidden *',
-                    \ 'FileType *',
-                    \ 'Syntax *',
-                    \ 'ColorScheme *',
-                    \ 'WinNew *',
-                    \ 'WinEnter *',
-                    \ 'WinLeave *',
-                    \ 'TabNew *',
-                    \ 'TabEnter *',
-                    \ 'TabLeave *',
-                    \ 'InsertEnter *',
-                    \ 'InsertLeave *',
-                    \ 'InsertLeavePre *',
-                    \ 'QuitPre *',
-                    \ 'DirChanged *',
-                    \ 'CmdWinEnter *',
-                    \ 'CmdWinLeave *',
-                    \ 'CmdlineEnter *',
-                    \ 'CmdlineLeave *',
-                    \ ]
-        for s:ae in s:autocmd_events
-            execute 'autocmd ' . s:ae . ' echomsg "'.s:ae . '" | sleep 300ms'
-        endfor
-        " }}}
-    endif
-augroup END
+" viとの互換性をとらない
+set nocompatible
+" 文字の色づけ ... onだと現状の設定を破棄する。詳しくは:h :syntax-on
+syntax enable
+""########## tips {{{
+" ##### shortcut comment
+" <c-h> ... backspace <c-m> ... Enter
+" <c-i> ... tab <c-j> ... Down
 
-"neovim, windiws, unix系で分岐
-let s:vimdir = llib#get_conf_dir()
+" ##### useful command
+" :set          ... Show all options that differ from their default value.
+" :set all      ... Show all but terminal options.
+" :set termcap  ... Show all terminal options.
+" :map          ... Show all mapping settings.
+" :highlight    ... Show all highlight settings.
+" :command       ... Show all user commands.
 
+" ##### spell check
+" information; :h spell or https://vim-jp.org/vimdoc-ja/spell.html
+" on; :setlocal spell spelllang=en_us
+" search;
+" 次を検索 ]s or ]S
+" 前を検索 [s or [S
+" (カーソル下を)正しい(good)単語として登録      zg or :spe[llgood] {word}
+" (カーソル下を)間違った(wrong)単語として登録   zw or :spellw[rong] {word}
+" (カーソル下の?)単語を一覧から削除             zuw / zug / :spellu[ndo] {word}
+
+" ##### other topics
+" about command args... <f-args>=string, <args>=value
+" about equation operator ...  (sorry for Japanese)
+"   ==#, !=#, ># etc..    ：大文字小文字を区別する
+"   ==?, !=?, >? etc..    ：大文字小文字を区別しない
+"   =~, =~#, =~?          ：正規表現マッチ
+"   !~, !~#, !~?          ：正規表現非マッチ
+" 正規表現については :h pattern-overview or https://vim-jp.org/vimdoc-ja/pattern.html#pattern-overview
+" about SID
+" :scriptnames          ... List all sourced script names
+" :echo expand('<SID>') ... Get the current file SID
+
+" about <Cmd>
+" mapping でcmd modeに移るときは : よりも <Cmd> の方が良さそう
+" :h map-cmd
+" 使用できるのは ver. 8.2 && patch-1978 以降
+
+"" }}}
 if exists('$VIM_TERMINAL')
-    echo 'Warning!! vim is already opened!!'
+    echoerr 'Warning!! vim is already opened!!'
 endif
 
-"local設定ファイル (1st)
-let s:initrc = s:vimdir . 'rcdir/init.vim.mine'
-if filereadable(s:initrc)
-    execute "source " . s:initrc
-endif
+try
+    let s:vimdir = llib#get_conf_dir()
+endtry
 
-" basic setup (set, map系) 読み込み
-let s:basicrc = s:vimdir . 'rcdir/vimrc_basic.vim'
-if filereadable(s:basicrc)
-    execute "source " . s:basicrc
-else
-    echoerr "basic setup Run Command file can't be readed!!!"
-    echo "end setting"
-    finish
-endif
-
-""##########autocmd系 "{{{
-autocmd local BufEnter * let b:no_match_paren = 1   " tentative? because of paren error (Highlight_matching_Pair()).
-
-" remove tags information when open new tab.
-if exists("*settagstack")
-    autocmd local TabNew * call settagstack(winnr(), {'length':0, 'curidx':1, 'items':[]})
-endif
-
-" toml fileのfiletypeをtomlにする
-autocmd local BufEnter *.toml set filetype=toml
-
-"vimgrepした際に新規windowで開くようにする
-autocmd local QuickFixCmdPost *grep* cwindow
-
-"quick fix windowでc-tで新しいtabで開く
-autocmd local Filetype qf nnoremap <buffer><silent> <c-t> <c-w><s-t><CR>:cclose<CR>
-
-" .mine系ファイルのtype設定
-autocmd local BufEnter *bashrc* set filetype=sh
-autocmd local BufEnter *zshrc* set filetype=zsh
-
-" Neovimでterminalに入ったときにstartinsertする
-if has('nvim')
-    let s:term_on = {}
-    function! Term_pre() abort
-        let res = ""
-        if mode() == 't'
-            let s:term_on[win_getid()] = 1
-            " stopinsert
-            let res = "\<C-\>\<C-n>"
-        elseif expand('%')[:6] == 'term://'
-            let s:term_on[win_getid()] = 0
-        endif
-        return res
-    endfunction
-
-    nnoremap <expr> g<Right>    Term_pre().'gt'
-    nnoremap <expr> g<Left>     Term_pre().'gT'
-    nnoremap <expr> s<Up>       Term_pre().'<C-w>k'
-    nnoremap <expr> s<Down>     Term_pre().'<C-w>j'
-    nnoremap <expr> s<Right>    Term_pre().'<C-w>l'
-    nnoremap <expr> s<Left>     Term_pre().'<C-w>h'
-    tnoremap <expr> g<Right>    Term_pre().'gt'
-    tnoremap <expr> g<Left>     Term_pre().'gT'
-    tnoremap <expr> s<Up>       Term_pre().'<C-w>k'
-    tnoremap <expr> s<Down>     Term_pre().'<C-w>j'
-    tnoremap <expr> s<Right>    Term_pre().'<C-w>l'
-    tnoremap <expr> s<Left>     Term_pre().'<C-w>h'
-    autocmd local BufEnter term://* if has_key(s:term_on, win_getid()) && (s:term_on[win_getid()]==1) | startinsert | endif
-endif
-
-"autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
-"See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
-" }}}
-
-""########## (簡単な)作成関数とか{{{
-"ls in vim
-command! LS 0tabnew .
-
-""statusline setting {{{
-call llib#set_local_var('st_fileformat', {"":"", "unix":"unix,LF", "mac":"mac,CR", "dos":"dos,CRLF"})
-call llib#set_local_var('st_mode',
-            \ {'n':'NORMAL',
-            \ 'v':'VISUAL', "\<C-V>":'VISUAL-B', 'V':'VISUAL-L',
-            \ 'i':'INSERT',
-            \ 'R':'REPLACE',
-            \ 't':'TERMINAL',
-            \ 'c':'COMMAND',
-            \})
-" mode
-" ファイル名 修正フラグ 読込専用 ヘルプ preview_window
-" 切り詰め位置 右端に表示
-" filetype
-" file format
-" 今の行/全体の行-今の列 [%表示]
-""" the variable to administer statusline
-call llib#set_local_var('statusline', [
-            \ " %f%m%{&readonly?'[RO]':''}%h%w ",
-            \ "%<%=",
-            \ "%#StatusLine_FT# %{&filetype} ",
-            \ "%#StatusLine_FF# %{llib#get_local_var('st_fileformat', '')[&fileformat]}:%{&fileencoding} ",
-            \ "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]",
-            \ ])
-
-" パスを除くファイル名 修正フラグ 読込専用 ヘルプ preview_window
-call llib#set_local_var('statusline_off', ["%t%m%{&readonly?'[RO]':''}%h%w"])
-""" control statusline showing
-call llib#set_local_var('st_width_level', [30, 50])
-call llib#set_local_var('st_showmode', 1)
-function! Set_statusline(cur_win, ...)
-    if a:0 == 0
-        let l:st_list1 = llib#get_local_var('statusline', ["%f%m%{&readonly?'[RO]':''}%h%w"])
-    else
-        let l:st_list1 = a:1
+function! s:load_file(filename) abort
+    if exists('s:vimdir') && filereadable(s:vimdir..a:filename)
+        execute 'source '..s:vimdir..a:filename
+        return 1
     endif
-
-    let st_width_level = llib#get_local_var('st_width_level', [30,50])
-    if winwidth(".") < st_width_level[0]
-        let l:st_list2 = [l:st_list1[0]]
-    elseif winwidth(".") < st_width_level[1]
-        if len(st_list1) >= 3
-            let l:st_list2 = [l:st_list1[0], l:st_list1[1], l:st_list1[-1]]
-        else
-            let l:st_list2 = [l:st_list1[0]]
-        endif
-    else
-        let l:st_list2 = l:st_list1
-    endif
-
-    let l:st_str = ""
-    for l:st in l:st_list2
-        let l:st_str .= l:st
-    endfor
-
-    if (llib#get_local_var('st_showmode', 1) != 0) && (a:cur_win != 0)
-        let st_modes = llib#get_local_var('st_mode', {})
-        let modec = mode()
-        " mode string setting
-        let st_mode = has_key(st_modes, modec) ? st_modes[modec] : modec
-        " color setting
-        let st_mode .= ' %#StatusLine#'
-        if modec =~ 'i'
-            let st_mode = '%#Mode_I#' . st_mode
-        elseif modec =~ 'v' || modec == "\<C-V>"
-            let st_mode = '%#Mode_V#' . st_mode
-        elseif modec =~ 'r'
-            let st_mode = '%#Mode_R#' . st_mode
-        elseif modec =~ 't'
-            let st_mode = '%#Mode_T#' . st_mode
-        elseif modec =~ 'n'
-            let st_mode = '%#Mode_N#' . st_mode
-        else
-            let st_mode = '%#Mode_ELSE#' . st_mode
-        endif
-        let l:st_str = st_mode . l:st_str
-    endif
-
-    return l:st_str
-endfunction
-set statusline=%!Set_statusline(1)
-" st_showmode != 0 なら(statuslineに表示されるので) showmode をoffにする
-autocmd local VimEnter * ++once if llib#get_local_var('st_showmode', 1)!=0 | set noshowmode | endif
-
-"}}}
-
-"ファイルが読み込めない事があるので、その時用にread onlyをつけてencodeし直して開く関数 "{{{
-
-function! s:noeol_reenc()
-    if &endofline == 0
-        if input("reencode? (y/[n])")=='y'
-            set readonly
-            e ++enc=utf-8
-        endif
-    endif
+    return 0
 endfunction
 
-"そしてファイルを開くたびに行うようにautocmd化
-autocmd local BufRead * :call s:noeol_reenc()
-" }}}
-
-"tabの表示を快適に {{{
-" https://qiita.com/wadako111/items/755e753677dd72d8036d
-" Anywhere SID.
-function! s:SID_PREFIX()
-  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
-endfunction
-
-" Set tabline.
-function! s:get_title(tabnr)
-    let bufnrs = tabpagebuflist(a:tabnr)
-    let bufnr = bufnrs[tabpagewinnr(a:tabnr)-1]
-    let mod = getbufvar(bufnr, '&modified') ? '[+]' : ''
-    let title = fnamemodify(bufname(bufnr), ':t')
-    if getbufvar(bufnr, '&filetype') == 'qf'
-        let title = "QuickFix"
-    endif
-    let title = '[' . title . ']'
-    let title = a:tabnr . ':' . title . mod
-    return title
-endfunction
-
-function! s:get_cwd_path()
-    let max_dir_len = &columns/5
-    if has('win32')
-        let sep = '\'
-    else
-        let sep = '/'
-    endif
-    let dirs = getcwd()
-    let dirs = split(dirs, sep)
-    let ret = '/'
-    for d in dirs
-        if d == dirs[-1]
-            let ret .= d.sep
-        else
-            let ret .= d[0].sep
-        endif
-    endfor
-
-    " ssh 先ではhostnameも表示
-    if exists('$SSH_CLIENT')
-        let hname = hostname()[:match(hostname(), '\.')-1] . ':'
-    else
-        let hname = ''
-    endif
-
-    " 長い場合は切る
-    if len(ret)+len(hname) > max_dir_len
-        let ret = '~~'.ret[-(max_dir_len-len(hname)-2):]
-    endif
-
-    return hname.ret
-endfunction
-
-function! s:set_tabline()
-    let width = &columns
-    let s = ''
-    let cur_tab_no = tabpagenr()
-    let header = '..'
-    let footer = '..'
-    let all_files = 0
-    let all_wins = 0
-    let is_edit = 0
-    let tab_len = 16 " max(header + footer) = 12+2+2
-    let tab_fin_l = 0
-    let tab_fin_r = 0
-
-    if llib#get_local_var('show_cwd_tab', 1) == 1
-        let cdir = ' @'.s:get_cwd_path()
-        let tab_len += len(cdir)
-    else
-        let cdir = ''
-    endif
-
-    " count listed & loaded buffers
-    for bn in range(1, bufnr('$'))
-        if buflisted(bn) && bufloaded(bn)
-            let all_files += 1
-            if getbufvar(bn, '&modified')
-                let is_edit += 1
-            endif
-        endif
-    endfor
-
-    for i in range(1, tabpagenr('$'))
-        " left side of current tab page (include current tab page).
-        let ctn_l = cur_tab_no - (i-1)
-        if ctn_l > 0
-            " count windows
-            let all_wins += tabpagewinnr(ctn_l, '$')
-            " add title to tabline if possible
-            if tab_fin_l == 0
-                let title = s:get_title(ctn_l)
-                if tab_len+len(title)+1 < width || ctn_l == cur_tab_no
-                    let tab_len += len(title)+1
-                    let tmp_s = '%'.ctn_l.'T'
-                    let tmp_s .= '%#' . (ctn_l == cur_tab_no ? 'TabLineSel' : 'TabLine') . '#'
-                    let tmp_s .= title
-                    let tmp_s .= '%#TabLineFill# '
-                    let s = tmp_s.s
-                    " set header & footer
-                    if ctn_l == 1
-                        let header = ''
-                    endif
-                    if ctn_l == tabpagenr('$')
-                        let footer = ''
-                    endif
-                else
-                    " finish to add the left side.
-                    let tab_fin_l = 1
-                endif
-            endif
-        endif
-
-        " right side if current tab page.
-        let ctn_r = cur_tab_no + i
-        if ctn_r <= tabpagenr('$')
-            " count windows
-            let all_wins += tabpagewinnr(ctn_r, '$')
-            " add title to tabline if possible
-            if tab_fin_r == 0
-                let title = s:get_title(ctn_r)
-                if tab_len+len(title)+1 < width
-                    let tab_len += len(title)+1
-                    let tmp_s = '%'.ctn_r.'T'
-                    let tmp_s .= '%#TabLine#'
-                    let tmp_s .= title
-                    let tmp_s .= '%#TabLineFill# '
-                    let s .= tmp_s
-                    " set footer
-                    if ctn_r == tabpagenr('$')
-                        let footer = ''
-                    endif
-                else
-                    " finish to add the right side.
-                    let tab_fin_r = 1
-                endif
-            endif
-        endif
-    endfor
-    let header = '_'.is_edit.'/'.all_files.'('.all_wins.')_ ' . header
-    " color setting
-    let header = '%#TabLineFill#'.header.'%#TabLineFill#'
-    " color setting
-    let footer = '%#TabLineFill#'.footer.'%#TabLineFill#'
-    " 右寄せしてディレクトリ表示
-    let rtabline = '%=%#TabLineDir#'.cdir.'%#TabLineFill#'
-    let s = header.s.footer.rtabline
-    return s
-endfunction
-
-let &tabline = '%!'. s:SID_PREFIX() . 'set_tabline()'
-set showtabline=2 " 常にタブラインを表示
-" }}}
-
-"開いているファイル情報を表示（ざっくり）{{{
-function! s:fileinfo() abort
-    let file = expand('%')
-    if file == ''
-        return
-    endif
-    if !has('pythonx')
-        if has('win32')
-            let s:ls = 'dir '
-        else
-            let s:ls='ls -l '
-        endif
-        execute "!" . s:ls . file
-        return
-    else
-        pythonx << EOL
-import vim
-import os
-try:
-    import datetime
-except ImportError as e:
-    datetime_ok = False
-else:
-    datetime_ok = True
-
-fname = vim.eval('file')
-res = ''
-
-# access
-if os.access(fname, os.R_OK): res += 'r'
-else: res += '-'
-if os.access(fname, os.W_OK): res += 'w'
-else: res += '-'
-if os.access(fname, os.X_OK): res += 'x'
-else: res += '-'
-
-# time stamp
-if datetime_ok:
-    stat = os.stat(fname)
-    # meta data update (UNIX), created (Windows)
-    # dt = datetime.datetime.fromtimestamp(stat.st_ctime)
-    # created (some OS)
-    # dt = datetime.datetime.fromtimestamp(stat.st_birthtime)
-    # last update
-    dt = datetime.datetime.fromtimestamp(stat.st_mtime)
-    # last access
-    # dt = datetime.datetime.fromtimestamp(stat.st_atime)
-    res += dt.strftime(' %Y/%m/%d-%H:%M:%S')
-else:
-    res += ' ????/??/??-?:?:?'
-
-# file size
-filesize = os.path.getsize(fname)
-prefix = ''
-if filesize > 1024**3:
-    filesize /= 1024**3
-    prefix = 'G'
-elif filesize > 1024**2:
-    filesize /= 1024**2
-    prefix = 'M'
-elif filesize > 1024:
-    filesize /= 1024
-    prefix = 'k'
-res += ' ({:.1f} {}B)'.format(filesize, prefix)
-
-# file name
-res += '  '+fname
-if os.path.islink(fname):
-    res += ' => '+os.path.realpath(fname)
-
-print(res)
-EOL
-    endif
-endfunction
-command! FileInfo call s:fileinfo()
-"}}}
-
-" 新しいtabで関数ジャンプする {{{
-function! <SID>Tab_Jump()
-    let l:ctabnr = tabpagenr()
-    let l:cword = expand('<cword>')
-    silent cd %:h
-    tabnew
-    " tag listを初期化
-    try
-        $pop
-    catch
-    endtry
-    execute "tjump " . l:cword
-    if expand("%:t") == ""
-        quit
-        execute "normal! " . l:ctabnr . "gt"
-    endif
-    silent cd -
-endfunction
-
-"jump先をnew tabで開く
-nnoremap <silent> <c-j> :call <SID>Tab_Jump()<CR>
-
-" }}}
-
-"clipboardを新しいwindowに保存{{{
-function! Show_clipboard()
-    """ open ... 1 open 0 ... get back
-    execute( winnr('$') . 'wincmd l')
-    if &filetype != 'clipboard'
-        silent botright vertical 20split ClipBoard
-        setlocal noreadonly
-        setlocal number
-        setlocal noswapfile
-        setlocal nobackup
-        setlocal noundofile
-        setlocal filetype=clipboard
-        setlocal buftype=nofile
-        setlocal nobuflisted
-        setlocal wrap
-        setlocal report=9999
-    endif
-    put *
-    wincmd p
-
-endfunction
-nnoremap <Leader>p :call Show_clipboard()<CR>
-"}}}
-
-" 関数じゃないけどInsertを抜けるときに日本語入力をoff {{{
-if !exists('$SSH_CONNECTION') && llib#get_local_var('auto_ime_off', 0)==1   " ※ssh先ではhostのを変えるので意味なし
-    if has('win32')
-        autocmd local InsertLeave * set iminsert=0
-    elseif has('mac')
-            " 参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
-        if has('nvim')
-            " nvimはjob_startが無い？っぽいのでとりあえず昔の方法で
-            let s:imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
-            autocmd local InsertLeave * call system(s:imeoff)
-        else
-            " 参考2: https://moyapro.com/2019/04/14/disable-ime-on-mac-vim/
-            " 非同期で動かせるらしい
-            autocmd local InsertLeave * call job_start(
-                        \ ['osascript', '-e', 'tell application "System Events" to key code {102}'],
-                        \ #{in_io: 'null', out_io: 'null', err_io: 'null'})
-        endif
-    endif
-    set ttimeoutlen=1
+" local settings before source vimrcs
+call s:load_file('rcdir/vimrc_mine.pre')
+" option settings
+call s:load_file('rcdir/vimrc_options.vim')
+" map(key) settings
+call s:load_file('rcdir/vimrc_maps.vim')
+" simple commands and short functions
+call s:load_file('rcdir/vimrc_commands.vim')
+" auto command settings
+call s:load_file('rcdir/vimrc_autocmds.vim')
+" status line setting
+call s:load_file('rcdir/vimrc_statusline.vim')
+" tab line setting
+call s:load_file('rcdir/vimrc_tabline.vim')
+" (almost) self-made functions
+call s:load_file('rcdir/vimrc_plugin.vim')
+" vim dein (plugin manager) setting
+call s:load_file('rcdir/vimrc_dein.vim')
+" color settings
+if !s:load_file('rcdir/vimrc_color.vim')
+    " In case vim don't read vimrc_color.vim
+    colorscheme evening
+    highlight Normal ctermbg=8 guibg=Black
 endif
-
-" }}}
-
-"" active window {{{
-
-autocmd local WinEnter * if &buftype != 'quickfix' | set statusline=%!Set_statusline(1) | endif
-autocmd local WinLeave * if &buftype != 'quickfix' | setlocal statusline=%!Set_statusline(0,llib#get_local_var('statusline_off',[])) | endif
-
-" 長過ぎたらstatusline の最初をファイル名のみにする
-autocmd local WinEnter * 
-            \ if len(expand('%'))*0.9 > winwidth(0) |
-            \ call llib#set_local_var('statusline', [" %t%m%{&readonly?'[RO]':''}%h%w "], [0]) |
-            \ else | 
-            \ call llib#set_local_var('statusline', [" %f%m%{&readonly?'[RO]':''}%h%w "], [0]) |
-            \ endif
-
-""}}}
-
-" 辞書（というか英辞郎）で検索 {{{
-function! s:eijiro(word)
-    let dic_file = llib#get_local_var('dic_file', '')
-    if filereadable(dic_file)
-        " localに辞書ファイルがある場合はそれを参照
-        execute "vimgrep /\\<".a:word."\\>/j "..dic_file
-        return
-    endif
-
-    let url = '"https://eowf.alc.co.jp/search?q='.a:word.'"'
-    if has('win32')
-        let web_cmd = 'start'
-    elseif has('mac')
-        let web_cmd = 'open'
-    else
-        " linux
-        let web_cmd = 'firefox'
-    endif
-    if !executable(web_cmd)
-        echo 'command '.web_cmd.' is not supported in this system.'
-        return
-    endif
-    execute '!'.web_cmd.' '.url
-endfunction
-command -nargs=1 Eijiro call s:eijiro(<f-args>)
-" }}}
-
-" conflict commentを検索 {{{
-command! SearchConf /<<<<<<<\|=======\|>>>>>>>
-" }}}
-
-" expandを打つのがめんどくさい {{{
-command! -nargs=1 Echopand echo expand(<f-args>)
-" }}}
-
-" ipython を呼ぶ用 {{{
-command! Ipython2 botright terminal ipython2
-command! Ipython3 botright terminal ipython3
-if exists('&pyxversion') && &pyxversion == 2
-    command! Ipython Ipython2
-else
-    command! Ipython Ipython3
-endif
-" }}}
-
-" Spell check {{{
-command! Spell if &spell!=1 | setlocal spell | else | setlocal nospell | endif
-" }}}
-
-" self-made plugin/functionファイル読み込み
-let s:plugin_file = s:vimdir . "rcdir/vimrc_plugin.vim"
-if filereadable(s:plugin_file)
-    execute "source " . s:plugin_file
-endif
-
-" map leader にmapされているmapを表示 {{{
-" nnoremap <Leader><Leader> :map mapleader<CR>
-function! <SID>leader_map()
-    map <Leader>
-endfunction
-nnoremap <silent> <Leader><Leader> :call <SID>leader_map()<CR>
-" }}}
-
-" 要らない？user関数を消す {{{
-function! s:del_comds()
-    let del_commands = llib#get_local_var('del_commands', [])
-    for dc in del_commands
-        if exists(':'.dc) == 2
-            execute 'delcommand '.dc
-            " echo 'delete '.dc
-            " sleep 1
-        else
-            " echo 'not delete '.dc
-            " sleep 1
-        endif
-    endfor
-endfunction
-if v:vim_did_enter
-    call s:del_comds()
-else
-    autocmd local VimEnter * ++once call s:del_comds()
-endif
-" }}}
-
-" }}}
-
-""##########file, directory関連 "{{{
-autocmd local BufRead * let b:cfile = expand("%:p")
-autocmd local BufRead * let b:cdir = expand("%:p:h")
-
-autocmd local WinLeave * call llib#set_local_var('last_file_win', expand("%:p"))
-autocmd local TabClosed * call llib#set_local_var('last_file_tab', llib#get_local_var('last_file_win', ''))
-command! LastTab execute "tabnew " . llib#get_local_var('last_file_tab', '')
-command! LastWin execute "vsplit " . llib#get_local_var('last_file_win', '')
-
-"検索pathを追加
-set path+=../include
-" I should serarch $INCLUDE, not the environment for lib?
-" if exists("$LD_LIBRARY_PATH")
-"     execute "set path+=".substitute($LD_LIBRARY_PATH, ':', ',', 'g')
-" endif
-" あればproject top dirを追加
-if llib#get_local_var('get_top_dir', 0) == 1
-    let s:top_dir = llib#get_top_dir('.')
-    if !empty(s:top_dir)
-        let &path..=','..s:top_dir..'/**/include'
-    endif
-endif
-
-" test用directoryを追加
-let s:test_vim_dir = s:vimdir . 'test'
-if !isdirectory(s:test_vim_dir)
-    call mkdir(s:test_vim_dir)
-endif
-execute 'set runtimepath^=' . s:test_vim_dir
-"}}}
-
-""##########ファイル読み込み "{{{
-"dein directoryがあれば読み込み
-let s:dein_file = s:vimdir . "rcdir/vimrc_dein.vim"
-let s:dein_dir = s:vimdir.'dein/'
-if isdirectory(s:dein_dir) && filereadable(s:dein_file)
-    execute "source " . s:dein_file
-endif
-
-"カラーの変更
-let s:color_file = s:vimdir . "rcdir/vimrc_color.vim"
-if !has('gui_running')
-    if filereadable(s:color_file) && (&t_Co == 256)
-        execute "source " . s:color_file
-    endif
-endif
-
-"local設定ファイル (2nd)
-let s:localrc = s:vimdir . 'rcdir/vimrc.mine'
-if filereadable(s:localrc)
-    execute "source " . s:localrc
-endif
-"}}}
+" local settings after source vimrcs
+call s:load_file('rcdir/vimrc_mine.post')
 
