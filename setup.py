@@ -456,23 +456,6 @@ def main_vim(args):
         vimpath = op.join(vimdir, fy)
         fcopy(vimpath, files[fy], link=args.link, force=args.force, test=args.test)
 
-    if 'vimrc' in files:
-        vim_mine = op.join(vim_config_path, 'rcdir/vimrc.mine')
-        if not op.exists(vim_mine):
-            with open(vim_mine,'a') as f:
-                f.write('"" PC dependent vimrc\n')
-                f.write('"\n')
-                f.write('\n')
-            print('made vimrc.mine')
-
-        vim_init = op.join(vim_config_path, 'rcdir/init.vim.mine')
-        if not op.exists(vim_init):
-            with open(vim_init,'a') as f:
-                f.write('"" init setting file for vim\n')
-                f.write('"\n')
-                f.write('\n')
-            print('made init.vim.mine')
-
     if not uname == 'Windows':
         src = vimrc
         dst = op.expanduser('~/.vimrc')
