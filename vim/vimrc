@@ -59,6 +59,8 @@ endif
 
 try
     let s:vimdir = llib#get_conf_dir()
+catch
+    echomsg 'llib not found. So, no files are sourced.'
 endtry
 
 function! s:load_file(filename) abort
@@ -92,7 +94,7 @@ if !has('gui_running') && (&t_Co == 256)
     if !s:load_file('rcdir/vimrc_color.vim')
         " In case vim don't read vimrc_color.vim
         colorscheme evening
-        highlight Normal ctermbg=8 guibg=Black
+        highlight Normal ctermbg=0 guibg=Black
     endif
 endif
 " local settings after source vimrcs
