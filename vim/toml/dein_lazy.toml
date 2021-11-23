@@ -154,7 +154,7 @@ function! s:jupyter_connect_check() abort
         endif
     endfor
 
-    if has('win32')
+    if has('win32') || has('win64')
         silent !start /min jupyter qtconsole
     else
         !jupyter qtconsole &

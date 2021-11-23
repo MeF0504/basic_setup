@@ -34,7 +34,7 @@ function! s:fileinfo() abort
         return
     endif
     if !has('pythonx')
-        if has('win32')
+        if has('win32') || has('win64')
             let s:ls = 'dir '
         else
             let s:ls='ls -l '
@@ -128,30 +128,6 @@ nnoremap <silent> <c-j> :call <SID>Tab_Jump()<CR>
 
 " }}}
 
-"clipboardを新しいwindowに保存{{{
-function! Show_clipboard()
-    """ open ... 1 open 0 ... get back
-    execute( winnr('$') . 'wincmd l')
-    if &filetype != 'clipboard'
-        silent botright vertical 20split ClipBoard
-        setlocal noreadonly
-        setlocal number
-        setlocal noswapfile
-        setlocal nobackup
-        setlocal noundofile
-        setlocal filetype=clipboard
-        setlocal buftype=nofile
-        setlocal nobuflisted
-        setlocal wrap
-        setlocal report=9999
-    endif
-    put *
-    wincmd p
-
-endfunction
-nnoremap <Leader>p :call Show_clipboard()<CR>
-"}}}
-
 " 辞書（というか英辞郎）で検索 {{{
 function! s:eijiro(word)
     let dic_file = llib#get_local_var('dic_file', '')
@@ -162,7 +138,7 @@ function! s:eijiro(word)
     endif
 
     let url = '"https://eowf.alc.co.jp/search?q='.a:word.'"'
-    if has('win32')
+    if has('win32') || has('win64')
         let web_cmd = 'start'
     elseif has('mac')
         let web_cmd = 'open'

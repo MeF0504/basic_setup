@@ -10,7 +10,7 @@ function! llib#get_conf_dir() abort
             let vimdir = expand('~/.config/nvim/')
         endif
     else
-        if has('win32')
+        if has('win32') || has('win64')
             let vimdir = expand('~/vimfiles/')
         else
             let vimdir = expand('~/.vim/')

@@ -109,7 +109,7 @@ autocmd local VimEnter * ++once if llib#get_local_var('st_showmode', 1)!=0 | set
 
 " Insertを抜けるときに日本語入力をoff {{{
 if !exists('$SSH_CONNECTION') && llib#get_local_var('auto_ime_off', 0)==1   " ※ssh先ではhostのを変えるので意味なし
-    if has('win32')
+    if has('win32') || has('win64')
         autocmd local InsertLeave * set iminsert=0
     elseif has('mac')
             " 参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/

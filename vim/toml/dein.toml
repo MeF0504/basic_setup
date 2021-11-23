@@ -83,7 +83,7 @@ let g:quickrun_config.python = {
 if has('mac')
     let s:cmd = 'open'
     let s:exe = '%c %s -a Google\ Chrome'
-elseif has('win32')
+elseif has('win32') || has('win64')
     let s:cmd = 'start'
     let s:exe = '%c chrome %s'
 else
@@ -141,7 +141,7 @@ function! s:qrun_markdown() abort
             " http://chrome.half-moon.org/43.html
             if has('mac')
                 let open_server = 'open -n -a Google\\ Chrome --args -incognito http://localhost:8080/'
-            elseif has('win32')
+            elseif has('win32') || has('win64')
                 let open_server = '"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe" --new-window --incognito http://localhost:8080/'
             else
                 let open_server = 'firefox http://localhost:8080/ &'
@@ -153,7 +153,7 @@ function! s:qrun_markdown() abort
         else
             if has('mac')
                 let open_pdf = 'open %s:r.pdf'
-            elseif has('win32')
+            elseif has('win32') || has('win64')
                 let open_pdf = 'start %s:r.pdf'
             else
                 let open_pdf = 'evince %s:r.pdf'

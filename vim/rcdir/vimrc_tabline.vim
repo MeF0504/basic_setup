@@ -24,7 +24,7 @@ endfunction
 
 function! s:get_cwd_path()
     let max_dir_len = &columns/5
-    if has('win32')
+    if has('win32') || has('win64')
         let sep = '\'
     else
         let sep = '/'

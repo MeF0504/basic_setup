@@ -50,9 +50,14 @@ set smartcase
 " タブとかを可視化?
 set list
 set listchars=tab:».,trail:\ ,extends:»,precedes:«,nbsp:% ",eol:↲
-if !exists('$SSH_CONNECTION')   " localのときのみ
-    " clipboardとyankを共有 (+clipboardが条件)
-    set clipboard+=unnamed
+" clipboardとyankを共有 (+clipboardが条件)
+if has('clipboard') && !exists('$SSH_CONNECTION')   " localのときのみ
+    " なんか win/mac と linux で違うらしい
+    if has('win32') || has('win64') || has('mac')
+        set clipboard+=unnamed
+    elseif has('unnamedplus')
+        set clipboard+=unnamedplus
+    endif
 endif
 " 検索のときに移動しない
 set noincsearch

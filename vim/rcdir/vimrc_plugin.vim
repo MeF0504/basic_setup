@@ -655,7 +655,7 @@ function! s:Terminal(...) abort
     endif
 
     let term_opt = ''
-    if has('win32')
+    if has('win32') || has('win64')
         if has_key(opts, 'term')
             let res = s:open_term(opts['term'][0])
             if res != 0
