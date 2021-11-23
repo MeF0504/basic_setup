@@ -26,6 +26,9 @@ function! llib#set_local_var(var_name, val, ...) abort
     if a:0 == 0
         let s:local_var_dict[a:var_name] = a:val
     else
+        if !has_key(s:local_var_dict, a:var_name)
+            let s:local_var_dict[a:var_name] = {}
+        endif
         for i in range(a:0)
             let s:local_var_dict[a:var_name][a:1[i]] = a:val[i]
         endfor

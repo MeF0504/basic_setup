@@ -71,7 +71,10 @@ let g:quickrun_config._ = {
 if has('job')
     let g:quickrun_config._.runner = 'job'
     let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'rng...':''}%#StatusLine#"
-    call llib#set_local_var('statusline', llib#get_local_var('statusline', '')+[s:quickrun_status])
+    call llib#set_local_var('statusline',
+                \ [llib#get_local_var('statusline',
+                \ {'_':"%f%m%r%h%w%<%=%y\ %l/%L\ [%P]"}
+                \ )['_']..s:quickrun_status], ['_'])
 endif
 
 " python
