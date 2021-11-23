@@ -88,10 +88,12 @@ call s:load_file('rcdir/vimrc_plugin.vim')
 " vim dein (plugin manager) setting
 call s:load_file('rcdir/vimrc_dein.vim')
 " color settings
-if !s:load_file('rcdir/vimrc_color.vim')
-    " In case vim don't read vimrc_color.vim
-    colorscheme evening
-    highlight Normal ctermbg=8 guibg=Black
+if !has('gui_running') && (&t_Co == 256)
+    if !s:load_file('rcdir/vimrc_color.vim')
+        " In case vim don't read vimrc_color.vim
+        colorscheme evening
+        highlight Normal ctermbg=8 guibg=Black
+    endif
 endif
 " local settings after source vimrcs
 call s:load_file('rcdir/vimrc_mine.post')
