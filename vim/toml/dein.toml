@@ -70,7 +70,7 @@ let g:quickrun_config._ = {
     \ }
 if has('job')
     let g:quickrun_config._.runner = 'job'
-    let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'rng...':''}%#StatusLine#"
+    let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>>..':''}%#StatusLine#"
     call llib#set_local_var('statusline',
                 \ [llib#get_local_var('statusline',
                 \ {'_':"%f%m%r%h%w%<%=%y\ %l/%L\ [%P]"}
@@ -115,6 +115,16 @@ endif
 " }}}
 
 " wrapper functions {{{
+" Anywhere SID.
+function! s:SID_PREFIX() " tentative
+  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
+endfunction
+if empty(expand('<SID>'))
+    let s:sid = s:SID_PREFIX()
+else
+    let s:sid = expand('<SID>')
+endif
+
 " markdown {{{
 function! s:qrun_markdown() abort
     let q_config = {}
@@ -229,9 +239,14 @@ endif
 function! <SID>quickrun_wrapper()
     if &modified
         echo 'file is not saved.'
+        return
+    endif
+    if quickrun#is_running()
+        echo 'quickrun is running'
+        return
     endif
     cclose
-    let qrun_ft_func = expand('<SID>').'qrun_'.&filetype
+    let qrun_ft_func = s:sid.'qrun_'.&filetype
     if exists('*'.qrun_ft_func)
         execute 'call '.qrun_ft_func.'()'
     else

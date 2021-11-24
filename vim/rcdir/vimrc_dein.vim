@@ -43,11 +43,6 @@ if dein#load_state(s:dein_dir)
 
     " You can specify revision/branch/tag.
     " call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
-    let s:dein_status = "%#StatusLine_CHK#%{empty(dein#get_progress())?'':'↑↑..'}%#StatusLine#"
-    call llib#set_local_var('statusline',
-                \ [llib#get_local_var('statusline',
-                \ {'_':"%f%m%r%h%w%<%=%y\ %l/%L\ [%P]"}
-                \ )['_']..s:dein_status], ['_'])
 
     if filereadable(s:light_file)
         call dein#load_toml(s:light_file, {'lazy':0})
@@ -72,6 +67,13 @@ syntax enable
 if dein#check_install()
     call dein#install()
 endif
+
+" show the status of dein in statusline.
+let s:dein_status = "%#StatusLine_CHK#%{empty(dein#get_progress())?'':'^^..'}%#StatusLine#"
+call llib#set_local_var('statusline',
+            \ [llib#get_local_var('statusline',
+            \ {'_':"%f%m%r%h%w%<%=%y\ %l/%L\ [%P]"}
+            \ )['_']..s:dein_status], ['_'])
 
 " Plugin remove check
 let s:removed_plugins = dein#check_clean()
