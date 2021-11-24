@@ -131,6 +131,14 @@ try
 catch
     " nothing
 endtry
+" test用directoryを追加
+if exists('s:vimdir')
+    let s:test_vim_dir = s:vimdir . 'test'
+    if !isdirectory(s:test_vim_dir)
+        call mkdir(s:test_vim_dir)
+    endif
+    execute 'set runtimepath^=' . s:test_vim_dir
+endif
 
 " terminal mode設定
 if has('terminal')
