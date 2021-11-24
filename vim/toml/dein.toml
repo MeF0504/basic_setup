@@ -672,6 +672,7 @@ repo = 'MeF0504/fern-mapping-search-ctrlp.vim'
 depends = ['fern.vim', 'ctrlp.vim']
 hook_add = '''
 let g:fern_search_ctrlp_root = 1
+let g:fern_search_ctrlp_open_file = 1
 '''
-
 # }}}
+
