@@ -63,7 +63,7 @@ catch
     echomsg 'llib not found. So, no files are sourced.'
 endtry
 
-function! s:load_file(filename) abort
+function! s:source_file(filename) abort
     if exists('s:vimdir') && filereadable(s:vimdir..a:filename)
         execute 'source '..s:vimdir..a:filename
         return 1
@@ -72,31 +72,31 @@ function! s:load_file(filename) abort
 endfunction
 
 " local settings before source vimrcs
-call s:load_file('rcdir/vimrc_mine.pre')
+call s:source_file('rcdir/vimrc_mine.pre')
 " option settings
-call s:load_file('rcdir/vimrc_options.vim')
+call s:source_file('rcdir/vimrc_options.vim')
 " map(key) settings
-call s:load_file('rcdir/vimrc_maps.vim')
+call s:source_file('rcdir/vimrc_maps.vim')
 " simple commands and short functions
-call s:load_file('rcdir/vimrc_commands.vim')
+call s:source_file('rcdir/vimrc_commands.vim')
 " auto command settings
-call s:load_file('rcdir/vimrc_autocmds.vim')
+call s:source_file('rcdir/vimrc_autocmds.vim')
 " status line setting
-call s:load_file('rcdir/vimrc_statusline.vim')
+call s:source_file('rcdir/vimrc_statusline.vim')
 " tab line setting
-call s:load_file('rcdir/vimrc_tabline.vim')
+call s:source_file('rcdir/vimrc_tabline.vim')
 " (almost) self-made functions
-call s:load_file('rcdir/vimrc_plugin.vim')
+call s:source_file('rcdir/vimrc_plugin.vim')
 " vim dein (plugin manager) setting
-call s:load_file('rcdir/vimrc_dein.vim')
+call s:source_file('rcdir/vimrc_dein.vim')
 " color settings
 if !has('gui_running') && (&t_Co == 256)
-    if !s:load_file('rcdir/vimrc_color.vim')
-        " In case vim don't read vimrc_color.vim
+    if !s:source_file('rcdir/vimrc_color.vim')
+        " In case vim doesn't source vimrc_color.vim
         colorscheme evening
         highlight Normal ctermbg=0 guibg=Black
     endif
 endif
 " local settings after source vimrcs
-call s:load_file('rcdir/vimrc_mine.post')
+call s:source_file('rcdir/vimrc_mine.post')
 
