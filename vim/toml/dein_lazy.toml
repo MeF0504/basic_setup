@@ -290,19 +290,21 @@ execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-defi
 execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-references)' : '".s:lsp_map2."'"
 execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-hover)' : '".s:lsp_map3."'"
 execute "nmap <silent> <expr> <c-p><c-p> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-peek-definition)' : '".s:lsp_map4."'"
+" help file でバグる？
+autocmd deinLocal FileType help nnoremap <buffer> <c-]> <c-]>
 
 " normal modeでmouseが使えないとscroll出来ないので，とりあえず対処。
 " lsp_float_closed がvimだとpopupが閉じても叩かれない？ので，qで閉じるようにする
-autocmd User lsp_float_opened nnoremap <buffer> <expr> <c-d> lsp#scroll(+5)
-autocmd User lsp_float_opened nnoremap <buffer> <expr> <c-u> lsp#scroll(-5)
-autocmd User lsp_float_opened nnoremap <buffer> <expr> <c-e> lsp#scroll(+1)
-autocmd User lsp_float_opened nnoremap <buffer> <expr> <c-y> lsp#scroll(-1)
-autocmd User lsp_float_opened nmap <buffer> <silent> q <Plug>(lsp-preview-close)
-autocmd User lsp_float_closed nunmap <buffer> <c-d>
-autocmd User lsp_float_closed nunmap <buffer> <c-u>
-autocmd User lsp_float_closed nunmap <buffer> <c-e>
-autocmd User lsp_float_closed nunmap <buffer> <c-y>
-autocmd User lsp_float_closed nunmap <buffer> q
+autocmd deinLocal User lsp_float_opened nnoremap <buffer> <expr> <c-d> lsp#scroll(+5)
+autocmd deinLocal User lsp_float_opened nnoremap <buffer> <expr> <c-u> lsp#scroll(-5)
+autocmd deinLocal User lsp_float_opened nnoremap <buffer> <expr> <c-e> lsp#scroll(+1)
+autocmd deinLocal User lsp_float_opened nnoremap <buffer> <expr> <c-y> lsp#scroll(-1)
+autocmd deinLocal User lsp_float_opened nmap <buffer> <silent> q <Plug>(lsp-preview-close)
+autocmd deinLocal User lsp_float_closed nunmap <buffer> <c-d>
+autocmd deinLocal User lsp_float_closed nunmap <buffer> <c-u>
+autocmd deinLocal User lsp_float_closed nunmap <buffer> <c-e>
+autocmd deinLocal User lsp_float_closed nunmap <buffer> <c-y>
+autocmd deinLocal User lsp_float_closed nunmap <buffer> q
 "" }}}
 '''
 
