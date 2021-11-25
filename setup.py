@@ -34,11 +34,17 @@ uname = platform.system()
 # copy file1 -> file2
 def fcopy(file1,file2,link=False,force=False,**kwargs):
     def fcopy_main(cmd,comment,test):
+        if is_color:
+            fg = FG256(4)
+            end = END
+        else:
+            fg = ''
+            end = ''
         if not test:
             eval(cmd)
-            print(comment)
+            print(fg+comment+end)
         else:
-            print('cmd check:: '+cmd)
+            print('{}cmd check:: {}{}'.format(fg, cmd, end))
 
     def fcopy_diff(file1, file2):
         # https://it-ojisan.tokyo/python-difflib/#keni_toc_2
