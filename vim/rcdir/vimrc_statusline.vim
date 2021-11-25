@@ -102,6 +102,9 @@ call llib#set_local_var('statusline', {
 let s:def_statusline = &statusline
 function! <SID>Set_statusline(cur_win)
     let st_config = llib#get_local_var('statusline', {'_':s:def_statusline})
+    if (type(st_config) != type({})) || !has_key(st_config, '_')
+        let st_config = {'_':s:def_statusline}
+    endif
 
     if a:cur_win == 0 && has_key(st_config, 'off')
         let st_str = st_config['off']
