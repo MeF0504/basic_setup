@@ -69,7 +69,7 @@ if dein#check_install()
 endif
 
 " show the status of dein in statusline.
-let s:dein_status = "%#StatusLine_CHK#%{empty(dein#get_progress())?'':'^^..'}%#StatusLine#"
+let s:dein_status = "%#StatusLine_CHK#%{empty(dein#get_progress())?'':'^...'}%#StatusLine#"
 call llib#set_local_var('statusline',
             \ [llib#get_local_var('statusline',
             \ {'_':"%f%m%r%h%w%<%=%y\ %l/%L\ [%P]"}
