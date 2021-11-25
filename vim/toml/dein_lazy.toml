@@ -59,7 +59,7 @@ if has('python3') && ((v:version>=801) || (has('nvim')&&has('nvim-0.3.0')))
             \ neosnippet#expandable_or_jumpable() ?
             \    "\<Plug>(neosnippet_expand_or_jump)" : "\<S-tab>"
 
-    """ test
+    "" test
     autocmd deinLocal FileType css setlocal omnifunc=csscomplete#CompleteCSS
     autocmd deinLocal FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
     autocmd deinLocal FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
@@ -238,7 +238,7 @@ command! -nargs=* -complete=customlist,s:jupyter_arg_list Jupyter call s:jupyter
 repo = 'prabirshrestha/vim-lsp'
 on_event = 'VimEnter'
 hook_source = '''
-""" vim-lsp {{{
+"" vim-lsp {{{
 " https://qiita.com/kitagry/items/216c2cf0066ff046d200
 " errorとかwarning表示はとりあえずoff
 let g:lsp_diagnostics_enabled = 0
@@ -248,10 +248,10 @@ let g:lsp_document_highlight_enabled = 0
 let g:lsp_peek_alignment = 'top'
 " 文字入力中にhelpを出さないようにしている？
 let g:lsp_signature_help_enabled = 0
-""" }}}
+"" }}}
 '''
 hook_post_source = '''
-""" vim-lsp {{{
+"" vim-lsp {{{
 " reference: lsp_settings#profile#status()
 function! <SID>chk_lsp_running()
     let active_servers = lsp#get_allowed_servers()
@@ -286,20 +286,24 @@ let s:lsp_map4 =  maparg('<c-p><c-p>', 'n')
 if empty(s:lsp_map4)
     let s:lsp_map4 = '<c-p><c-p>'
 endif
-execute "nnoremap <silent> <expr> <c-]> <SID>chk_lsp_running()==1 ? ':LspDefinition<CR>' : '".s:lsp_map1."'"
-execute "nnoremap <silent> <expr> <c-j> <SID>chk_lsp_running()==1 ? ':LspReferences<CR>' : '".s:lsp_map2."'"
-execute "nnoremap <silent> <expr> <c-p> <SID>chk_lsp_running()==1 ? ':LspHover<CR>' : '".s:lsp_map3."'"
-execute "nnoremap <silent> <expr> <c-p><c-p> <SID>chk_lsp_running()==1 ? ':LspPeekDefinition<CR>' : '".s:lsp_map4."'"
+execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-definition)' : '".s:lsp_map1."'"
+execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-references)' : '".s:lsp_map2."'"
+execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-hover)' : '".s:lsp_map3."'"
+execute "nmap <silent> <expr> <c-p><c-p> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-peek-definition)' : '".s:lsp_map4."'"
 
 " normal modeでmouseが使えないとscroll出来ないので，とりあえず対処。
 " lsp_float_closed がvimだとpopupが閉じても叩かれない？ので，qで閉じるようにする
 autocmd User lsp_float_opened nnoremap <buffer> <expr> <c-d> lsp#scroll(+5)
 autocmd User lsp_float_opened nnoremap <buffer> <expr> <c-u> lsp#scroll(-5)
+autocmd User lsp_float_opened nnoremap <buffer> <expr> <c-e> lsp#scroll(+1)
+autocmd User lsp_float_opened nnoremap <buffer> <expr> <c-y> lsp#scroll(-1)
 autocmd User lsp_float_opened nmap <buffer> <silent> q <Plug>(lsp-preview-close)
 autocmd User lsp_float_closed nunmap <buffer> <c-d>
 autocmd User lsp_float_closed nunmap <buffer> <c-u>
+autocmd User lsp_float_closed nunmap <buffer> <c-e>
+autocmd User lsp_float_closed nunmap <buffer> <c-y>
 autocmd User lsp_float_closed nunmap <buffer> q
-""" }}}
+"" }}}
 '''
 
 [[plugins]]
@@ -312,7 +316,7 @@ repo = 'Shougo/ddc.vim'
 if = '''exists('g:loaded_denops') && g:loaded_denops==1'''
 on_event = 'InsertEnter'
 hook_post_source = '''
-"""""ddc.vim {{{
+"" ddc.vim {{{
 " add sources
 call ddc#custom#patch_global('sources', ['file', 'vim-lsp', 'around', 'neosnippet'])
 " set basic options
