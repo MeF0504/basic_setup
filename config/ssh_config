@@ -8,6 +8,8 @@ Host dummy
     Hostname 192.168.1.1
 ## user name
     User hoge
+## Port number
+    Port 22
 ## to avoid timeout
     ServerAliveInterval 60
 ## use same key at target server A and bastion server B
