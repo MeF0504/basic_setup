@@ -32,6 +32,7 @@ function! <SID>get_fileformat(os)
     endif
 endfunction
 
+let s:mode_str = '%%mode'
 function! <SID>get_mode()
     let st_modes =
                 \ {'n':'NORMAL',
@@ -64,6 +65,9 @@ endfunction
 
 let s:st_normal = ""
 let s:st_level1 = ""
+" mode
+let s:st_normal .= s:mode_str
+let s:st_level1 .= s:mode_str
 " ファイル名(最大長50) 修正フラグ 読込専用 ヘルプ preview_window
 let s:st_normal .= " %.50f%m%{&readonly?'[RO]':''}%h%w "
 " winwidthが60より短い場合はファイル名のみ
@@ -114,8 +118,9 @@ function! <SID>Set_statusline(cur_win)
         endfor
     endif
 
-    if (llib#get_local_var('st_showmode', 1) != 0) && (a:cur_win != 0)
-        let st_str = <SID>get_mode()..st_str
+    " replace mode_str to mode information
+    if (llib#get_local_var('st_showmode', 1) != 0) && (match(st_str, s:mode_str)!=-1)
+        let st_str = substitute(st_str, s:mode_str, <SID>get_mode(), 'g')
     endif
 
     return st_str
