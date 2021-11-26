@@ -35,7 +35,7 @@ uname = platform.system()
 def fcopy(file1,file2,link=False,force=False,**kwargs):
     def fcopy_main(cmd,comment,test):
         if is_color:
-            fg = FG256(4)
+            fg = FG256(11)
             end = END
         else:
             fg = ''
@@ -231,7 +231,7 @@ def main_opt(args):
     bindir = op.join(optdir,'bin')
     libdir = op.join(optdir, 'lib')
     if is_color:
-        fg = FG256(11)
+        fg = FG256(10)
         end = END
     else:
         fg = ''
@@ -269,7 +269,7 @@ def main_conf(args):
     libpath = op.join(args.prefix,'lib')
     setdir = op.join(args.fpath,'config')
     if is_color:
-        fg = FG256(11)
+        fg = FG256(10)
         end = END
     else:
         fg = ''
@@ -396,7 +396,7 @@ def main_conf(args):
 def main_vim(args):
     vimdir = op.join(args.fpath,'vim')
     if is_color:
-        fg = FG256(11)
+        fg = FG256(10)
         end = END
     else:
         fg = ''
