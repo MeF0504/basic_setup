@@ -361,6 +361,7 @@ def main_conf(args):
     if 'zshrc' in files:
         zshrc_mine = op.expandvars('$HOME/.zsh/zshrc.mine')
         if not op.exists(zshrc_mine):
+            mkdir('~/.zsh')
             with open(zshrc_mine,'a') as f:
                 f.write('## PC dependent zshrc\n')
                 f.write('#\n')
@@ -377,6 +378,7 @@ def main_conf(args):
     if 'bashrc' in files:
         bashrc_mine = op.expanduser('~/.bash/bashrc.mine')
         if not op.exists(bashrc_mine):
+            mkdir('~/.bash')
             with open(bashrc_mine,'a') as f:
                 f.write('## PC dependent bashrc\n')
                 f.write('#\n')
