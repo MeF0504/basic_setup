@@ -301,6 +301,7 @@ def main_conf(args):
                   'posixShellRC':'~/.posixShellRC',\
                   'bashrc':'~/.bashrc',\
                   'terminator_config':op.join(args.conf_home,'terminator/config'), \
+                  'terminology_base.cfg':op.join(args.conf_home, 'terminology/config/standard/base.cfg'), \
                   'matplotlibrc':op.join(args.conf_home, 'matplotlib/matplotlibrc'), \
                   'gitignore_global':'~/.gitignore_global', \
                   'screenrc':'~/.screenrc', \
