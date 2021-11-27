@@ -339,6 +339,8 @@ def main_conf(args):
         fy_dir = op.dirname(op.expanduser(files[fy]))
         if op.exists(fy_dir):
             fcopy(spath,files[fy], link=bool(args.link), force=args.force,test=args.test)
+        else:
+            print('{} does not exist, do not copy {}.'.format(fy_dir, fy))
 
     pyopt = '--prefix ' + args.prefix
     pyopt += ' --type ' + args.type
