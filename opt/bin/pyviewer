@@ -220,13 +220,14 @@ def get_exec_cmds(args, fname):
         print('executed command: {}'.format(res))
     return res
 
-def make_bitmap(filename, rgb):
+def make_bitmap(filename, rgb, bmp_type='Windows'):
     if rgb.shape[-1] == 4:
         rgb = rgb[:,:,[0,1,2]]
 
     height, width, cols = rgb.shape
     if debug:
         print('{}x{}x{}'.format(height, width, cols))
+        print('bitmap type: {}'.format(bmp_type))
 
     # make color table (it doesn't need in 24bmp format.)
     q_bit = 256
@@ -261,7 +262,13 @@ def make_bitmap(filename, rgb):
         print('pixel data: ({}); [{} ... {}]'.format(len(img_data), print_st, print_end))
     len_data = len(img_data)
 
-    offset = 0x0e+0x28+len_cols
+    if bmp_type == 'Windows':
+        offset = 0x0e+0x28+len_cols
+    elif bmp_type == 'OS/2':
+        offset = 0x0e+0x0c+len_cols
+    else:
+        print('incorrect file format: {}.'.format(bmp_type), file=sys.stderr)
+        return None
     file_size = offset+len_data
 
     # make binary data
@@ -273,17 +280,24 @@ def make_bitmap(filename, rgb):
     b.extend(offset.to_bytes(4, 'little'))      # offset
 
     # INFO_HEADER
-    b.extend((0x28).to_bytes(4, 'little'))      # size of header
-    b.extend(width.to_bytes(4, 'little'))       # width [dot]
-    b.extend(height.to_bytes(4, 'little'))      # height [dot]
-    b.extend((1).to_bytes(2, 'little'))         # number of planes
-    b.extend((8*3).to_bytes(2, 'little'))       # byte/1pixel
-    b.extend((0).to_bytes(4, 'little'))         # type of compression (0=BI_RGB, no compression)
-    b.extend(len_data.to_bytes(4, 'little'))     # size of image
-    b.extend((0).to_bytes(4, 'little'))         # horizontal resolution
-    b.extend((0).to_bytes(4, 'little'))         # vertical resolution
-    b.extend(num_cols.to_bytes(4, 'little'))    # number of colors (not used for 24bmp)
-    b.extend((0).to_bytes(4, 'little'))         # import colors (0=all)
+    if bmp_type == 'Windows':
+        b.extend((0x28).to_bytes(4, 'little'))      # size of header
+        b.extend(width.to_bytes(4, 'little'))       # width [dot]
+        b.extend(height.to_bytes(4, 'little'))      # height [dot]
+        b.extend((1).to_bytes(2, 'little'))         # number of planes
+        b.extend((8*3).to_bytes(2, 'little'))       # byte/1pixel
+        b.extend((0).to_bytes(4, 'little'))         # type of compression (0=BI_RGB, no compression)
+        b.extend(len_data.to_bytes(4, 'little'))     # size of image
+        b.extend((0).to_bytes(4, 'little'))         # horizontal resolution
+        b.extend((0).to_bytes(4, 'little'))         # vertical resolution
+        b.extend(num_cols.to_bytes(4, 'little'))    # number of colors (not used for 24bmp)
+        b.extend((0).to_bytes(4, 'little'))         # import colors (0=all)
+    elif bmp_type == 'OS/2':
+        b.extend((0x0c).to_bytes(4, 'little'))      # size of header
+        b.extend(width.to_bytes(2, 'little'))       # width [dot]
+        b.extend(height.to_bytes(2, 'little'))      # height [dot]
+        b.extend((1).to_bytes(2, 'little'))         # number of planes
+        b.extend((8*3).to_bytes(2, 'little'))       # byte/1pixel
 
     # COLOR_TABLES
     b.extend(color_table)
