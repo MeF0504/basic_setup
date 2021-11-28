@@ -1263,12 +1263,11 @@ def main_xpm(fpath, args):
         import tempfile
         import subprocess
 
-    xpms = XPMLoader()
-    xpms.load_xpm(fpath)
-    xpms.xpm_to_ndarray()
-    data = xpms.xpms[0]['ndarray']
-    width = xpms.xpms[0]['info']['width']
-    height = xpms.xpms[0]['info']['height']
+    xpm = XPMLoader(fpath)
+    xpm.xpm_to_ndarray()
+    data = xpm.ndarray
+    width = xpm.info['width']
+    height = xpm.info['height']
 
     if debug:
         print(data.shape)

@@ -1179,23 +1179,19 @@ is_gui = int(vim.eval('is_gui'))
 if is_gui != 0: is_gui = True
 else: is_gui = False
 
-xpms = XPMLoader()
-xpms.load_xpm(xpm_file)
-xpms.get_vim_setings(gui=is_gui)
+xpm = XPMLoader(xpm_file)
+xpm.get_vim_setings(gui=is_gui)
 
-match_cluster = 'syntax cluster Xpmcolors contains='
-for i,xpm_vim in enumerate(xpms.xpms[0]['vim']):
-    hi = xpm_vim['highlight']
-    match = xpm_vim['match']
+for i,vim_setting in enumerate(xpm.vim_settings):
+    hi = vim_setting['highlight']
+    match = vim_setting['match']
     # print(hi)
     # print(match)
     vim.command(match)
     vim.command(hi)
-    match_cluster += 'Xpmcolor{:d},'.format(i)
 
-match_cluster = match_cluster[:-1]
-# print(match_cluster)
-vim.command(match_cluster)
+# print(xpm.vim_finally)
+vim.command(xpm.vim_finally)
 EOL
 endfunction
 command! XPMLoader call <SID>xpm_loader()

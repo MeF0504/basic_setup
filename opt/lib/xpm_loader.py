@@ -7,10 +7,7 @@ from local_lib_color import convert_color_name, convert_fullcolor_to_256
 import_numpy = False
 
 class XPMLoader():
-    def __init__(self):
-        self.xpms = []
-
-    def load_xpm(self, xpm_file):
+    def __init__(self, xpm_file):
         res = ''
         com_lines = False
 
@@ -86,130 +83,109 @@ class XPMLoader():
         assert height == len(body)
         assert width*char_per_pixel == len(body[0])
 
-        self.xpms.append({\
-                'file_name' : xpm_file, \
-                'info' : info, \
-                'color_settings' : color_settings, \
-                'body' : body, \
-                })
+        self.file_name = xpm_file
+        self.info = info
+        self.color_settings = color_settings
+        self.body = body
 
-    def get_color_settings_full(self, index=None):
-        if index is None:
-            index = range(len(self.xpms))
-        elif not hasattr(index, '__iter__'):
-            index = [index]
+    def get_color_settings_full(self):
+        color_setting = self.color_settings
+        color_settings_full = {}
+        for char in color_setting:
+            if color_setting[char]['color'] == 'none':
+                color_settings_full[char] = 'none'
+            elif color_setting[char]['color'].startswith('#'):
+                color_settings_full[char] = color_setting[char]['color']
+            else:
+                color_full = convert_color_name(color_setting[char]['color'], 'full', True)
+                if color_full is None:
+                    color_full = '#000000'
+                color_settings_full[char] = color_full
 
-        for i in index:
-            xpm = self.xpms[i]
-            if 'color_settings_full' in xpm:
-                continue
+        self.color_settings_full = color_settings_full
 
-            color_setting = xpm['color_settings']
-            color_settings_full = {}
-            for char in color_setting:
-                if color_setting[char]['color'] == 'none':
-                    color_settings_full[char] = 'none'
-                elif color_setting[char]['color'].startswith('#'):
-                    color_settings_full[char] = color_setting[char]['color']
-                else:
-                    color_full = convert_color_name(color_setting[char]['color'], 'full', True)
-                    if color_full is None:
-                        color_full = '#000000'
-                    color_settings_full[char] = color_full
-
-            xpm['color_settings_full'] = color_settings_full
-
-    def xpm_to_ndarray(self, index=None):
+    def xpm_to_ndarray(self):
         global import_numpy
         if not import_numpy:
             import numpy as np
             import_numpy = True
 
-        if index is None:
-            index = range(len(self.xpms))
-        elif not hasattr(index, '__iter__'):
-            index = [index]
+        self.get_color_settings_full()
 
-        self.get_color_settings_full(index)
+        width = self.info['width']
+        height = self.info['height']
+        cpp = self.info['char_per_pixel']
+        # RGBA
+        data = np.zeros((height, width, 4), dtype=np.uint8)
+        for i in range(height):
+            for j in range(width):
+                char = self.body[i][j*cpp:(j+1)*cpp]
+                col_id = self.color_settings_full[char]
+                if col_id == 'none':
+                    data[i][j] = [0, 0, 0, 0]
+                else:
+                    r = int(col_id[1:3], 16)
+                    g = int(col_id[3:5], 16)
+                    b = int(col_id[5:7], 16)
+                    data[i][j] = [r,g,b, 255]
 
-        for i in index:
-            xpm = self.xpms[i]
-            if 'ndarray' in xpm:
-                continue
-            width = xpm['info']['width']
-            height = xpm['info']['height']
-            cpp = xpm['info']['char_per_pixel']
-            # RGBA
-            data = np.zeros((height, width, 4), dtype=np.uint8)
-            for i in range(height):
-                for j in range(width):
-                    char = xpm['body'][i][j*cpp:(j+1)*cpp]
-                    col_id = xpm['color_settings_full'][char]
-                    if col_id == 'none':
-                        data[i][j] = [0, 0, 0, 0]
-                    else:
-                        r = int(col_id[1:3], 16)
-                        g = int(col_id[3:5], 16)
-                        b = int(col_id[5:7], 16)
-                        data[i][j] = [r,g,b, 255]
+        self.ndarray = data
 
-            xpm['ndarray'] = data
-
-    def get_vim_setings(self, index=None, gui=True):
-        if index is None:
-            index = range(len(self.xpms))
-        elif not hasattr(index, '__iter__'):
-            index = [index]
-
+    def get_vim_setings(self, gui=True):
         if gui: term = 'gui'
         else: term = 'cterm'
 
-        self.get_color_settings_full(index)
+        match_cluster = 'syntax cluster Xpmcolors contains='
+        if gui:
+            color_setting = self.color_settings
+        else:
+            self.get_color_settings_full()
+            color_setting = self.color_settings_full
 
-        for i in index:
-            xpm = self.xpms[i]
-            if 'vim' in xpm:
-                continue
-            color_setting = xpm['color_settings_full']
-            xpm['vim'] = []
-            xpm_vim = xpm['vim']
-            for j,char in enumerate(color_setting):
-                xpm_vim.append({})
+        self.vim_settings = []
+        for i,char in enumerate(color_setting):
+            self.vim_settings.append({})
+            if gui:
+                col = color_setting[char]['color'].upper()
+            else:
                 col = color_setting[char].upper()
-                if col == 'NONE':
-                    # get Normal highlight if possible.
-                    hi_cmd  = 'try | '
-                    hi_cmd += 'highlight link Xpmcolor{:d} Normal | '.format(j)
-                    hi_cmd += 'highlight Xpmcolor{:d} {}fg=bg | '.format(j, term)
-                    hi_cmd += 'catch | '
-                    hi_cmd += 'highlight Xpmcolor{:d} {}fg=NONE {}bg=NONE | '.format(j, term, term)
-                    hi_cmd += 'endtry'
-                elif not gui:
-                    r = int(col[1:3], 16)
-                    g = int(col[3:5], 16)
-                    b = int(col[5:7], 16)
-                    col = convert_fullcolor_to_256(r, g, b)
-                    hi_cmd = 'highlight Xpmcolor{:d} {}fg={} {}bg={}'.format(j, term, col, term, col)
-                else:
-                    hi_cmd = 'highlight Xpmcolor{:d} {}fg={} {}bg={}'.format(j, term, col, term, col)
-                xpm_vim[-1]['highlight'] = hi_cmd
+            if col == 'NONE':
+                # get Normal highlight if possible.
+                hi_cmd  = 'try | '
+                hi_cmd += 'highlight link Xpmcolor{:d} Normal | '.format(i)
+                hi_cmd += 'highlight Xpmcolor{:d} {}fg=bg | '.format(i, term)
+                hi_cmd += 'catch | '
+                hi_cmd += 'highlight Xpmcolor{:d} {}fg=NONE {}bg=NONE | '.format(i, term, term)
+                hi_cmd += 'endtry'
+            elif gui:
+                hi_cmd = 'highlight Xpmcolor{:d} {}fg={} {}bg={}'.format(i, term, col, term, col)
+            else:
+                r = int(col[1:3], 16)
+                g = int(col[3:5], 16)
+                b = int(col[5:7], 16)
+                col = convert_fullcolor_to_256(r, g, b)
+                hi_cmd = 'highlight Xpmcolor{:d} {}fg={} {}bg={}'.format(i, term, col, term, col)
+            self.vim_settings[-1]['highlight'] = hi_cmd
 
-                for sp_char in "' \" $ . ~ ^ / [ ]".split(' '):
-                    if sp_char in char:
-                        char = char.replace(sp_char, '\\'+sp_char)
-                match_cmd = 'syntax match Xpmcolor{:d} /{}/ contained'.format(j, char)
-                xpm_vim[-1]['match'] = match_cmd
+            for sp_char in "' \" $ . ~ ^ / [ ]".split(' '):
+                if sp_char in char:
+                    char = char.replace(sp_char, '\\'+sp_char)
+            match_cmd = 'syntax match Xpmcolor{:d} /{}/ contained'.format(i, char)
+            self.vim_settings[-1]['match'] = match_cmd
+
+            match_cluster += 'Xpmcolor{:d},'.format(i)
+        match_cluster = match_cluster[:-1]
+        self.vim_finally = match_cluster
 
 if __name__ == '__main__':
     import sys
     import matplotlib.pyplot as plt
     xpm_file = sys.argv[1]
-    XL = XPMLoader()
-    XL.load_xpm(xpm_file)
-    XL.xpm_to_ndarray()
+    XPM = XPMLoader(xpm_file)
+    XPM.xpm_to_ndarray()
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.imshow(XL.xpms[0]['ndarray'])
+    ax.imshow(XPM.ndarray)
     ax.grid(False)
     ax.set_xticks([])
     ax.set_yticks([])
