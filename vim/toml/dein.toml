@@ -168,8 +168,8 @@ function! s:qrun_markdown() abort
                 let open_pdf = 'open %s:r.pdf'
             elseif has('win32') || has('win64')
                 let open_pdf = 'start %s:r.pdf'
-            else
-                let open_pdf = 'evince %s:r.pdf'
+            else    " Linux
+                let open_pdf = 'xdg-open %s:r.pdf'
             endif
 
             let q_config['exec'] = ['%c '.exec_opt.' --pdf --allow-local-files', open_pdf]
