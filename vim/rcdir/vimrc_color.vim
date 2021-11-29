@@ -33,6 +33,36 @@ function! s:isdark(r, g, b)
     return cond
 endfunction
 
+function! Chk_isdark() abort
+    if has('gui_running')
+        echo 'gui is not supported'
+        return
+    endif
+
+    echo "\n"
+    for g in range(6)
+        for r in range(6)
+            for b in range(6)
+                let i = 36*r+6*g+b+16
+                if s:isdark(r, g, b)
+                    let fg = 255
+                else
+                    let fg = 234
+                endif
+                " echo 'highlight tmpHl'..i..' ctermfg='..fg..' ctermbg='..i
+                execute 'highlight tmpHl'..i..' ctermfg='..fg..' ctermbg='..i
+                execute 'echohl tmpHl'..i
+                echon printf('%02x', i)
+            endfor
+            echohl None
+            echon ' '
+        endfor
+        echo ''
+    endfor
+    echohl None
+    echo ''
+endfunction
+
 function! <SID>my_color_set_inkpot()
     highlight Identifier ctermfg=110
     highlight Number ctermfg=9

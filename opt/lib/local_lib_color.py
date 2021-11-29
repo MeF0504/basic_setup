@@ -18,25 +18,11 @@ def FG256(n):
     else:
         return ''
 
-# for vim color test
-def isdark(r,g,b):
-    # cond = (r+g+b<7) and (max([r,g,b])<4)
 
-    # cond = (r**2+g**2+b**2 < 5**2)
 
-    # if r < 4:
-    #     cond = (g==0 or g*g+b*b < 3**2)
-    #     cond = (g<3 and g+b < 6)
-    # else:
-    #     cond = g*g+b*b < (7-r)**2
 
-    w_r, w_g, w_b = (0.299,0.587,0.114)
-    cond = (r*w_r+g*w_g+b*w_b)/(w_r+w_g+w_b) < 2.1
 
-    w_r_old, w_g_old, w_b_old = (0.299,0.587,0.114)
-    cond_old = (r*w_r+g*w_g+b*w_b)/(w_r+w_g+w_b) < 2.1
 
-    return cond, cond_old
 
 col_list = None
 def convert_color_name(color_name, color_type, verbose=False):
@@ -437,7 +423,7 @@ def convert_fullcolor_to_256(r, g, b):
 def main_test(num):
     print('system colors')
     for i in range(8):
-        if num == 1:
+        if num:
             if i%2 == 0:    # even
                 tmp_st = '{}{:02x}{}'.format(FG['w'], i, END)
             else:           # odd
@@ -447,7 +433,7 @@ def main_test(num):
         print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
     print()
     for i in range(8,16):
-        if num == 1:
+        if num:
             if i%2 == 0:    # even
                 tmp_st = '{}{:02x}{}'.format(FG['w'], i, END)
             else:           # odd
@@ -462,20 +448,13 @@ def main_test(num):
         for r in range(6):
             for b in range(6):
                 i = 36*r+6*g+b+16
-                if num == 0:
+                if not num:
                     tmp_st = '  '
-                elif num == 1:
+                else:
                     if i%2 == 0:    # even
                         tmp_st = '{}{:02x}{}'.format(FG['w'], i, END)
                     else:           # odd
                         tmp_st = '{}{:02x}{}'.format(FG['k'], i, END)
-                else:
-                    # tmp_st = '{}{:02x}{}'.format(FG256(36*((r+3)%6)+6*((g+3)%6)+(b+3)%6+16), i, END)
-                    dark_new, dark_old = isdark(r, g, b)
-                    if dark_new:
-                        tmp_st = '{}{:02x}{}'.format(FG256(255), i, END)
-                    else:
-                        tmp_st = '{}{:02x}{}'.format(FG256(234), i, END)
                 print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
             print(' ', end='')
         print()
@@ -484,34 +463,18 @@ def main_test(num):
     print('gray scales')
     st = 6*6*6+16
     for i in range(st, 256):
-        if num == 1:
+        if num:
             tmp_st = '{}{:02x}{}'.format(FG256(255+st-i), i, END)
         else:
             tmp_st = '  '
         print('{}{}{}'.format(BG256(i), tmp_st, END), end='')
     print('\n')
 
-    if num == 2:
-        for r in range(6):
-            for g in range(6):
-                for b in range(6):
-                    i = 36*r+6*g+b+16
-                    dark_new, dark_old = isdark(r, g, b)
-                    if dark_new != dark_old:
-                        if dark_new:
-                            fg1 = FG256(255)
-                            fg2 = FG256(234)
-                        else:
-                            fg1 = FG256(234)
-                            fg2 = FG256(255)
-                        print('{}{}{:02x}{} -> {}{}{:03d}{}'.format(BG256(i), fg2, i, END, BG256(i), fg1, i, END), end=' ')
-        print()
-
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--num', help='0... no fg, 1... show number, 2... is_dark', choices=[0,1,2], type=int, default=0)
+    parser.add_argument('-n', help='show number', action='store_true')
     args = parser.parse_args()
 
-    main_test(args.num)
+    main_test(args.n)
 
