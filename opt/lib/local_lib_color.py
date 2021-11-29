@@ -1,6 +1,5 @@
-#! /usr/bin/env python3
 
-from __future__ import print_function
+import os
 
 BG = {'k':'\033[40m','w':'\033[47m','r':'\033[41m','g':'\033[42m','b':'\033[44m','m':'\033[45m','c':'\033[46m','y':'\033[43m'}
 FG = {'k':'\033[30m','w':'\033[37m','r':'\033[31m','g':'\033[32m','b':'\033[34m','m':'\033[35m','c':'\033[36m','y':'\033[33m'}
@@ -18,11 +17,107 @@ def FG256(n):
     else:
         return ''
 
+def make_bitmap(filename, rgb, bmp_type='Windows', verbose=False):
+    if rgb.shape[-1] == 4:
+        rgb = rgb[:,:,[0,1,2]]
 
+    height, width, cols = rgb.shape
+    if verbose:
+        print('{}x{}x{}'.format(height, width, cols))
+        print('bitmap type: {}'.format(bmp_type))
 
+    # make color table (it doesn't need in 24bmp format.)
+    q_bit = 256
+    color_table = []
+    # for r in range(q_bit):
+    #     for g in range(q_bit):
+    #         for b in range(q_bit):
+    #             color_table += [int(b), int(g), int(r), int(0)]
+    # if verbose:
+    #     print('color table: ({}); {}...'.format(len(color_table), color_table[:10]))
+    len_cols = len(color_table)
+    num_cols = len(color_table)>>2
 
+    # make pixel data
+    img_data = []
+    for i in range(height):
+        line_data = []
+        for j in range(width):
+            r, g, b = rgb[height-i-1,j]     # starts from left botom
+            line_data += [b, g, r]
+        # line length should be a multiple of 4 bytes (long).
+        padding = 4*(int((len(line_data)-1)/4)+1)-len(line_data)
+        for k in range(padding):
+            line_data.append(0)
+        img_data += line_data
+    if verbose:
+        print_st = '{}, '.format(img_data[0])
+        print_end = '{}'.format(img_data[-1])
+        for i in range(1,6):
+            print_st += '{}, '.format(img_data[i])
+            print_end = '{}, '.format(img_data[-i-1]) + print_end
+        print('pixel data: ({}); [{} ... {}]'.format(len(img_data), print_st, print_end))
+    len_data = len(img_data)
 
+    if bmp_type == 'Windows':
+        offset = 0x0e+0x28+len_cols
+    elif bmp_type == 'OS/2':
+        offset = 0x0e+0x0c+len_cols
+    else:
+        print('incorrect file format: {}.'.format(bmp_type), file=sys.stderr)
+        return None
+    file_size = offset+len_data
 
+    # make binary data
+    # FILE_HEADER
+    b = bytearray([0x42, 0x4d])                 # signature 'BM'
+    b.extend(file_size.to_bytes(4, 'little'))   # file size
+    b.extend((0).to_bytes(2, 'little'))         # reserved
+    b.extend((0).to_bytes(2, 'little'))         # reserved
+    b.extend(offset.to_bytes(4, 'little'))      # offset
+
+    # INFO_HEADER
+    if bmp_type == 'Windows':
+        b.extend((0x28).to_bytes(4, 'little'))      # size of header
+        b.extend(width.to_bytes(4, 'little'))       # width [dot]
+        b.extend(height.to_bytes(4, 'little'))      # height [dot]
+        b.extend((1).to_bytes(2, 'little'))         # number of planes
+        b.extend((8*3).to_bytes(2, 'little'))       # byte/1pixel
+        b.extend((0).to_bytes(4, 'little'))         # type of compression (0=BI_RGB, no compression)
+        b.extend(len_data.to_bytes(4, 'little'))     # size of image
+        b.extend((0).to_bytes(4, 'little'))         # horizontal resolution
+        b.extend((0).to_bytes(4, 'little'))         # vertical resolution
+        b.extend(num_cols.to_bytes(4, 'little'))    # number of colors (not used for 24bmp)
+        b.extend((0).to_bytes(4, 'little'))         # import colors (0=all)
+    elif bmp_type == 'OS/2':
+        b.extend((0x0c).to_bytes(4, 'little'))      # size of header
+        b.extend(width.to_bytes(2, 'little'))       # width [dot]
+        b.extend(height.to_bytes(2, 'little'))      # height [dot]
+        b.extend((1).to_bytes(2, 'little'))         # number of planes
+        b.extend((8*3).to_bytes(2, 'little'))       # byte/1pixel
+
+    # COLOR_TABLES
+    b.extend(color_table)
+
+    # DATA
+    b.extend(img_data)
+
+    with open(filename, 'wb') as f:
+        f.write(b)
+
+    if verbose:
+        filesize = os.path.getsize(filename)
+        prefix = ''
+        if filesize > 1024**3:
+            filesize /= 1024**3
+            prefix = 'G'
+        elif filesize > 1024**2:
+            filesize /= 1024**2
+            prefix = 'M'
+        elif filesize > 1024:
+            filesize /= 1024
+            prefix = 'k'
+        print('size of made file: {:.1f} {}B'.format(filesize, prefix))
 
 col_list = None
 def convert_color_name(color_name, color_type, verbose=False):
