@@ -317,7 +317,7 @@ function! llib#debug_log(dbgmsg, tag) abort
     let debug_log_file = llib#get_local_var('log_file', getcwd()..'/debug_log.txt')
 
     if exists('*strftime')
-        let time = strftime("%D %H:%M:%S")
+        let time = strftime("%m/%d %H:%M:%S")
     else
         let time = ""
     endif
