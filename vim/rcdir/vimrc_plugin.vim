@@ -888,11 +888,7 @@ function! <SID>diff_line(...) abort
     let l2 = getbufline(file2, st2, end2)
 
     pclose
-    if a:0 == 2
-        silent 5split DiffLine
-    else
-        silent 10split DiffLine
-    endif
+    silent 7split DiffLine
     setlocal noswapfile
     setlocal nobackup
     setlocal noundofile
@@ -901,6 +897,7 @@ function! <SID>diff_line(...) abort
     setlocal nobuflisted
     setlocal previewwindow
     setlocal nofoldenable
+    0,$ delete _
 
     TmpPython << EOF
 import vim
@@ -922,7 +919,7 @@ EOF
     delcommand TmpPython
 endfunction
 
-command! -nargs=* -complete=file DiffLine call <SID>diff_line(<f-args>)
+command! -nargs=+ -complete=file DiffLine call <SID>diff_line(<f-args>)
 
 " }}}
 
