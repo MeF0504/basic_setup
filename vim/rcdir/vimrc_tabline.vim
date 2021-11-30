@@ -64,11 +64,11 @@ function! s:set_tabline()
     let s = ''
     let cur_tab_no = tabpagenr()
     let header = '..'
-    let footer = '..'
+    let footer = '>'..tabpagenr('$')
     let all_files = 0
     let all_wins = 0
     let is_edit = 0
-    let tab_len = 16 " max(header + footer) = 12+2+2
+    let tab_len = 17 " max(header + footer) = 12+2+3
     let tab_fin_l = 0
     let tab_fin_r = 0
 
