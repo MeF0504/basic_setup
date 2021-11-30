@@ -201,11 +201,11 @@ set_prompt() {
             fi
             # time
             local _PS_TIME="%F{42}%D{%H:%M}%f%k"
-            # user name (bold)
+            # user name (bold username non-bold)
             local _PS_USER=" %F{160}%B%n%b%f%k"
             # change the color to magenta if the previous command was failed.
             # https://blog.8-p.info/2009/01/red-prompt
-            local _PS_END="%(?. >> . %F{125}>>%f%k "
+            local _PS_END=" %(?.>>.%F{125}>>%f%k) "
         fi
         # ip_color
         local _PS_IPCOLOR='$(ip_color $_GLOBAL_IP)'
