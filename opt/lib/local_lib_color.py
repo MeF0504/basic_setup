@@ -469,22 +469,22 @@ def convert_color_name(color_name, color_type, verbose=False):
 def convert_256_to_fullcolor(color_index):
     if color_index < 16:
         color_list = [ \
-                '#000000', \
-                '#800000', \
-                '#008000', \
-                '#808000', \
-                '#000080', \
-                '#800080', \
-                '#008080', \
-                '#c0c0c0', \
-                '#808080', \
-                '#ff0000', \
-                '#00ff00', \
-                '#ffff00', \
-                '#0000ff', \
-                '#ff00ff', \
-                '#00ffff', \
-                '#ffffff', \
+                'Black', \
+                'Maroon', \
+                'Green', \
+                'Olive', \
+                'Navy', \
+                'Purple', \
+                'Teal', \
+                'Silver', \
+                'Grey', \
+                'Red', \
+                'Lime', \
+                'Yellow', \
+                'Blue', \
+                'Fuchsia', \
+                'Aqua', \
+                'White', \
         ]
         return color_list[color_index]
     elif color_index < 232:
