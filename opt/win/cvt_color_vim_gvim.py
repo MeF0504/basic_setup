@@ -11,6 +11,7 @@ def main():
     gline = []
     with open(vim_color, 'r', encoding='utf-8') as vimf:
         for line in vimf:
+            is_ended = False
             if 'cterm' in line:
                 tmp_gline = line[:line.find('cterm')-1]
                 for cterm in ['cterm=', 'ctermfg=', 'ctermbg=']:
@@ -20,6 +21,7 @@ def main():
                         end = line[st:].find(' ') + st
                         if st > end:
                             end = -1
+                            is_ended = True
                         opt = line[st:end]
                         try:
                             opt = int(opt)
@@ -29,7 +31,7 @@ def main():
                         else:
                             opt = cvt_256_fc(opt)
                         tmp_gline += ' ' + cterm.replace('cterm', 'gui') + opt
-                if end != -1:
+                if not is_ended:
                     tmp_gline += line[end:]
                 gline.append(tmp_gline.replace('\n', ''))
             else:
