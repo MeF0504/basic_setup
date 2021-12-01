@@ -199,6 +199,9 @@ function! llib#popup_wrapper(bufid, popid, str_list, config) abort
             call setbufvar(bufid, '&backup', 0)
             call setbufvar(bufid, '&undofile', 0)
             call setbufvar(bufid, '&buftype', 'nofile')
+            call setbufvar(bufid, '&bufhidden', 'hide')
+            call setbufvar(bufid, '&buflisted', 0)
+            call setbufvar(bufid, '&undolevels', -1)
             let s:pop_index += 1
         else
             let bufid = a:bufid
