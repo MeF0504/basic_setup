@@ -269,7 +269,9 @@ function! <SID>chk_lsp_running()
     endfor
     return 0
 endfunction
-" lsp server が動いていればc-]でreferenceを開いて，c-jで定義をpopupで開く
+" lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
+" <c-p>でhelp hoverを表示，<c-p><c-p>で定義をfloating windowで表示
+" cursolを動かさないとhelp hoverを表示？
 let s:lsp_map1 =  maparg('<c-]>', 'n')
 if empty(s:lsp_map1)
     let s:lsp_map1 = '<c-]>'
@@ -290,6 +292,7 @@ execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-defi
 execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-references)' : '".s:lsp_map2."'"
 execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-hover)' : '".s:lsp_map3."'"
 execute "nmap <silent> <expr> <c-p><c-p> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-peek-definition)' : '".s:lsp_map4."'"
+" autocmd deinLocal CursorHold * if <SID>chk_lsp_running() && !empty(expand('<cword>')) | silent! LspHover | endif
 " help file でバグる？
 autocmd deinLocal FileType help nnoremap <buffer> <c-]> <c-]>
 
