@@ -5,26 +5,28 @@ export PROMPTTO=1   # default value
 
 function get_ip() {
     local to=${1:-$PROMPTTO}
-    if [[ "$(which timeout &> /dev/null; echo $?)" -eq 0 ]]; then
-        # echo "1-${to}" >&2
-        local ip="$( timeout "$to" curl ifconfig.io 2> /dev/null)"
-    elif [[ "$(which timeout_local &> /dev/null; echo $?)" -eq 0 ]]; then
-        # echo "2-${to}" >&2
-        local ip="$( timeout_local "$to" curl ifconfig.io 2> /dev/null)"
-    else
-        # echo "3-${to}" >&2
-        local ip="$(curl --max-time "$to" ifconfig.io 2> /dev/null)"
+    if [[ $to -ne -1 ]]; then
+        if [[ "$(which timeout &> /dev/null; echo $?)" -eq 0 ]]; then
+            # echo "1-${to}" >&2
+            local ip="$( timeout "$to" curl ifconfig.io 2> /dev/null)"
+        elif [[ "$(which timeout_local &> /dev/null; echo $?)" -eq 0 ]]; then
+            # echo "2-${to}" >&2
+            local ip="$( timeout_local "$to" curl ifconfig.io 2> /dev/null)"
+        else
+            # echo "3-${to}" >&2
+            local ip="$(curl --max-time "$to" ifconfig.io 2> /dev/null)"
+        fi
+        export _GLOBAL_IP=$ip
     fi
-    echo "$ip"
+    # echo "$ip"
 }
+# do get_ip 1 time per 5 min.
+export PERIOD=60
+add-zsh-hook periodic get_ip
 
 function ip_color() {
     # {{{
-    if [[ $PROMPTTO -eq -1 ]]; then
-        local ip=$1
-    else
-        local ip=$(get_ip)
-    fi
+    local ip=$1
     if [[ $(echo "$ip" | wc -l) -ne 1 ]]; then
         local ret=""
         ret=$ret"%F{15}%K{16}m%f%k"
@@ -37,23 +39,25 @@ function ip_color() {
     fi
 
     if [[ $ip == *.* ]]; then   # IPv4
+        eval "ipnum=(${ip//./ })"
         ip1f=15
-        ip1b=$(echo "$ip" | cut -f 1 -d ".")
+        ip1b=${ipnum[1]}
         ip2f=15
-        ip2b=$(echo "$ip" | cut -f 2 -d ".")
+        ip2b=${ipnum[2]}
         ip3f=15
-        ip3b=$(echo "$ip" | cut -f 3 -d ".")
+        ip3b=${ipnum[3]}
         ip4f=15
-        ip4b=$(echo "$ip" | cut -f 4 -d ".")
+        ip4b=${ipnum[4]}
     elif [[ $ip == *:* ]]; then     # IPv6
-        ip1f=$(( 0x$(echo "$ip" | cut -f 1 -d ":") & 0xFF))
-        ip1b=$(( 0x$(echo "$ip" | cut -f 1 -d ":") >> 8))
-        ip2f=$(( 0x$(echo "$ip" | cut -f 2 -d ":") & 0xFF))
-        ip2b=$(( 0x$(echo "$ip" | cut -f 2 -d ":") >> 8))
-        ip3f=$(( 0x$(echo "$ip" | cut -f 3 -d ":") & 0xFF))
-        ip3b=$(( 0x$(echo "$ip" | cut -f 3 -d ":") >> 8))
-        ip4f=$(( 0x$(echo "$ip" | cut -f 4 -d ":") & 0xFF))
-        ip4b=$(( 0x$(echo "$ip" | cut -f 4 -d ":") >> 8))
+        eval "ipnum=(${ip//:/ })"
+        ip1f=$(( 0x${ipnum[1]} & 0xFF ))
+        ip1b=$(( 0x${ipnum[1]} >> 8 ))
+        ip2f=$(( 0x${ipnum[2]} & 0xFF ))
+        ip2b=$(( 0x${ipnum[2]} >> 8 ))
+        ip3f=$(( 0x${ipnum[3]} & 0xFF ))
+        ip3b=$(( 0x${ipnum[3]} >> 8 ))
+        ip4f=$(( 0x${ipnum[4]} & 0xFF ))
+        ip4b=$(( 0x${ipnum[4]} >> 8 ))
     else
         ip1f=15 # black
         ip1b=16 # black
@@ -84,11 +88,7 @@ function ip_color() {
 function ip_color2() {
     # {{{
     # only for IPv6
-    if [[ $PROMPTTO -eq -1 ]]; then
-        local ip=$1
-    else
-        local ip=$(get_ip)
-    fi
+    local ip=$1
     if [[ $(echo "$ip" | wc -l) -ne 1 ]]; then
         return 0
     fi
@@ -100,14 +100,15 @@ function ip_color2() {
                 return 0
             fi
         done
-        ip1f=$(( 0x$(echo "$ip" | cut -f 5 -d ":") & 0xFF))
-        ip1b=$(( 0x$(echo "$ip" | cut -f 5 -d ":") >> 8))
-        ip2f=$(( 0x$(echo "$ip" | cut -f 6 -d ":") & 0xFF))
-        ip2b=$(( 0x$(echo "$ip" | cut -f 6 -d ":") >> 8))
-        ip3f=$(( 0x$(echo "$ip" | cut -f 7 -d ":") & 0xFF))
-        ip3b=$(( 0x$(echo "$ip" | cut -f 7 -d ":") >> 8))
-        ip4f=$(( 0x$(echo "$ip" | cut -f 8 -d ":") & 0xFF))
-        ip4b=$(( 0x$(echo "$ip" | cut -f 8 -d ":") >> 8))
+        eval "ipnum=(${ip//:/ })"
+        ip1f=$(( 0x${ipnum[5]} & 0xFF ))
+        ip1b=$(( 0x${ipnum[5]} >> 8 ))
+        ip2f=$(( 0x${ipnum[6]} & 0xFF ))
+        ip2b=$(( 0x${ipnum[6]} >> 8 ))
+        ip3f=$(( 0x${ipnum[7]} & 0xFF ))
+        ip3b=$(( 0x${ipnum[7]} >> 8 ))
+        ip4f=$(( 0x${ipnum[8]} & 0xFF ))
+        ip4b=$(( 0x${ipnum[8]} >> 8 ))
         local ret=""
         ret=$ret"%F{$ip1f}%K{$ip1b}c%f%k"
         ret=$ret"%F{$ip2f}%K{$ip2b}o%f%k"
@@ -188,7 +189,7 @@ set_prompt() {
             fi
             # }}}
         else
-            _GLOBAL_IP=$(get_ip 3)
+            get_ip 3
             # path
             local _PS_PATH="%F{255}%K{19}%d%f%k"
             # exec time
