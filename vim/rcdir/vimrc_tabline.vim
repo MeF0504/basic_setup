@@ -28,21 +28,7 @@ endfunction
 
 function! s:get_cwd_path()
     let max_dir_len = &columns/5
-    if has('win32') || has('win64')
-        let sep = '\'
-    else
-        let sep = '/'
-    endif
-    let dirs = getcwd()
-    let dirs = split(dirs, sep)
-    let ret = '/'
-    for d in dirs
-        if d == dirs[-1]
-            let ret .= d.sep
-        else
-            let ret .= d[0].sep
-        endif
-    endfor
+    let ret = pathshorten(getcwd())
 
     " ssh 先ではhostnameも表示
     if exists('$SSH_CLIENT')
