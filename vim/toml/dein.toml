@@ -4,7 +4,7 @@
 [[plugins]]
 repo = 'MeF0504/mftags'
 hook_add = '''
-"""""mftags{{{
+"" mftags{{{
 let g:mftag_auto_close = 1
 let g:mftag_dir_auto_set = 1
 let g:mftag_lang_setting = {}
@@ -55,7 +55,7 @@ repo = 'Shougo/neosnippet-snippets'
 [[plugins]]
 repo = 'thinca/vim-quickrun'
 hook_add = '''
-""" vim-quick_run {{{
+"" vim-quick_run {{{
 let g:quickrun_no_default_key_mappings = 1
 
 " default configs {{{
@@ -263,7 +263,7 @@ nnoremap <silent> <Leader>q :call <SID>quickrun_wrapper()<CR>
 [[plugins]]
 repo = 'miyakogi/seiya.vim'
 hook_add = '''
-"""""seiya.vim "{{{
+"" seiya.vim "{{{
 "vimの背景を透過
 let g:seiya_auto_enable=1
 "}}}
@@ -274,7 +274,7 @@ let g:seiya_auto_enable=1
 # repo = 'vim-scripts/taglist.vim'
 repo = 'yegappan/taglist'
 hook_add = '''
-"""""taglist.vim "{{{
+"" taglist.vim "{{{
 let g:Tlist_Exit_OnlyWindow = 1
 let g:Tlist_Show_One_File = 1
 let g:Tlist_File_Fold_Auto_Close = 1
@@ -339,7 +339,7 @@ nnoremap <silent> <Leader>t :call Open_taglist()<CR>
 [[plugins]]
 repo = 'ctrlpvim/ctrlp.vim'
 hook_add = '''
-""""ctrlp{{{
+"" ctrlp{{{
 "nnoremap <leader>s :<C-U>CtrlP<CR>
 let g:ctrlp_map = '<leader>s'
 let g:ctrlp_by_filename = 0
@@ -398,7 +398,7 @@ repo = 'MeF0504/vim-shiki'
 [[plugins]]
 repo = 'tyru/current-func-info.vim'
 hook_post_source = '''
-"""" current-func-info.vim {{{
+"" current-func-info.vim {{{
 let s:cfi_bufid = -1
 let s:cfi_popid = -1
 function! <SID>Show_cfi()
@@ -436,7 +436,7 @@ autocmd deinLocal QuitPre * call llib#popup_close(s:cfi_popid) | let s:cfi_popid
 [[plugins]]
 repo = 'pocke/sushibar.vim'
 hook_add = '''
-""" sushibar.vim {{{
+"" sushibar.vim {{{
 let s:sushi = 1
 if (str2nr(strftime("%b")) == llib#get_local_var('bd_month', 0)
     \ && str2nr(strftime("%d")) == llib#get_local_var('bd_day', 0))
@@ -445,7 +445,7 @@ if (str2nr(strftime("%b")) == llib#get_local_var('bd_month', 0)
         autocmd deinLocal BufWinEnter * Sushibar
     endif
 endif
-""" }}}
+"" }}}
 '''
 
 # 検索時にhit数をcountしてくれるplugin
@@ -453,7 +453,7 @@ endif
 repo = 'osyo-manga/vim-anzu'
 if = '''!(exists('*searchcount') && exists('*popup_create'))'''  # if exists => use vim-hitspop
 hook_add = '''
-""" vim-anzu {{{
+"" vim-anzu {{{
 if !(exists('*searchcount') && exists('*popup_create'))
     " max search count
     let g:anzu_search_limit = 3000
@@ -471,7 +471,7 @@ endif
 [[plugins]]
 repo = 'tpope/vim-endwise'
 hook_add = '''
-""" endwise {{{
+"" endwise {{{
 autocmd deinLocal FileType html
         \ let b:endwise_addition = '\=submatch(0)=="html" ? "\</html\>" : submatch(0)=="head" ? "\</head\>" : submatch(0)=="body" ? "\</body\>" : submatch(0)=="script" ? "\</script\>" : "\</style\>"' |
         \ let b:endwise_words = 'html,head,body,script,style' |
@@ -490,9 +490,9 @@ autocmd deinLocal FileType tex
 repo = 'tpope/vim-fugitive'
 # https://qiita.com/tashua314/items/35521f9bada5fe00cca7
 hook_add = '''
-""" fugitive {{{
+"" fugitive {{{
 autocmd deinLocal FileType fugitive* nnoremap <silent> <buffer> q :quit<CR>
-""" }}}
+"" }}}
 '''
 
 # vim の document
@@ -611,7 +611,7 @@ if = '''executable('deno') && (has('patch-8.2.3081') || has('nvim-0.5.0'))'''
 [[plugins]]
 repo = 'lambdalisue/fern.vim'
 hook_add = '''
-""" Fern {{{
+"" Fern {{{
 " default keymap off
 let g:fern#disable_default_mappings = 1
 " 見た目の設定
@@ -666,7 +666,7 @@ function! s:set_fern_hi()
     " highlight FernLeafText ctermfg=41 guifg=#00d75f
 endfunction
 autocmd deinLocal User FernHighlight call s:set_fern_hi()
-""" }}}
+"" }}}
 '''
 
 # fern plugins {{{
