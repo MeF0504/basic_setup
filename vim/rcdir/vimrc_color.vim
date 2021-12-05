@@ -225,8 +225,8 @@ function! <SID>Day_by_Day_StatusLine()
     let s:stl_bg = (month+(day-1)/10-1)%6  " 月+(日-1)の十の位で計算
     let s:stl_bb = abs((day+5-1)%10-5)      " 0 1 2 3 4 5 4 3 2 1 0 ...
 
-    if (month == llib#get_local_var('bd_month', 0)
-        \&& day == llib#get_local_var('bd_day', 0))
+    if (month == meflib#basic#get_local_var('bd_month', 0)
+        \&& day == meflib#basic#get_local_var('bd_day', 0))
         "" Birthday
         highlight StatusLine cterm=None ctermfg=194 ctermbg=136
         highlight WildMenu cterm=Bold ctermfg=136 ctermbg=194

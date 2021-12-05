@@ -71,8 +71,8 @@ let g:quickrun_config._ = {
 if has('job')
     let g:quickrun_config._.runner = 'job'
     let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
-    call llib#set_local_var('statusline',
-                \ [llib#get_local_var('statusline',
+    call meflib#basic#set_local_var('statusline',
+                \ [meflib#basic#get_local_var('statusline',
                 \ {'_':"%f%m%r%h%w%<%=%y\ %l/%L\ [%P]"}
                 \ )['_']..s:quickrun_status], ['_'])
 endif
@@ -370,7 +370,7 @@ let s:ctrlp_help = [
         \ ]
 function! <SID>show_ctrlp_help()
     if s:ctrlp_help_popid != -1
-        call llib#popup_close(s:ctrlp_help_popid)
+        call meflib#floating#float_close(s:ctrlp_help_popid)
         let s:ctrlp_help_popid = -1
         return
     endif
@@ -380,7 +380,7 @@ function! <SID>show_ctrlp_help()
         \ 'col': &columns-3,
         \ 'pos': 'botright',
         \ }
-    let [s:ctrlp_help_bufid, s:ctrlp_help_popid] = llib#popup_wrapper(s:ctrlp_help_bufid, s:ctrlp_help_popid, s:ctrlp_help, config)
+    let [s:ctrlp_help_bufid, s:ctrlp_help_popid] = meflib#floating#float_wrapper(s:ctrlp_help_bufid, s:ctrlp_help_popid, s:ctrlp_help, config)
 endfunction
 autocmd deinLocal FileType ctrlp ++once nnoremap <buffer> <silent> ? :call <SID>show_ctrlp_help()<CR>
 "}}}
@@ -402,8 +402,8 @@ hook_post_source = '''
 let s:cfi_bufid = -1
 let s:cfi_popid = -1
 function! <SID>Show_cfi()
-    if llib#get_local_var('cfi_on', 0) == 0
-        call llib#popup_close(s:cfi_popid)
+    if meflib#basic#get_local_var('cfi_on', 0) == 0
+        call meflib#floating#float_close(s:cfi_popid)
         let s:cfi_popid = -1
         return
     endif
@@ -424,11 +424,11 @@ function! <SID>Show_cfi()
         \ 'pos': 'topright',
         \ 'highlight': 'CFIPopup',
         \ }
-    let [s:cfi_bufid, s:cfi_popid] = llib#popup_wrapper(s:cfi_bufid, s:cfi_popid, [cfi], config)
+    let [s:cfi_bufid, s:cfi_popid] = meflib#floating#float_wrapper(s:cfi_bufid, s:cfi_popid, [cfi], config)
 endfunction
 autocmd deinLocal CursorMoved * call <SID>Show_cfi()
-autocmd deinLocal WinLeave * call llib#popup_close(s:cfi_popid) | let s:cfi_popid=-1
-autocmd deinLocal QuitPre * call llib#popup_close(s:cfi_popid) | let s:cfi_popid=-1
+autocmd deinLocal WinLeave * call meflib#floating#float_close(s:cfi_popid) | let s:cfi_popid=-1
+autocmd deinLocal QuitPre * call meflib#floating#float_close(s:cfi_popid) | let s:cfi_popid=-1
 " }}}
 '''
 
@@ -438,8 +438,8 @@ repo = 'pocke/sushibar.vim'
 hook_add = '''
 "" sushibar.vim {{{
 let s:sushi = 1
-if (str2nr(strftime("%b")) == llib#get_local_var('bd_month', 0)
-    \ && str2nr(strftime("%d")) == llib#get_local_var('bd_day', 0))
+if (str2nr(strftime("%b")) == meflib#basic#get_local_var('bd_month', 0)
+    \ && str2nr(strftime("%d")) == meflib#basic#get_local_var('bd_day', 0))
     "" Birthday
     if s:sushi == 1
         autocmd deinLocal BufWinEnter * Sushibar

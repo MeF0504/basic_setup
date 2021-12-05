@@ -58,7 +58,7 @@ if exists('$VIM_TERMINAL')
 endif
 
 try
-    let s:vimdir = llib#get_conf_dir()
+    let s:vimdir = meflib#basic#get_conf_dir()
 catch
     echomsg 'llib not found. So, no files are sourced.'
 endtry

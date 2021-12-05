@@ -641,12 +641,12 @@ function! s:Terminal(...) abort
     else
         let opts = a:1
     endif
-    let opts = llib#analythis_args_hyp(opts, args_config)
+    let opts = meflib#basic#analythis_args_hyp(opts, args_config)
 
     if has_key(opts, 'win')
         let win_opt = opts['win'][0]
-    elseif !empty(llib#get_local_var('term_default', ''))
-        let win_opt = llib#get_local_var('term_default', 'S')
+    elseif !empty(meflib#basic#get_local_var('term_default', ''))
+        let win_opt = meflib#basic#get_local_var('term_default', 'S')
     else
         let win_opt = 'S'
     endif
@@ -946,8 +946,8 @@ function! Mygrep(...)
     "     return
     " endif
     let def_dir = '.'
-    if llib#get_local_var('get_top_dir', 0) == 1
-        let top_dir = llib#get_top_dir(expand('%:h'))
+    if meflib#basic#get_local_var('get_top_dir', 0) == 1
+        let top_dir = meflib#basic#get_top_dir(expand('%:h'))
         if !empty(top_dir)
             let def_dir = top_dir
         endif
@@ -957,7 +957,7 @@ function! Mygrep(...)
         let l:ft = '.' . expand('%:e')
         let l:dir = def_dir
     else
-        let arg = llib#analythis_args_eq(a:1)
+        let arg = meflib#basic#analythis_args_eq(a:1)
 
         if !has_key(arg, "wd") && !has_key(arg, "ex") && !has_key(arg, "dir")
             call s:echo_gregrep_help()
@@ -1092,7 +1092,7 @@ function! s:show_table_of_contents()
         let tables = {}
     endif
 
-    cal extend(tables, llib#get_local_var('table_of_contents', {}), 'force')
+    cal extend(tables, meflib#basic#get_local_var('table_of_contents', {}), 'force')
 
     if len(tables) == 0
         return

@@ -93,7 +93,7 @@ let s:st_off = "%t%m%{&readonly?'[RO]':''}%h%w"
 " '_': basic statusline
 " 'off': statusline for off window
 " other(num): statusline for short window. num=max width for this statusline
-call llib#set_local_var('statusline', {
+call meflib#basic#set_local_var('statusline', {
             \ '_':   s:st_normal,
             \ 'off': s:st_off,
             \ '60':  s:st_level1,
@@ -101,7 +101,7 @@ call llib#set_local_var('statusline', {
 
 let s:def_statusline = &statusline
 function! <SID>Set_statusline(cur_win)
-    let st_config = llib#get_local_var('statusline', {'_':s:def_statusline})
+    let st_config = meflib#basic#get_local_var('statusline', {'_':s:def_statusline})
     if (type(st_config) != type({})) || !has_key(st_config, '_')
         let st_config = {'_':s:def_statusline}
     endif
@@ -122,7 +122,7 @@ function! <SID>Set_statusline(cur_win)
     endif
 
     " replace mode_str to mode information
-    if (llib#get_local_var('st_showmode', 1) != 0) && (match(st_str, s:mode_str)!=-1)
+    if (meflib#basic#get_local_var('st_showmode', 1) != 0) && (match(st_str, s:mode_str)!=-1)
         let st_str = substitute(st_str, s:mode_str, <SID>get_mode(), 'g')
     endif
 

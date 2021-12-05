@@ -1,124 +1,8 @@
 "vim script encording setting
 scriptencoding utf-8
 
-" get vim config directory
-function! llib#get_conf_dir() abort
-    if has('nvim')
-        if exists("$XDG_CONFIG_HOME")
-            let vimdir = expand($XDG_CONFIG_HOME . "/nvim/")
-        else
-            let vimdir = expand('~/.config/nvim/')
-        endif
-    else
-        if has('win32') || has('win64')
-            let vimdir = expand('~/vimfiles/')
-        else
-            let vimdir = expand('~/.vim/')
-        endif
-    endif
-
-    return vimdir
-endfunction
-
-let s:local_var_dict = {}
-function! llib#set_local_var(var_name, val, ...) abort
-    " 3つめにindex / key nameが指定されたらvar_nameの[index / key]に値を設定
-    if a:0 == 0
-        let s:local_var_dict[a:var_name] = a:val
-    else
-        if !has_key(s:local_var_dict, a:var_name)
-            let s:local_var_dict[a:var_name] = {}
-        endif
-        for i in range(a:0)
-            let s:local_var_dict[a:var_name][a:1[i]] = a:val[i]
-        endfor
-    endif
-endfunction
-
-function! llib#get_local_var(var_name, default) abort
-    if empty(a:var_name)
-        for var in sort(keys(s:local_var_dict))
-            echohl Identifier
-            echo var..': '
-            echohl None
-            echon s:local_var_dict[var]
-        endfor
-    elseif has_key(s:local_var_dict, a:var_name)
-        return s:local_var_dict[a:var_name]
-    else
-        " let s:local_var_dict[a:var_name] = a:default
-        return a:default
-    endif
-endfunction
-
-" 関数の引数解析用関数 (key=arg)
-function! llib#analythis_args_eq(arg) abort
-    let args = split(a:arg, ' ')
-    let ret = {'no_key':""}
-    let last_key = -1
-    for dic in args
-        let dic_sub = split(dic, "=", 1)
-        if len(dic_sub) < 2
-            if last_key != -1
-                let ret[last_key] .= ' ' . dic_sub[0]
-                if dic_sub[0][-1:] != '\'
-                    let last_key = -1
-                endif
-            else
-                let ret["no_key"] .= ' ' . dic_sub[0]
-            endif
-        else
-            let dic_key = dic_sub[0]
-            let dic_val = join(dic_sub[1:], '=')
-            let ret[dic_key] = dic_val
-            if dic_val[-1:] == '\'
-                let last_key = dic_key
-            endif
-        endif
-    endfor
-
-    return ret
-endfunction
-
-" 関数の引数解析用関数 (-opt arg)
-function! llib#analythis_args_hyp(args, args_config) abort
-    let args = split(a:args, ' ')
-    let res = {'no_opt':[]}
-    let skip_cnt = -1
-    " echo args
-    for i in range(len(args))
-        let arg = args[i]
-        " echo '<>'.i.':'.arg
-        let opt_num = 0
-        if arg[0]=='-'
-            let opt = arg[1:]
-            let res[opt] = []
-            " echo ' set '.opt
-            if has_key(a:args_config, opt)
-                let opt_num = a:args_config[opt]
-            endif
-            let skip_cnt = i
-            for j in range(i+1, i+opt_num)
-                let res[opt] += [args[j]]
-                let skip_cnt += 1
-                " echo '  '.j.': add '.args[j].'(skip:'.skip_cnt.')'
-            endfor
-        elseif i <= skip_cnt
-            " already set to res dictionary
-            " echo 'skip '.i
-            continue
-        else
-            " echo 'no key: '.i.' '.arg
-            let res['no_opt'] += [arg]
-        endif
-        " let test=input('>> ')
-    endfor
-
-    return res
-endfunction
-
 let s:pop_index = 0
-function! llib#popup_wrapper(bufid, popid, str_list, config) abort
+function! meflib#floating#float_wrapper(bufid, popid, str_list, config) abort
     " popid < 0; create new popup window, >= 0; update contents
     " bufid < 0; create new buffer, >= 0; use this buffer.
     " NOTE: currently this function is not aim to display normal buffer.
@@ -278,7 +162,7 @@ function! llib#popup_wrapper(bufid, popid, str_list, config) abort
     return [bufid, popid]
 endfunction
 
-function! llib#popup_close(popids) abort
+function! meflib#floating#float_close(popids) abort
     if type(a:popids) != type([])
         let popids = [a:popids]
     else
@@ -298,40 +182,5 @@ function! llib#popup_close(popids) abort
             endif
         endif
     endfor
-endfunction
-
-" search top directory of this project
-function! llib#get_top_dir(cwd) abort
-    for repo_dir in ['.git', 'svn']
-        let top_dir = finddir(repo_dir..'/..', a:cwd..';')
-        if !empty(top_dir)
-            return top_dir
-        endif
-    endfor
-    return ''
-endfunction
-
-" debug 用
-function! llib#debug_log(dbgmsg, tag) abort
-    " dbgmsg: debug message,
-    " tag:    tag string (used to idnetify type of debug message),
-
-    " set file name to write debug message,
-    let debug_log_file = llib#get_local_var('log_file', getcwd()..'/debug_log.txt')
-
-    if exists('*strftime')
-        let time = strftime("%m/%d %H:%M:%S")
-    else
-        let time = ""
-    endif
-    if a:dbgmsg == ""
-        let db_print = ["###debug-"..a:tag."### ".."@ "..expand("<sfile>").." "..time]
-    else
-        let db_print =  ["###debug-".a:tag."### "..time]
-        let db_print += split(a:dbgmsg, '\n', 1)
-    endif
-    let db_print += ['']
-
-    call writefile(db_print, debug_log_file, 'a')
 endfunction
 

@@ -2,8 +2,8 @@
 scriptencoding utf-8
 "" vim option settings
 
-if exists('*llib#get_conf_dir')
-    let s:vimdir = llib#get_conf_dir()
+if exists('*meflib#basic#get_conf_dir')
+    let s:vimdir = meflib#basic#get_conf_dir()
 endif
 
 " 左端に数字を表示

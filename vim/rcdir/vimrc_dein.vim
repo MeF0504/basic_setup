@@ -14,7 +14,7 @@ if !exists("$XDG_CONFIG_HOME")
     let $XDG_CONFIG_HOME = expand("~/.config")
 endif
 
-let s:vim_dir = llib#get_conf_dir()
+let s:vim_dir = meflib#basic#get_conf_dir()
 let s:dein_dir = s:vim_dir. 'dein/'
 
 let s:light_file = s:vim_dir . 'toml/dein_min.toml'
@@ -70,8 +70,8 @@ endif
 
 " show the status of dein in statusline.
 let s:dein_status = "%#StatusLine_CHK#%{empty(dein#get_progress())?'':'^...'}%#StatusLine#"
-call llib#set_local_var('statusline',
-            \ [llib#get_local_var('statusline',
+call meflib#basic#set_local_var('statusline',
+            \ [meflib#basic#get_local_var('statusline',
             \ {'_':"%f%m%r%h%w%<%=%y\ %l/%L\ [%P]"}
             \ )['_']..s:dein_status], ['_'])
 
