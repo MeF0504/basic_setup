@@ -174,7 +174,7 @@ function! s:file_list() abort
                 echohl Comment | echo l:tab_files | echohl None
             endif
         endfor
-        let l:tabnr = input("'#' :jump to tab / 'q' :wuit / 'p' :previous tab / 'FileName' :search file :>> ")
+        let l:tabnr = input("'#' :jump to tab / 'q' :quit / 'p' :previous tab / 'FileName' :search file :>> ")
         " quit
         if l:tabnr == "q"
             redraw!
