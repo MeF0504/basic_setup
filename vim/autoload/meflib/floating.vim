@@ -78,7 +78,7 @@ function! meflib#floating#float_wrapper(bufid, popid, str_list, config) abort
             endif
         endif
         if a:bufid < 0
-            let bufid = bufadd('[llib_pop_'..s:pop_index..']')
+            let bufid = bufadd('[meflib_float_'..s:pop_index..']')
             call setbufvar(bufid, '&swapfile', 0)
             call setbufvar(bufid, '&backup', 0)
             call setbufvar(bufid, '&undofile', 0)
