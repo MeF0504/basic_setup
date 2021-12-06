@@ -618,7 +618,7 @@ let g:fern#disable_default_mappings = 1
 let g:fern#renderer#default#root_symbol = '@ '
 let g:fern#renderer#default#collapsed_symbol = '|= '
 let g:fern#renderer#default#expanded_symbol = '|+ '
-let g:fern#renderer#default#leaf_symbol = '|  '
+let g:fern#renderer#default#leaf_symbol = '|- '
 let g:fern#keepalt_on_edit = 1
 
 " Fern-local map
@@ -662,7 +662,7 @@ function! s:set_fern_hi()
     highlight FernRootText ctermfg=3 guifg=#d0d000
     highlight FernBranchSymbol ctermfg=10 guifg=#00ff00
     highlight FernBranchText ctermfg=2 guifg=#008000
-    highlight FernLeafSymbol ctermfg=22 guifg=#005f00
+    highlight FernLeafSymbol ctermfg=35 guifg=#00af5f
     " highlight FernLeafText ctermfg=41 guifg=#00d75f
 endfunction
 autocmd deinLocal User FernHighlight call s:set_fern_hi()
