@@ -66,7 +66,10 @@ basic_setup/
 |   |__ gvimrc
 |   |__ vimrc
 |   |__ autoload/
-|   |   |__ llib.vim
+|   |   |__ meflib/
+|   |   |   |__ basic.vim
+|   |   |   |__ debug.vim
+|   |   |   |__ floating.vim
 |   |__ ftplugin/
 |   |   |__ css.vim
 |   |   |__ html.vim
