@@ -415,7 +415,7 @@ def main_vim(args):
     rcpath = op.join(vim_config_path, 'rcdir')
     ftpath = op.join(vim_config_path, 'ftplugin')
     tmpath = op.join(vim_config_path, 'toml')
-    alpath = op.join(vim_config_path, 'autoload')
+    alpath = op.join(vim_config_path, 'autoload/meflib')
     mkdir(op.join(vim_config_path, "swp"))
 
     files = get_files(args.setup_file, 'vim', args.prefix)
@@ -437,7 +437,7 @@ def main_vim(args):
             for fy in glob.glob(op.join(vimdir, 'toml', "*")):
                 fname = op.basename(fy)
                 files[fy] = op.join(tmpath, fname)
-            for fy in glob.glob(op.join(vimdir, 'autoload', "*")):
+            for fy in glob.glob(op.join(vimdir, 'autoload/meflib', "*")):
                 fname = op.basename(fy)
                 files[fy] = op.join(alpath, fname)
 
