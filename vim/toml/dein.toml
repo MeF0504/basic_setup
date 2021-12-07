@@ -659,10 +659,10 @@ nnoremap <silent> <leader>n :Fern . -drawer -toggle -reveal=%<CR>
 function! s:set_fern_hi()
     highlight FernMarkedText ctermfg=196 guifg=#ff0000
     highlight FernRootSymbol ctermfg=11 guifg=#ffff00
-    highlight FernRootText ctermfg=3 guifg=#d0d000
+    highlight FernRootText ctermfg=220 guifg=#d0d000
     highlight FernBranchSymbol ctermfg=10 guifg=#00ff00
     highlight FernBranchText ctermfg=2 guifg=#008000
-    highlight FernLeafSymbol ctermfg=35 guifg=#00af5f
+    highlight FernLeafSymbol ctermfg=43 guifg=#00af5f
     " highlight FernLeafText ctermfg=41 guifg=#00d75f
 endfunction
 autocmd deinLocal User FernHighlight call s:set_fern_hi()
