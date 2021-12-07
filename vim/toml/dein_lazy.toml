@@ -253,17 +253,19 @@ let g:lsp_signature_help_enabled = 0
 hook_post_source = '''
 "" vim-lsp {{{
 " reference: lsp_settings#profile#status()
-function! <SID>chk_lsp_running()
+function! <SID>chk_lsp_running(echo)
     let active_servers = lsp#get_allowed_servers()
     if empty(active_servers)
-        echomsg 'no Language server'
+        if a:echo
+            echomsg 'no Language server'
+        endif
         return 0
     endif
     for active_server in active_servers
         let lsp_status = lsp#get_server_status(active_server)
         if lsp_status == 'running'
             return 1
-        else
+        elseif a:echo
             echomsg lsp_status
         endif
     endfor
@@ -288,12 +290,12 @@ let s:lsp_map4 =  maparg('<c-p><c-p>', 'n')
 if empty(s:lsp_map4)
     let s:lsp_map4 = '<c-p><c-p>'
 endif
-execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-definition)' : '".s:lsp_map1."'"
-execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-references)' : '".s:lsp_map2."'"
-" execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-hover)' : '".s:lsp_map3."'"
-" execute "nmap <silent> <expr> <c-p><c-p> <SID>chk_lsp_running()==1 ? '<Plug>(lsp-peek-definition)' : '".s:lsp_map4."'"
-execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running() ? '<Plug>(lsp-peek-definition)' : '".s:lsp_map3."'"
-autocmd deinLocal CursorHold * if <SID>chk_lsp_running() && !empty(expand('<cword>')) && meflib#basic#get_local_var('auto_lsp', 0) | silent! LspHover | endif
+execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-definition)' : '".s:lsp_map1."'"
+execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-references)' : '".s:lsp_map2."'"
+" execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-hover)' : '".s:lsp_map3."'"
+" execute "nmap <silent> <expr> <c-p><c-p> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-peek-definition)' : '".s:lsp_map4."'"
+execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1) ? '<Plug>(lsp-peek-definition)' : '".s:lsp_map3."'"
+autocmd deinLocal CursorHold * if meflib#basic#get_local_var('auto_lsp', 0) && !empty(expand('<cword>')) && <SID>chk_lsp_running(0) | silent! LspHover | endif
 " help file でバグる？
 autocmd deinLocal FileType help nnoremap <buffer> <c-]> <c-]>
 
