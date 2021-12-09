@@ -176,7 +176,7 @@ endif
 " }}}
 
 " Spell check {{{
-command! Spell if &spell!=1 | setlocal spell | else | setlocal nospell | endif
+command! Spell if &spell!=1 | setlocal spell | echo 'spell: on' | else | setlocal nospell | echo 'spell: off' | endif
 " }}}
 
 " 要らない？user関数を消す {{{
