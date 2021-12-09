@@ -485,16 +485,6 @@ autocmd deinLocal FileType tex
 "}}}
 '''
 
-# git 操作用plugin
-[[plugins]]
-repo = 'tpope/vim-fugitive'
-# https://qiita.com/tashua314/items/35521f9bada5fe00cca7
-hook_add = '''
-"" fugitive {{{
-autocmd deinLocal FileType fugitive* nnoremap <silent> <buffer> q :quit<CR>
-"" }}}
-'''
-
 # vim の document
 [[plugins]]
 repo = 'vim-jp/vimdoc-ja'
@@ -690,4 +680,20 @@ let g:fern_search_ctrlp_root = 1
 let g:fern_search_ctrlp_open_file = 1
 '''
 # }}}
+
+# tig 用 plugin
+[[plugins]]
+repo = 'iberianpig/tig-explorer.vim'
+if = '''executable('tig')'''
+hook_add = '''
+"" tig-explorer {{{
+command! TigDiff vertical TigOpenFileWithCommit! HEAD % 0
+" }}}
+'''
+
+# required for tig-explorer
+[[plugins]]
+repo = 'rbgrouleff/bclose.vim'
+if = '''executable('tig') && has('nvim')'''
+
 
