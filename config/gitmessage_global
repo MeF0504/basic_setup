@@ -1,0 +1,21 @@
+# feat      feature
+# fix       bug fix
+# deps      dependencies
+# breaking  breaking changes
+# docs      documentation
+# style     formatting, missing semi colons, etc
+# refactor  refactoring
+# test      when adding missing tests
+# chore     maintain
+
+# [optional body]
+
+# [optional footer]
+
+# ==========
+# Conventional Commits
+# - https://www.conventionalcommits.org/ja/
+# AngularJS Git Commit Message Conventions
+# - https://gist.github.com/stephenparish/9941e89d80e2bc58a153#allowed-type
+# 忘れないように登録だけ... => https://zenn.dev/uochan/articles/2021-12-08-vim-conventional-commits
+
