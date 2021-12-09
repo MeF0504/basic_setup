@@ -110,10 +110,10 @@ function ip_color2() {
         ip4f=$(( 0x${ipnum[8]} & 0xFF ))
         ip4b=$(( 0x${ipnum[8]} >> 8 ))
         local ret=""
-        ret=$ret"%F{$ip1f}%K{$ip1b}c%f%k"
-        ret=$ret"%F{$ip2f}%K{$ip2b}o%f%k"
-        ret=$ret"%F{$ip3f}%K{$ip3b}n%f%k"
-        ret=$ret"%F{$ip4f}%K{$ip4b}n%f%k"
+        ret=$ret"%F{$ip1f}%K{$ip1b}I%f%k"
+        ret=$ret"%F{$ip2f}%K{$ip2b}P%f%k"
+        ret=$ret"%F{$ip3f}%K{$ip3b}v%f%k"
+        ret=$ret"%F{$ip4f}%K{$ip4b}6%f%k"
         ret=$ret" "
         echo "$ret"
     fi
