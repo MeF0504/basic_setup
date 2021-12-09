@@ -129,3 +129,9 @@ if !exists('$SSH_CONNECTION') && meflib#basic#get_local_var('auto_ime_off', 0)==
 endif
 " }}}
 
+" 最後に閉じたtab, windowを保存しておく
+autocmd local WinLeave * call meflib#basic#set_local_var('last_file_win', expand("%:p"))
+autocmd local TabClosed * call meflib#basic#set_local_var('last_file_tab', meflib#basic#get_local_var('last_file_win', ''))
+command! LastTab execute "tabnew " . meflib#basic#get_local_var('last_file_tab', '')
+command! LastWin execute "vsplit " . meflib#basic#get_local_var('last_file_win', '')
+
