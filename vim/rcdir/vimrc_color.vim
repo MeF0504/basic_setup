@@ -276,6 +276,7 @@ augroup colorLocal
     " autocmd Syntax * syntax region String matchgroup=Quote start=+\("\|'\)+ skip=+\\\("\|'\)+ end=+\("\|'\)+
     " vim だと"はコメントアウトもhitしちゃうので'だけにする
     autocmd Syntax * syntax region String oneline matchgroup=Quote start="'" skip="\\'" end="'"
+    autocmd Syntax * syntax region String matchgroup=Quote start="'''" end="'''"
 augroup END
 
 try
