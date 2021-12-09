@@ -332,7 +332,8 @@ call ddc#custom#patch_global(
     \ 'sourceOptions', {
         \ '_': {
             \ 'matchers': ['matcher_head'],
-            \ 'sorters': ['sorter_rank']
+            \ 'sorters': ['sorter_rank'],
+            \ 'converters': ['converter_remove_overlap'],
         \ },
     \ })
 
@@ -435,6 +436,10 @@ on_source = ['ddc.vim']
 
 [[plugins]]
 repo = 'shun/ddc-vim-lsp'
+on_source = ['ddc.vim']
+
+[[plugins]]
+repo = 'Shougo/ddc-converter_remove_overlap'
 on_source = ['ddc.vim']
 # }}}
 
