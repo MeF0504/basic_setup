@@ -24,7 +24,7 @@ theme: gaia
 .
     " }}}
 endfunction
-command! Template :call s:md_template()
+command! -buffer Template :call s:md_template()
 
 highlight markdownItalic cterm=None gui=NONE
 

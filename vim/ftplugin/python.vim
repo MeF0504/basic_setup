@@ -10,7 +10,7 @@ set suffixesadd+=.py
 " if needed
 set errorformat=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 
-command! PySyntax !python -m py_compile %
+command! -buffer PySyntax !python3 -m py_compile %
 
 function! s:python_help(module) abort
     " {{{
@@ -94,7 +94,7 @@ EOF
 
     " }}}
 endfunction
-command! -nargs=1 PyHelp call s:python_help(<f-args>)
+command! -buffer -nargs=1 PyHelp call s:python_help(<f-args>)
 
 function! s:py_template()
     " {{{
@@ -110,5 +110,5 @@ if __name__ == '__main__':
 .
     " }}}
 endfunction
-command! Template :call s:py_template()
+command! -buffer Template :call s:py_template()
 
