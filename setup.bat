@@ -73,12 +73,12 @@ if exist %vimcon%\ftplugin (
 copy %curdir%\vim\ftplugin\* %vimcon%\ftplugin\
 
 echo autoload
-if exist %vimcon%\autoload (
-    echo autoload exists.
+if exist %vimcon%\autoload\meflib (
+    echo autoload\meflib exists.
 ) else (
-    mkdir %vimcon%\autoload
+    mkdir %vimcon%\autoload\meflib
 )
-copy %curdir%\vim\autoload\* %vimcon%\autoload\
+copy %curdir%\vim\autoload\meflib\* %vimcon%\autoload\meflib
 
 echo toml
 if exist %vimcon%\toml (
