@@ -432,22 +432,6 @@ autocmd deinLocal QuitPre * call meflib#floating#float_close(s:cfi_popid) | let 
 " }}}
 '''
 
-# StatusLineにお寿司を流すplugin
-[[plugins]]
-repo = 'pocke/sushibar.vim'
-hook_add = '''
-"" sushibar.vim {{{
-let s:sushi = 1
-if (str2nr(strftime("%b")) == meflib#basic#get_local_var('bd_month', 0)
-    \ && str2nr(strftime("%d")) == meflib#basic#get_local_var('bd_day', 0))
-    "" Birthday
-    if s:sushi == 1
-        autocmd deinLocal BufWinEnter * Sushibar
-    endif
-endif
-"" }}}
-'''
-
 # 検索時にhit数をcountしてくれるplugin
 [[plugins]]
 repo = 'osyo-manga/vim-anzu'
@@ -530,10 +514,6 @@ repo = 'NLKNguyen/papercolor-theme'
 # colorscheme
 [[plugins]]
 repo = 'google/vim-colorscheme-primary'
-
-# colorscheme
-[[plugins]]
-repo = 'fxn/vim-monochrome'
 
 # for deoplete
 # vim でneovim 用 pluginを動かすためのplugin

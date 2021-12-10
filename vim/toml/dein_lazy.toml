@@ -1,9 +1,4 @@
 
-# toml 用 syntax
-[[plugins]]
-repo = 'cespare/vim-toml'
-on_ft = 'toml'
-
 # deinの設定ファイル内で，vimの部分をvimのsyntaxにする
 [[plugins]]
 repo = 'inkarkat/vim-SyntaxRange'
