@@ -279,9 +279,5 @@ augroup colorLocal
     autocmd Syntax * syntax region String matchgroup=Quote start="'''" end="'''"
 augroup END
 
-try
-    colorscheme inkpot
-catch
-    colorscheme evening
-endtry
+execute 'colorscheme '..meflib#basic#get_local_var('colorscheme', 'evening')
 
