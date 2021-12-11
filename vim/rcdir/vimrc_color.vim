@@ -176,7 +176,7 @@ function! <SID>my_color_set()
     " その他 {{{
     highlight ToCkeys ctermfg=10
     if (&background == 'light') && exists(':SeiyaDisable')
-        SeiyaDisable
+        silent SeiyaDisable
     endif
     highlight default link Quote String
     " }}}
