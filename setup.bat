@@ -28,14 +28,18 @@ set vimcon=%homedrive%%homepath%\vimfiles\
 if exist %vimcon%\dein\repos\github.com\Shougo\dein.vim (
     echo dein already exists.
 ) else (
-    mkdir %vimcon%\dein\repos\github.com\Shougo\dein.vim\
-    git clone https://github.com/Shougo/dein.vim %vimcon%\dein\repos\github.com\Shougo\dein.vim\
+    PowerShell -command "Invoke-WebRequest https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.ps1 -OutFile installer.ps1"
+    rem Allow to run third-party script
+    PowerShell -command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser"
+    PowerShell -command "./installer.ps1 ~/vimfiles/dein "
+    rem mkdir %vimcon%\dein\repos\github.com\Shougo\dein.vim\
+    rem git clone https://github.com/Shougo/dein.vim %vimcon%\dein\repos\github.com\Shougo\dein.vim\
 )
-if exist %vimcon%\swp (
-    echo swp exist.
-) else (
-    mkdir %vimcon%\swp
-)
+:: if exist %vimcon%\swp (
+::     echo swp exist.
+:: ) else (
+::     mkdir %vimcon%\swp
+:: )
 echo vimrc
 copy %curdir%\vim\vimrc %homedrive%%homepath%\_vimrc
 
