@@ -32,14 +32,8 @@ if exist %vimcon%\dein\repos\github.com\Shougo\dein.vim (
     rem Allow to run third-party script
     PowerShell -command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser"
     PowerShell -command "./installer.ps1 ~/vimfiles/dein "
-    rem mkdir %vimcon%\dein\repos\github.com\Shougo\dein.vim\
-    rem git clone https://github.com/Shougo/dein.vim %vimcon%\dein\repos\github.com\Shougo\dein.vim\
+    del installer.ps1
 )
-:: if exist %vimcon%\swp (
-::     echo swp exist.
-:: ) else (
-::     mkdir %vimcon%\swp
-:: )
 echo vimrc
 copy %curdir%\vim\vimrc %homedrive%%homepath%\_vimrc
 
