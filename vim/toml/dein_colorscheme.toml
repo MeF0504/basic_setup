@@ -1,0 +1,17 @@
+[[plugins]]
+repo = 'ciaranm/inkpot'
+
+[[plugins]]
+repo = 'MeF0504/vim-shiki'
+
+[[plugins]]
+repo = 'altercation/vim-colors-solarized'
+
+[[plugins]]
+repo = 'NLKNguyen/papercolor-theme'
+
+[[plugins]]
+repo = 'google/vim-colorscheme-primary'
+
+[[plugins]]
+repo = 'haishanh/night-owl.vim'

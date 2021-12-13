@@ -386,14 +386,6 @@ autocmd deinLocal FileType ctrlp ++once nnoremap <buffer> <silent> ? :call <SID>
 "}}}
 '''
 
-# colorscheme
-[[plugins]]
-repo = 'ciaranm/inkpot'
-
-# colorscheme
-[[plugins]]
-repo = 'MeF0504/vim-shiki'
-
 # current lineの関数表示用plugin (StatusLine用)
 [[plugins]]
 repo = 'tyru/current-func-info.vim'
@@ -483,10 +475,6 @@ endif
 " }}}
 '''
 
-# colorscheme
-[[plugins]]
-repo = 'altercation/vim-colors-solarized'
-
 # command line と検索時に補完してくれるplugin
 [[plugins]]
 repo = 'gelguy/wilder.nvim'
@@ -506,14 +494,6 @@ call wilder#setup({
     \ })
 " }}}
 '''
-
-# colorscheme
-[[plugins]]
-repo = 'NLKNguyen/papercolor-theme'
-
-# colorscheme
-[[plugins]]
-repo = 'google/vim-colorscheme-primary'
 
 # for deoplete
 # vim でneovim 用 pluginを動かすためのplugin

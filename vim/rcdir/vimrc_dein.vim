@@ -18,8 +18,9 @@ let s:vim_dir = meflib#basic#get_conf_dir()
 let s:dein_dir = s:vim_dir. 'dein/'
 
 let s:light_file = s:vim_dir . 'toml/dein_min.toml'
-let s:toml_file  = s:vim_dir . '/toml/dein.toml'
-let s:lazy_file  = s:vim_dir . '/toml/dein_lazy.toml'
+let s:toml_file  = s:vim_dir . 'toml/dein.toml'
+let s:color_file = s:vim_dir . 'toml/dein_colorscheme.toml'
+let s:lazy_file  = s:vim_dir . 'toml/dein_lazy.toml'
 
 " update the settings referring to https://knowledge.sakura.ad.jp/23248/
 " Required: dein install check
@@ -49,6 +50,9 @@ if dein#load_state(s:dein_dir)
     endif
     if filereadable(s:toml_file)
         call dein#load_toml(s:toml_file, {'lazy':0})
+    endif
+    if filereadable(s:color_file)
+        call dein#load_toml(s:color_file, {'lazy':0})
     endif
     if filereadable(s:lazy_file)
         call dein#load_toml(s:lazy_file, {'lazy':1})
