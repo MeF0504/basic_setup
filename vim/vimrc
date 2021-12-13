@@ -60,7 +60,7 @@ endif
 try
     let s:vimdir = meflib#basic#get_conf_dir()
 catch
-    echomsg 'llib not found. So, no files are sourced.'
+    echomsg 'meflib not found. So, no files are sourced.'
 endtry
 
 function! s:source_file(filename) abort
