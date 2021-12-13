@@ -357,7 +357,7 @@ def main_conf(args):
             " && echo \"update? (y/[n])\"" +\
             " && read YN" +\
             " && [[ $YN = \"y\" ]]" +\
-            " && python setup.py {}".format(pyopt) +\
+            " && python3 setup.py {}".format(pyopt) +\
             " ; cd -'"
     mine_exist = True
 
