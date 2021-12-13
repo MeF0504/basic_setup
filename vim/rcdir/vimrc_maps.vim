@@ -92,7 +92,9 @@ nnoremap <c-]> g<c-]>
 " 分割で表示
 nnoremap <silent> g<c-]> :vertical stjump<CR>
 " preview で開く
-nnoremap <silent> <c-p> :execute("ptjump " . expand("<cword>"))<CR>
+nnoremap <silent> <c-p> :execute "ptjump "..expand("<cword>")<CR>
+"jump先をnew tabで開く
+nnoremap <silent> <c-j> :execute "tab tjump "..expand("<cword>")<CR>
 
 " \で検索のハイライトを消す
 nnoremap <silent> \ :nohlsearch<CR>

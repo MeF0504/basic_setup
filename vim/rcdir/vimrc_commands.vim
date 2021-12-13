@@ -104,30 +104,6 @@ endfunction
 command! FileInfo call s:fileinfo()
 "}}}
 
-" 新しいtabで関数ジャンプする {{{
-function! <SID>Tab_Jump()
-    let l:ctabnr = tabpagenr()
-    let l:cword = expand('<cword>')
-    silent cd %:h
-    tabnew
-    " tag listを初期化
-    try
-        $pop
-    catch
-    endtry
-    execute "tjump " . l:cword
-    if expand("%:t") == ""
-        quit
-        execute "normal! " . l:ctabnr . "gt"
-    endif
-    silent cd -
-endfunction
-
-"jump先をnew tabで開く
-nnoremap <silent> <c-j> :call <SID>Tab_Jump()<CR>
-
-" }}}
-
 " 辞書（というか英辞郎）で検索 {{{
 function! s:eijiro(word)
     let dic_file = meflib#basic#get_local_var('dic_file', '')
