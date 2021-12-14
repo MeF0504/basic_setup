@@ -12,8 +12,8 @@ else
     let s:sid = expand('<SID>')
 endif
 
-function! <SID>get_colorid(r, g, b)
-    if has('gui_running')
+function! <SID>get_colorid(r, g, b, gui)
+    if a:gui
         let gui_r = a:r==0 ? 0 : 55+40*a:r
         let gui_g = a:g==0 ? 0 : 55+40*a:g
         let gui_b = a:b==0 ? 0 : 55+40*a:b
@@ -64,55 +64,55 @@ function! Chk_isdark() abort
 endfunction
 
 function! <SID>my_color_set_inkpot()
-    highlight Identifier ctermfg=110
-    highlight Number ctermfg=9
-    highlight Type ctermfg=149
-    highlight String ctermfg=222 ctermbg=None
-    highlight Comment ctermfg=66 gui=italic
-    highlight LineNr ctermfg=243
-    highlight Title ctermfg=197
-    highlight PreProc ctermfg=35    " for gui environment
-    highlight SpecialKey cterm=bold ctermfg=243 ctermbg=233
-    highlight Normal ctermfg=255
-    highlight PmenuThumb ctermbg=55
-    highlight MatchParen ctermfg=14 ctermbg=18 cterm=Bold
+    highlight Identifier ctermfg=110 guifg=#87afd7
+    highlight Number ctermfg=9 guifg=Red
+    highlight Type ctermfg=149 guifg=#afd75f
+    highlight String ctermfg=222 ctermbg=None guifg=#ffd787 guibg=NONE
+    highlight Comment ctermfg=66 guifg=#5f8787 gui=italic
+    highlight LineNr ctermfg=243 guifg=#767676
+    highlight Title ctermfg=197 guifg=#ff005f
+    highlight PreProc ctermfg=35 guifg=#00af5f
+    highlight SpecialKey cterm=bold ctermfg=243 ctermbg=233 gui=Bold guifg=#121212
+    highlight Normal ctermfg=255 guifg=#eeeeee
+    highlight PmenuThumb ctermbg=55 guibg=#5f00af
+    highlight MatchParen ctermfg=14 ctermbg=18 cterm=Bold guifg=Aqua guibg=DarkBlue gui=Bold
 
-    highlight CursorWord1 ctermbg=235 cterm=None
-    highlight Quote ctermfg=183 ctermbg=None
+    highlight CursorWord1 ctermbg=235 cterm=None guibg=#262626 gui=NONE
+    highlight Quote ctermfg=183 ctermbg=None guifg=#d7afff guibg=NONE
 endfunction
 
 function! <SID>my_color_set_shiki()
-    highlight Directory ctermfg=34
+    highlight Directory ctermfg=34 guifg=#00af00
 endfunction
 
 function! <SID>my_color_set_primary()
-    highlight Normal ctermfg=254
-    highlight Identifier ctermbg=None
+    highlight Normal ctermfg=254 guifg=#e4e4e4
+    highlight Identifier ctermbg=None guibg=NONE
     " highlight String ctermbg=None
-    highlight PreProc ctermbg=None
-    highlight Function ctermbg=None
-    highlight Statement ctermbg=None
-    highlight Number ctermbg=None
-    highlight Comment ctermbg=None
-    highlight Keyword ctermbg=None
-    highlight Conditional ctermbg=None
-    highlight Operator ctermbg=None
-    highlight Repeat ctermbg=None
-    highlight Exception ctermbg=None
-    highlight Type ctermbg=None
-    highlight Structure ctermbg=None
-    highlight Macro ctermbg=None
-    highlight SpecialKey ctermfg=242 ctermbg=None
-    highlight CursorWord1 ctermbg=239 cterm=None
+    highlight PreProc ctermbg=None guibg=NONE
+    highlight Function ctermbg=None guibg=NONE
+    highlight Statement ctermbg=None guibg=NONE
+    highlight Number ctermbg=None guibg=NONE
+    highlight Comment ctermbg=None guibg=NONE
+    highlight Keyword ctermbg=None guibg=NONE
+    highlight Conditional ctermbg=None guibg=NONE
+    highlight Operator ctermbg=None guibg=NONE
+    highlight Repeat ctermbg=None guibg=NONE
+    highlight Exception ctermbg=None guibg=NONE
+    highlight Type ctermbg=None guibg=NONE
+    highlight Structure ctermbg=None guibg=NONE
+    highlight Macro ctermbg=None guibg=NONE
+    highlight SpecialKey ctermfg=242 ctermbg=None guifg=#6c6c6c guibg=NONE
+    highlight CursorWord1 ctermbg=239 cterm=None guibg=#4e4e4e gui=NONE
 endfunction
 
 function! <SID>my_color_set_PaperColor()
-    highlight Search ctermbg=36
-    highlight SpecialKey cterm=Underline ctermfg=245 ctermbg=233
+    highlight Search ctermbg=36 guibg=#00af87
+    highlight SpecialKey cterm=Underline ctermfg=245 ctermbg=233 gui=Underline guifg=#8a8a8a guibg=#121212
 endfunction
 
 function! <SID>my_color_set_evening()
-    highlight Normal ctermbg=233
+    highlight Normal ctermbg=233 guibg=#121212
 endfunction
 
 function! <SID>my_color_set()
@@ -129,20 +129,20 @@ function! <SID>my_color_set()
 
     " corsor line {{{
     if g:colors_name !~ 'pjsekai_*'
-        highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15
+        highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15 gui=Underline guifg=#00005f guibg=White
     endif
-    highlight CursorLine cterm=underline ctermfg=None ctermbg=None
+    highlight CursorLine cterm=underline ctermfg=None ctermbg=None gui=Underline guifg=NONE guibg=NONE
     " }}}
 
     " tab line {{{
-    highlight TabLine cterm=None ctermfg=248 ctermbg=16
-    highlight TabLineSel cterm=Bold,underline ctermfg=15 ctermbg=243
-    highlight TabLineFill cterm=Bold ctermfg=45 ctermbg=16
-    highlight TabLineDir cterm=Bold ctermfg=24 ctermbg=250
+    highlight TabLine cterm=None ctermfg=248 ctermbg=16 guifg=#a8a8a8 guibg=#000000
+    highlight TabLineSel cterm=Bold,underline ctermfg=15 ctermbg=243 gui=Bold,Underline guifg=White guibg=#767676
+    highlight TabLineFill cterm=Bold ctermfg=45 ctermbg=16 gui=Bold guifg=#00d7ff guibg=#000000
+    highlight TabLineDir cterm=Bold ctermfg=24 ctermbg=250 gui=Bold guifg=#005f87 guibg=#bcbcbc
     " }}}
 
     " 全角スペース表示 {{{
-    highlight ZenkakuSpace cterm=None ctermfg=None ctermbg=241
+    highlight ZenkakuSpace cterm=None ctermfg=None ctermbg=241 gui=NONE guifg=NONE guibg=#626262
     " }}}
 
     " statusline color setting {{{
@@ -150,31 +150,31 @@ function! <SID>my_color_set()
         " day-by-day StatusLine Color
         call <SID>Day_by_Day_StatusLine()
     else
-        highlight StatusLine cterm=bold ctermfg=234 ctermbg=75
+        highlight StatusLine cterm=bold ctermfg=234 ctermbg=75 gui=Bold guifg=#1c1c1c guibg=#5fafff
         if !has('nvim')
-            highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46
+            highlight StatusLineTerm cterm=bold ctermfg=233 ctermbg=46 gui=Bold guifg=#121212 guibg=#00ff00
         endif
     endif
 
-    highlight StatusLineNC cterm=underline ctermfg=244 ctermbg=232
+    highlight StatusLineNC cterm=underline ctermfg=244 ctermbg=232 gui=Underline guifg=#808080 guibg=#080808
     if !has('nvim')
-        highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249
+        highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249 gui=NONE guifg=#121212 guibg=#b2b2b2
     endif
 
-    highlight StatusLine_FT cterm=bold ctermfg=253 ctermbg=17
-    highlight StatusLine_FF cterm=bold ctermfg=253 ctermbg=88
-    highlight StatusLine_LN cterm=bold ctermfg=253 ctermbg=29
-    highlight StatusLine_CHK cterm=bold ctermfg=233 ctermbg=190
-    highlight Mode_N cterm=bold ctermfg=253 ctermbg=0
-    highlight Mode_I cterm=bold ctermfg=253 ctermbg=9
-    highlight Mode_V cterm=bold ctermfg=253 ctermbg=13
-    highlight Mode_R cterm=bold ctermfg=234 ctermbg=3
-    highlight Mode_T cterm=bold ctermfg=234 ctermbg=10
-    highlight Mode_ELSE cterm=bold ctermfg=253 ctermbg=8
+    highlight StatusLine_FT cterm=bold ctermfg=253 ctermbg=17 gui=Bold guifg=#dadada guibg=#00005f
+    highlight StatusLine_FF cterm=bold ctermfg=253 ctermbg=88 gui=Bold guifg=#dadada guibg=#870000
+    highlight StatusLine_LN cterm=bold ctermfg=253 ctermbg=29 gui=Bold guifg=#dadada guibg=#00875f
+    highlight StatusLine_CHK cterm=bold ctermfg=233 ctermbg=190 gui=Bold guifg=#121212 guibg=#d7ff00
+    highlight Mode_N cterm=bold ctermfg=253 ctermbg=0 gui=Bold guifg=#dadada guibg=Black
+    highlight Mode_I cterm=bold ctermfg=253 ctermbg=9 gui=Bold guifg=#dadada guibg=Red
+    highlight Mode_V cterm=bold ctermfg=253 ctermbg=13 gui=Bold guifg=#dadada guibg=Fuchsia
+    highlight Mode_R cterm=bold ctermfg=234 ctermbg=3 gui=Bold guifg=#1c1c1c guibg=Olive
+    highlight Mode_T cterm=bold ctermfg=234 ctermbg=10 gui=Bold guifg=#1c1c1c guibg=Lime
+    highlight Mode_ELSE cterm=bold ctermfg=253 ctermbg=8 gui=Bold guifg=#dadada guibg=#404040
     " }}}
 
     " その他 {{{
-    highlight ToCkeys ctermfg=10
+    highlight ToCkeys ctermfg=10 guifg=Lime
     if (&background == 'light') && exists(':SeiyaDisable')
         silent SeiyaDisable
     endif
@@ -183,8 +183,8 @@ function! <SID>my_color_set()
 
     """ plugin highlights
     " hitspop {{{
-    highlight hitspopNormal ctermfg=224 ctermbg=238
-    highlight hitspopErrorMsg ctermfg=9 ctermbg=238
+    highlight hitspopNormal ctermfg=224 ctermbg=238 guifg=#ffd7d7 guibg=#444444
+    highlight hitspopErrorMsg ctermfg=9 ctermbg=238 guifg=Red guibg=#444444
     " }}}
 
     " ParenMatch {{{
@@ -200,12 +200,12 @@ function! <SID>my_color_set()
     " }}}
 
     " CursorWord {{{
-    highlight CursorWord1 ctermfg=None ctermbg=None cterm=None
-    highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline
+    highlight CursorWord1 ctermfg=None ctermbg=None cterm=None guifg=NONE guifg=NONE gui=NONE
+    highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline guifg=NONE guifg=NONE gui=Underline
     " }}}
 
     " current-func-info {{{
-    highlight CFIPopup ctermbg=11 ctermfg=233 cterm=bold
+    highlight CFIPopup ctermbg=11 ctermfg=233 cterm=bold guibg=Yellow guifg=#121212 gui=Bold
     " }}}
 
     " colorscheme specified setings
@@ -228,18 +228,21 @@ function! <SID>Day_by_Day_StatusLine()
     if (month == meflib#basic#get_local_var('bd_month', 0)
         \&& day == meflib#basic#get_local_var('bd_day', 0))
         "" Birthday
-        highlight StatusLine cterm=None ctermfg=194 ctermbg=136
-        highlight WildMenu cterm=Bold ctermfg=136 ctermbg=194
+        highlight StatusLine cterm=None ctermfg=7 ctermbg=136 gui=NONE guifg=Silver guibg=Gold
+        highlight WildMenu cterm=Bold ctermfg=136 ctermbg=7 gui=NONE guifg=Gold guibg=Silver
     else
-        let bg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
+        let cbg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb, 0)
+        let gbg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb, 1)
         if s:isdark(s:stl_br, s:stl_bg, s:stl_bb) == 1
-            let fg = has('gui_running') ? '#eeeeee' : 255
+            let cfg = 255
+            let gfg = '#eeeeee'
         else    " light background
-            let fg = has('gui_running') ? '#1c1c1c' : 234
+            let cfg = 234
+            let gfg = '#1c1c1c'
         endif
-        " echo 'color:' . s:stl_br . '=' . s:stl_bg . '=' . s:stl_bb . '=' . bg . '=' . fg
-        execute 'highlight StatusLine cterm=Bold ctermfg='.fg.' ctermbg='.bg
-        execute 'highlight WildMenu cterm=Bold ctermfg='.bg.' ctermbg='.fg
+        " echo 'color:'..s:stl_br..'='..s:stl_bg..'='..s:stl_bb..'='..cfg..'='..cbg..'='..gfg..'='..gbg
+        execute printf('highlight StatusLine cterm=Bold ctermfg=%s ctermbg=%s gui=Bold guifg=%s guibg=%s', cfg, cbg, gfg, gbg)
+        execute printf('highlight WildMenu cterm=Bold ctermfg=%s ctermbg=%s gui=Bold guifg=%s guibg=%s', cbg, cfg, gbg, gfg)
         if !has('nvim')
             highlight! link StatusLineTerm StatusLine
         endif
@@ -247,10 +250,11 @@ function! <SID>Day_by_Day_StatusLine()
 endfunction
 
 function! ShowStatusLineBG()
+    let is_gui = has('gui_running') || (has('termguicolors') && &termguicolors)
     let echo_str  = 'red:'.s:stl_br
     let echo_str .= ' green:'.s:stl_bg
     let echo_str .= ' blue:'.s:stl_bb
-    let echo_str .= ' => bg:'.<SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb)
+    let echo_str .= ' => bg:'.<SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb, is_gui)
     let echo_str .= '   is_dark:'
     let echo_str .= ' ('.s:stl_br.'*'.printf('%.1f', s:w_r)
     let echo_str .= '+'.s:stl_bg.'*'.printf('%.1f', s:w_g)

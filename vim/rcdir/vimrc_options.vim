@@ -107,6 +107,8 @@ try
 catch
     " nothing
 endtry
+" terminalでもgui colorを使う
+" set termguicolors " if needed
 
 " directory 設定系
 " doc directoryを追加

@@ -266,6 +266,9 @@ hook_add = '''
 "" seiya.vim "{{{
 "vimの背景を透過
 let g:seiya_auto_enable=1
+if has('termguicolors') && !has('gui_running')
+    let g:seiya_target_groups = ['ctermbg', 'guibg']
+endif
 "}}}
 '''
 
