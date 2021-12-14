@@ -269,6 +269,15 @@ endfunction
 " lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
 " <c-p>で定義をfloating windowで表示
 " cursolを動かさないとhelp hoverを表示
+function! <SID>chk_tab()
+    let yn = input('open in new tab? [y]/n: ')
+    if yn != 'n'
+        return ":tab LspDefinition\<CR>"
+    else
+        return "\<Plug>(lsp-definition)"
+    endif
+endfunction
+
 let s:lsp_map1 =  maparg('<c-]>', 'n')
 if empty(s:lsp_map1)
     let s:lsp_map1 = '<c-]>'
@@ -285,7 +294,7 @@ let s:lsp_map4 =  maparg('<c-p><c-p>', 'n')
 if empty(s:lsp_map4)
     let s:lsp_map4 = '<c-p><c-p>'
 endif
-execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-definition)' : '".s:lsp_map1."'"
+execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? <SID>chk_tab() : '"..s:lsp_map1."'"
 execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-references)' : '".s:lsp_map2."'"
 " execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-hover)' : '".s:lsp_map3."'"
 " execute "nmap <silent> <expr> <c-p><c-p> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-peek-definition)' : '".s:lsp_map4."'"
