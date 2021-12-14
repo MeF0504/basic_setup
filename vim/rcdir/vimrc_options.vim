@@ -73,27 +73,12 @@ set foldmethod=marker
 set splitright
 " Leaderを<space>に設定
 let mapleader = "\<space>"
-" doc directoryを追加
-if exists('s:vimdir') && isdirectory(s:vimdir . 'doc')
-    execute "helptags " . s:vimdir . "doc"
-endif
 " ファイル名が=で切られないようにする (ファイル名に=は使わないよな...)
 set isfname-==
 " pythonxで使うversionを指定
 " set pyxversion=3    " if needed
 " カーソルの下に下線を表示
 set cursorline
-" swp fileあり、backup, undoなし
-set swapfile
-" 作れればswp用のdirectoryをvimdir配下に作る
-if exists('s:vimdir')
-    if !isdirectory(s:vimdir . 'swp')
-        call mkdir(s:vimdir . 'swp')
-    endif
-    let &directory = s:vimdir . "swp"
-endif
-set nobackup
-set noundofile
 " tag設定
 set tags=tags;,./tags;
 " 左端にfoldの表示を追加
@@ -115,6 +100,30 @@ set showmode
 if (v:version > 704) || ((v:version==704) && has('patch314'))
     set shortmess+=c
 endif
+" <c-a>, <c-x>の対称を10進数 (default)，16進数，2進数，unsignedにする
+set nrformats=hex,bin
+try
+    set nrformats+=unsigned
+catch
+    " nothing
+endtry
+
+" directory 設定系
+" doc directoryを追加
+if exists('s:vimdir') && isdirectory(s:vimdir . 'doc')
+    execute "helptags " . s:vimdir . "doc"
+endif
+" swp fileあり、backup, undoなし
+set swapfile
+" 作れればswp用のdirectoryをvimdir配下に作る
+if exists('s:vimdir')
+    if !isdirectory(s:vimdir . 'swp')
+        call mkdir(s:vimdir . 'swp')
+    endif
+    let &directory = s:vimdir . "swp"
+endif
+set nobackup
+set noundofile
 " spell checkする言語
 set spelllang=en_us
 " spell checkされた単語リストファイル
@@ -124,13 +133,6 @@ if exists('s:vimdir')
     endif
     let &spellfile = s:vimdir.'spell/local.'.&encoding.'.add'
 endif
-" <c-a>, <c-x>の対称を10進数 (default)，16進数，2進数，unsignedにする
-set nrformats=hex,bin
-try
-    set nrformats+=unsigned
-catch
-    " nothing
-endtry
 " test用directoryを追加
 if exists('s:vimdir')
     let s:test_vim_dir = s:vimdir . 'test'
