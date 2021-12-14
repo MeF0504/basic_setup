@@ -775,7 +775,7 @@ function! <SID>ChkFileExist(...) abort
         endfor
     endif
 
-    let l:path = expand(l:path)
+    let l:path = fnameescape(expand(l:path))
     if isdirectory(l:path)
         let ec_str = '"' . l:path . '" exists: directory.'
         let ec_str .= ' open this directory in new tab? (y/[n])'
