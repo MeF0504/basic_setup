@@ -28,11 +28,20 @@ set visualbell t_vb=
 
 "}}}
 
-let s:vimdir = llib#get_conf_dir()
-" "色設定
-let s:color_file = s:vimdir . "rcdir/gvimrc_color.vim"
+let s:vimdir = ''
+try
+    let s:vimdir = meflib#basic#get_conf_dir()
+catch
+    echomsg 'meflib not found.'
+endtry
+" 色設定
+let s:color_file = s:vimdir.."rcdir/vimrc_color.vim"
 if filereadable(s:color_file)
     execute "source " . s:color_file
+else
+    " In case vim doesn't source vimrc_color.vim
+    colorscheme evening
+    highlight Normal ctermbg=0 guibg=Black
 endif
 
 "その他 GUI 設定 {{{
