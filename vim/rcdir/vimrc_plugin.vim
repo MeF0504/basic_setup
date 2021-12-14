@@ -782,6 +782,17 @@ function! <SID>ChkFileExist(...) abort
     elseif filereadable(l:path)
         let ec_str = '"' . l:path . '" exists: file.'
         let ec_str .= ' open this file in new tab? (y/[n])'
+    elseif (l:path[:3]=='http') || (l:path[:4]=='https')
+        let cmd = meflib#basic#get_exe_cmd()
+        if !empty(cmd)
+            let yn = input(printf('"%s" is a web url. open? (y/[n])', l:path))
+            if (l:yn == 'y') || (l:yn == 'yes')
+                execute printf('!%s %s', cmd, l:path)
+            endif
+        else
+            echo 'command to open web url is not found.'
+        endif
+        return
     else
         echo l:path . ' not exists.'
         return

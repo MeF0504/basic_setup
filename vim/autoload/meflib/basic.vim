@@ -128,3 +128,26 @@ function! meflib#basic#get_top_dir(cwd) abort
     return ''
 endfunction
 
+" get command to execute default application in each OS.
+function! meflib#basic#get_exe_cmd(...) abort
+    if a:0 == 0
+        if has('mac')
+            let cmd = 'open'
+        elseif has('win32') || has('win64')
+            let cmd = 'start'
+        elseif has('linux')
+            let cmd = 'xdg-open'
+        else
+            let cmd = ''
+        endif
+    else
+        let cmd = a:1
+    endif
+
+    if executable(cmd)
+        return cmd
+    else
+        return ''
+    endif
+endfunction
+
