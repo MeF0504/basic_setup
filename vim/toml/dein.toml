@@ -502,13 +502,13 @@ call wilder#setup({
 # vim でneovim 用 pluginを動かすためのplugin
 [[plugins]]
 repo = 'roxma/nvim-yarp'
-if = '''!has('nvim') && !has('patch-8.2.3081')'''
+if = '''!has('nvim') && !(executable('deno')&&has('patch-8.2.3081'))'''
 
 # for deoplete
 # vim でneovim 用 pluginを動かすためのplugin
 [[plugins]]
 repo = 'roxma/vim-hug-neovim-rpc'
-if = '''!has('nvim') && !has('patch-8.2.3081')'''
+if = '''!has('nvim') && !(executable('deno')&&has('patch-8.2.3081'))'''
 
 # visual modeで選択した範囲をgcでコメントアウトしてくれるplugin
 [[plugins]]

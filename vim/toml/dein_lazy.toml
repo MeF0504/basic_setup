@@ -41,7 +41,7 @@ on_ft = 'vim'
 # dark powered 補完plugin
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
-if = '''has('python3') && (((v:version>=801)&&!has('patch-8.2.3081')) || (has('nvim')&&has('nvim-0.3.0')&&!has('nvim-0.5.0')))'''
+if = '''has('python3') && (((v:version>=801)&&!(executable('deno')&&has('patch-8.2.3081'))) || (has('nvim')&&has('nvim-0.3.0')&&!(executable('deno')&&has('nvim-0.5.0'))))'''
 on_event = 'InsertEnter'
 hook_source = '''
 "{{{ "deoplete
