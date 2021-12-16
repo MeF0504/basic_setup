@@ -281,9 +281,9 @@ augroup colorLocal
     " autocmd Syntax * syntax region String oneline matchgroup=Quote start="'" skip="\\'" end="'"
     " autocmd Syntax * syntax region String matchgroup=Quote start="'''" end="'''"
     " う〜ん，やっぱりやめるかなぁ。最初からあるやつだけ...
-    autocmd FileType python highlight link pythonQuotes Quote
-    autocmd FileType sh highlight link shQuote Quote
-    autocmd FileType zsh highlight link zshStringDelimiter Quote
+    autocmd FileType python ++once highlight link pythonQuotes Quote
+    autocmd FileType sh ++once highlight link shQuote Quote
+    autocmd FileType zsh ++once highlight link zshStringDelimiter Quote
 augroup END
 
 execute 'colorscheme '..meflib#basic#get_local_var('colorscheme', 'evening')

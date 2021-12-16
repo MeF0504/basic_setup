@@ -57,9 +57,6 @@ if exists("*settagstack")
     autocmd local TabNew * call settagstack(winnr(), {'length':0, 'curidx':1, 'items':[]})
 endif
 
-" toml fileのfiletypeをtomlにする
-autocmd local BufEnter *.toml set filetype=toml
-
 "vimgrepした際に新規windowで開くようにする
 autocmd local QuickFixCmdPost *grep* cwindow
 
