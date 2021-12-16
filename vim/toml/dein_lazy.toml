@@ -262,13 +262,13 @@ function! <SID>chk_lsp_running(echo)
             return 1
         elseif a:echo
             echomsg lsp_status
+            sleep 300ms
         endif
     endfor
     return 0
 endfunction
 " lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
-" <c-p>で定義をfloating windowで表示
-" cursolを動かさないとhelp hoverを表示
+" <c-p>でhelp hover, 再度<c-p>で定義をfloating windowで表示
 function! <SID>chk_tab()
     let yn = input('open in new tab? [y]/n: ')
     if yn != 'n'
@@ -296,15 +296,14 @@ if empty(s:lsp_map4)
 endif
 execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? <SID>chk_tab() : '"..s:lsp_map1."'"
 execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-references)' : '".s:lsp_map2."'"
-" execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-hover)' : '".s:lsp_map3."'"
-" execute "nmap <silent> <expr> <c-p><c-p> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-peek-definition)' : '".s:lsp_map4."'"
-execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1) ? '<Plug>(lsp-peek-definition)' : '".s:lsp_map3."'"
-autocmd deinLocal CursorHold * if meflib#basic#get_local_var('auto_lsp', 0) && !empty(expand('<cword>')) && <SID>chk_lsp_running(0) | silent! LspHover | endif
+execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-hover)' : '".s:lsp_map3."'"
+autocmd deinLocal User lsp_float_opened nmap <buffer> <silent> <c-p> <Plug>(lsp-peek-definition)
+autocmd deinLocal User lsp_float_closed nunmap <buffer> <c-p>
 " help file でバグる？
 autocmd deinLocal FileType help nnoremap <buffer> <c-]> <c-]>
 
 " normal modeでmouseが使えないとscroll出来ないので，とりあえず対処。
-" lsp_float_closed がvimだとpopupが閉じても叩かれない？ので，qで閉じるようにする
+" lsp_float_closed がvimだとpopupがcursor moveで閉じても叩かれない？ので，qで閉じるようにする
 autocmd deinLocal User lsp_float_opened nnoremap <buffer> <expr> <c-d> lsp#scroll(+5)
 autocmd deinLocal User lsp_float_opened nnoremap <buffer> <expr> <c-u> lsp#scroll(-5)
 autocmd deinLocal User lsp_float_opened nnoremap <buffer> <expr> <c-e> lsp#scroll(+1)
