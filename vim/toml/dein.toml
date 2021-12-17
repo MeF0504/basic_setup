@@ -243,6 +243,19 @@ function! <SID>quickrun_wrapper()
     endif
     if quickrun#is_running()
         echo 'quickrun is running'
+        let jobs = {}
+        let idx = 1
+        for job in job_info()
+            if job_status(job) == 'run'
+                let jobs[idx] = job
+                echo printf('%d %s', idx, job_info(job).cmd)
+                let idx += 1
+            endif
+        endfor
+        let num = input('please select job to kill (empty cancel): ')
+        if !empty(num)
+            call job_stop(jobs[num])
+        endif
         return
     endif
     cclose
