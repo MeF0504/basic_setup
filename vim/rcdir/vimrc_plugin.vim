@@ -943,19 +943,11 @@ function! <SID>echo_gregrep_help()
     echo "        if dir=opened, search files in buffer"
     echo "ex ... file extention of target files."
     echo "       if ex=None, search all files."
+    echo "e.g. :GREgrep wd=hoge ex=.vim dir=%:h:h"
+    echo "e.g. :GREgrep wd=fuga ex=None"
 endfunction
 
-function! Mygrep(...)
-    "args keywords ... wd, ex, dir
-    "wd  ... search word.
-    "ex  ... file extention.
-    "dir ... search directory.
-    "e.g. :GREgrep wd=hoge ex=.vim dir=%:h/../../
-    "e.g. :GREgrep wd=fuga ex=.py
-    " if &modified == 1
-    "     echo "file not saved!"
-    "     return
-    " endif
+function! <SID>Mygrep(...)
     let def_dir = '.'
     if meflib#basic#get_local_var('get_top_dir', 0) == 1
         let top_dir = meflib#basic#get_top_dir(expand('%:h'))
@@ -984,6 +976,7 @@ function! Mygrep(...)
         let l:ft =  has_key(arg,  "ex") ? arg["ex"] : expand('%:e')
         let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : '.'
     endif
+    let l:word = fnameescape(l:word)
 
     let is_file = 0
     let is_opened = 0
@@ -1034,7 +1027,7 @@ function! Mygrep(...)
         echo "not supported grepprg"
     endif
 endfunction
-command! -nargs=? Gregrep call Mygrep(<f-args>)
+command! -nargs=? Gregrep call <SID>Mygrep(<f-args>)
 command! -nargs=? GREgrep Gregrep
 
 
