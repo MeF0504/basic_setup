@@ -9,6 +9,7 @@ import tarfile
 import platform
 import mimetypes
 from pathlib import PurePath
+from functools import partial
 try:
     # to use this, libmagic.* should be in /opt/local/lib/, /usr/local/lib, /opt/homebrew/lib or /usr/local/Cellar/libmagic/*/lib in darwin system (macOS).
     import magic
@@ -33,6 +34,7 @@ else:
     available_color = True
 
 debug = False
+curses_debug = False
 inter_str = "'q':quit, '..':go to parent, key_name:select a key >> "
 uname = platform.system()
 
@@ -55,6 +57,8 @@ def args_chk(args, attr):
         return args.encoding is not None
     elif attr == 'exec':
         return args.exec is not None
+    elif attr == 'cui':
+        return args.cui
     else:
         return False
 
@@ -255,11 +259,181 @@ def interactive_view(tree, fname, show_func):
                 key_name = key_name[:-1]
             if key_name in files:
                 cprint('output::', '\n', bg='r')
-                show_func(str(cpath/key_name))
+                info, err = show_func(str(cpath/key_name), False)
+                if err is None:
+                    print("\n".join(info))
+                else:
+                    cprint(err, fg='r')
             elif key_name in dirs:
                 cpath /= key_name
             else:
                 cprint('"{}" is not a correct name'.format(key_name), '', fg='r')
+
+def interactive_cui(tree, fname, show_func):
+    if not available_libtree:
+        cprint('libtree is not available. exit.', fg='r', file=sys.stderr)
+        return
+    import curses
+    cpath = PurePath('.')
+    tv = tree_viewer(tree, '.')
+    def curses_main(cpath, tv, stdscr):
+        # clear screen
+        stdscr.clear()
+        winy, winx = stdscr.getmaxyx()
+        win_h = 3
+        win_w = int(winx*3/10)
+        win_pwd  = curses.newwin(win_h, winx, 0, 0)
+        win_bar  = curses.newwin(winy-win_h, win_w, win_h, 0)
+        win_main = curses.newwin(winy-win_h, winx-win_w, win_h, win_w)
+
+        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_GREEN)     # pwd background
+        curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLUE)      # bar background
+        curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)       # error
+        win_pwd.bkgd(' ', curses.color_pair(1))
+        win_bar.bkgd(' ', curses.color_pair(2))
+
+        sel_idx = 0
+        cont_shift = 0
+        files, dirs = tv.get_contents(cpath)
+        contents = dirs+files
+
+        main_info = []
+        main_err = None
+        main_shift_ud = 0
+        main_shift_lr = 0
+        sheight = 5
+        swidth = 5
+        sel_cont = ''
+
+        key = ''
+        while key != 'q':
+            # showed indices are cont_shift ~ cont_shift+(winy-win_h)
+
+            if key == 'KEY_DOWN':
+                if len(contents) <= winy-win_h:
+                    # all contents are shown
+                    if sel_idx < len(contents)-1:
+                        sel_idx += 1
+                elif cont_shift+(winy-win_h) < len(contents):
+                    # not bottom
+                    sel_idx += 1
+                    if sel_idx >= cont_shift+(winy-win_h):
+                        cont_shift += 1
+                else:
+                    # bottom
+                    if sel_idx < len(contents)-1:
+                        sel_idx += 1
+
+            elif key == 'KEY_UP':
+                if len(contents) <= winy-win_h:
+                    # all contents are shown
+                    if sel_idx > 0:
+                        sel_idx -= 1
+                elif cont_shift > 0:
+                    # not top
+                    sel_idx -= 1
+                    if sel_idx <= cont_shift:
+                        cont_shift -= 1
+                else:
+                    # top
+                    if sel_idx > 0:
+                        sel_idx -=1
+
+            elif key == 'KEY_SR':
+                if str(cpath) != '.':
+                    cpath = cpath.parent
+                    files, dirs = tv.get_contents(cpath)
+                    sel_idx = 0
+                    main_info = []
+                    main_shift_ud = 0
+                    main_shift_lr = 0
+
+            elif key in ["\n", 'KEY_ENTER']:
+                sel_cont = contents[sel_idx]
+                if sel_cont in dirs:
+                    cpath = cpath/sel_cont
+                    files, dirs = tv.get_contents(cpath)
+                    main_info = []
+                    main_shift_ud = 0
+                    main_shift_lr = 0
+                    sel_idx = 0
+                    sel_cont = ''
+                else:
+                    main_info, main_err = show_func(str(cpath/sel_cont), True)
+                    main_info = "\n".join(main_info).split("\n")
+                    main_shift_ud = 0
+                    main_shift_lr = 0
+
+            elif key == 'j':
+                if len(main_info)<(winy-win_h-1):
+                    # all contents are shown
+                    pass
+                elif main_shift_ud < len(main_info)-sheight-1:
+                    main_shift_ud += sheight
+
+            elif key == 'k':
+                if len(main_info)<(winy-win_h-1):
+                    # all contents are shown
+                    pass
+                elif main_shift_ud < sheight:
+                    main_shift_ud = 0
+                else:
+                    main_shift_ud -= sheight
+
+            elif key == 'l':
+                main_shift_lr += swidth
+
+            elif key == 'h':
+                if main_shift_lr < swidth:
+                    main_shift_lr = 0
+                else:
+                    main_shift_lr -= swidth
+
+            contents = dirs+files
+            win_bar.clear()
+            for i in range(winy-win_h):
+                if i+cont_shift >= len(contents):
+                    break
+                cont = contents[i+cont_shift]
+                if cont in dirs:
+                    attr = curses.A_BOLD
+                elif cont in files:
+                    attr = curses.A_NORMAL
+                cont = '{:2d} {}'.format(i+cont_shift, cont)
+                cont = cont[:win_w-1]
+                if i+cont_shift == sel_idx:
+                    win_bar.addstr(i, 0, cont, curses.A_REVERSE)
+                else:
+                    win_bar.addstr(i, 0, cont, attr)
+
+            win_main.clear()
+            win_main.addstr(0, 0, sel_cont, curses.A_REVERSE)
+            if main_err is None:
+                for i in range(1, winy-win_h):
+                    if i-1+main_shift_ud >= len(main_info):
+                        break
+                    info = main_info[i-1+main_shift_ud][main_shift_lr:main_shift_lr+winx-win_w-1]
+                    win_main.addstr(i, 0, info)
+            else:
+                win_main.addstr(1, 0, main_err, curses.color_pair(3))
+
+            win_pwd.clear()
+            win_pwd.addstr(0, 3, 'file: {}'.format(fname), curses.A_BOLD)
+            win_pwd.addstr(1, 5, 'current path: {}'.format(str(cpath)))
+            win_pwd.addstr(2, 1, 'q:quit, ↑↓:select, shift+↑:go up, enter:open dir/file, jkhl: scroll file')
+
+            if curses_debug:
+                win_pwd.addstr(0, int(winx*2/3), '{}x{} {}x{} {}x{} k:{}'.format(win_h, winx, winy-win_h, win_w, winy-win_h, winx-win_w, key))
+                win_pwd.addstr(1, int(winx*2/3), 'bi:{} ms:{} b:{} m:{}'.format(sel_idx, main_shift_ud, len(contents), len(main_info)))
+
+            stdscr.refresh()
+            win_pwd.refresh()
+            win_bar.refresh()
+            win_main.refresh()
+
+            key = stdscr.getkey()
+
+    curses.wrapper(partial(curses_main, cpath, tv))
 
 def print_key(key_name):
     cprint('<<< {} >>>'.format(key_name), '', fg='k', bg='y')
@@ -276,51 +450,61 @@ def main_hdf5(fpath, args):
     else:
         imp_np = True
 
-    def show_hdf5(cpath):
+    def show_hdf5(cpath, cui=False):
+        if cui:
+            fg = ''
+            bg = ''
+            end = ''
+        else:
+            fg = FG['k']
+            bg = BG['w']
+            end = END
         data = h5_file[cpath]
-        cprint('attrs', fg='k', bg='w')
+        res = []
+        res.append('{}{}attrs{}'.format(fg, bg, end))
         for attr in data.attrs:
-            print('{}: {}'.format(attr, data.attrs[attr]))
+            res.append('{}: {}'.format(attr, data.attrs[attr]))
         if isinstance(data, h5py.Group):
-            cprint('contents', fg='k', bg='w')
+            res.append('{}{}contents{}'.format(fg, bg, end))
             for k in data.keys():
-                print(k)
+                res.append(k)
         elif isinstance(data, h5py.Dataset):
-            cprint('value', fg='k', bg='w')
+            res.append('{}{}value{}'.format(fg, bg, end))
             data = data[()]
-            print(data)
+            res.append('{}'.format(data))
             if hasattr(data, 'shape'):
-                print('shape: {}'.format(data.shape))
+                res.append('shape: {}'.format(data.shape))
                 is_array = True
             elif hasattr(data, '__len__'):
-                print('len: {}'.format(len(data)))
+                res.append('len: {}'.format(len(data)))
                 is_array = True
             else:
                 is_array = False
             if imp_np and is_array and (len(data)!=0):
                 try: dmean = np.nanmean(data)
                 except Exception as e: dmean = '{}: {}'.format(str(type(e)).split("'")[1], e)
-                print('mean : {}'.format(dmean))
+                res.append('mean : {}'.format(dmean))
                 try: dmax = np.nanmax(data)
                 except Exception as e: dmax = '{}: {}'.format(str(type(e)).split("'")[1], e)
-                print(' max : {}'.format(dmax))
+                res.append(' max : {}'.format(dmax))
                 try: dmin = np.nanmin(data)
                 except Exception as e: dmin = '{}: {}'.format(str(type(e)).split("'")[1], e)
-                print(' min : {}'.format(dmin))
+                res.append(' min : {}'.format(dmin))
                 try: dstd = np.nanstd(data)
                 except Exception as e: dstd = '{}: {}'.format(str(type(e)).split("'")[1], e)
-                print(' std : {}'.format(dstd))
+                res.append(' std : {}'.format(dstd))
                 if hasattr(data, 'shape'):
                     try:
                         nan_rate = np.sum(np.isnan(data))/np.prod(data.shape)
-                        print('nan rate: {:.1f}%'.format(nan_rate*100))
+                        res.append('nan rate: {:.1f}%'.format(nan_rate*100))
                     except Exception as e:
                         pass
+        return res, None
 
     list_tree = [{}]
     def make_list(name, obj):
         if isinstance(obj, h5py.Dataset):
-            if not args_chk(args, 'interactive'):
+            if not (args_chk(args, 'interactive') or args_chk(args, 'cui')):
                 if args_chk(args, 'verbose'):
                     print_key(name)
                     print("{}".format(h5_file[name][()]))
@@ -349,11 +533,18 @@ def main_hdf5(fpath, args):
     if args_chk(args, 'interactive'):
         fname = os.path.basename(fpath)
         interactive_view(list_tree, fname, show_hdf5)
+    elif args_chk(args, 'cui'):
+        # fname = os.path.basename(fpath)
+        interactive_cui(list_tree, fpath, show_hdf5)
     elif args_chk(args, 'key'):
         for k in args.key:
             print_key(k)
-            show_hdf5(k)
-            print()
+            info, err = show_hdf5(k, False)
+            if err is None:
+                print("\n".join(info))
+                print()
+            else:
+                cprint(err, fg='r')
     elif not args_chk(args, 'verbose'):
         show_tree(list_tree)
 
@@ -583,7 +774,8 @@ def main_tar(fpath, args):
     list_tree = [{}]
     fname = os.path.basename(fpath)
 
-    def show_tar(cpath):
+    def show_tar(cpath, cui=False):
+        res = []
         # check cpath
         try:
             if cpath.endswith('/'):
@@ -592,8 +784,7 @@ def main_tar(fpath, args):
                 key_name = cpath
             tarinfo = tar_file.getmember(key_name)
         except KeyError as e:
-            print('Error!! Cannot open {}.'.format(cpath), file=sys.stderr)
-            return
+            return [], 'Error!! Cannot open {}.'.format(cpath)
 
         # file
         if tarinfo.isfile():
@@ -601,7 +792,7 @@ def main_tar(fpath, args):
             # image file
             if is_image(cpath):
                 if img_viewer is None:
-                    print('There are no way to show image.')
+                    return [], 'There are no way to show image.'
                 elif img_viewer == 'PIL':
                     with Image.open(tar_file.extractfile(cpath)) as img:
                         img.show(title=os.path.basename(cpath))
@@ -630,6 +821,8 @@ def main_tar(fpath, args):
                     cv2.waitKey(0)
                     # cv2.destroyAllWindows()
                 else:
+                    if cui:
+                        return [], 'external command is not supported in cui mode.'
                     with tempfile.TemporaryDirectory() as tmpdir:
                         tar_file.extractall(path=tmpdir, members=[tarinfo])
                         tmpfile = os.path.join(tmpdir, cpath)
@@ -642,23 +835,24 @@ def main_tar(fpath, args):
             else:
                 for line in tar_file.extractfile(cpath):
                     try:
-                        print(line.decode(), end='')
+                        res.append(line.decode().replace("\n", ''))
                     except UnicodeDecodeError as e:
-                        print('Error!! {}'.format(e), file=sys.stderr)
-                        return
-            print('')
+                        return [], 'Error!! {}'.format(e)
+            res.append('')
 
         #directory
         elif tarinfo.isdir():
             tree = tree_viewer(list_tree, fname)
-            print('{}/'.format(key_name))
+            res.append('{}/'.format(key_name))
             files, dirs = tree.get_contents(key_name)
             for f in files:
-                print('{}{}'.format(branch_str, f))
+                res.append('{}{}'.format(branch_str, f))
             for d in dirs:
-                print('{}{}/'.format(branch_str, d))
+                res.append('{}{}/'.format(branch_str, d))
         else:
-            cprint('sorry, I can\'t show information.\n', '', fg='r')
+            res.append('sorry, I can\'t show information.\n')
+
+        return res, None
 
     # make list_tree
     for t in tar_file:
@@ -687,13 +881,19 @@ def main_tar(fpath, args):
 
     if args_chk(args, 'interactive'):
         interactive_view(list_tree, fname, show_tar)
+    elif args_chk(args, 'cui'):
+        interactive_cui(list_tree, fpath, show_tar)
     elif args_chk(args, 'key'):
         if len(args.key)==0:
             tar_file.list(verbose=False)
         for k in args.key:
             print_key(k)
-            show_tar(k)
-            print()
+            info, err = show_tar(k)
+            if err is None:
+                print("\n".join(info))
+                print()
+            else:
+                cprint(err, fg='r')
     elif args_chk(args, 'verbose'):
         tar_file.list(verbose=True)
     else:
@@ -724,7 +924,8 @@ def main_zip(fpath, args):
     list_tree = [{}]
     fname = os.path.basename(fpath)
 
-    def show_zip(cpath):
+    def show_zip(cpath, cui=False):
+        res = []
         try:
             key_name = cpath
             if key_name+'/' in zip_file.namelist():
@@ -733,24 +934,23 @@ def main_zip(fpath, args):
         except KeyError as e:
             if debug:
                 print(e)
-            print('Error!! cannnot open {}.'.format(cpath), file=sys.stderr)
-            return
+            return [], 'Error!! cannnot open {}.'.format(cpath)
 
         # directory
         if zipinfo.is_dir():
             tree = tree_viewer(list_tree, fname)
-            print('{}/'.format(key_name))
+            res.append('{}/'.format(key_name))
             files, dirs = tree.get_contents(key_name)
             for f in files:
-                print('{}{}'.format(branch_str, f))
+                res.append('{}{}'.format(branch_str, f))
             for d in dirs:
-                print('{}{}/'.format(branch_str, d))
+                res.append('{}{}/'.format(branch_str, d))
 
         # file
         else:
             if is_image(cpath):
                 if img_viewer is None:
-                    print('There are no way to show image.')
+                    return [], 'There are no way to show image.'
                 elif img_viewer == 'PIL':
                     with Image.open(io.BytesIO(zip_file.read(cpath))) as img:
                         img.show(title=os.path.basename(cpath))
@@ -779,6 +979,8 @@ def main_zip(fpath, args):
                     cv2.waitKey(0)
                     # cv2.destroyAllWindows()
                 else:
+                    if cui:
+                        return [], 'external command is not supported in cui mode.'
                     with tempfile.TemporaryDirectory() as tmpdir:
                         zip_file.extract(zipinfo, path=tmpdir)
                         tmpfile = os.path.join(tmpdir, cpath)
@@ -791,10 +993,11 @@ def main_zip(fpath, args):
             else:
                 for line in zip_file.open(cpath, 'r'):
                     try:
-                        print(line.decode(), end='')
+                        res.append(line.decode().replace("\n", ''))
                     except UnicodeDecodeError as e:
-                        print('Error!! {}'.format(e), file=sys.stderr)
-                        return
+                        return [], 'Error!! {}'.format(e)
+
+        return res, None
 
     # make list_tree
     if args_chk(args, 'encoding'):
@@ -835,14 +1038,20 @@ def main_zip(fpath, args):
 
     if args_chk(args, 'interactive'):
         interactive_view(list_tree, fname, show_zip)
+    elif args_chk(args, 'cui'):
+        interactive_cui(list_tree, fpath, show_zip)
     elif args_chk(args, 'key'):
         if len(args.key)==0:
             for fy in zip_file.namelist():
                 print(fy)
         for k in args.key:
             print_key(k)
-            show_zip(k)
-            print()
+            info, err = show_zip(k)
+            if err is None:
+                print("\n".join(info))
+                print()
+            else:
+                cprint(err, fg='r')
     elif args_chk(args, 'verbose'):
         zip_file.printdir()
     else:
@@ -861,7 +1070,8 @@ def main_sqlite3(fpath, args):
         is_tabulate = True
     shift = '  '
 
-    def show_table(table_path, verbose=True):
+    def show_table(table_path, cui=False, verbose=True):
+        res = []
         if '/' in table_path:
             table, column = table_path.split('/')
             if column == '':
@@ -876,14 +1086,14 @@ def main_sqlite3(fpath, args):
         cursor.execute("pragma table_info('{}')".format(table))
         table_info = cursor.fetchall()
 
-        print(table)
+        res.append(table)
         if not verbose:
             for tinfo in table_info:
                 if tinfo[2] == '':
                     ctype = 'none'
                 else:
                     ctype = tinfo[2]
-                print('{}{} [ {} ]'.format(branch_str, tinfo[1], ctype))
+                res.append('{}{} [ {} ]'.format(branch_str, tinfo[1], ctype))
 
         else:
             if column is None:
@@ -904,24 +1114,27 @@ def main_sqlite3(fpath, args):
             if is_tabulate:
                 table_str = tabulate(table, headers, tablefmt='orgtbl')
                 table_str = table_str.replace('\n', '\n'+shift)
-                print(shift + table_str)
+                res.append(shift + table_str)
             else:
-                print(shift+'|', end='')
+                tmp_res = ''
+                tmp_res += shift+'|'
                 for hd in headers:
-                    print(' {} |'.format(hd), end='')
-                print('')
+                    tmp_res += ' {} |'.format(hd)
+                res.append(tmp_res)
+                tmp_res = ''
                 for itms in table:
-                    print(shift+'|', end='')
+                    tmp_res += shift+'|'
                     for itm in itms:
-                        print(' {} |'.format(itm), end='')
-                    print('')
+                        tmp_res += ' {} |'.format(itm)
+                    res.append(tmp_res)
+        return res, None
 
     database = sqlite3.connect(fpath)
     cursor = database.cursor()
     cursor.execute("select name from sqlite_master where type='table'")
     tables = cursor.fetchall()
 
-    if args_chk(args, 'interactive'):
+    if args_chk(args, 'interactive') or args_chk(args, 'cui'):
         # make list_tree
         list_tree = [{}]
         for table, in tables:
@@ -937,19 +1150,29 @@ def main_sqlite3(fpath, args):
                 list_tree[0][table].append(name)
         if debug:
             print(list_tree)
-        fname = os.path.basename(fpath)
-        interactive_view(list_tree, fname, show_table)
+        if args_chk(args, 'interactive'):
+            fname = os.path.basename(fpath)
+            interactive_view(list_tree, fname, show_table)
+        elif args_chk(args, 'cui'):
+            interactive_cui(list_tree, fpath, show_table)
+
     elif args_chk(args, 'key'):
         if len(args.key)==0:
             for t in tables:
                 print(t[0])
         for k in args.key:
             print_key(k)
-            show_table(k, verbose=True)
-            print()
+            info, err = show_table(k, verbose=True)
+            if err is None:
+                print("\n".join(info))
+                print()
+            else:
+                cprint(err, fg='r')
     else:
         for table, in tables:
-            show_table(table, args.verbose)
+            info, err = show_table(table, args.verbose)
+            if err is None:
+                print("\n".join(info))
 
 def main_raw(fpath, args):
     try:
@@ -1223,10 +1446,15 @@ env:'A=val1 B=val2' add environmental values.''')
             key, value = opt.split(':', maxsplit=1)
             if key == 'debug':
                 global debug
-                if value == 'True': debug = True
-                elif value == 'False': debug = False
-                if debug:
-                    print('debug: True')
+                global curses_debug
+                if args_chk(args, 'cui'):
+                    if value == 'True': curses_debug = True
+                    elif value == 'False': curses_debug = False
+                else:
+                    if value == 'True': debug = True
+                    elif value == 'False': debug = False
+                    if debug:
+                        print('debug: True')
             elif key == 'encoding':
                 args.encoding = value
                 if debug:
@@ -1309,6 +1537,7 @@ if __name__ == "__main__":
     ex_group.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='show details')
     ex_group.add_argument('-k', '--key', dest='key', help='Dictionary key name in a pickle, path to a Group/Dataset in hdf5, a path to a file/dictionary in tar/zip, a table[/column[,column2...]] in sqlite3 or a key name in npz. If no key is specified, return the list of keys.', nargs='*')
     ex_group.add_argument('-i', '--interactive', dest='interactive', help='open a file with interactive mode. support pickle, hdf5, tar, zip, sqlite3.', action='store_true')
+    ex_group.add_argument('-c', '--interactive_cui', dest='cui', help='open a file with interactive CUI mode. support hdf5, tar, zip, sqlite3.', action='store_true')
     args = parser.parse_args()
 
     if args_chk(args, 'opts'):
