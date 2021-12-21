@@ -289,6 +289,7 @@ def interactive_cui(tree, fname, show_func):
         curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_GREEN)     # pwd background
         curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLUE)      # bar background
         curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)       # error
+        curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)    # file info
         win_pwd.bkgd(' ', curses.color_pair(1))
         win_bar.bkgd(' ', curses.color_pair(2))
 
@@ -390,37 +391,45 @@ def interactive_cui(tree, fname, show_func):
                     main_shift_lr -= swidth
 
             contents = dirs+files
-            win_bar.clear()
-            for i in range(winy-win_h):
-                if i+cont_shift >= len(contents):
-                    break
-                cont = contents[i+cont_shift]
-                if cont in dirs:
-                    attr = curses.A_BOLD
-                elif cont in files:
-                    attr = curses.A_NORMAL
-                cont = '{:2d} {}'.format(i+cont_shift, cont)
-                cont = cont[:win_w-1]
-                if i+cont_shift == sel_idx:
-                    win_bar.addstr(i, 0, cont, curses.A_REVERSE)
-                else:
-                    win_bar.addstr(i, 0, cont, attr)
-
-            win_main.clear()
-            win_main.addstr(0, 0, sel_cont, curses.A_REVERSE)
-            if main_err is None:
-                for i in range(1, winy-win_h):
-                    if i-1+main_shift_ud >= len(main_info):
+            if key in ['', 'KEY_UP', 'KEY_DOWN', 'KEY_SR', "\n", 'KEY_ENTER']:
+                # side bar window
+                win_bar.clear()
+                for i in range(winy-win_h):
+                    if i+cont_shift >= len(contents):
                         break
-                    info = main_info[i-1+main_shift_ud][main_shift_lr:main_shift_lr+winx-win_w-1]
-                    win_main.addstr(i, 0, info)
-            else:
-                win_main.addstr(1, 0, main_err, curses.color_pair(3))
+                    cont = contents[i+cont_shift]
+                    if cont in dirs:
+                        attr = curses.A_BOLD
+                    elif cont in files:
+                        attr = curses.A_NORMAL
+                    cont = '{:2d} {}'.format(i+cont_shift, cont)
+                    cont = cont[:win_w-1]
+                    if i+cont_shift == sel_idx:
+                        win_bar.addstr(i, 0, cont, curses.A_REVERSE)
+                    else:
+                        win_bar.addstr(i, 0, cont, attr)
 
-            win_pwd.clear()
-            win_pwd.addstr(0, 3, 'file: {}'.format(fname), curses.A_BOLD)
-            win_pwd.addstr(1, 5, 'current path: {}'.format(str(cpath)))
-            win_pwd.addstr(2, 1, 'q:quit, ↑↓:select, shift+↑:go up, enter:open dir/file, jkhl: scroll file')
+            if key in ['', "\n", 'KEY_ENTER', 'KEY_SR', 'j', 'k', 'h', 'l']:
+                # main window
+                win_main.clear()
+                win_main.addstr(0, 0, sel_cont, curses.A_REVERSE)
+                if len(sel_cont) != 0:
+                    win_main.addstr(0, len(sel_cont)+2, '{}/{}'.format(main_shift_ud+1, len(main_info)), curses.color_pair(4))
+                if main_err is None:
+                    for i in range(1, winy-win_h):
+                        if i-1+main_shift_ud >= len(main_info):
+                            break
+                        info = main_info[i-1+main_shift_ud][main_shift_lr:main_shift_lr+winx-win_w-1]
+                        win_main.addstr(i, 0, info)
+                else:
+                    win_main.addstr(1, 0, main_err, curses.color_pair(3))
+
+            if key in ['', "\n", 'KEY_ENTER', 'KEY_SR']:
+                # top, print-working-directory window
+                win_pwd.clear()
+                win_pwd.addstr(0, 3, 'file: {}'.format(fname), curses.A_BOLD)
+                win_pwd.addstr(1, 5, 'current path: {}'.format(str(cpath)))
+                win_pwd.addstr(2, 1, 'q:quit, ↑↓:select, shift+↑:go up, enter:open dir/file, jkhl: scroll file')
 
             if curses_debug:
                 win_pwd.addstr(0, int(winx*2/3), '{}x{} {}x{} {}x{} k:{}'.format(win_h, winx, winy-win_h, win_w, winy-win_h, winx-win_w, key))
