@@ -282,6 +282,8 @@ def interactive_cui(tree, fname, show_func):
         winy, winx = stdscr.getmaxyx()
         win_h = 3
         win_w = int(winx*3/10)
+        scroll_h = 5
+        scroll_w = 5
         win_pwd  = curses.newwin(win_h, winx, 0, 0)
         win_bar  = curses.newwin(winy-win_h, win_w, win_h, 0)
         win_main = curses.newwin(winy-win_h, winx-win_w, win_h, win_w)
@@ -294,7 +296,7 @@ def interactive_cui(tree, fname, show_func):
         win_bar.bkgd(' ', curses.color_pair(2))
 
         sel_idx = 0
-        cont_shift = 0
+        bar_shift = 0
         files, dirs = tv.get_contents(cpath)
         contents = dirs+files
 
@@ -302,24 +304,23 @@ def interactive_cui(tree, fname, show_func):
         main_err = None
         main_shift_ud = 0
         main_shift_lr = 0
-        sheight = 5
-        swidth = 5
         sel_cont = ''
 
         key = ''
+        stdscr.refresh()
         while key != 'q':
-            # showed indices are cont_shift ~ cont_shift+(winy-win_h)
+            # showed indices are bar_shift ~ bar_shift+(winy-win_h)
 
             if key == 'KEY_DOWN':
                 if len(contents) <= winy-win_h:
                     # all contents are shown
                     if sel_idx < len(contents)-1:
                         sel_idx += 1
-                elif cont_shift+(winy-win_h) < len(contents):
+                elif bar_shift+(winy-win_h) < len(contents):
                     # not bottom
                     sel_idx += 1
-                    if sel_idx >= cont_shift+(winy-win_h):
-                        cont_shift += 1
+                    if sel_idx >= bar_shift+(winy-win_h):
+                        bar_shift += 1
                 else:
                     # bottom
                     if sel_idx < len(contents)-1:
@@ -330,11 +331,11 @@ def interactive_cui(tree, fname, show_func):
                     # all contents are shown
                     if sel_idx > 0:
                         sel_idx -= 1
-                elif cont_shift > 0:
+                elif bar_shift > 0:
                     # not top
                     sel_idx -= 1
-                    if sel_idx <= cont_shift:
-                        cont_shift -= 1
+                    if sel_idx <= bar_shift:
+                        bar_shift -= 1
                 else:
                     # top
                     if sel_idx > 0:
@@ -345,9 +346,12 @@ def interactive_cui(tree, fname, show_func):
                     cpath = cpath.parent
                     files, dirs = tv.get_contents(cpath)
                     sel_idx = 0
+                    bar_shift = 0
                     main_info = []
+                    main_err = None
                     main_shift_ud = 0
                     main_shift_lr = 0
+                    sel_cont = ''
 
             elif key in ["\n", 'KEY_ENTER']:
                 sel_cont = contents[sel_idx]
@@ -369,45 +373,46 @@ def interactive_cui(tree, fname, show_func):
                 if len(main_info)<(winy-win_h-1):
                     # all contents are shown
                     pass
-                elif main_shift_ud < len(main_info)-sheight-1:
-                    main_shift_ud += sheight
+                elif main_shift_ud < len(main_info)-scroll_h-1:
+                    main_shift_ud += scroll_h
 
             elif key == 'k':
                 if len(main_info)<(winy-win_h-1):
                     # all contents are shown
                     pass
-                elif main_shift_ud < sheight:
+                elif main_shift_ud < scroll_h:
                     main_shift_ud = 0
                 else:
-                    main_shift_ud -= sheight
+                    main_shift_ud -= scroll_h
 
             elif key == 'l':
-                main_shift_lr += swidth
+                main_shift_lr += scroll_w
 
             elif key == 'h':
-                if main_shift_lr < swidth:
+                if main_shift_lr < scroll_w:
                     main_shift_lr = 0
                 else:
-                    main_shift_lr -= swidth
+                    main_shift_lr -= scroll_w
 
             contents = dirs+files
             if key in ['', 'KEY_UP', 'KEY_DOWN', 'KEY_SR', "\n", 'KEY_ENTER']:
                 # side bar window
                 win_bar.clear()
                 for i in range(winy-win_h):
-                    if i+cont_shift >= len(contents):
+                    if i+bar_shift >= len(contents):
                         break
-                    cont = contents[i+cont_shift]
+                    cont = contents[i+bar_shift]
                     if cont in dirs:
                         attr = curses.A_BOLD
                     elif cont in files:
                         attr = curses.A_NORMAL
-                    cont = '{:2d} {}'.format(i+cont_shift, cont)
+                    cont = '{:2d} {}'.format(i+bar_shift, cont)
                     cont = cont[:win_w-1]
-                    if i+cont_shift == sel_idx:
+                    if i+bar_shift == sel_idx:
                         win_bar.addstr(i, 0, cont, curses.A_REVERSE)
                     else:
                         win_bar.addstr(i, 0, cont, attr)
+                win_bar.refresh()
 
             if key in ['', "\n", 'KEY_ENTER', 'KEY_SR', 'j', 'k', 'h', 'l']:
                 # main window
@@ -423,6 +428,7 @@ def interactive_cui(tree, fname, show_func):
                         win_main.addstr(i, 0, info)
                 else:
                     win_main.addstr(1, 0, main_err, curses.color_pair(3))
+                win_main.refresh()
 
             if key in ['', "\n", 'KEY_ENTER', 'KEY_SR']:
                 # top, print-working-directory window
@@ -430,15 +436,15 @@ def interactive_cui(tree, fname, show_func):
                 win_pwd.addstr(0, 3, 'file: {}'.format(fname), curses.A_BOLD)
                 win_pwd.addstr(1, 5, 'current path: {}'.format(str(cpath)))
                 win_pwd.addstr(2, 1, 'q:quit, ↑↓:select, shift+↑:go up, enter:open dir/file, jkhl: scroll file')
+                win_pwd.refresh()
 
             if curses_debug:
+                win_pwd.addstr(0, int(winx*2/3), ' '*(int(winx/3)-1))
                 win_pwd.addstr(0, int(winx*2/3), '{}x{} {}x{} {}x{} k:{}'.format(win_h, winx, winy-win_h, win_w, winy-win_h, winx-win_w, key))
+                win_pwd.addstr(1, int(winx*2/3), ' '*(int(winx/3)-1))
                 win_pwd.addstr(1, int(winx*2/3), 'bi:{} ms:{} b:{} m:{}'.format(sel_idx, main_shift_ud, len(contents), len(main_info)))
+                win_pwd.refresh()
 
-            stdscr.refresh()
-            win_pwd.refresh()
-            win_bar.refresh()
-            win_main.refresh()
 
             key = stdscr.getkey()
 
