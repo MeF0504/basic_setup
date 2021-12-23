@@ -369,7 +369,7 @@ def interactive_cui(tree, fname, show_func):
                 else:
                     side_shift_lr -= scroll_side
 
-            elif key in ['KEY_SR', 'KEY_SUR']:
+            elif key in ['KEY_SR', 'KEY_SUP']:
                 if is_search:
                     files, dirs = tv.get_contents(cpath)
                     sel_idx = 0
@@ -398,7 +398,10 @@ def interactive_cui(tree, fname, show_func):
             elif key in ["\n", 'KEY_ENTER']:
                 sel_cont = contents[sel_idx]
                 if sel_cont in dirs:
-                    cpath = cpath/sel_cont
+                    if is_search:
+                        cpath = PurePath(sel_cont)
+                    else:
+                        cpath = cpath/sel_cont
                     files, dirs = tv.get_contents(cpath)
                     main_info = []
                     main_shift_ud = 0
