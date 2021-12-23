@@ -356,7 +356,7 @@ def interactive_cui(tree, fname, show_func):
                     if sel_idx > 0:
                         sel_idx -=1
 
-            elif key == 'KEY_SR':
+            elif key in ['KEY_SR', 'KEY_SUR']:
                 if is_search:
                     files, dirs = tv.get_contents(cpath)
                     sel_idx = 0
@@ -465,7 +465,7 @@ def interactive_cui(tree, fname, show_func):
                 key = ''
 
             contents = dirs+files
-            if key in ['', 'KEY_UP', 'KEY_DOWN', 'KEY_SR', "\n", 'KEY_ENTER']:
+            if key in ['', 'KEY_UP', 'KEY_DOWN', 'KEY_SR', 'KEY_SUR', "\n", 'KEY_ENTER']:
                 # side bar window
                 win_side.clear()
                 for i in range(winy-win_h):
