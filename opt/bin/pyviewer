@@ -1462,7 +1462,7 @@ def main_xpm(fpath, args):
     except ImportError:
         if debug: print('global xpm_loader is not found. search __file__/../lib.')
         try:
-            sys.path.append(op.join(op.dirname(__file__), '../lib'))
+            sys.path.append(op.join(os.path.dirname(__file__), '../lib'))
             from xpm_loader import XPMLoader
         except ImportError:
             print("I can't find xpm_loader.")
