@@ -7,6 +7,7 @@ import sys
 import argparse
 import tarfile
 import platform
+import re
 import mimetypes
 from pathlib import PurePath
 from functools import partial
@@ -19,7 +20,7 @@ else:
     use_magic = True
 
 try:
-    from libtree import tree_viewer, show_tree, branch_str
+    from libtree import tree_viewer, show_tree, branch_str, get_list
 except ImportError as e:
     available_libtree = False
     branch_str  = '|__ '
@@ -274,29 +275,41 @@ def interactive_cui(tree, fname, show_func):
         cprint('libtree is not available. exit.', fg='r', file=sys.stderr)
         return
     import curses
+    from curses.textpad import Textbox, rectangle
     cpath = PurePath('.')
     tv = tree_viewer(tree, '.')
+
+    def editer_cmd(key):
+        if key == 10:       # Enter
+            return 7        # Ctrl-G
+        elif key == 127:    # back space
+            return 263      # Ctrl-h
+        else:
+            return key
+
     def curses_main(cpath, tv, stdscr):
         # clear screen
         stdscr.clear()
         winy, winx = stdscr.getmaxyx()
-        win_h = 3
-        win_w = int(winx*3/10)
+        win_h = 3   # height of top window
+        win_w = int(winx*3/10)  # width of side bar
+        search_h = 1    # height of search window
         scroll_h = 5
         scroll_w = 5
         win_pwd  = curses.newwin(win_h, winx, 0, 0)
-        win_bar  = curses.newwin(winy-win_h, win_w, win_h, 0)
+        win_side  = curses.newwin(winy-win_h, win_w, win_h, 0)
         win_main = curses.newwin(winy-win_h, winx-win_w, win_h, win_w)
+        win_search = curses.newwin(search_h, winx-win_w-2, win_h+2, win_w+1)
 
         curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_GREEN)     # pwd background
         curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLUE)      # bar background
         curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)       # error
         curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)    # file info
         win_pwd.bkgd(' ', curses.color_pair(1))
-        win_bar.bkgd(' ', curses.color_pair(2))
+        win_side.bkgd(' ', curses.color_pair(2))
 
         sel_idx = 0
-        bar_shift = 0
+        side_shift = 0
         files, dirs = tv.get_contents(cpath)
         contents = dirs+files
 
@@ -307,20 +320,22 @@ def interactive_cui(tree, fname, show_func):
         sel_cont = ''
 
         key = ''
+        search_word = ''
+        is_search = False
         stdscr.refresh()
         while key != 'q':
-            # showed indices are bar_shift ~ bar_shift+(winy-win_h)
+            # showed indices are side_shift ~ side_shift+(winy-win_h)
 
             if key == 'KEY_DOWN':
                 if len(contents) <= winy-win_h:
                     # all contents are shown
                     if sel_idx < len(contents)-1:
                         sel_idx += 1
-                elif bar_shift+(winy-win_h) < len(contents):
+                elif side_shift+(winy-win_h) < len(contents):
                     # not bottom
                     sel_idx += 1
-                    if sel_idx >= bar_shift+(winy-win_h):
-                        bar_shift += 1
+                    if sel_idx >= side_shift+(winy-win_h):
+                        side_shift += 1
                 else:
                     # bottom
                     if sel_idx < len(contents)-1:
@@ -331,27 +346,39 @@ def interactive_cui(tree, fname, show_func):
                     # all contents are shown
                     if sel_idx > 0:
                         sel_idx -= 1
-                elif bar_shift > 0:
+                elif side_shift > 0:
                     # not top
                     sel_idx -= 1
-                    if sel_idx <= bar_shift:
-                        bar_shift -= 1
+                    if sel_idx <= side_shift:
+                        side_shift -= 1
                 else:
                     # top
                     if sel_idx > 0:
                         sel_idx -=1
 
             elif key == 'KEY_SR':
-                if str(cpath) != '.':
-                    cpath = cpath.parent
+                if is_search:
                     files, dirs = tv.get_contents(cpath)
                     sel_idx = 0
-                    bar_shift = 0
+                    side_shift = 0
                     main_info = []
                     main_err = None
                     main_shift_ud = 0
                     main_shift_lr = 0
                     sel_cont = ''
+                    search_word = ''
+                    is_search = False
+                elif str(cpath) != '.':
+                    cpath = cpath.parent
+                    files, dirs = tv.get_contents(cpath)
+                    sel_idx = 0
+                    side_shift = 0
+                    main_info = []
+                    main_err = None
+                    main_shift_ud = 0
+                    main_shift_lr = 0
+                    sel_cont = ''
+                    search_word = ''
 
             elif key in ["\n", 'KEY_ENTER']:
                 sel_cont = contents[sel_idx]
@@ -363,8 +390,14 @@ def interactive_cui(tree, fname, show_func):
                     main_shift_lr = 0
                     sel_idx = 0
                     sel_cont = ''
+                    search_word = ''
+                    is_search = False
                 else:
-                    main_info, main_err = show_func(str(cpath/sel_cont), True)
+                    if is_search:
+                        fpath = sel_cont
+                    else:
+                        fpath = str(cpath/sel_cont)
+                    main_info, main_err = show_func(fpath, True)
                     main_info = "\n".join(main_info).split("\n")
                     main_shift_ud = 0
                     main_shift_lr = 0
@@ -394,25 +427,62 @@ def interactive_cui(tree, fname, show_func):
                 else:
                     main_shift_lr -= scroll_w
 
+            elif key == '/':
+                # search mode
+                win_main.clear()
+                win_main.addstr(0, 0, 'search word:', curses.A_REVERSE)
+                rectangle(win_main, 1, 0, search_h+2, winx-win_w-1)
+                win_main.refresh()
+                win_search.clear()
+                box = Textbox(win_search)
+                box.edit(editer_cmd)
+                search_word = box.gather()
+                search_word = search_word.replace("\n", '').replace(" ", '')
+                old_files = files.copy()
+                old_dirs = dirs.copy()
+                tmp_files, tmp_dirs = get_list(tree)
+                files = []
+                dirs = []
+                for i,f in enumerate(tmp_files):
+                    if re.search(search_word, f):
+                        files.append(f)
+                for i,d in enumerate(tmp_dirs):
+                    if re.search(search_word, d):
+                        dirs.append(d)
+                if len(files)+len(dirs) != 0:
+                    is_search = True
+                    sel_idx = 0
+                    side_shift = 0
+                    main_info = []
+                    main_err = None
+                    main_shift_ud = 0
+                    main_shift_lr = 0
+                    sel_cont = ''
+                    search_word = ''
+                else:
+                    files = old_files
+                    dirs = old_dirs
+                key = ''
+
             contents = dirs+files
             if key in ['', 'KEY_UP', 'KEY_DOWN', 'KEY_SR', "\n", 'KEY_ENTER']:
                 # side bar window
-                win_bar.clear()
+                win_side.clear()
                 for i in range(winy-win_h):
-                    if i+bar_shift >= len(contents):
+                    if i+side_shift >= len(contents):
                         break
-                    cont = contents[i+bar_shift]
+                    cont = contents[i+side_shift]
                     if cont in dirs:
                         attr = curses.A_BOLD
                     elif cont in files:
                         attr = curses.A_NORMAL
-                    cont = '{:2d} {}'.format(i+bar_shift, cont)
+                    cont = '{:2d} {}'.format(i+side_shift, cont)
                     cont = cont[:win_w-1]
-                    if i+bar_shift == sel_idx:
-                        win_bar.addstr(i, 0, cont, curses.A_REVERSE)
+                    if i+side_shift == sel_idx:
+                        win_side.addstr(i, 0, cont, curses.A_REVERSE)
                     else:
-                        win_bar.addstr(i, 0, cont, attr)
-                win_bar.refresh()
+                        win_side.addstr(i, 0, cont, attr)
+                win_side.refresh()
 
             if key in ['', "\n", 'KEY_ENTER', 'KEY_SR', 'j', 'k', 'h', 'l']:
                 # main window
@@ -435,7 +505,7 @@ def interactive_cui(tree, fname, show_func):
                 win_pwd.clear()
                 win_pwd.addstr(0, 3, 'file: {}'.format(fname), curses.A_BOLD)
                 win_pwd.addstr(1, 5, 'current path: {}'.format(str(cpath)))
-                win_pwd.addstr(2, 1, 'q:quit, ↑↓:select, shift+↑:go up, enter:open dir/file, jkhl: scroll file')
+                win_pwd.addstr(2, 1, 'q:quit ↑↓:select shift+↑:go back enter:open jkhl:scroll /:search')
                 win_pwd.refresh()
 
             if curses_debug:
@@ -443,6 +513,8 @@ def interactive_cui(tree, fname, show_func):
                 win_pwd.addstr(0, int(winx*2/3), '{}x{} {}x{} {}x{} k:{}'.format(win_h, winx, winy-win_h, win_w, winy-win_h, winx-win_w, key))
                 win_pwd.addstr(1, int(winx*2/3), ' '*(int(winx/3)-1))
                 win_pwd.addstr(1, int(winx*2/3), 'bi:{} ms:{} b:{} m:{}'.format(sel_idx, main_shift_ud, len(contents), len(main_info)))
+                win_pwd.addstr(2, int(winx*2/3), ' '*(int(winx/3)-1))
+                win_pwd.addstr(2, int(winx*2/3), 'srch: {}'.format(search_word.replace("\n", '')[:int(winx/3)-1-6]))
                 win_pwd.refresh()
 
 

@@ -120,6 +120,17 @@ def show_tree(tree, root='.'):
         if (files is not None) and (dirs is not None):
             show_contents(root, cpath, files, dirs)
 
+def get_list(tree, root='.'):
+    tree_view = tree_viewer(tree, root)
+    res_dirs = []
+    res_files = []
+    for cpath, files, dirs in tree_view:
+        if (files is not None) and (dirs is not None):
+            res_dirs.append(str(root/cpath))
+            for f in files:
+                res_files.append(str(root/cpath/f))
+    return res_files, res_dirs
+
 if __name__ == '__main__':
     test_data = [\
             { \
