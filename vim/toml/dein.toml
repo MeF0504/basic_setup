@@ -71,7 +71,7 @@ let g:quickrun_config._ = {
 if has('job')
     let g:quickrun_config._.runner = 'job'
     let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
-    call meflib#basic#set_local_var('statusline',
+    call meflib#set_local_var('statusline',
                 \ [meflib#basic#get_local_var('statusline',
                 \ {'_':"%f%m%r%h%w%<%=%y\ %l/%L\ [%P]"}
                 \ )['_']..s:quickrun_status], ['_'])

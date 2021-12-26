@@ -106,7 +106,7 @@ command! FileInfo call s:fileinfo()
 
 " 辞書（というか英辞郎）で検索 {{{
 function! s:eijiro(word)
-    let dic_file = meflib#basic#get_local_var('dic_file', '')
+    let dic_file = meflib#get_local_var('dic_file', '')
     if filereadable(dic_file)
         " localに辞書ファイルがある場合はそれを参照
         execute "vimgrep /\\<".a:word."\\>/j "..dic_file
@@ -157,7 +157,7 @@ command! Spell if &spell!=1 | setlocal spell | echo 'spell: on' | else | setloca
 
 " 要らない？user関数を消す {{{
 function! s:del_comds()
-    let del_commands = meflib#basic#get_local_var('del_commands', [])
+    let del_commands = meflib#get_local_var('del_commands', [])
     for dc in del_commands
         if exists(':'.dc) == 2
             execute 'delcommand '.dc

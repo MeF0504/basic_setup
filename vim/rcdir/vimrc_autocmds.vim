@@ -102,10 +102,10 @@ endif
 "See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
 
 " st_showmode != 0 なら(statuslineに表示されるので) showmode をoffにする
-autocmd local VimEnter * ++once if meflib#basic#get_local_var('st_showmode', 1)!=0 | set noshowmode | endif
+autocmd local VimEnter * ++once if meflib#get_local_var('st_showmode', 1)!=0 | set noshowmode | endif
 
 " Insertを抜けるときに日本語入力をoff {{{
-if !exists('$SSH_CONNECTION') && meflib#basic#get_local_var('auto_ime_off', 0)==1   " ※ssh先ではhostのを変えるので意味なし
+if !exists('$SSH_CONNECTION') && meflib#get_local_var('auto_ime_off', 0)==1   " ※ssh先ではhostのを変えるので意味なし
     if has('win32') || has('win64')
         autocmd local InsertLeave * set iminsert=0
     elseif has('mac')
@@ -127,8 +127,8 @@ endif
 " }}}
 
 " 最後に閉じたtab, windowを保存しておく
-autocmd local WinLeave * call meflib#basic#set_local_var('last_file_win', expand("%:p"))
-autocmd local TabClosed * call meflib#basic#set_local_var('last_file_tab', meflib#basic#get_local_var('last_file_win', ''))
-command! LastTab execute "tabnew " . meflib#basic#get_local_var('last_file_tab', '')
-command! LastWin execute "vsplit " . meflib#basic#get_local_var('last_file_win', '')
+autocmd local WinLeave * call meflib#set_local_var('last_file_win', expand("%:p"))
+autocmd local TabClosed * call meflib#set_local_var('last_file_tab', meflib#get_local_var('last_file_win', ''))
+command! LastTab execute "tabnew " . meflib#get_local_var('last_file_tab', '')
+command! LastWin execute "vsplit " . meflib#get_local_var('last_file_win', '')
 

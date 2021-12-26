@@ -230,8 +230,8 @@ function! <SID>Day_by_Day_StatusLine()
     let s:stl_bg = (month+(day-1)/10-1)%6   " 月+(日-1)の十の位で計算
     let s:stl_bb = abs((day+5-1)%10-5)      " 0 1 2 3 4 5 4 3 2 1 0 ...
 
-    if (month == meflib#basic#get_local_var('bd_month', 0)
-        \&& day == meflib#basic#get_local_var('bd_day', 0))
+    if (month == meflib#get_local_var('bd_month', 0)
+        \&& day == meflib#get_local_var('bd_day', 0))
         "" Birthday
         highlight StatusLine cterm=None ctermfg=7 ctermbg=136 gui=NONE guifg=Silver guibg=Gold
         highlight WildMenu cterm=Bold ctermfg=136 ctermbg=7 gui=NONE guifg=Gold guibg=Silver
@@ -291,5 +291,5 @@ augroup colorLocal
     autocmd FileType zsh ++once highlight link zshStringDelimiter Quote
 augroup END
 
-execute 'colorscheme '..meflib#basic#get_local_var('colorscheme', 'evening')
+execute 'colorscheme '..meflib#get_local_var('colorscheme', 'evening')
 

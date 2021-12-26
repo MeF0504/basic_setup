@@ -58,7 +58,7 @@ function! s:set_tabline()
     let tab_fin_l = 0
     let tab_fin_r = 0
 
-    if meflib#basic#get_local_var('show_cwd_tab', 1) == 1
+    if meflib#get_local_var('show_cwd_tab', 1) == 1
         let cdir = ' @'.s:get_cwd_path()
         let tab_len += len(cdir)
     else

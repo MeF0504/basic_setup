@@ -645,8 +645,8 @@ function! s:Terminal(...) abort
 
     if has_key(opts, 'win')
         let win_opt = opts['win'][0]
-    elseif !empty(meflib#basic#get_local_var('term_default', ''))
-        let win_opt = meflib#basic#get_local_var('term_default', 'S')
+    elseif !empty(meflib#get_local_var('term_default', ''))
+        let win_opt = meflib#get_local_var('term_default', 'S')
     else
         let win_opt = 'S'
     endif
@@ -949,7 +949,7 @@ endfunction
 
 function! <SID>Mygrep(...)
     let def_dir = '.'
-    if meflib#basic#get_local_var('get_top_dir', 0) == 1
+    if meflib#get_local_var('get_top_dir', 0) == 1
         let top_dir = meflib#basic#get_top_dir(expand('%:h'))
         if !empty(top_dir)
             let def_dir = top_dir
@@ -1096,7 +1096,7 @@ function! s:show_table_of_contents()
         let tables = {}
     endif
 
-    cal extend(tables, meflib#basic#get_local_var('table_of_contents', {}), 'force')
+    cal extend(tables, meflib#get_local_var('table_of_contents', {}), 'force')
 
     if len(tables) == 0
         return

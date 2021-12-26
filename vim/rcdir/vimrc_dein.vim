@@ -74,8 +74,8 @@ endif
 
 " show the status of dein in statusline.
 let s:dein_status = "%#StatusLine_CHK#%{empty(dein#get_progress())?'':'^...'}%#StatusLine#"
-call meflib#basic#set_local_var('statusline',
-            \ [meflib#basic#get_local_var('statusline',
+call meflib#set_local_var('statusline',
+            \ [meflib#get_local_var('statusline',
             \ {'_':"%f%m%r%h%w%<%=%y\ %l/%L\ [%P]"}
             \ )['_']..s:dein_status], ['_'])
 
