@@ -1,6 +1,7 @@
 "vim script encording setting
 scriptencoding utf-8
 
+let s:init = 1
 " debug 用
 function! meflib#debug#debug_log(dbgmsg, tag) abort
     " dbgmsg: debug message,
@@ -9,12 +10,17 @@ function! meflib#debug#debug_log(dbgmsg, tag) abort
     " set file name to write debug message,
     let debug_log_file = meflib#get_local_var('log_file', getcwd()..'/debug_log.txt')
 
+    if s:init
+        let flag = ''
+    else
+        let flag = 'a'
+    endif
     if exists('*strftime')
         let time = strftime("%m/%d %H:%M:%S")
     else
         let time = ""
     endif
-    if a:dbgmsg == ""
+    if empty(a:dbgmsg)
         let db_print = ["###debug-"..a:tag."### ".."@ "..expand("<sfile>").." "..time]
     else
         let db_print =  ["###debug-".a:tag."### "..time]
@@ -22,6 +28,8 @@ function! meflib#debug#debug_log(dbgmsg, tag) abort
     endif
     let db_print += ['']
 
-    call writefile(db_print, debug_log_file, 'a')
+    call writefile(db_print, debug_log_file, flag)
+
+    let s:init = 0
 endfunction
 
