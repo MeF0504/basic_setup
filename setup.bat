@@ -76,6 +76,7 @@ if exist %vimcon%\autoload\meflib (
 ) else (
     mkdir %vimcon%\autoload\meflib
 )
+copy %curdir%\vim\autoload\* %vimcon%\autoload
 copy %curdir%\vim\autoload\meflib\* %vimcon%\autoload\meflib
 
 echo toml
