@@ -1,4 +1,4 @@
-"vim script encording setting
+"vim script encoding setting
 scriptencoding utf-8
 
 let s:pop_index = 0
