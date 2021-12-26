@@ -115,6 +115,10 @@ function! <SID>my_color_set_evening()
     highlight Normal ctermbg=233 guibg=#121212
 endfunction
 
+function! <SID>my_color_set_night_owl()
+    highlight Pmenu ctermfg=7
+endfunction
+
 function! <SID>my_color_set()
     """ general settings
     " link {{{
@@ -209,7 +213,8 @@ function! <SID>my_color_set()
     " }}}
 
     " colorscheme specified setings
-    let local_scheme_func = s:sid..'my_color_set_'..g:colors_name
+    let colname = substitute(g:colors_name, "-", "_", "g")
+    let local_scheme_func = s:sid..'my_color_set_'..colname
     if exists('*'.local_scheme_func)
         execute "call ".local_scheme_func.'()'
     else
@@ -222,7 +227,7 @@ function! <SID>Day_by_Day_StatusLine()
     let day = str2nr(strftime("%d"))
     let dow = str2nr(strftime("%w"))
     let s:stl_br = (dow==6 ? 0 : dow)       " 土日は0
-    let s:stl_bg = (month+(day-1)/10-1)%6  " 月+(日-1)の十の位で計算
+    let s:stl_bg = (month+(day-1)/10-1)%6   " 月+(日-1)の十の位で計算
     let s:stl_bb = abs((day+5-1)%10-5)      " 0 1 2 3 4 5 4 3 2 1 0 ...
 
     if (month == meflib#basic#get_local_var('bd_month', 0)
