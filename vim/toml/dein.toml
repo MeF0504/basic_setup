@@ -386,7 +386,7 @@ let s:ctrlp_help = [
         \ ]
 function! <SID>show_ctrlp_help()
     if s:ctrlp_help_popid != -1
-        call meflib#floating#float_close(s:ctrlp_help_popid)
+        call meflib#floating#close(s:ctrlp_help_popid)
         let s:ctrlp_help_popid = -1
         return
     endif
@@ -396,7 +396,7 @@ function! <SID>show_ctrlp_help()
         \ 'col': &columns-3,
         \ 'pos': 'botright',
         \ }
-    let [s:ctrlp_help_bufid, s:ctrlp_help_popid] = meflib#floating#float_wrapper(s:ctrlp_help_bufid, s:ctrlp_help_popid, s:ctrlp_help, config)
+    let [s:ctrlp_help_bufid, s:ctrlp_help_popid] = meflib#floating#open(s:ctrlp_help_bufid, s:ctrlp_help_popid, s:ctrlp_help, config)
 endfunction
 autocmd deinLocal FileType ctrlp ++once nnoremap <buffer> <silent> ? :call <SID>show_ctrlp_help()<CR>
 "}}}
@@ -411,7 +411,7 @@ let s:cfi_bufid = -1
 let s:cfi_popid = -1
 function! <SID>Show_cfi()
     if meflib#basic#get_local_var('cfi_on', 0) == 0
-        call meflib#floating#float_close(s:cfi_popid)
+        call meflib#floating#close(s:cfi_popid)
         let s:cfi_popid = -1
         return
     endif
@@ -432,11 +432,11 @@ function! <SID>Show_cfi()
         \ 'pos': 'topright',
         \ 'highlight': 'CFIPopup',
         \ }
-    let [s:cfi_bufid, s:cfi_popid] = meflib#floating#float_wrapper(s:cfi_bufid, s:cfi_popid, [cfi], config)
+    let [s:cfi_bufid, s:cfi_popid] = meflib#floating#open(s:cfi_bufid, s:cfi_popid, [cfi], config)
 endfunction
 autocmd deinLocal CursorMoved * call <SID>Show_cfi()
-autocmd deinLocal WinLeave * call meflib#floating#float_close(s:cfi_popid) | let s:cfi_popid=-1
-autocmd deinLocal QuitPre * call meflib#floating#float_close(s:cfi_popid) | let s:cfi_popid=-1
+autocmd deinLocal WinLeave * call meflib#floating#close(s:cfi_popid) | let s:cfi_popid=-1
+autocmd deinLocal QuitPre * call meflib#floating#close(s:cfi_popid) | let s:cfi_popid=-1
 " }}}
 '''
 

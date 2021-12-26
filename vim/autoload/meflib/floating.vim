@@ -2,7 +2,7 @@
 scriptencoding utf-8
 
 let s:pop_index = 0
-function! meflib#floating#float_wrapper(bufid, popid, str_list, config) abort
+function! meflib#floating#open(bufid, popid, str_list, config) abort
     " popid < 0; create new popup window, >= 0; update contents
     " bufid < 0; create new buffer, >= 0; use this buffer.
     " NOTE: currently this function is not aim to display normal buffer.
@@ -162,7 +162,7 @@ function! meflib#floating#float_wrapper(bufid, popid, str_list, config) abort
     return [bufid, popid]
 endfunction
 
-function! meflib#floating#float_close(popids) abort
+function! meflib#floating#close(popids) abort
     if type(a:popids) != type([])
         let popids = [a:popids]
     else
