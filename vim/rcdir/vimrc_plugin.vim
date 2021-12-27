@@ -158,7 +158,7 @@ function! s:file_list() abort
                 endif
 
                 let mod = getbufvar(bufn, '&modified') ? '[+]' : ''
-                let l:flist =  '[ ' . l:fnames[i . "-" . bufn] . mod . line_col . ' ] '
+                let l:flist =  printf('[ %s%s%s ]', l:fnames[i..'-'..bufn], mod, line_col)
                 if getbufvar(bufn, '&filetype') == 'qf'
                     let l:flist = '[ QuickFix' . mod . ']'
                 endif
@@ -174,6 +174,9 @@ function! s:file_list() abort
                 echohl Comment | echo l:tab_files | echohl None
             endif
         endfor
+        if tabpagenr('$') <= 1
+            break
+        endif
         let l:tabnr = input("'#' :jump to tab / 'q' :quit / 'p' :previous tab / 'FileName' :search file :>> ")
         " quit
         if l:tabnr == "q"
