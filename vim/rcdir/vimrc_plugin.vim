@@ -1201,3 +1201,17 @@ endfunction
 command! XPMLoader call <SID>xpm_loader()
 " }}}
 
+" IDEっぽくする {{{
+function! <SID>IDE_wrapper() abort
+    if (exists(':Tlist')==2) && (exists(':Fern')==2)
+        Tlist
+        wincmd p
+        split
+        Fern -reveal=% .
+        setlocal winfixwidth
+    endif
+endfunction
+
+command! IDE call <SID>IDE_wrapper()
+" }}}
+
