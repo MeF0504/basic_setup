@@ -41,6 +41,7 @@ repo = 'MeF0504/highlightag.vim'
 hook_add = '''
 "" highlightag {{{
 let g:highlightag#startup = 1
+let g:highlightag#type = 'job'
 " }}}
 '''
 
