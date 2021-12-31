@@ -176,3 +176,27 @@ else
 endif
 " }}}
 
+" ctags command {{{
+function! s:exec_ctags() abort
+    if !executable('ctags')
+        echohl ErrorMsg
+        echomsg 'ctags is not executable'
+        echohl None
+        return
+    endif
+    let top_dir = meflib#basic#get_top_dir(expand('%:h'))
+    " if empty(top_dir)
+    "     let top_dir = expand('%:h')
+    " endif
+
+    let ctags_opt = meflib#get_local_var('ctags_opt', '-R')
+    let ctags_cmd = printf('!ctags %s %s', ctags_opt, top_dir)
+    execute ctags_cmd
+    " echomsg ctags_cmd
+endfunction
+command! Ctags call s:exec_ctags()
+
+let s:ctags_opt  = ' -R'
+let s:ctags_opt .= ' --python-kinds=cfv'
+call meflib#set_local_var('ctags_opt', s:ctags_opt)
+" }}}
