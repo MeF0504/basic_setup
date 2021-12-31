@@ -1,3 +1,8 @@
+# toml 用 syntax
+[[plugins]]
+repo = 'cespare/vim-toml'
+on_ft = 'toml'
+if = ''' !has('patch-8.2.2106') '''
 
 # deinの設定ファイル内で，vimの部分をvimのsyntaxにする
 [[plugins]]

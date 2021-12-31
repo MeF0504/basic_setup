@@ -133,3 +133,8 @@ autocmd local TabClosed * call meflib#set_local_var('last_file_tab', meflib#get_
 command! LastTab execute "tabnew " . meflib#get_local_var('last_file_tab', '')
 command! LastWin execute "vsplit " . meflib#get_local_var('last_file_win', '')
 
+if !has('patch-8.2.2106')
+    " toml fileのfiletypeをtomlにする
+    autocmd local BufEnter *.toml set filetype=toml
+endif
+
