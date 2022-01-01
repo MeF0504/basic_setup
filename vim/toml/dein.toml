@@ -40,12 +40,14 @@ let g:word_color_mapping = '//'
 repo = 'MeF0504/highlightag.vim'
 hook_add = '''
 "" highlightag {{{
-let g:highlightag#startup = 1
-if has('nvim')
-    let g:highlightag#type = 'normal'
-else
-    let g:highlightag#type = 'job'
-endif
+augroup deinLocal
+    autocmd!
+    if has('nvim')
+        autocmd Syntax * silent call highlightag#run_hitag()
+    else
+        autocmd Syntax * silent call highlightag#run_hitag_job()
+    endif
+augroup END
 " }}}
 '''
 
