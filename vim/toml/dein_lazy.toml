@@ -273,14 +273,35 @@ function! <SID>chk_lsp_running(echo)
     return 0
 endfunction
 " lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
-" <c-p>でhelp hover, 再度<c-p>で定義をfloating windowで表示
-function! <SID>chk_tab()
-    let yn = input('open in new tab? [y]/n: ')
+" <c-p>でhelp hover, definition, type definition を選択
+function! <SID>chk_tab_jump()
+    echo 'open in new tab? [y]/n: '
+    let yn = nr2char(getchar())
     if yn != 'n'
         return ":tab LspDefinition\<CR>"
     else
         return "\<Plug>(lsp-definition)"
     endif
+endfunction
+
+function! <SID>select_float()
+    let res = ""
+    let old_cmdheight = &cmdheight
+    set cmdheight=4
+    echo  " 1: help\n"..
+        \ " 2: definition\n"..
+        \ " 3: type definition: "
+    let num = nr2char(getchar())
+    if num == '1'
+        let res = "\<Plug>(lsp-hover)"
+    elseif num == '2'
+        let res = "\<Plug>(lsp-peek-definition)"
+    elseif num == '3'
+        let res = "\<Plug>(lsp-peek-type-definition)"
+    endif
+    let &cmdheight = old_cmdheight
+    redraw!
+    return res
 endfunction
 
 let s:lsp_map1 =  maparg('<c-]>', 'n')
@@ -299,11 +320,9 @@ let s:lsp_map4 =  maparg('<c-p><c-p>', 'n')
 if empty(s:lsp_map4)
     let s:lsp_map4 = '<c-p><c-p>'
 endif
-execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? <SID>chk_tab() : '"..s:lsp_map1."'"
+execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? <SID>chk_tab_jump() : '"..s:lsp_map1."'"
 execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-references)' : '".s:lsp_map2."'"
-execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-hover)' : '".s:lsp_map3."'"
-autocmd deinLocal User lsp_float_opened nmap <buffer> <silent> <c-p> <Plug>(lsp-peek-definition)
-autocmd deinLocal User lsp_float_closed nunmap <buffer> <c-p>
+execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1)==1 ? <SID>select_float() : '".s:lsp_map3."'"
 " help file でバグる？
 autocmd deinLocal FileType help nnoremap <buffer> <c-]> <c-]>
 
