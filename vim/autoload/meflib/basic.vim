@@ -21,6 +21,7 @@ function! meflib#basic#get_conf_dir() abort
 endfunction
 
 let s:local_var_dict = {}
+let s:local_var_def_dict = {}
 function! meflib#basic#set_local_var(var_name, val, ...) abort
     " 3つめにindex / key nameが指定されたらvar_nameの[index / key]に値を設定
     if a:0 == 0
@@ -35,28 +36,36 @@ function! meflib#basic#set_local_var(var_name, val, ...) abort
     endif
 endfunction
 
+function! s:show_vars(var_dict) abort
+    for vname in sort(keys(a:var_dict))
+        let var = a:var_dict[vname]
+        echohl Identifier
+        echo vname..': '
+        echohl None
+        if type(var) == type({})
+            for key in sort(keys(var))
+                echohl Title
+                echo printf('   %s: ', key)
+                echohl None
+                echon var[key]
+            endfor
+        else
+            echon var
+        endif
+    endfor
+endfunction
+
 function! meflib#basic#get_local_var(var_name, default) abort
     if empty(a:var_name)
-        for vname in sort(keys(s:local_var_dict))
-            let var = s:local_var_dict[vname]
-            echohl Identifier
-            echo vname..': '
-            echohl None
-            if type(var) == type({})
-                for key in sort(keys(var))
-                    echohl Title
-                    echo printf('   %s: ', key)
-                    echohl None
-                    echon var[key]
-                endfor
-            else
-                echon var
-            endif
-        endfor
+        call s:show_vars(s:local_var_dict)
+        echohl Special
+        echo 'variables used as default'
+        echohl None
+        call s:show_vars(s:local_var_def_dict)
     elseif has_key(s:local_var_dict, a:var_name)
         return s:local_var_dict[a:var_name]
     else
-        " let s:local_var_dict[a:var_name] = a:default
+        let s:local_var_def_dict[a:var_name] = a:default
         return a:default
     endif
 endfunction
