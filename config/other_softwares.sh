@@ -44,9 +44,8 @@ echo $GOPATH
 # go get github.com/itchyny/mmv/cmd/mmv           # ファイルの一括renameツール
 # go get github.com/mattn/docx2md                 # wordをmarkdown化するツール
 # go get github.com/mattn/go-sixel/cmd/gosr       # 端末上に画像を表示するツール
-# git clone https://github.com/skanehira/pst.git  # 高機能プロセス表示ツール
-# cd pst/
-# go install
+# cd $TMPDIR && git clone https://github.com/skanehira/pst.git && cd pst/ && go install  # 高機能プロセス表示ツール
+# cd $TMPDIR && git clone https://github.com/matsuyoshi30/germanium && cd germanium/cmd/germanium/ && go insatll # コードから画像を生成するツール
 echo
 # }}}
 
