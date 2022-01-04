@@ -37,11 +37,21 @@ endfunction
 
 function! meflib#basic#get_local_var(var_name, default) abort
     if empty(a:var_name)
-        for var in sort(keys(s:local_var_dict))
+        for vname in sort(keys(s:local_var_dict))
+            let var = s:local_var_dict[vname]
             echohl Identifier
-            echo var..': '
+            echo vname..': '
             echohl None
-            echon s:local_var_dict[var]
+            if type(var) == type({})
+                for key in sort(keys(var))
+                    echohl Title
+                    echo printf('   %s: ', key)
+                    echohl None
+                    echon var[key]
+                endfor
+            else
+                echon var
+            endif
         endfor
     elseif has_key(s:local_var_dict, a:var_name)
         return s:local_var_dict[a:var_name]
