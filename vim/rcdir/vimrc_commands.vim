@@ -114,19 +114,12 @@ function! s:eijiro(word)
     endif
 
     let url = '"https://eowf.alc.co.jp/search?q='.a:word.'"'
-    if has('win32') || has('win64')
-        let web_cmd = 'start'
-    elseif has('mac')
-        let web_cmd = 'open'
-    else
-        " linux
-        let web_cmd = 'firefox'
-    endif
+    let web_cmd = meflib#basic#get_exe_cmd()
     if !executable(web_cmd)
         echo 'command '.web_cmd.' is not supported in this system.'
         return
     endif
-    execute '!'.web_cmd.' '.url
+    call system(printf('%s %s', web_cmd, url))
 endfunction
 command -nargs=1 Eijiro call s:eijiro(<f-args>)
 " }}}
