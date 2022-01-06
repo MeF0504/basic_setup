@@ -644,6 +644,28 @@ depends = ['fern.vim']
 [[plugins]]
 repo = 'lambdalisue/fern-ssh'
 depends = ['fern.vim']
+hook_add = '''
+"" fern-ssh {{{
+function! <SID>ssh_password() abort
+    " https://qiita.com/wadahiro/items/977e4f820b4451a2e5e0
+    " if !exists('s:pswd')
+    let pswd = inputsecret('password: ')
+    if !empty(pswd)
+        let tmpfile = tempname()
+        call writefile(['echo '..pswd], tmpfile, '')
+        if executable('chmod')
+            call system('chmod 700 '..tmpfile)
+        endif
+        let $SSH_ASKPASS = tmpfile
+        if !exists('$DISPLAY')
+            let $DISPLAY = 'dummy:0'
+        endif
+    endif
+    " endif
+endfunction
+command! SSHpass call <SID>ssh_password()
+" }}}
+'''
 
 [[plugins]]
 repo = 'lambdalisue/fern-mapping-project-top.vim'
