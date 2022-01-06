@@ -668,7 +668,7 @@ function! <SID>ssh_password() abort
     endif
     " endif
 endfunction
-command! SSHpass call <SID>ssh_password()
+command! SetSshPass call <SID>ssh_password()
 " }}}
 '''
 
