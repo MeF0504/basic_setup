@@ -3,6 +3,8 @@
 # This file is the installer for software that I think to good.
 # Please uncomment and run this script.
 
+tmpdir=$(mktemp -d)
+
 ## python {{{
 echo '- which python3'
 which python3
@@ -44,8 +46,8 @@ echo $GOPATH
 # go get github.com/itchyny/mmv/cmd/mmv           # ファイルの一括renameツール
 # go get github.com/mattn/docx2md                 # wordをmarkdown化するツール
 # go get github.com/mattn/go-sixel/cmd/gosr       # 端末上に画像を表示するツール
-# cd $TMPDIR && git clone https://github.com/skanehira/pst.git && cd pst/ && go install  # 高機能プロセス表示ツール
-# cd $TMPDIR && git clone https://github.com/matsuyoshi30/germanium && cd germanium/cmd/germanium/ && go insatll # コードから画像を生成するツール
+# cd $tmpdir && git clone https://github.com/skanehira/pst.git && cd pst/ && go install  # 高機能プロセス表示ツール
+# cd $tmpdir && git clone https://github.com/matsuyoshi30/germanium && cd germanium/cmd/germanium/ && go insatll # コードから画像を生成するツール
 echo
 # }}}
 
