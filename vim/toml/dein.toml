@@ -41,7 +41,7 @@ repo = 'MeF0504/highlightag.vim'
 hook_add = '''
 "" highlightag {{{
 if has('nvim')
-    autocmd deinLocal VimEnter,BufWinEnter * call highlightag#run_hitag()
+    autocmd deinLocal VimEnter,BufWinEnter * silent call highlightag#run_hitag()
 else
     autocmd deinLocal Syntax * silent call highlightag#run_hitag_job()
 endif

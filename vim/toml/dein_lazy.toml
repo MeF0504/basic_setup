@@ -333,12 +333,14 @@ autocmd deinLocal User lsp_float_opened nnoremap <buffer> <expr> <c-u> lsp#scrol
 autocmd deinLocal User lsp_float_opened nnoremap <buffer> <expr> <c-e> lsp#scroll(+1)
 autocmd deinLocal User lsp_float_opened nnoremap <buffer> <expr> <c-y> lsp#scroll(-1)
 autocmd deinLocal User lsp_float_opened nmap <buffer> <silent> q <Plug>(lsp-preview-close)
-autocmd deinLocal User lsp_float_opened nunmap <buffer> <esc>   " tentative
 autocmd deinLocal User lsp_float_closed nunmap <buffer> <c-d>
 autocmd deinLocal User lsp_float_closed nunmap <buffer> <c-u>
 autocmd deinLocal User lsp_float_closed nunmap <buffer> <c-e>
 autocmd deinLocal User lsp_float_closed nunmap <buffer> <c-y>
 autocmd deinLocal User lsp_float_closed nunmap <buffer> q
+if !has('nvim')
+    autocmd deinLocal User lsp_float_opened nunmap <buffer> <esc>   " tentative
+endif
 "" }}}
 '''
 
