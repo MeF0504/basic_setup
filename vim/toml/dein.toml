@@ -651,8 +651,13 @@ function! <SID>ssh_password() abort
     " if !exists('s:pswd')
     let pswd = inputsecret('password: ')
     if !empty(pswd)
+        let exec_cmd = ['echo '..pswd]
         let tmpfile = tempname()
-        call writefile(['echo '..pswd], tmpfile, '')
+        if has('win32') || has('win64')
+            let tmpfile .= '.bat'
+            call insert(exec_cmd, '@echo off')
+        endif
+        call writefile(exec_cmd, tmpfile, '')
         if executable('chmod')
             call system('chmod 700 '..tmpfile)
         endif
