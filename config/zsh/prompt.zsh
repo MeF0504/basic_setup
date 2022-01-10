@@ -332,8 +332,9 @@ if is-at-least 4.3.11; then
             return 0
         fi
 
-        if [[ "${hook_com[branch]}" != "master" ]]; then
-            # master ブランチでない場合は何もしない
+        if [[ "${hook_com[branch]}" != "master" ]] && \
+           [[ "${hook_com[branch]}" != "main" ]]; then
+            # master, main ブランチでない場合は何もしない
             return 0
         fi
 
