@@ -628,6 +628,7 @@ function! s:open_term_win(opts)
                 \ 'curwin': v:true,
                 \ 'cwd': $USERPROFILE,
                 \ 'env': env,
+                \ 'ansi_colors': meflib#basic#get_term_color(),
                 \ })
     let s:term_cnt += 1
 endfunction
