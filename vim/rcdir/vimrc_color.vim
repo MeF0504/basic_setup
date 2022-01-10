@@ -215,6 +215,11 @@ function! <SID>my_color_set()
     highlight CFIPopup ctermbg=11 ctermfg=233 cterm=bold guibg=Yellow guifg=#121212 gui=Bold
     " }}}
 
+    " highlightag {{{
+    highlight HiTagClasses ctermfg=171 guifg=#d75fff
+    highlight HiTagMembers ctermfg=69 guifg=#5f87ff
+    " }}}
+
     " colorscheme specified setings
     let colname = substitute(g:colors_name, "-", "_", "g")
     let local_scheme_func = s:sid..'my_color_set_'..colname
