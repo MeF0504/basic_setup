@@ -170,3 +170,26 @@ function! meflib#basic#get_exe_cmd(...) abort
     endif
 endfunction
 
+function! meflib#basic#get_term_color() abort
+     " black, red, green, yellow, blue, magenta, cyan, white,
+     " bright black, bright red, bright green, bright yellow, bright blue, bright magenta, bright cyan, bright white
+    return [ 
+                \ '#001419',
+                \ '#dc312e',
+                \ '#359901',
+                \ '#bbb402',
+                \ '#487bc8',
+                \ '#a94498',
+                \ '#329691',
+                \ '#eee8d5',
+                \ '#002833',
+                \ '#e12419',
+                \ '#63d654',
+                \ '#ebe041',
+                \ '#0081e8',
+                \ '#b954d3',
+                \ '#0dc3cd',
+                \ '#fdf6e3',
+                \ ]
+endfunction
+

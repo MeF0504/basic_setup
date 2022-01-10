@@ -138,3 +138,27 @@ if !has('patch-8.2.2106')
     autocmd local BufEnter *.toml set filetype=toml
 endif
 
+" terminalの色設定 (vimはoptionで)
+if has('nvim')
+    function! <SID>set_term_col() abort
+        let term_cols = meflib#basic#get_term_color()
+        let g:terminal_color_0 = term_cols[0]
+        let g:terminal_color_1 = term_cols[1]
+        let g:terminal_color_2 = term_cols[2]
+        let g:terminal_color_3 = term_cols[3]
+        let g:terminal_color_4 = term_cols[4]
+        let g:terminal_color_5 = term_cols[5]
+        let g:terminal_color_6 = term_cols[6]
+        let g:terminal_color_7 = term_cols[7]
+        let g:terminal_color_8 = term_cols[8]
+        let g:terminal_color_9 = term_cols[9]
+        let g:terminal_color_10 = term_cols[10]
+        let g:terminal_color_11 = term_cols[11]
+        let g:terminal_color_12 = term_cols[0]
+        let g:terminal_color_13 = term_cols[13]
+        let g:terminal_color_14 = term_cols[14]
+        let g:terminal_color_15 = term_cols[15]
+    endfunction
+    autocmd local TermOpen * call <SID>set_term_col()
+endif
+

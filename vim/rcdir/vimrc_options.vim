@@ -171,29 +171,9 @@ let g:tex_flavor = 'latex'
 " default shell script type
 let g:is_bash = 1
 
-" terminalの色設定
-let s:term_cols = ['#001419', '#dc312e', '#359901', '#bbb402', '#487bc8', '#a94498', '#329691', '#eee8d5',
-            \ '#002833', '#e12419', '#63d654', '#ebe041', '#0081e8', '#b954d3', '#0dc3cd', '#fdf6e3']
-if has('nvim')
-    " https://qiita.com/taroc/items/b774425e6f4ba8b7b10a
-    let g:terminal_color_0 = s:term_cols[0]
-    let g:terminal_color_1 = s:term_cols[1]
-    let g:terminal_color_2 = s:term_cols[2]
-    let g:terminal_color_3 = s:term_cols[3]
-    let g:terminal_color_4 = s:term_cols[4]
-    let g:terminal_color_5 = s:term_cols[5]
-    let g:terminal_color_6 = s:term_cols[6]
-    let g:terminal_color_7 = s:term_cols[7]
-    let g:terminal_color_8 = s:term_cols[8]
-    let g:terminal_color_9 = s:term_cols[9]
-    let g:terminal_color_10 = s:term_cols[10]
-    let g:terminal_color_11 = s:term_cols[11]
-    let g:terminal_color_12 = s:term_cols[0]
-    let g:terminal_color_13 = s:term_cols[13]
-    let g:terminal_color_14 = s:term_cols[14]
-    let g:terminal_color_15 = s:term_cols[15]
-elseif has('patch-8.0.1685') || v:version>=801
+" terminalの色設定 (neovimはautocmdで)
+if !has('nvim') && (has('patch-8.0.1685') || v:version>=801)
     " https://qiita.com/yami_beta/items/97480d5e88f0d867176b
-    let g:terminal_ansi_colors = s:term_cols
+    let g:terminal_ansi_colors = meflib#basic#get_term_color()
 endif
 
