@@ -42,9 +42,13 @@ augroup local
                     \ 'CmdWinLeave',
                     \ 'CmdlineEnter',
                     \ 'CmdlineLeave',
+                    \ 'TerminalOpen',
                     \ ]
         for s:ae in s:autocmd_events
             " execute 'autocmd ' . s:ae . ' echomsg "'.s:ae . '" | sleep 300ms'
+            if s:ae == 'TerminalOpen' && has('nvim')
+                let s:ae = 'TermOpen'
+            endif
             execute printf('autocmd %s * echomsg "%s "..expand("<amatch>") | sleep 300ms', s:ae, s:ae)
         endfor
         " }}}
