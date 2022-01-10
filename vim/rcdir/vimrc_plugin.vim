@@ -790,7 +790,7 @@ function! <SID>ChkFileExist(...) abort
         if !empty(cmd)
             let yn = input(printf('"%s" is a web url. open? (y/[n])', l:path))
             if (l:yn == 'y') || (l:yn == 'yes')
-                execute printf('!%s %s', cmd, l:path)
+                call system(printf('%s %s', cmd, l:path))
             endif
         else
             echo 'command to open web url is not found.'
