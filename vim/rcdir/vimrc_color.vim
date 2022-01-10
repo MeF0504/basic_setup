@@ -117,6 +117,9 @@ endfunction
 
 function! <SID>my_color_set_night_owl()
     highlight Pmenu ctermfg=7
+    highlight Quote ctermfg=37 guifg=#00d7d7
+    highlight Comment ctermfg=243 ctermbg=233 guifg=#637777 guibg=#011627 cterm=NONE
+    highlight shComment ctermfg=243 ctermbg=233 guifg=#637777 guibg=#011627 cterm=NONE
 endfunction
 
 function! <SID>my_color_set()
