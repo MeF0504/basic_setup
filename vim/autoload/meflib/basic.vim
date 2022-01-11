@@ -173,23 +173,18 @@ endfunction
 function! meflib#basic#get_term_color() abort
      " black, red, green, yellow, blue, magenta, cyan, white,
      " bright black, bright red, bright green, bright yellow, bright blue, bright magenta, bright cyan, bright white
-    return [ 
-                \ '#001419',
-                \ '#dc312e',
-                \ '#359901',
-                \ '#bbb402',
-                \ '#487bc8',
-                \ '#a94498',
-                \ '#329691',
-                \ '#eee8d5',
-                \ '#002833',
-                \ '#e12419',
-                \ '#63d654',
-                \ '#ebe041',
-                \ '#0081e8',
-                \ '#b954d3',
-                \ '#0dc3cd',
-                \ '#fdf6e3',
-                \ ]
+     let colors = {}
+     let colors['default'] = [
+                 \ '#001419', '#dc312e', '#359901', '#bbb402', '#487bc8', '#a94498', '#329691', '#eee8d5',
+                 \ '#002833', '#e12419', '#63d654', '#ebe041', '#0081e8', '#b954d3', '#0dc3cd', '#fdf6e3']
+     let colors['simple'] = [
+                 \ '#000000', '#870000', '#008700', '#878700', '#000087', '#870087', '#008787', '#b2b2b2',
+                 \ '#4c4c4c', '#ff0000', '#00ff00', '#ffff00', '#0000ff', '#ff00ff', '#00ffff', '#ffffff']
+
+     let col_name = meflib#get_local_var('term_col_name', 'default')
+     if match(keys(colors), col_name) == -1
+         let col_name = 'default'
+     endif
+     return colors[col_name]
 endfunction
 
