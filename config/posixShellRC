@@ -79,7 +79,7 @@ alias su="su -l"
 alias grep="grep --color"
 
 # vim
-alias vi='vim -p'
+alias vi='vim'
 
 alias del="mv_Trash.py"
 

@@ -166,3 +166,20 @@ if has('nvim')
     autocmd local TermOpen * call <SID>set_term_col()
 endif
 
+" 起動時に複数開いていたらtabで開く
+function! <SID>open_files_tab() abort
+    if bufnr('$') == 1
+        return
+    endif
+    for i in range(2, bufnr('$'))
+        " 1はすでに開いているのでskip
+        if buflisted(i)
+            " echomsg i..': '..bufname(i)
+            execute printf('tabnew %s', bufname(i))
+        endif
+    endfor
+    normal! 1gt
+endfunction
+
+autocmd local VimEnter * ++once call <SID>open_files_tab()
+
