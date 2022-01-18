@@ -1216,25 +1216,3 @@ endfunction
 command! IDE call <SID>IDE_wrapper()
 " }}}
 
-" カラーコードに色を付けたい {{{
-function! s:get_col_code() abort range
-    let colcode_grep = '#[0-9a-f][0-9a-f][0-9a-f]'
-    for lnum in range(a:firstline, a:lastline)
-        let line = getline(lnum)
-        let colcode_cnt = count(line, '#')
-        for i in range(colcode_cnt)
-            let colcode_idx = match(line, colcode_grep, 0, i+1)
-            if colcode_idx == -1
-                break
-            endif
-            let colcode = line[colcode_idx:colcode_idx+6]
-            execute printf('highlight ColCode%s guifg=%s', colcode[1:], colcode)
-            " execute printf('syntax keyword ColCode%s %s', colcode[1:], colcode)
-            call matchadd('ColCode'..colcode[1:], colcode, 15)
-        endfor
-    endfor
-endfunction
-
-command! -range ColCode <line1>,<line2>call s:get_col_code()
-" }}}
-

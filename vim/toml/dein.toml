@@ -50,6 +50,10 @@ endif
 " }}}
 '''
 
+# color codeに色を付ける
+[[plugins]]
+repo = 'MeF0504/hicolcode.vim'
+
 # neosnippet用のsnipets
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
