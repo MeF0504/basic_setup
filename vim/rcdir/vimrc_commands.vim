@@ -193,3 +193,31 @@ let s:ctags_opt  = ' -R'
 let s:ctags_opt .= ' --python-kinds=cfv'
 call meflib#set_local_var('ctags_opt', s:ctags_opt)
 " }}}
+
+" job status check {{{
+function! <SID>chk_job_status() abort
+    let jobs = job_info()
+    for idx in range(len(jobs))
+        let job = jobs[idx]
+        echo idx
+        echon ' '
+        echohl Type
+        echon job_status(job)
+        echohl None
+        echon ' '
+        echohl Statement
+        echon job_info(job).cmd
+        echohl None
+    endfor
+    let num = input('please select job to kill (empty cancel): ')
+    if !empty(num) && num>=0 && num<len(jobs)
+        if job_status(jobs[num]) == 'run'
+            call job_stop(jobs[num])
+        else
+            call job_stop(jobs[num], 'kill')
+        endif
+    endif
+endfunction
+command! JobStatus call <SID>chk_job_status()
+" }}}
+
