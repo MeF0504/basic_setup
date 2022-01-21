@@ -153,7 +153,9 @@ function! meflib#basic#get_exe_cmd(...) abort
         if has('mac')
             let cmd = 'open'
         elseif has('win32') || has('win64')
-            let cmd = 'start'
+            " let cmd = 'start'
+            " 'start' is not executable(?)
+            return 'start'
         elseif has('linux')
             let cmd = 'xdg-open'
         else
