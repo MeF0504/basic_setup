@@ -220,6 +220,11 @@ function! <SID>my_color_set()
     highlight HiTagMembers ctermfg=69 guifg=#5f87ff
     " }}}
 
+    " indent-guides {{{
+    highlight IndentGuidesOdd ctermbg=24 guibg=#005f87
+    highlight IndentGuidesEven ctermbg=54 guibg=#5f0087
+    " }}}
+
     " colorscheme specified setings
     let colname = substitute(g:colors_name, "-", "_", "g")
     let local_scheme_func = s:sid..'my_color_set_'..colname
