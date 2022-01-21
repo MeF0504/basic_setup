@@ -100,25 +100,40 @@ class tree_viewer():
 
         return files, dirs
 
-def show_contents(root, cpath, files, dirs):
+def show_contents(root, cpath, files, dirs, add_info=None):
     if str(cpath) == '.':
         # root
         print('{}/'.format(root))
         for f in files:
-            print('{}{}'.format(branch_str, f))
-    else:
-        dnum = str(cpath).count(os.sep)
-        print('{}{}{}/'.format(branch_str2*(dnum), branch_str, cpath.name))
-        for f in files:
-            print('{}{}{}'.format(branch_str2*(dnum+1), branch_str, f))
+            if add_info is None:
+                add_info_str = ''
+            else:
+                add_info_str = add_info(root/cpath/f)
 
-def show_tree(tree, root='.'):
+            print('{}{}{}'.format(branch_str, f, add_info_str))
+    else:
+        if add_info is None:
+            add_info_str = ''
+        else:
+            add_info_str = add_info(root/cpath)
+
+        dnum = str(cpath).count(os.sep)
+        print('{}{}{}/{}'.format(branch_str2*(dnum), branch_str, cpath.name, add_info_str))
+        for f in files:
+            if add_info is None:
+                add_info_str = ''
+            else:
+                add_info_str = add_info(root/cpath/f)
+
+            print('{}{}{}{}'.format(branch_str2*(dnum+1), branch_str, f, add_info_str))
+
+def show_tree(tree, root='.', add_info=None):
     tree_view = tree_viewer(tree, root)
     for cpath, files, dirs in tree_view:
         if debug:
             print(cpath, files, dirs)
         if (files is not None) and (dirs is not None):
-            show_contents(root, cpath, files, dirs)
+            show_contents(root, cpath, files, dirs, add_info)
 
 def get_list(tree, root='.'):
     tree_view = tree_viewer(tree, root)

@@ -5,6 +5,8 @@ import os
 import argparse
 import re
 from pathlib import Path
+import datetime
+from stat import filemode
 
 from libtree import show_tree
 
@@ -13,7 +15,7 @@ debug = False
 def get_file_list(args):
     # get list of directories and files by using pathlib
     file_list = [{}]
-    top_path = Path(args.root).resolve()
+    # top_path = Path(args.root).resolve()
     top_path = Path(args.root)
     root = str(top_path)
     if args.maxdepth == 0:
@@ -59,14 +61,59 @@ def get_file_list(args):
                 tmp_list.append(str(cpath.name))
     return root, file_list
 
+def get_file_info(fpath):
+    res = '\t'
+    stat = os.stat(fpath)
+
+    # access
+    access = filemode(stat.st_mode)
+
+    # time stamp
+    # meta data update (UNIX), created (Windows)
+    # dt = datetime.datetime.fromtimestamp(stat.st_ctime)
+    # created (some OS)
+    # dt = datetime.datetime.fromtimestamp(stat.st_birthtime)
+    # last update
+    dt = datetime.datetime.fromtimestamp(stat.st_mtime)
+    # last access
+    # dt = datetime.datetime.fromtimestamp(stat.st_atime)
+    timestamp = dt.strftime('%Y/%m/%d-%H:%M:%S')
+
+    # file size
+    filesize = os.path.getsize(fpath)
+    prefix = ''
+    if filesize > 1024**3:
+        filesize /= 1024**3
+        prefix = 'G'
+    elif filesize > 1024**2:
+        filesize /= 1024**2
+        prefix = 'M'
+    elif filesize > 1024:
+        filesize /= 1024
+        prefix = 'k'
+    size = '({:.1f} {}B)'.format(filesize, prefix)
+
+    # symbolic link
+    if os.path.islink(fpath):
+        realpath = '-> '+os.path.realpath(fpath)
+    else:
+        realpath = ''
+
+    return '\t{} {} {} {}'.format(access, size, timestamp, realpath)
+
 def main(args):
     root, file_list = get_file_list(args)
-    show_tree(file_list, root)
+    if args.verbose:
+        add_info = get_file_info
+    else:
+        add_info = None
+    show_tree(file_list, root, add_info)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('root', help='root directory', nargs='?', default='.')
     parser.add_argument('-a', dest='all', help='do not ignore entries starting with .', action='store_true')
+    parser.add_argument('-v', '--verbose', help='show the verbose.', action='store_true')
     parser.add_argument('-maxdepth', help='specify the level of directory. If set 0, show all directories.', type=int, default=0)
     parser.add_argument('-exclude', help='specify excluding files using regular expression.', type=str)
     # parser.add_argument('--walk', help='use os.walk', action='store_true')
