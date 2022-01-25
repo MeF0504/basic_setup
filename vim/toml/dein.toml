@@ -567,6 +567,11 @@ highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline
 repo = 'vim-denops/denops.vim'
 if = '''executable('deno') && (has('patch-8.2.3081') || has('nvim-0.5.0'))'''
 
+# denops test
+[[plugins]]
+repo = 'vim-denops/denops-helloworld.vim'
+if = '''executable('deno') && (has('patch-8.2.3081') || has('nvim-0.5.0'))'''
+
 # Filer
 [[plugins]]
 repo = 'lambdalisue/fern.vim'
