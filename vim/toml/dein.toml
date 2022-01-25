@@ -42,7 +42,7 @@ hook_add = '''
 "" highlightag {{{
 if has('nvim')
     " autocmd deinLocal VimEnter,BufWinEnter * silent call highlightag#run_hitag()
-    autocmd deinLocal VimEnter,BufWinEnter * silent call highlightag#run_hitag_file()
+    autocmd deinLocal VimEnter,BufWinEnter * silent call highlightag#run_hitag_job_file()
 else
     " autocmd deinLocal Syntax * silent call highlightag#run_hitag_job()
     autocmd deinLocal Syntax * silent call highlightag#run_hitag_job_file()
