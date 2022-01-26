@@ -122,6 +122,13 @@ function! <SID>my_color_set_night_owl()
     highlight shComment ctermfg=243 ctermbg=233 guifg=#637777 guibg=#011627 cterm=NONE
 endfunction
 
+function! <SID>my_color_set_inkpotter()
+    highlight CursorWord1 ctermbg=235 cterm=None guibg=#262626 gui=NONE
+    highlight Quote ctermfg=183 ctermbg=None guifg=#d7afff guibg=NONE
+
+    highlight HiTagImports ctermfg=225 guifg=#f0b7f0
+endfunction
+
 function! <SID>my_color_set()
     """ general settings
     " link {{{

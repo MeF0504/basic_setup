@@ -15,3 +15,7 @@ repo = 'google/vim-colorscheme-primary'
 
 [[plugins]]
 repo = 'haishanh/night-owl.vim'
+
+[[plugins]]
+repo = 'MeF0504/inkpotter.vim'
+
