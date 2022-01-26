@@ -44,8 +44,8 @@ augroup local
                     \ 'CmdlineLeave',
                     \ 'TerminalOpen',
                     \ ]
+                    " \ 'SourcePre',
         for s:ae in s:autocmd_events
-            " execute 'autocmd ' . s:ae . ' echomsg "'.s:ae . '" | sleep 300ms'
             if s:ae == 'TerminalOpen' && has('nvim')
                 let s:ae = 'TermOpen'
             endif
