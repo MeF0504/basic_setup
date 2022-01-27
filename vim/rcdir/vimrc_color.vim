@@ -228,8 +228,8 @@ function! <SID>my_color_set()
     " }}}
 
     " indent-guides {{{
-    highlight IndentGuidesOdd ctermbg=24 guibg=#005f87
-    highlight IndentGuidesEven ctermbg=54 guibg=#5f0087
+    highlight IndentGuidesOdd ctermbg=17 guibg=#003851
+    highlight IndentGuidesEven ctermbg=54 guibg=#3f0057
     " }}}
 
     " colorscheme specified setings
