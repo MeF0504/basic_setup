@@ -120,6 +120,8 @@ function! <SID>my_color_set_night_owl()
     highlight Quote ctermfg=37 guifg=#00d7d7
     highlight Comment ctermfg=243 ctermbg=233 guifg=#637777 guibg=#011627 cterm=NONE
     highlight shComment ctermfg=243 ctermbg=233 guifg=#637777 guibg=#011627 cterm=NONE
+    highlight SpecialKey ctermbg=235 guibg=#202020
+    highlight Number ctermfg=162 guifg=#c02a8f
 endfunction
 
 function! <SID>my_color_set_inkpotter()
