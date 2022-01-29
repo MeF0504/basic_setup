@@ -135,7 +135,6 @@ function! <SID>my_color_set()
     """ general settings
     " link {{{
     highlight link VimFunction Identifier
-    highlight link VimUserFunc MFdef    " from MFtags
     highlight link vimIsCommand SpecialChar
     highlight link keepend Special
     if has('nvim')
