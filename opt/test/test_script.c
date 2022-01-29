@@ -12,8 +12,8 @@ typedef struct {
 
 int main()
 {
-    var_struct test_var;
-    test_var.var = VAR;
+    var_struct test_var; // {{{
+    test_var.var = VAR; // }}}
     if (test_var.var == 1) {
         test_var.is_one = 1;
     } else {
