@@ -159,7 +159,7 @@ function! s:qrun_markdown() abort
         endif
         let q_config['command'] = exec_cmd
 
-        if has('terminal') " || has('nvim')
+        if has('terminal') || exists('s:quickrun_nvimterm')
             " http://chrome.half-moon.org/43.html
             if has('mac')
                 let open_server = 'open -n -a Google\\ Chrome --args -incognito http://localhost:8080/'
@@ -170,7 +170,11 @@ function! s:qrun_markdown() abort
             endif
 
             let q_config['exec'] = [open_server, '%c '.exec_opt.' --server %s:h']
-            let q_config['runner'] = 'terminal'
+            if exists('s:quickrun_nvimterm')
+                let q_config['runner'] = 'nvimterm'
+            else
+                let q_config['runner'] = 'terminal'
+            endif
             let q_config['runner/opener'] = 'tabnew'
         else
             if has('mac')
@@ -268,7 +272,7 @@ nnoremap <silent> <Leader>q :call <SID>quickrun_wrapper()<CR>
 " }}}
 '''
 
-# runner of quickrun for Neovim (unofficial)
+# job runner of quickrun for Neovim (unofficial)
 [[plugins]]
 repo = 'lambdalisue/vim-quickrun-neovim-job'
 if = '''has('nvim')'''
@@ -288,6 +292,16 @@ endif
 " }}}
 '''
 
+# terminal runner of quickrun for Neovim (unofficial)
+[[plugins]]
+repo = 'statiolake/vim-quickrun-runner-nvimterm'
+if = '''has('nvim')'''
+hook_add = '''
+"" vim-auickrun-runner-nvimterm {{{
+" to check nvimterm is loaded
+let s:quickrun_nvimterm = 1
+" }}}
+'''
 
 # 背景透過
 [[plugins]]
