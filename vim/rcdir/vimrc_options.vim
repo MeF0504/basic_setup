@@ -80,7 +80,7 @@ set isfname-==
 " カーソルの下に下線を表示
 set cursorline
 " tag設定
-set tags=tags;,./tags;
+set tags+=tags;,./tags;
 " 左端にfoldの表示を追加
 set foldcolumn=2
 " grepコマンドで内部grep(vimgrep)を使う
