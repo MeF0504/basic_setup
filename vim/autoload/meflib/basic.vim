@@ -138,8 +138,9 @@ endfunction
 
 " search top directory of this project
 function! meflib#basic#get_top_dir(cwd) abort
+    let cwd = fnamemodify(a:cwd, ':p')
     for repo_dir in ['.git', 'svn']
-        let top_dir = finddir(repo_dir..'/..', a:cwd..';')
+        let top_dir = finddir(repo_dir..'/..', cwd..';')
         if !empty(top_dir)
             return top_dir
         endif
