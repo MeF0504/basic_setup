@@ -201,7 +201,7 @@ function! s:exec_ctags(...) abort
     let spec_ft = '--languages='..ft
 
     let ctags_cmd = printf('ctags %s %s %s -R %s', ctags_opt, ctags_out, spec_ft, cwd)
-    " call system(ctags_cmd)
+    call system(ctags_cmd)
     echomsg ctags_cmd
 endfunction
 command! -nargs=? Ctags call s:exec_ctags(<f-args>)
