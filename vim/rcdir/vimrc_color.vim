@@ -122,6 +122,9 @@ function! <SID>my_color_set_night_owl()
     highlight shComment ctermfg=243 ctermbg=233 guifg=#637777 guibg=#011627 cterm=NONE
     highlight SpecialKey ctermbg=235 guibg=#202020
     highlight Number ctermfg=162 guifg=#c02a8f
+    highlight Todo ctermfg=17 ctermbg=228 cterm=BOLD guifg=#101060 guibg=#f8fa6a gui=BOLD
+
+    highlight HiTagImports ctermfg=225 guifg=#f0b7f0
 endfunction
 
 function! <SID>my_color_set_inkpotter()
