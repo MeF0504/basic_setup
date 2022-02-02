@@ -155,7 +155,7 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
             call nvim_win_set_config(popid, nv_config)
         endif
         if has_key(a:config, 'highlight')
-            call win_execute(popid, "set winhighlight=Normal:".a:config['highlight'])
+            call win_execute(popid, "setlocal winhighlight=Normal:".a:config['highlight'])
         endif
     endif
 
