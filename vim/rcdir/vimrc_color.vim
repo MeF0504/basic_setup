@@ -198,6 +198,7 @@ function! <SID>my_color_set()
         silent SeiyaDisable
     endif
     highlight default link Quote String
+    highlight qfLineNr ctermfg=22 ctermbg=252 guifg=#205020 guibg=#d0d0d0
     " }}}
 
     """ plugin highlights
