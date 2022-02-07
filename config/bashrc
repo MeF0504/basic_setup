@@ -12,7 +12,7 @@ fi
 # useful: https://qiita.com/hmmrjn/items/60d2a64c9e5bf7c0fe60
 # color & format: https://misc.flogisoft.com/bash/tip_colors_and_formatting
 # path
-_PS_PATH='\[\e[97m\]\[\e[104m\]${PWD}\[\e[0m\]'
+_PS_PATH='\[\e[97m\]\[\e[44m\]${PWD}\[\e[0m\]'
 if [[ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]]; then
     # host name
     _PS_HOST='\[\e[36m\]${HOSTNAME%%.*}\[\e[0m\] '
