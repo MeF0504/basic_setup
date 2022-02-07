@@ -12,6 +12,7 @@ set errorformat=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 
 command! -buffer PySyntax !python3 -m py_compile %
 
+" help 確認用コマンド
 function! s:python_help(module) abort
     " {{{
     if a:module == '-h'
@@ -96,6 +97,7 @@ EOF
 endfunction
 command! -buffer -nargs=1 PyHelp call s:python_help(<f-args>)
 
+" template
 function! s:py_template()
     " {{{
     append
@@ -111,4 +113,7 @@ if __name__ == '__main__':
     " }}}
 endfunction
 command! -buffer Template :call s:py_template()
+
+" debug command
+command -buffer DebugPrint call append(line('.')-1, 'print("\033[32m#####debug {} \033[0m".format(""))')
 
