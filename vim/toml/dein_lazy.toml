@@ -4,14 +4,14 @@ repo = 'cespare/vim-toml'
 on_ft = 'toml'
 if = ''' !has('patch-8.2.2106') '''
 
-# deinの設定ファイル内で，vimの部分をvimのsyntaxにする
+# ファイルの一部のsyntax highlightを違うfiletypeにする
 [[plugins]]
 repo = 'inkarkat/vim-SyntaxRange'
-on_ft = 'toml'
+on_ft = ['toml', 'markdown']
 hook_post_source = '''
 " {{{
 " https://qiita.com/tmsanrinsha/items/9670628aef3144c7919b
-" Insertで戻る... 要検討 ... とりあえず:e!で再表示
+" Insertで戻る... 要検討 ... とりあえず:eで再表示
 function! s:syntax_range_dein() abort
     let start = '^\s*hook_\%('.
                 \ 'add\|source\|post_source\|post_update'.
@@ -23,7 +23,13 @@ endfunction
 call s:syntax_range_dein()
 " autocmdのタイミングが悪い (vim-tomlに上書きされる)ので，調整
 " autocmd deinLocal BufNewFile,BufRead dein*.toml call s:syntax_range_dein()
-autocmd deinLocal VimEnter,BufWinEnter dein*.toml call s:syntax_range_dein()
+autocmd deinLocal BufWinEnter dein*.toml call s:syntax_range_dein()
+
+function! s:syntax_range_md() abort
+    call SyntaxRange#Include('^\s*```\s*vim', '```', 'vim', '')
+endfunction
+call s:syntax_range_md()
+autocmd deinLocal BufWinEnter *.md call s:syntax_range_md()
 " }}}
 '''
 
