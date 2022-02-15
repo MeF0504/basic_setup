@@ -23,16 +23,20 @@ endfunction
 let s:local_var_dict = {}
 let s:local_var_def_dict = {}
 function! meflib#basic#set_local_var(var_name, val, ...) abort
-    " 3つめにindex / key nameが指定されたらvar_nameの[index / key]に値を設定
+    " 3つめ以降にindex / key nameが指定されたらvar_nameの[index / key]の値をvalに設定
     if a:0 == 0
         let s:local_var_dict[a:var_name] = a:val
     else
         if !has_key(s:local_var_dict, a:var_name)
             let s:local_var_dict[a:var_name] = {}
         endif
-        for i in range(a:0)
-            let s:local_var_dict[a:var_name][a:1[i]] = a:val[i]
-        endfor
+        if a:0==1 && type(a:val)!=type([])
+            let s:local_var_dict[a:var_name][a:1] = a:val
+        else
+            for i in range(a:0)
+                let s:local_var_dict[a:var_name][a:000[i]] = a:val[i]
+            endfor
+        endif
     endif
 endfunction
 
@@ -55,7 +59,7 @@ function! s:show_vars(var_dict) abort
     endfor
 endfunction
 
-function! meflib#basic#get_local_var(var_name, default) abort
+function! meflib#basic#get_local_var(var_name, default, ...) abort
     if empty(a:var_name)
         call s:show_vars(s:local_var_dict)
         echohl Special
@@ -63,9 +67,38 @@ function! meflib#basic#get_local_var(var_name, default) abort
         echohl None
         call s:show_vars(s:local_var_def_dict)
     elseif has_key(s:local_var_dict, a:var_name)
-        return s:local_var_dict[a:var_name]
+        if a:0 == 0
+            return s:local_var_dict[a:var_name]
+        else
+            let local_var = s:local_var_dict[a:var_name]
+            let res = []
+            for i in range(a:0)
+                let key = a:000[i]
+                if has_key(local_var, key)
+                    call add(res, local_var[key])
+                else
+                    call add(res, a:default[i])
+                endif
+            endfor
+            if len(res) == 1
+                return res[0]
+            else
+                return res
+            endif
+        endif
     else
-        let s:local_var_def_dict[a:var_name] = a:default
+        if a:0 == 0
+            let s:local_var_def_dict[a:var_name] = a:default
+        else
+            let s:local_var_def_dict[a:var_name] = {}
+            if a:0==1 && type(a:default)!=type([])
+                let s:local_var_def_dict[a:var_name][a:1] = a:default
+            else
+                for i in range(a:0)
+                    let s:local_var_def_dict[a:var_name][a:000[i]] = a:default[i]
+                endfor
+            endif
+        endif
         return a:default
     endif
 endfunction

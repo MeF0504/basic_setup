@@ -74,10 +74,12 @@ endif
 
 " show the status of dein in statusline.
 let s:dein_status = "%#StatusLine_CHK#%{empty(dein#get_progress())?'':'^...'}%#StatusLine#"
-call meflib#set_local_var('statusline',
-            \ [meflib#get_local_var('statusline',
-            \ {'_':"%f%m%r%h%w%<%=%y\ %l/%L\ [%P]"}
-            \ )['_']..s:dein_status], ['_'])
+let s:cur_status = meflib#get_local_var('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
+call meflib#set_local_var('statusline', s:cur_status..s:dein_status, '_')
+            " \ [meflib#get_local_var('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')],
+            " \ '_')
+            " \ {'_':"%f%m%r%h%w%<%=%y\ %l/%L\ [%P]"},
+            " \ '_')..s:dein_status], '_')
 
 " Plugin remove check
 let s:removed_plugins = dein#check_clean()
