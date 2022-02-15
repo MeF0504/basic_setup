@@ -518,7 +518,7 @@ autocmd deinLocal QuitPre * call meflib#floating#close(s:cfi_popid) | let s:cfi_
 # 検索時にhit数をcountしてくれるplugin
 [[plugins]]
 repo = 'osyo-manga/vim-anzu'
-if = '''!(exists('*searchcount') && exists('*popup_create'))'''  # if exists => use vim-hitspop
+if = '''!meflib#get_local_var('load_plugin', 0, 'hitspop')'''
 hook_add = '''
 "" vim-anzu {{{
 if !(exists('*searchcount') && exists('*popup_create'))
@@ -590,13 +590,13 @@ call wilder#setup({
 # vim でneovim 用 pluginを動かすためのplugin
 [[plugins]]
 repo = 'roxma/nvim-yarp'
-if = '''!has('nvim') '''# && !(executable('deno')&&has('patch-8.2.3081'))'''
+if = '''!has('nvim') '''
 
 # for deoplete and wilder
 # vim でneovim 用 pluginを動かすためのplugin
 [[plugins]]
 repo = 'roxma/vim-hug-neovim-rpc'
-if = '''!has('nvim') '''# && !(executable('deno')&&has('patch-8.2.3081'))'''
+if = '''!has('nvim') '''
 
 # visual modeで選択した範囲をgcでコメントアウトしてくれるplugin
 [[plugins]]
@@ -605,7 +605,7 @@ repo = 'tpope/vim-commentary'
 # 検索のhit数をpopupで表示するplugin
 [[plugins]]
 repo = 'obcat/vim-hitspop'
-if = '''exists('*searchcount') && exists('*popup_create')'''   # if not exists => use vim-anzu
+if = '''meflib#get_local_var('load_plugin', 0, 'hitspop')'''
 hook_add = '''
 " {{{
 if exists('*searchcount') && exists('*popup_create')
@@ -646,12 +646,12 @@ highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline
 # for ddc.vim
 [[plugins]]
 repo = 'vim-denops/denops.vim'
-if = '''executable('deno') && (has('patch-8.2.3081') || has('nvim-0.5.0'))'''
+if = '''meflib#get_local_var('load_plugin', 0, 'denops')'''
 
 # denops test
 [[plugins]]
 repo = 'vim-denops/denops-helloworld.vim'
-if = '''executable('deno') && (has('patch-8.2.3081') || has('nvim-0.5.0'))'''
+if = '''meflib#get_local_var('load_plugin', 0, 'denops')'''
 
 # Filer
 [[plugins]]

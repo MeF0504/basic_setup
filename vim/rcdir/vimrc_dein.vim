@@ -22,6 +22,25 @@ let s:toml_file  = s:vim_dir . 'toml/dein.toml'
 let s:color_file = s:vim_dir . 'toml/dein_colorscheme.toml'
 let s:lazy_file  = s:vim_dir . 'toml/dein_lazy.toml'
 
+" condition check of loading plugins. {{{
+call meflib#set_local_var('load_plugin', {})
+if exists('*searchcount') && exists('*popup_create')
+    call meflib#set_local_var('load_plugin', 1, 'hitspop')
+endif
+if executable('deno')
+    if has('patch-8.2.3452') || has('nvim-0.6.0')
+        call meflib#set_local_var('load_plugin', 1, 'denops')
+    endif
+endif
+if !meflib#get_local_var('load_plugin', 0, 'denops')
+    if has('python3')
+        if v:version>=801 || has('nvim-0.3.0')
+            call meflib#set_local_var('load_plugin', 1, 'deoplete')
+        endif
+    endif
+endif
+" }}}
+
 " update the settings referring to https://knowledge.sakura.ad.jp/23248/
 " Required: dein install check
 if &runtimepath !~# '/dein.vim'
