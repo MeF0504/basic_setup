@@ -234,6 +234,25 @@ if has('job')
         endif
     endfunction
     command! JobStatus call <SID>chk_job_status()
+elseif has('nvim')
+    function! <SID>chk_job_status()
+        for chan in nvim_list_chans()
+            echo chan.id
+            if has_key(chan, 'mode')
+                echon ' '
+                echohl Type
+                echon chan.mode
+                echohl None
+            endif
+            if has_key(chan, 'argv')
+                echon ' '
+                echohl Statement
+                echon chan.argv
+                echohl None
+            endif
+        endfor
+    endfunction
+    command! JobStatus call <SID>chk_job_status()
 endif
 " }}}
 
