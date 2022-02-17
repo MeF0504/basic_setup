@@ -521,15 +521,37 @@ repo = 'osyo-manga/vim-anzu'
 if = '''!meflib#get_local_var('load_plugin', 0, 'hitspop')'''
 hook_add = '''
 "" vim-anzu {{{
-if !(exists('*searchcount') && exists('*popup_create'))
+if !meflib#get_local_var('load_plugin', 0, 'hitspop')
     " max search count
     let g:anzu_search_limit = 3000
     " mapping
     nmap n <Plug>(anzu-n-with-echo)
     nmap N <Plug>(anzu-N-with-echo)
 
-    " clear status
-    " nmap <ESC><ESC> <Plug>(anzu-clear-search-status)
+    let s:anzu_bufid = -1
+    let s:anzu_popid = -1
+    function! <SID>Show_anzu_float() abort
+        let anzu_str = anzu#search_status()
+        if empty(anzu_str)
+            call meflib#floating#close(s:anzu_popid)
+            let s:anzu_popid = -1
+            return
+        endif
+        " update status. if it takes time, cancel this.
+        AnzuUpdateSearchStatus
+        let config = {
+            \ 'relative': 'win',
+            \ 'line': winheight(0),
+            \ 'col': winwidth(0),
+            \ 'pos': 'botright',
+            \ 'highlight': 'AnzuPopup',
+            \ }
+            let [s:anzu_bufid, s:anzu_popid] = meflib#floating#open(s:anzu_bufid, s:anzu_popid, [anzu_str], config)
+    endfunction
+    nnoremap <silent> \ :<c-u>call anzu#clear_search_status() <bar> nohlsearch<CR>
+    autocmd deinLocal CursorMoved * call <SID>Show_anzu_float()
+    autocmd deinLocal TabLeave * call meflib#floating#close(s:anzu_popid) | let s:anzu_popid=-1
+    autocmd deinLocal QuitPre * call meflib#floating#close(s:anzu_popid) | let s:anzu_popid=-1
 endif
 " }}}
 '''

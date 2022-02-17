@@ -238,6 +238,10 @@ function! <SID>my_color_set()
     highlight IndentGuidesEven ctermbg=54 guibg=#3f0057
     " }}}
 
+    " anzu {{{
+    highlight link AnzuPopup hitspopNormal
+    " }}}
+
     " colorscheme specified setings
     let colname = substitute(g:colors_name, "-", "_", "g")
     let local_scheme_func = s:sid..'my_color_set_'..colname
