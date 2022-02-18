@@ -105,9 +105,13 @@ command! FileInfo call s:fileinfo()
 "}}}
 
 " 辞書（というか英辞郎）で検索 {{{
-function! s:eijiro(word)
+function! s:eijiro(web, word)
     let dic_file = meflib#get_local_var('dic_file', '')
-    if filereadable(dic_file)
+    if !filereadable(dic_file) && !a:web
+        echo printf('dictionary file %s is not readable.', dic_file)
+        return
+    endif
+    if filereadable(dic_file) && !a:web
         " localに辞書ファイルがある場合はそれを参照
         execute "vimgrep /\\<".a:word."\\>/j "..dic_file
         return
@@ -121,7 +125,8 @@ function! s:eijiro(word)
     endif
     call system(printf('%s %s', web_cmd, url))
 endfunction
-command -nargs=1 Eijiro call s:eijiro(<f-args>)
+command -nargs=1 EijiroWeb call s:eijiro(1, <f-args>)
+command -nargs=1 Eijiro call s:eijiro(0, <f-args>)
 " }}}
 
 " conflict commentを検索 {{{
