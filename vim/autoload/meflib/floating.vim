@@ -2,6 +2,7 @@
 scriptencoding utf-8
 
 let s:pop_index = 0
+let s:pop_ids = []
 function! meflib#floating#open(bufid, popid, str_list, config) abort
     " popid < 0; create new popup window, >= 0; update contents
     " bufid < 0; create new buffer, >= 0; use this buffer.
@@ -92,6 +93,7 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
         endif
         if a:popid < 0
             let popid = popup_create(bufid, v_config)
+            call add(s:pop_ids, popid)
         else
             let popid = a:popid
             call popup_setoptions(popid, v_config)
@@ -150,6 +152,7 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
         call nvim_buf_set_lines(bufid, 0, -1, 0, a:str_list)
         if a:popid < 0
             let popid = nvim_open_win(bufid, v:false, nv_config)
+            call add(s:pop_ids, popid)
         else
             let popid = a:popid
             call nvim_win_set_config(popid, nv_config)
@@ -182,5 +185,9 @@ function! meflib#floating#close(popids) abort
             endif
         endif
     endfor
+endfunction
+
+function! meflib#floating#close_all() abort
+    call meflib#floating#close(s:pop_ids)
 endfunction
 
