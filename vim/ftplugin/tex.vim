@@ -1,12 +1,12 @@
-augroup texvim
+augroup texvimlocal
     autocmd!
 augroup END
 
 " $VIMRUNTIME/ftplugin あたりで上書きされてそうなのでautocmd化する
-autocmd texvim BufEnter *.tex set suffixesadd+=.tex
-autocmd texvim BufEnter *.tex set suffixesadd+=.bib
+autocmd texvimlocal BufEnter *.tex set suffixesadd+=.tex
+autocmd texvimlocal BufEnter *.tex set suffixesadd+=.bib
 " tex fileでも<Enter>で改行時に自動コメントアウト
-autocmd texvim BufEnter *.tex set formatoptions+=r
+autocmd texvimlocal BufEnter *.tex set formatoptions+=r
 
 function! s:replace_words()
     let l = line('.')
@@ -17,7 +17,21 @@ function! s:replace_words()
     execute l
     execute "normal! ".c."|"
 endfunction
-autocmd texvim InsertLeave *.tex call s:replace_words()
+autocmd texvimlocal InsertLeave *.tex call s:replace_words()
+
+function! <SID>foldmethod(lnum) abort
+    let line = getline(a:lnum)
+    if match(line, '^\s*\\begin{') != -1
+        return 'a1'
+    elseif match(line, '^\s*\\end{') != -1
+        return 's1'
+    else
+        return '='
+    endif
+endfunction
+setlocal foldmethod=expr
+execute printf("setlocal foldexpr=%sfoldmethod(v:lnum)", expand("<SID>"))
+normal! zR
 
 " とりあえずコピー() from https://vim-jp.org/vimdoc-ja/quickfix.html#errorformat-LaTeX
 set makeprg=latex\ \\\\nonstopmode\ \\\\input\\{$*}
