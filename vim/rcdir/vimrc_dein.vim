@@ -43,8 +43,16 @@ endif
 
 " update the settings referring to https://knowledge.sakura.ad.jp/23248/
 " Required: dein install check
+let s:dein_path = s:dein_dir.."repos/github.com/Shougo/dein.vim"
+if !isdirectory(s:dein_path)
+    echohl ErrorMsg
+    echomsg printf('dein directory %s not found.', s:dein_path)
+    echohl None
+    finish
+endif
+
 if &runtimepath !~# '/dein.vim'
-    execute "set runtimepath+=" . s:dein_dir . "repos/github.com/Shougo/dein.vim"
+    execute "set runtimepath+="..s:dein_path
 endif
 
 " Required: begin settings
