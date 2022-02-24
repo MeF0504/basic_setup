@@ -119,126 +119,126 @@ nnoremap <silent> <Leader>u :GundoToggle<CR>
 " }}}
 '''
 
-# vimからJupyter notebookを開く
-[[plugins]]
-repo = 'jupyter-vim/jupyter-vim'
-on_ft = 'python'
-hook_source = '''
-" {{{
-" $ jupyter console --generate-config
-" => c.ZMQTerminalInteractiveShell.include_other_output = True
-" $ jupyter qtconsole --generate-config
-" => c.ConsoleWidget.include_other_output = True
-
-" no mapping
-let g:jupyter_mapkeys = 0
-
-let s:l_jupyter_connect = 0
-let s:jupyter_arg_list_raw = 'Start Connect File Count Range Cell Code Cd Restart'
-function! s:jupyter_arg_list(arglead, cmdline, cursorpos) abort
-    let jupyter_arg_list = split(s:jupyter_arg_list_raw, ' ')
-    let arglead = tolower(a:arglead)
-    let ret = filter(jupyter_arg_list, '!stridx(tolower(v:val), arglead)')
-    return ret
-endfunction
-
-function! s:jupyter_connect_check() abort
-    if s:l_jupyter_connect != 0
-        " already connected
-        return
-    endif
-
-    redir => jupyter_con_out
-    JupyterConnect
-    sleep 2
-    redir END
-    for l in split(jupyter_con_out, '\n')
-        if stridx(l, 'Connected') != -1
-            " already connected
-            let s:l_jupyter_connect = 1
-            return
-        endif
-    endfor
-
-    if has('win32') || has('win64')
-        silent !start /min jupyter qtconsole
-    else
-        !jupyter qtconsole &
-    endif
-
-    let yn = input('jupyter is already open?')
-    JupyterConnect
-    sleep 2
-    let s:l_jupyter_connect = 1
-
-endfunction
-
-function! s:jupyter_wrapper(...) abort
-    if a:0 == 0
-        let jmode = 'Start'
-    else
-        let jmode = a:1
-    endif
-    let mode_check = 0
-    for mode_list in split(s:jupyter_arg_list_raw, ' ')
-        if jmode == mode_list
-            let mode_check = 1
-        endif
-    endfor
-    if mode_check == 0
-        echo 'incorrect argument'
-        return
-    endif
-
-    call s:jupyter_connect_check()
-
-    if jmode == 'Start'
-        "do nothing
-    elseif jmode == 'Connect'
-        let s:l_jupyter_connect = 0
-        call s:jupyter_connect_check()
-    elseif jmode == 'File'
-        JupyterRunFile
-        return
-    elseif jmode == 'Count'
-        if a:0 >= 2
-            let header = a:2
-        else
-            let header = ''
-        endif
-        execute header.'JupyterSendCount'
-    elseif jmode == 'Range'
-        if a:0 == 2
-            let header = a:2
-        elseif a:0 > 2
-            let header = a:2.','.a:3
-        else
-            let header = ''
-        endif
-        execute header.'JupyterSendRange'
-    elseif jmode == 'Cell'
-        JupyterSendCell
-    elseif jmode == 'Code'
-        let send_code = ''
-        for i in range(2,a:0)
-            let send_code .= ' '.a:{i}
-        endfor
-        execute 'JupyterSendCode "'.send_code.'"'
-    elseif jmode == 'Cd'
-        if a:0 == 2
-            let cdir = a:2
-        else
-            let cdir = ''
-        endif
-        execute 'JupyterCd '.cdir
-    elseif jmode == 'Restart'
-        JupyterSendCode 'import os; os._exit(00)'
-    endif
-endfunction
-
-command! -nargs=* -complete=customlist,s:jupyter_arg_list Jupyter call s:jupyter_wrapper(<f-args>)
-" }}}
-'''
+# # vimからJupyter notebookを開く
+# [[plugins]]
+# repo = 'jupyter-vim/jupyter-vim'
+# on_ft = 'python'
+# hook_source = '''
+# " {{{
+# " $ jupyter console --generate-config
+# " => c.ZMQTerminalInteractiveShell.include_other_output = True
+# " $ jupyter qtconsole --generate-config
+# " => c.ConsoleWidget.include_other_output = True
+# 
+# " no mapping
+# let g:jupyter_mapkeys = 0
+# 
+# let s:l_jupyter_connect = 0
+# let s:jupyter_arg_list_raw = 'Start Connect File Count Range Cell Code Cd Restart'
+# function! s:jupyter_arg_list(arglead, cmdline, cursorpos) abort
+#     let jupyter_arg_list = split(s:jupyter_arg_list_raw, ' ')
+#     let arglead = tolower(a:arglead)
+#     let ret = filter(jupyter_arg_list, '!stridx(tolower(v:val), arglead)')
+#     return ret
+# endfunction
+# 
+# function! s:jupyter_connect_check() abort
+#     if s:l_jupyter_connect != 0
+#         " already connected
+#         return
+#     endif
+# 
+#     redir => jupyter_con_out
+#     JupyterConnect
+#     sleep 2
+#     redir END
+#     for l in split(jupyter_con_out, '\n')
+#         if stridx(l, 'Connected') != -1
+#             " already connected
+#             let s:l_jupyter_connect = 1
+#             return
+#         endif
+#     endfor
+# 
+#     if has('win32') || has('win64')
+#         silent !start /min jupyter qtconsole
+#     else
+#         !jupyter qtconsole &
+#     endif
+# 
+#     let yn = input('jupyter is already open?')
+#     JupyterConnect
+#     sleep 2
+#     let s:l_jupyter_connect = 1
+# 
+# endfunction
+# 
+# function! s:jupyter_wrapper(...) abort
+#     if a:0 == 0
+#         let jmode = 'Start'
+#     else
+#         let jmode = a:1
+#     endif
+#     let mode_check = 0
+#     for mode_list in split(s:jupyter_arg_list_raw, ' ')
+#         if jmode == mode_list
+#             let mode_check = 1
+#         endif
+#     endfor
+#     if mode_check == 0
+#         echo 'incorrect argument'
+#         return
+#     endif
+# 
+#     call s:jupyter_connect_check()
+# 
+#     if jmode == 'Start'
+#         "do nothing
+#     elseif jmode == 'Connect'
+#         let s:l_jupyter_connect = 0
+#         call s:jupyter_connect_check()
+#     elseif jmode == 'File'
+#         JupyterRunFile
+#         return
+#     elseif jmode == 'Count'
+#         if a:0 >= 2
+#             let header = a:2
+#         else
+#             let header = ''
+#         endif
+#         execute header.'JupyterSendCount'
+#     elseif jmode == 'Range'
+#         if a:0 == 2
+#             let header = a:2
+#         elseif a:0 > 2
+#             let header = a:2.','.a:3
+#         else
+#             let header = ''
+#         endif
+#         execute header.'JupyterSendRange'
+#     elseif jmode == 'Cell'
+#         JupyterSendCell
+#     elseif jmode == 'Code'
+#         let send_code = ''
+#         for i in range(2,a:0)
+#             let send_code .= ' '.a:{i}
+#         endfor
+#         execute 'JupyterSendCode "'.send_code.'"'
+#     elseif jmode == 'Cd'
+#         if a:0 == 2
+#             let cdir = a:2
+#         else
+#             let cdir = ''
+#         endif
+#         execute 'JupyterCd '.cdir
+#     elseif jmode == 'Restart'
+#         JupyterSendCode 'import os; os._exit(00)'
+#     endif
+# endfunction
+# 
+# command! -nargs=* -complete=customlist,s:jupyter_arg_list Jupyter call s:jupyter_wrapper(<f-args>)
+# " }}}
+# '''
 
 [[plugins]]
 repo = 'prabirshrestha/vim-lsp'
@@ -323,10 +323,6 @@ endif
 let s:lsp_map3 =  maparg('<c-p>', 'n')
 if empty(s:lsp_map3)
     let s:lsp_map3 = '<c-p>'
-endif
-let s:lsp_map4 =  maparg('<c-p><c-p>', 'n')
-if empty(s:lsp_map4)
-    let s:lsp_map4 = '<c-p><c-p>'
 endif
 execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? <SID>chk_tab_jump() : '"..s:lsp_map1."'"
 execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-references)' : '".s:lsp_map2."'"
