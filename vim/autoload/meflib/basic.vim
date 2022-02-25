@@ -142,7 +142,7 @@ function! meflib#basic#analythis_args_hyp(args, args_config) abort
         let arg = args[i]
         " echo '<>'.i.':'.arg
         let opt_num = 0
-        if arg[0]=='-'
+        if arg[0]=='-' && has_key(a:args_config, arg[1:])
             let opt = arg[1:]
             let res[opt] = []
             " echo ' set '.opt
