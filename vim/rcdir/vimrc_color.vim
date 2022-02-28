@@ -125,7 +125,7 @@ function! <SID>my_color_set_night_owl()
     highlight Todo ctermfg=17 ctermbg=228 cterm=BOLD guifg=#101060 guibg=#f8fa6a gui=BOLD
     highlight LineNr ctermfg=240 guifg=#535353
 
-    highlight HiTagImports ctermfg=225 guifg=#f0b7f0
+    highlight HiTagImports ctermfg=227 guifg=#f0e860
 endfunction
 
 function! <SID>my_color_set_inkpotter()
