@@ -6,21 +6,6 @@ augroup cmdLocal
     autocmd!
 augroup END
 
-"ファイルが読み込めない事があるので、その時用にread onlyをつけてencodeし直して開く関数 "{{{
-
-function! s:noeol_reenc()
-    if &endofline == 0
-        if input("reencode? (y/[n])")=='y'
-            setlocal readonly
-            e ++enc=utf-8
-        endif
-    endif
-endfunction
-
-"そしてファイルを開くたびに行うようにautocmd化
-autocmd cmdLocal BufRead * call s:noeol_reenc()
-" }}}
-
 "diff系command {{{
 
 command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
