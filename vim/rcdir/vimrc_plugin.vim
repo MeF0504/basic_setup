@@ -942,13 +942,14 @@ command! -nargs=+ -complete=file DiffLine call <SID>diff_line(<f-args>)
 function! <SID>echo_gregrep_help()
     echo "usage..."
     echo ":GREgrep [wd=word] [dir=dir_path] [ex=extention]"
-    echo "wd ... search word."
+    echo "wd ... text to search. if a word is put in <>, search it as a word."
     echo "dir ... path to root directory or file for search."
     echo "        if dir=opened, search files in buffer"
     echo "ex ... file extention of target files."
     echo "       if ex=None, search all files."
     echo "e.g. :GREgrep wd=hoge ex=.vim dir=%:h:h"
     echo "e.g. :GREgrep wd=fuga ex=None"
+    echo "e.g. :GREgrep wd=<are> dir=opened"
 endfunction
 
 function! <SID>Mygrep(...)
@@ -959,6 +960,7 @@ function! <SID>Mygrep(...)
             let def_dir = top_dir
         endif
     endif
+    let is_word = 0
     if a:0 == '0'
         let l:word = expand('<cword>')
         let l:ft = '.' . expand('%:e')
@@ -974,6 +976,10 @@ function! <SID>Mygrep(...)
         if has_key(arg, "wd")
             let l:word = arg["wd"]
             let l:word .= arg["no_key"]
+            if l:word[0]=='<' && l:word[-1:]=='>'
+                let is_word = 1
+                let l:word = l:word[1:-2]
+            endif
         else
             let l:word = expand('<cword>')
         endif
@@ -982,41 +988,46 @@ function! <SID>Mygrep(...)
     endif
     let l:word = fnameescape(l:word)
 
-    let is_file = 0
     let is_opened = 0
-    if filereadable(l:dir)
-        let is_file = 1
-    elseif l:dir == 'opened'
-        let is_file = 1
+    if l:dir == 'opened'
         let is_opened = 1
     elseif !isdirectory(l:dir)
         echo 'input directory "' . l:dir . '" does not exist.'
         return
     endif
-    if &grepprg == "internal"
-        if is_file == 1
-            echo 'searching file is not supported for grepprg=internal'
-            return
-        endif
-        if l:ft == 'None'
-            let l:ft = ''
-        endif
-        execute 'vimgrep /'.l:word.'/j '.l:dir.'/**/*'.l:ft
-    elseif &grepprg =~ "grep\ -[a-z]*r[a-z]*"
-        if is_opened == 1
-            let l:dir = ''
-            for i in range(1, tabpagenr('$'))
-                let bufnrs = tabpagebuflist(i)
-                for bn in bufnrs
-                    let bufname = bufname(bn)
-                    if match(l:dir, bufname) == -1
-                        let l:dir .= ' '.bufname
-                    endif
-                endfor
+
+    if is_opened
+        let l:dir = ''
+        for i in range(1, tabpagenr('$'))
+            let bufnrs = tabpagebuflist(i)
+            for bn in bufnrs
+                let bufname = bufname(bn)
+                if match(l:dir, bufname) == -1
+                    let l:dir .= ' '.bufname
+                endif
             endfor
+        endfor
+    else
+        let l:dir = substitute(l:dir, ' ', '\\ ', 'g')
+    endif
+
+    if &grepprg == "internal"
+        if is_opened
+            let files = l:dir
+        elseif l:ft == 'None'
+            let files = l:dir..'/**/*'
         else
-            let l:dir=substitute(l:dir, ' ', '\\ ', 'g')
+            let files = l:dir..'/**/*'..l:ft
         endif
+        if is_word
+            let bra = '\<'
+            let ket = '\>'
+        else
+            let bra = ''
+            let ket = ''
+        endif
+        execute printf('vimgrep /%s%s%s/j %s', bra, l:word, ket, files)
+    elseif &grepprg =~ "grep\ -[a-z]*r[a-z]*"
         " cclose
         "wincmd b
         if l:ft == 'None'
@@ -1024,7 +1035,9 @@ function! <SID>Mygrep(...)
         else
             let l:ft = ' --include=\*' . l:ft
         endif
-        execute 'grep!'.l:ft.' "'.l:word.'" '.l:dir
+        let wd_opt = is_word ? ' -w ' : ''
+
+        execute printf('grep! %s %s "%s" %s', l:ft, wd_opt, l:word, l:dir)
         " botright copen
         " set statusline="%t%{exists('w:quickfix_title')? ' '.w:quickfix_title : ' '} "
     else
