@@ -91,4 +91,5 @@ tmp/*
 legacy/*
 *tag_syntax.vim
 .tlist_session
+*_tags
 
