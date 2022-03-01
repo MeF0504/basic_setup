@@ -400,32 +400,42 @@ endfunction
 
 function! s:tlist_all(...) abort
     " {{{
+    let cwd = meflib#basic#get_top_dir(expand('%:h'))
+    if empty(cwd)
+        let cwd = '.'
+    endif
+    let tlist_session_name = cwd..'/'..meflib#get_local_var('tlist_session_name', '.tlist_session')
     if a:0 == 0
         let ext = ''
     elseif a:1 == 'help'
         echo ':TlistAll [args]'
         echo '    help  ... show this help.'
-        echo '    clear ... delete session file.'
+        echo '    clear ... delete session file if exists.'
         echo '    else  ... specify extension. e.g. "*.py".'
+        return
+    elseif a:1 == 'clear'
+        if filereadable(tlist_session_name)
+            call delete(tlist_session_name)
+        else
+            echohl WarningMsg
+            echomsg printf('taglist session log file %s is not found.', tlist_session_name)
+            echohl None
+        endif
         return
     else
         let ext = a:1
     endif
-    let tlist_session_name = meflib#get_local_var('tlist_session_name', '.tlist_session')
-    let cwd = meflib#basic#get_top_dir(expand('%:h'))
-    if empty(cwd)
-        let cwd = '.'
-    endif
+
     let g:Tlist_Show_One_File = 0
     if filereadable(tlist_session_name)
-        if ext == 'clear'
-            call delete(tlist_session_name)
-            return
-        endif
         execute printf('TlistSessionLoad %s', tlist_session_name)
+        echomsg printf('load %s', tlist_session_name)
     else
-        execute printf('TlistAddFilesRecursive %s %s', cwd, ext)
+        let exec_cmd = printf('TlistAddFilesRecursive %s %s', cwd, ext)
+        execute exec_cmd
         execute printf('TlistSessionSave %s', tlist_session_name)
+        echomsg printf("execute :%s", exec_cmd)
+        echomsg printf("save at %s", tlist_session_name)
     endif
     TlistToggle
     " }}}
