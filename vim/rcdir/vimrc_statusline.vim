@@ -63,13 +63,25 @@ function! <SID>get_mode()
     return st_mode
 endfunction
 
+" 修正フラグ 読込専用 ヘルプ preview_window を確認
+function! <SID>get_status() abort
+    if &modified
+                \ || !&modifiable
+                \ || &readonly
+                \ || (&filetype=='help')
+                \ || &previewwindow
+        return '[%M%R%H%W]'
+    else
+        return ''
+endfunction
+
 let s:st_normal = ""
 let s:st_level1 = ""
 " mode
 let s:st_normal .= s:mode_str
 let s:st_level1 .= s:mode_str
-" ファイル名(最大長 windowの2/3) [修正フラグ 読込専用 ヘルプ preview_window]
-let s:st_normal .= "%{%'%.'.winwidth(0)*2/3.'f'%}[%M%R%H%W] "
+" ファイル名 file status (最大長 windowの2/3)
+let s:st_normal .= printf("%%{%%'%s'.%s.'%s'.%s%s.'%s'%%} ", '%.', 'winwidth(0)*2/3', '(%f', s:sid, 'get_status()', '%)')
 " winwidthが60より短い場合はファイル名のみ
 let s:st_level1 .= " %t[%M%R%H%W] "
 " 切り詰め位置 右端に表示
