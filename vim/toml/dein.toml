@@ -394,6 +394,7 @@ function! s:tlist_all_comp(arglead, cmdline, cursorpos) abort
         return []
     endif
     let opt_list = ['help', 'clear']
+    call add(opt_list, '*.'..expand('%:e'))
     return filter(opt_list, '!stridx(tolower(v:val), arglead)')
     " }}}
 endfunction
