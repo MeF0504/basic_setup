@@ -83,7 +83,7 @@ let s:st_level1 .= s:mode_str
 " ファイル名 file status (最大長 windowの2/3)
 let s:st_normal .= printf("%%{%%'%s'.%s.'%s'.%s%s.'%s'%%} ", '%.', 'winwidth(0)*2/3', '(%f', s:sid, 'get_status()', '%)')
 " winwidthが60より短い場合はファイル名のみ
-let s:st_level1 .= " %t[%M%R%H%W] "
+let s:st_level1 .= " %t%{%".s:sid."get_status()%} "
 " 切り詰め位置 右端に表示
 let s:st_normal .= "%<%="
 let s:st_level1 .= "%<%="
