@@ -68,10 +68,10 @@ let s:st_level1 = ""
 " mode
 let s:st_normal .= s:mode_str
 let s:st_level1 .= s:mode_str
-" ファイル名(最大長50) 修正フラグ 読込専用 ヘルプ preview_window
-let s:st_normal .= " %.50f%m%{&readonly?'[RO]':''}%h%w "
+" ファイル名(最大長 windowの2/3) [修正フラグ 読込専用 ヘルプ preview_window]
+let s:st_normal .= "%{%'%.'.winwidth(0)*2/3.'f'%}[%M%R%H%W] "
 " winwidthが60より短い場合はファイル名のみ
-let s:st_level1 .= " %t%m%{&readonly?'[RO]':''}%h%w "
+let s:st_level1 .= " %t[%M%R%H%W] "
 " 切り詰め位置 右端に表示
 let s:st_normal .= "%<%="
 let s:st_level1 .= "%<%="
@@ -80,7 +80,7 @@ let s:st_normal .= "%#StatusLine_FT# %{&filetype} "
 let s:st_level1 .= "%#StatusLine_FT# %{&filetype} "
 " file format
 let s:st_normal .= "%#StatusLine_FF# %{"..s:sid.."get_fileformat(&fileformat)}:%{&fileencoding} "
-let s:st_level1 .= "%#StatusLine_FF# %{"..s:sid.."get_fileformat(&fileformat)}:%{&fileencoding} "
+let s:st_level1 .= "%#StatusLine_FF# %{&fileformat}:%{&fileencoding} "
 " 今の行/全体の行-今の列 [%表示]
 let s:st_normal .= "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]"
 " winwidthが60より短い時は列と%はなし
