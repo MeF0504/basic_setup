@@ -32,6 +32,7 @@ function! <SID>get_fileformat(os)
     endif
 endfunction
 
+" mode変換用string
 let s:mode_str = '%%mode'
 function! <SID>get_mode()
     let st_modes =
@@ -63,40 +64,23 @@ function! <SID>get_mode()
     return st_mode
 endfunction
 
-" 修正フラグ 読込専用 ヘルプ preview_window を確認
-function! <SID>get_status() abort
-    if &modified
-                \ || !&modifiable
-                \ || &readonly
-                \ || (&filetype=='help')
-                \ || &previewwindow
-        return '[%M%R%H%W]'
-    else
-        return ''
-endfunction
-
-let s:st_normal = ""
-let s:st_level1 = ""
-" mode
-let s:st_normal .= s:mode_str
-let s:st_level1 .= s:mode_str
-" ファイル名 file status (最大長 windowの2/3)
-let s:st_normal .= printf("%%{%%'%s'.%s.'%s'.%s%s.'%s'%%} ", '%.', 'winwidth(0)*2/3', '(%f', s:sid, 'get_status()', '%)')
+" 修正フラグ 読込専用 ヘルプ preview_window
+let s:st_status = "%#StatusLine_ST#%M%R%H%W%#StatusLine#"
+" ファイル名&file status (最大長 windowの2/3)
+let s:st_filename1 = printf("%%{%%'%s'.%s.'%s %s %s'%%} ", '%.', 'winwidth(0)*2/3', '(%f', s:st_status, '%)')
 " winwidthが60より短い場合はファイル名のみ
-let s:st_level1 .= " %t%{%".s:sid."get_status()%} "
+let s:st_filename2 = " %t".s:st_status." "
 " 切り詰め位置 右端に表示
-let s:st_normal .= "%<%="
-let s:st_level1 .= "%<%="
+let s:st_turn = "%<%="
 " filetype
-let s:st_normal .= "%#StatusLine_FT# %{&filetype} "
-let s:st_level1 .= "%#StatusLine_FT# %{&filetype} "
+let s:st_ft = "%#StatusLine_FT# %{&filetype} "
 " file format
-let s:st_normal .= "%#StatusLine_FF# %{"..s:sid.."get_fileformat(&fileformat)}:%{&fileencoding} "
-let s:st_level1 .= "%#StatusLine_FF# %{&fileformat}:%{&fileencoding} "
+let s:st_ff1 = "%#StatusLine_FF# %{"..s:sid.."get_fileformat(&fileformat)}:%{&fileencoding} "
+let s:st_ff2 = "%#StatusLine_FF# %{&fileformat}:%{&fileencoding} "
 " 今の行/全体の行-今の列 [%表示]
-let s:st_normal .= "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]"
+let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]"
 " winwidthが60より短い時は列と%はなし
-let s:st_level1 .= "%#StatusLine_LN# %l/%L"
+let s:st_ln2 = "%#StatusLine_LN# %l/%L"
 
 " パスを除くファイル名 修正フラグ 読込専用 ヘルプ preview_window
 let s:st_off = "%t%m%{&readonly?'[RO]':''}%h%w"
@@ -106,9 +90,9 @@ let s:st_off = "%t%m%{&readonly?'[RO]':''}%h%w"
 " 'off': statusline for off window
 " other(num): statusline for short window. num=max width for this statusline
 call meflib#set_local_var('statusline', {
-            \ '_':   s:st_normal,
+            \ '_':   s:mode_str.s:st_filename1.s:st_turn.s:st_ft.s:st_ff1.s:st_ln1,
             \ 'off': s:st_off,
-            \ '60':  s:st_level1,
+            \ '60':  s:mode_str.s:st_filename2.s:st_turn.s:st_ft.s:st_ff2.s:st_ln2,
             \ })
 
 let s:def_statusline = &statusline

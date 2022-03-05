@@ -180,6 +180,7 @@ function! <SID>my_color_set()
         highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249 gui=NONE guifg=#121212 guibg=#b2b2b2
     endif
 
+    highlight StatusLine_ST cterm=None ctermfg=233 ctermbg=219 gui=NONE guifg=#101010 guibg=#e8a5f0
     highlight StatusLine_FT cterm=bold ctermfg=253 ctermbg=17 gui=Bold guifg=#dadada guibg=#00005f
     highlight StatusLine_FF cterm=bold ctermfg=253 ctermbg=88 gui=Bold guifg=#dadada guibg=#870000
     highlight StatusLine_LN cterm=bold ctermfg=253 ctermbg=29 gui=Bold guifg=#dadada guibg=#00875f
