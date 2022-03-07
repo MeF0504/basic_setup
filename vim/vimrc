@@ -63,8 +63,8 @@ catch
     echomsg 'meflib not found. So, no files are sourced.'
 endtry
 
-function! s:source_file(filename) abort
-    if exists('s:vimdir') && filereadable(s:vimdir..a:filename)
+function! s:source_file(filename, conf) abort
+    if exists('s:vimdir') && filereadable(s:vimdir..a:filename) && a:conf
         execute 'source '..s:vimdir..a:filename
         return 1
     endif
@@ -72,31 +72,31 @@ function! s:source_file(filename) abort
 endfunction
 
 " local settings before source vimrcs
-call s:source_file('rcdir/vimrc_mine.pre')
+call s:source_file('rcdir/vimrc_mine.pre', 1)
 " option settings
-call s:source_file('rcdir/vimrc_options.vim')
+call s:source_file('rcdir/vimrc_options.vim', 1)
 " map(key) settings
-call s:source_file('rcdir/vimrc_maps.vim')
+call s:source_file('rcdir/vimrc_maps.vim', 1)
 " simple commands and short functions
-call s:source_file('rcdir/vimrc_commands.vim')
+call s:source_file('rcdir/vimrc_commands.vim', !exists('g:vscode'))
 " auto command settings
-call s:source_file('rcdir/vimrc_autocmds.vim')
+call s:source_file('rcdir/vimrc_autocmds.vim', !exists('g:vscode'))
 " status line setting
-call s:source_file('rcdir/vimrc_statusline.vim')
+call s:source_file('rcdir/vimrc_statusline.vim', !exists('g:vscode'))
 " tab line setting
-call s:source_file('rcdir/vimrc_tabline.vim')
+call s:source_file('rcdir/vimrc_tabline.vim', !exists('g:vscode'))
 " (almost) self-made functions
-call s:source_file('rcdir/vimrc_plugin.vim')
+call s:source_file('rcdir/vimrc_plugin.vim', !exists('g:vscode'))
 " vim dein (plugin manager) setting
-call s:source_file('rcdir/vimrc_dein.vim')
+call s:source_file('rcdir/vimrc_dein.vim', !exists('g:vscode'))
 " color settings
 if !has('gui_running') && (&t_Co == 256)
-    if !s:source_file('rcdir/vimrc_color.vim')
+    if !s:source_file('rcdir/vimrc_color.vim', !exists('g:vscode'))
         " In case vim doesn't source vimrc_color.vim
         colorscheme evening
         highlight Normal ctermbg=0 guibg=Black
     endif
 endif
 " local settings after source vimrcs
-call s:source_file('rcdir/vimrc_mine.post')
+call s:source_file('rcdir/vimrc_mine.post', 1)
 
