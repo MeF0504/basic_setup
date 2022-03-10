@@ -83,7 +83,7 @@ let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]"
 let s:st_ln2 = "%#StatusLine_LN# %l/%L"
 
 " パスを除くファイル名 修正フラグ 読込専用 ヘルプ preview_window
-let s:st_off = "%t%m%{&readonly?'[RO]':''}%h%w"
+let s:st_off = "%t %m%{&readonly?'[RO]':''}%h%w"
 
 """ the variable to administer statusline
 " '_': basic statusline
