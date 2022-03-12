@@ -354,7 +354,7 @@ def main_conf(args):
     if args.force:
         pyopt += ' --force'
     up_stup = \
-            "alias update_setup='cd {}".format(args.fpath) +\
+            "alias update_setup='cd {}".format(args.fpath.replace('\\', '\\\\').replace(' ', '\ ')) +\
             " && git pull" +\
             " && echo \"update? (y/[n])\"" +\
             " && read YN" +\

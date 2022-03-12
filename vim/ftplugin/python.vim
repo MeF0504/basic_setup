@@ -3,7 +3,7 @@ scriptencoding utf-8
 
 "gfの検索にPYTHON PATHを追加
 if exists("$PYTHONPATH")
-    execute 'set path+=' . substitute(expand($PYTHONPATH), ':', ',', 'g')
+    execute 'set path+=' . substitute(substitute(expand($PYTHONPATH), ':', ',', 'g'), ' ', '\\ ', 'g')
 endif
 set suffixesadd+=.py
 " error format for quickfix https://vim-jp.org/vimdoc-ja/quickfix.html#errorformats
