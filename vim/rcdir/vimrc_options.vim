@@ -141,7 +141,7 @@ if exists('s:vimdir')
     if !isdirectory(s:test_vim_dir)
         call mkdir(s:test_vim_dir)
     endif
-    execute 'set runtimepath^=' . s:test_vim_dir
+    execute 'set runtimepath^=' . substitute(s:test_vim_dir, ' ', '\\ ', 'g')
 endif
 
 " terminal mode設定

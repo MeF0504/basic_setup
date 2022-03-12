@@ -52,7 +52,7 @@ if !isdirectory(s:dein_path)
 endif
 
 if &runtimepath !~# '/dein.vim'
-    execute "set runtimepath+="..s:dein_path
+    execute "set runtimepath+="..substitute(s:dein_path, ' ', '\\ ', 'g')
 endif
 
 " Required: begin settings

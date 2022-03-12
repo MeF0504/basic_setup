@@ -2,8 +2,8 @@
 
 # read shell-independent Run Command file.
 # maybe update to set the path dynamically.
-if [[ -f ${HOME}/.posixShellRC ]]; then
-    source $HOME/.posixShellRC
+if [[ -f "${HOME}/.posixShellRC" ]]; then
+    source "$HOME/.posixShellRC"
 else
     echo "[posix shell rc] not found!"
 fi
@@ -23,11 +23,11 @@ _PS_TIME='\[\e[92m\]\D{%H:%M}\[\e[0m\]'
 _PS_USER=' \[\e[1m\e[31m\]\u\[\e[0m\]'
 
 # git information
-GITPROMPT=${HOME}/.bash/git-prompt.sh
-if [[ -f $GITPROMPT ]]; then
+GITPROMPT="${HOME}/.bash/git-prompt.sh"
+if [[ -f "$GITPROMPT" ]]; then
     # unstaged (*) and staged (+) are shown
     export GIT_PS1_SHOWDIRTYSTATE=1
-    source $GITPROMPT
+    source "$GITPROMPT"
     _PS_GIT='$(__git_ps1 " (%s)")'
 fi
 
@@ -83,6 +83,6 @@ export HISTIGNORE=pwd:history:ls
 
 ##{{{ load user .bashrc configuration file
 #
-[ -f $HOME/.bash/bashrc.mine ] && source $HOME/.bash/bashrc.mine
+[[ -f "$HOME/.bash/bashrc.mine" ]] && source "$HOME/.bash/bashrc.mine"
 # }}}
 

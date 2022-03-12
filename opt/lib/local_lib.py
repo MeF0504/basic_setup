@@ -2,6 +2,7 @@
 from __future__ import print_function
 import os
 import os.path as op
+import platform
 
 def mkdir(path):
     path = op.expanduser(path)
@@ -20,6 +21,8 @@ def chk_cmd(cmd, verbose=False):   # check the command exists.
         if verbose: print("PATH isn't found in environment values.")
         return False
 
+    if platform.uname()[0] == 'Windows':
+        cmd = '{}.exe'.format(cmd)
     for path in os.environ['PATH'].split(os.pathsep):
         cmd_path = op.join(path, cmd)
         if op.isfile(cmd_path) and os.access(cmd_path, os.X_OK):

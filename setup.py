@@ -125,6 +125,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
     shift = '  '
     if link:    #link
         cmd = 'os.symlink("{}", "{}")'.format(file1, file2)
+        cmd = cmd.replace('\\', '\\\\')
         comment = 'linked {} --> {}'.format(name1, home_cut(file2))
 
         if not condition:
@@ -139,6 +140,7 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
 
     else:       #copy
         cmd = 'shutil.copy("{}", "{}")'.format(file1, file2)
+        cmd = cmd.replace('\\', '\\\\')
         comment = 'copy {} --> {}'.format(name1, home_cut(file2))
 
         if not condition:
