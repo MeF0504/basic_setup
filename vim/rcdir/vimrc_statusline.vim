@@ -67,9 +67,14 @@ endfunction
 " 修正フラグ 読込専用 ヘルプ preview_window
 let s:st_status = "%#StatusLine_ST#%M%R%H%W%#StatusLine#"
 " ファイル名&file status (最大長 windowの2/3)
-let s:st_filename1 = printf(" %%{%%'%s'.%s.'%s %s %s'%%} ", '%.', 'winwidth(0)*2/3', '(%f', s:st_status, '%)')
+if has('patch-8.2.2854') || has('nvim-0.5.0')
+    let s:st_filename1 = printf(" %%{%%'%s'.%s.'%s %s %s'%%} ", '%.', 'winwidth(0)*2/3', '(%f', s:st_status, '%)')
+else
+    " 古いとサポートしていないっぽい
+    let s:st_filename1 = " %f". s:st_status." "
+endif
 " winwidthが60より短い場合はファイル名のみ
-let s:st_filename2 = " %t".s:st_status." "
+let s:st_filename2 = " %t ".s:st_status." "
 " 切り詰め位置 右端に表示
 let s:st_turn = "%<%="
 " filetype
