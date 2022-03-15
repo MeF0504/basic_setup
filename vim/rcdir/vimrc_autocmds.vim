@@ -181,7 +181,8 @@ function! <SID>open_files_tab() abort
     normal! 1gt
 endfunction
 
-autocmd local VimEnter * ++once call <SID>open_files_tab()
+" 色々と誤作動（というか余分なtab）が起きるっぽい
+" autocmd local VimEnter * ++once call <SID>open_files_tab()
 
 " file type毎のtags file 設定
 autocmd local FileType * execute printf('setlocal tags^=.%s_tags;', &filetype)
