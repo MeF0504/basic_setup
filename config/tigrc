@@ -1,0 +1,7 @@
+
+# default https://github.com/jonas/tig/blob/master/tigrc
+# reference? https://qiita.com/sfus/items/063797a1dd8fdc7d032f
+
+# ↓ https://qiita.com/lighttiger2505/items/383e28f093b03188fc6b
+bind main D !sh -c "git difftool %(commit)~ %(commit)"
+

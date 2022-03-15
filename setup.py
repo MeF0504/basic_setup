@@ -291,6 +291,7 @@ def main_conf(args):
                 'gitignore_global':'~/.gitignore_global', \
                 'screenrc':'~/.screenrc', \
                 'marp/marp_MeFtheme.css':'~/.marp/marp_MeFtheme.css', \
+                'tigrc': '~/.tigrc', \
                 }
 
     files_linux = {\
