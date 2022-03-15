@@ -79,6 +79,8 @@ call s:source_file('rcdir/vimrc_options.vim', 1)
 call s:source_file('rcdir/vimrc_maps.vim', 1)
 " simple commands and short functions
 call s:source_file('rcdir/vimrc_commands.vim', !exists('g:vscode'))
+" vim commands for VS code.
+call s:source_file('rcdir/vimrc_vscode_command.vim', exists('g:vscode'))
 " auto command settings
 call s:source_file('rcdir/vimrc_autocmds.vim', !exists('g:vscode'))
 " status line setting
