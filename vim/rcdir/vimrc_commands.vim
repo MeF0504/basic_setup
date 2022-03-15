@@ -123,15 +123,16 @@ command! -nargs=1 Echopand echo expand(<f-args>)
 " }}}
 
 " ipython を呼ぶ用 {{{
-if executable('ipython')
-    command! Ipython botright terminal ipython
-endif
-if executable('ipython2')
-    command! Ipython2 botright terminal ipython2
-endif
-if executable('ipython3')
-    command! Ipython3 botright terminal ipython3
-endif
+let s:ipythons = {'ipython':'Ipython', 'ipython2':'Ipython2', 'ipython3':'Ipython3'}
+for s:ipy in keys(s:ipythons)
+    if executable(s:ipy)
+        if has('nvim')
+            execute printf('command! %s botright new | setlocal nonumber | terminal %s', s:ipythons[s:ipy], s:ipy)
+        else
+            execute printf('command! %s botright terminal %s', s:ipythons[s:ipy], s:ipy)
+        endif
+    endif
+endfor
 " }}}
 
 " Spell check {{{
