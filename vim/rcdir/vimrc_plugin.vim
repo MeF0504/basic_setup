@@ -140,17 +140,28 @@ function! s:file_list() abort
         " for in # of tab
         for i in range(1,tabpagenr('$'))
             let l:disp = 0
-            let l:tab_files = printf("%3d", i)
-            let l:tab_files .= ' '
+            let l:tab_files = printf("%3d ", i)
             " for in # of window in 1 tab
             for j in range(1, tabpagewinnr(i, '$'))
                 let win_winID = win_getid(j, i)
+                if has('popupwin')
+                    if match(popup_list(), win_winID) != -1
+                        " popup window
+                        continue
+                    endif
+                elseif has('nvim')
+                    if !empty(nvim_win_get_config(win_winID)['relative'])
+                        " floating window
+                        continue
+                    endif
+                endif
                 let bufn = tabpagebuflist(i)[j-1]
                 if (v:version > 802) || ((v:version == 802) && has('patch1727'))
                     let curpos = getcurpos(win_winID)
-                    let line_col = ' ('.curpos[1].'-'.curpos[2].')'
+                    let line_col = printf(' (%d-%d)', curpos[1], curpos[2])
                 else
-                    let line_col = ''
+                    let ln = line('.', win_winID)
+                    let line_col = printf(' (%d)', ln)
                 endif
                 "check if 'search word' in file name.
                 if match(l:fnames[i . "-" . bufn], l:search_name) != -1
@@ -158,7 +169,7 @@ function! s:file_list() abort
                 endif
 
                 let mod = getbufvar(bufn, '&modified') ? '[+]' : ''
-                let l:flist =  printf('[ %s%s%s ]', l:fnames[i..'-'..bufn], mod, line_col)
+                let l:flist = printf('[ %s%s%s ]', l:fnames[i..'-'..bufn], mod, line_col)
                 if getbufvar(bufn, '&filetype') == 'qf'
                     let l:flist = '[ QuickFix' . mod . ']'
                 endif
