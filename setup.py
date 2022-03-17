@@ -51,9 +51,9 @@ def fcopy(file1,file2,link=False,force=False,**kwargs):
         dt1 = datetime.datetime.fromtimestamp(os.stat(file1).st_mtime)
         dt2 = datetime.datetime.fromtimestamp(os.stat(file2).st_mtime)
 
-        with open(file1, 'r') as f:
+        with open(file1, 'r', encoding='utf-8') as f:
             str1 = f.readlines()
-        with open(file2, 'r') as f:
+        with open(file2, 'r', encoding='utf-8') as f:
             str2 = f.readlines()
 
         shift = '   |'
