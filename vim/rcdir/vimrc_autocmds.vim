@@ -158,7 +158,7 @@ if has('nvim')
         let g:terminal_color_9 = term_cols[9]
         let g:terminal_color_10 = term_cols[10]
         let g:terminal_color_11 = term_cols[11]
-        let g:terminal_color_12 = term_cols[0]
+        let g:terminal_color_12 = term_cols[12]
         let g:terminal_color_13 = term_cols[13]
         let g:terminal_color_14 = term_cols[14]
         let g:terminal_color_15 = term_cols[15]
