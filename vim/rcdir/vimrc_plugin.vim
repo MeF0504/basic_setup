@@ -628,20 +628,27 @@ function! s:open_term_win(opts)
     " term_startでgit for windowsのbashを実行する
     let term_opt = split(a:opts, ' ')
     if len(term_opt) == 0
-        let term_opt = ['bash.exe', '-l']
+        let term_opt = meflib#get_local_var('win_term_cmd', ['bash.exe', '-l'])
         let term_fin = 'close'
     else
         let term_fin = 'open'
     endif
-    call term_start(term_opt, {
-                \ 'term_name': '!'.term_opt[0].'_'.s:term_cnt,
-                \ 'term_finish': term_fin,
-                \ 'curwin': v:true,
-                \ 'cwd': $USERPROFILE,
-                \ 'env': env,
-                \ 'ansi_colors': meflib#basic#get_term_color(),
-                \ })
-    let s:term_cnt += 1
+    if has('nvim')
+        call termopen(term_opt, {
+                    \ 'env': env,
+                    \ })
+        startinsert
+    else
+        call term_start(term_opt, {
+                    \ 'term_name': '!'.term_opt[0].'_'.s:term_cnt,
+                    \ 'term_finish': term_fin,
+                    \ 'curwin': v:true,
+                    \ 'cwd': $USERPROFILE,
+                    \ 'env': env,
+                    \ 'ansi_colors': meflib#basic#get_term_color(),
+                    \ })
+        let s:term_cnt += 1
+    endif
 endfunction
 
 function! s:Terminal(...) abort
@@ -683,9 +690,9 @@ function! s:Terminal(...) abort
             return
         else
             if win_opt == 'S'
-                botright split
+                botright new
             elseif win_opt == 'V'
-                botright vertical split
+                botright vertical new
             elseif win_opt == 'F'
                 tabnew
             else
@@ -710,9 +717,9 @@ function! s:Terminal(...) abort
                 return
             else
                 if win_opt == 'S'
-                    botright split
+                    botright new
                 elseif win_opt == 'V'
-                    botright vertical split
+                    botright vertical new
                 elseif win_opt == 'F'
                     tabnew
                 else
