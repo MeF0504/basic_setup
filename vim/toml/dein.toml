@@ -140,120 +140,11 @@ else
     let s:sid = expand('<SID>')
 endif
 
-" markdown {{{
-function! s:qrun_markdown() abort
-    let q_config = {}
-    let l:is_marp = 0
-    for l:ln in getline(1, 5)
-        if stridx(l:ln, 'marp') != -1
-            let l:is_marp = 1
-            break
-        endif
-    endfor
-    if l:is_marp == 1
-        " make prezantation by markdown [https://github.com/marp-team/marp-cli]
-        if executable('marp') == 1
-            let exec_cmd = 'marp'
-            let exec_opt = ''
-        else
-            let exec_cmd = 'npx'
-            let exec_opt = "\\\\\\@marp-team/marp-cli"
-        endif
-        let marp_theme_dir = get(g:, 'marp_dir', expand('$HOME/.marp'))
-        if isdirectory(marp_theme_dir)
-            let exec_opt .= ' --theme-set '.marp_theme_dir
-        endif
-        let q_config['command'] = exec_cmd
-
-        if has('terminal') || exists('s:quickrun_nvimterm')
-            " http://chrome.half-moon.org/43.html
-            if has('mac')
-                let open_server = 'open -n -a Google\\ Chrome --args -incognito http://localhost:8080/'
-            elseif has('win32') || has('win64')
-                let open_server = '"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe" --new-window --incognito http://localhost:8080/'
-            else
-                let open_server = 'firefox http://localhost:8080/ &'
-            endif
-
-            let q_config['exec'] = [open_server, '%c '.exec_opt.' --server %s:h']
-            if exists('s:quickrun_nvimterm')
-                let q_config['runner'] = 'nvimterm'
-            else
-                let q_config['runner'] = 'terminal'
-            endif
-            let q_config['runner/opener'] = 'tabnew'
-        else
-            if has('mac')
-                let open_pdf = 'open %s:r.pdf'
-            elseif has('win32') || has('win64')
-                let open_pdf = 'start %s:r.pdf'
-            else    " Linux
-                let open_pdf = 'xdg-open %s:r.pdf'
-            endif
-
-            let q_config['exec'] = ['%c '.exec_opt.' --pdf --allow-local-files', open_pdf]
-        endif
-    endif
-    call quickrun#run(q_config)
+function! <SID>echo_err() abort
+    echohl ErrorMsg
+    echo 'qrun_func is not set.'
+    echohl None
 endfunction
-" }}}
-
-" {{{ tex
-if has('mac')
-    function! s:qrun_tex() abort
-        " fileの場所まで移動はQucickRunの後にcd出来なかったので断念
-        " let cur_dir = getcwd()
-        " cd %:h
-        " texの中間ファイルはbuild dirに突っ込む
-        let build_dir = expand('%:h').'/__build__'
-        if !isdirectory(build_dir)
-            call mkdir(build_dir, 'p')
-        endif
-
-        " main.texがあったらそっちをコンパイル
-        if filereadable(expand('%:h').'/main.tex')
-            let main_file = expand('%:h').'/main.tex'
-            let pdf_file = fnamemodify(main_file, ':r').'.pdf'
-            let build_pdf = build_dir.'/'.fnamemodify(pdf_file, ':t')
-        else
-            let main_file = expand('%')
-            let pdf_file = expand('%:r').'.pdf'
-            let build_pdf = build_dir.'/'.expand('%:t:r').'.pdf'
-        endif
-        " bibliography があり，かつ.bibがmain.texより新しければbibもコンパイル
-        let cmp_bib = 0
-        let bib_line = match(readfile(main_file), 'bibliography')
-        if bib_line != -1
-            let bra_idx = match(readfile(main_file)[bib_line+1], '{')
-            let bib_file = readfile(main_file)[bib_line+1][bra_idx+1:-2].'.bib'
-            if getftime(main_file) < getftime(bib_file)
-                let cmp_bib = 1
-            endif
-        endif
-
-
-        let q_config = {
-            \ 'command': 'ptex2pdf',
-            \ 'exec'   : [],
-            \ }
-        if cmp_bib == 1
-            let q_config['exec'] += [
-                \ 'uplatex -output-directory '.build_dir.' '.fnamemodify(main_file, ':r'),
-                \ 'upbibtex '.build_dir.'/'.fnamemodify(main_file, ':r'),
-                \ 'uplatex -output-directory '.build_dir.' '.fnamemodify(main_file, ':r'),
-                \ ]
-        endif
-        let q_config['exec'] += [
-            \ '%c -l -u -ot "-synctex=1 -interaction=nonstopmode" '.main_file.' -output-directory '.build_dir,
-            \ 'mv '.build_pdf.' '.pdf_file,
-            \ 'echo "\\n move from '.build_pdf.' to '.pdf_file.'"',
-            \ s:open_tex_pdf.pdf_file,
-            \ ]
-
-        call quickrun#run(q_config)
-    endfunction
-endif
-" }}}
 
 function! <SID>quickrun_wrapper()
     if &modified
@@ -265,12 +156,17 @@ function! <SID>quickrun_wrapper()
         return
     endif
     cclose
-    let qrun_ft_func = s:sid.'qrun_'.&filetype
-    if exists('*'.qrun_ft_func)
-        execute 'call '.qrun_ft_func.'()'
-    else
-        QuickRun
+    let qrun_conf = findfile('.qrun_conf.vim', expand('%:h')..';')
+    if !empty(qrun_conf)
+        echomsg printf('configure file is found ... %s', qrun_conf)
+        execute 'source '..qrun_conf
+        if meflib#get_local_var('qrun_opt', 0)
+            call call(meflib#get_local_var('qrun_func', s:sid..'echo_err'), [])
+            return
+        endif
     endif
+    echomsg 'use default settings.'
+    QuickRun
 endfunction
 " }}}
 
@@ -303,7 +199,7 @@ if = '''has('nvim')'''
 hook_add = '''
 "" vim-auickrun-runner-nvimterm {{{
 " to check nvimterm is loaded
-let s:quickrun_nvimterm = 1
+call meflib#set_local_var('quickrun_nvimterm', 1)
 " }}}
 '''
 
