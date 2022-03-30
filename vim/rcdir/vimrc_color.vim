@@ -113,6 +113,10 @@ endfunction
 
 function! <SID>my_color_set_evening()
     highlight Normal ctermbg=233 guibg=#121212
+        highlight DiffAdd ctermfg=15 ctermbg=4 guifg=White guibg=DarkBlue
+        highlight DiffChange ctermfg=15 ctermbg=5 guifg=White guibg=DarkMagenta
+        highlight DiffDelete ctermfg=15 ctermbg=6 guifg=White guibg=DarkCyan
+        highlight DiffText ctermfg=15 ctermbg=9 guifg=White guibg=Red
 endfunction
 
 function! <SID>my_color_set_night_owl()

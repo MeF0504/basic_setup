@@ -97,6 +97,10 @@ if !has('gui_running') && (&t_Co == 256)
         " In case vim doesn't source vimrc_color.vim
         colorscheme evening
         highlight Normal ctermbg=0 guibg=Black
+        highlight DiffAdd ctermfg=15 ctermbg=4 guifg=White guibg=DarkBlue
+        highlight DiffChange ctermfg=15 ctermbg=5 guifg=White guibg=DarkMagenta
+        highlight DiffDelete ctermfg=15 ctermbg=6 guifg=White guibg=DarkCyan
+        highlight DiffText ctermfg=15 ctermbg=9 guifg=White guibg=Red
     endif
 endif
 " local settings after source vimrcs
