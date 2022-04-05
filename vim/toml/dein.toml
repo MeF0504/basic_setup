@@ -142,7 +142,7 @@ endif
 
 function! <SID>echo_err() abort
     echohl ErrorMsg
-    echo 'qrun_func is not set.'
+    echo '[qrun-wrapper] qrun_func is not set.'
     echohl None
 endfunction
 
@@ -158,14 +158,14 @@ function! <SID>quickrun_wrapper()
     cclose
     let qrun_conf = findfile('.qrun_conf.vim', expand('%:h')..';')
     if !empty(qrun_conf)
-        echomsg printf('configure file is found ... %s', qrun_conf)
+        echomsg printf('[qrun-wrapper] configure file is found ... %s', qrun_conf)
         execute 'source '..qrun_conf
         if meflib#get_local_var('qrun_opt', 0)
             call call(meflib#get_local_var('qrun_func', s:sid..'echo_err'), [])
             return
         endif
     endif
-    echomsg 'use default settings.'
+    echomsg '[qrun-wrapper] use default settings.'
     QuickRun
 endfunction
 " }}}
