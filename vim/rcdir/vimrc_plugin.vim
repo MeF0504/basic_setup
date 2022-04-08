@@ -970,6 +970,21 @@ function! <SID>echo_gregrep_help()
     echo "e.g. :GREgrep wd=<are> dir=opened"
 endfunction
 
+function! <SID>grep_comp(arglead, cmdline, cursorpos) abort
+    let arglead = tolower(a:arglead)
+    let cmdline = tolower(a:cmdline)
+    let cur_opt = split(cmdline, ' ')[-1]
+    if match(cur_opt, '=') == -1
+        let opts = ['wd=', 'dir=', 'ex=']
+        return filter(opts, '!stridx(tolower(v:val), arglead)')
+    elseif cur_opt =~ 'dir='
+        let arg = split(cur_opt, '=', 1)[1]
+        return map(split(glob(arg..'*'), '\n'), "'dir='..v:val")
+    else
+        return []
+    endif
+endfunction
+
 function! <SID>Mygrep(...)
     let def_dir = '.'
     if meflib#get_local_var('get_top_dir', 0) == 1
@@ -1062,8 +1077,8 @@ function! <SID>Mygrep(...)
         echo "not supported grepprg"
     endif
 endfunction
-command! -nargs=? Gregrep call <SID>Mygrep(<f-args>)
-command! -nargs=? GREgrep Gregrep
+command! -nargs=? -complete=customlist,<sid>grep_comp Gregrep call <SID>Mygrep(<f-args>)
+command! -nargs=? -complete=customlist,<sid>grep_comp GREgrep Gregrep
 
 
 " }}}
