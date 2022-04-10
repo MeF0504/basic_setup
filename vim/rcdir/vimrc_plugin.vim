@@ -973,10 +973,10 @@ endfunction
 function! <SID>grep_comp(arglead, cmdline, cursorpos) abort
     let arglead = tolower(a:arglead)
     let cmdline = tolower(a:cmdline)
-    let cur_opt = split(cmdline, ' ')[-1]
-    if match(cur_opt, '=') == -1
-        let opts = ['wd=', 'dir=', 'ex=']
-        return filter(opts, '!stridx(tolower(v:val), arglead)')
+    let cur_opt = split(cmdline, ' ', 1)[-1]
+    if (match(cur_opt, '=') == -1)
+        let opts = ['wd', 'dir', 'ex']
+        return filter(map(opts, 'v:val."="'), '!stridx(tolower(v:val), arglead) && match(cmdline, v:val)==-1')
     elseif cur_opt =~ 'dir='
         let arg = split(cur_opt, '=', 1)[1]
         return map(split(glob(arg..'*'), '\n'), "'dir='..v:val")
