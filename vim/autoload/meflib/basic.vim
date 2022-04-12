@@ -4,13 +4,7 @@ scriptencoding utf-8
 " get vim config directory
 function! meflib#basic#get_conf_dir() abort
     if has('nvim')
-        if has('win32') || has('win64')
-            let vimdir = expand('~/AppData/Local/nvim/')
-        elseif exists("$XDG_CONFIG_HOME")
-            let vimdir = expand($XDG_CONFIG_HOME . "/nvim/")
-        else
-            let vimdir = expand('~/.config/nvim/')
-        endif
+        let vimdir = stdpath('config')..'/'
     else
         if has('win32') || has('win64')
             let vimdir = expand('~/vimfiles/')

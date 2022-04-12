@@ -10,10 +10,6 @@ augroup deinLocal
     autocmd!
 augroup END
 
-if !exists("$XDG_CONFIG_HOME")
-    let $XDG_CONFIG_HOME = expand("~/.config")
-endif
-
 let s:vim_dir = meflib#basic#get_conf_dir()
 let s:dein_dir = s:vim_dir. 'dein/'
 

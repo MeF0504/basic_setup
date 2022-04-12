@@ -411,10 +411,15 @@ def main_vim(args):
         end = ''
     print('\n'+fg+'@ '+vimdir+end+'\n')
 
-    if uname == 'Windows':
+    if args.vim_prefix is not None:
+        vim_config_path = args.vim_prefix
+        vimrc = op.join(vim_config_path, 'init.vim')
+    elif uname == 'Windows':
         vim_config_path = op.expanduser('~/vimfiles')
+        vimrc = op.expanduser('~/_vimrc')
     else:
         vim_config_path = op.join(args.conf_home, 'nvim')
+        vimrc = op.join(vim_config_path, 'init.vim')
     rcpath = op.join(vim_config_path, 'rcdir')
     ftpath = op.join(vim_config_path, 'ftplugin')
     tmpath = op.join(vim_config_path, 'toml')
@@ -423,13 +428,14 @@ def main_vim(args):
     mkdir(op.join(vim_config_path, "swp"))
 
     files = get_files(args.setup_file, 'vim', args.prefix)
-    if uname == 'Windows':
-        vimrc = op.expanduser('~/_vimrc')
-    else:
-        vimrc = op.join(vim_config_path, 'init.vim')
     if files is None:
         if args.type == 'min':
-            files = {'rcdir/vimrc_basic.vim':vimrc}
+            files = {'vimrc': vimrc,
+                    'rcdir/vimrc_options.vim': op.join(rcpath, 'vimrc_options.vim'),
+                    'rcdir/vimrc_maps.vim': op.join(rcpath, 'vimrc_maps.vim'),
+                    'autoload/meflib.vim': op.join(alpath, 'meflib.vim'),
+                    'autoload/meflib/basic.vim': op.join(libpath, 'basic.vim'),
+                    }
         else:
             files = {'vimrc':vimrc}
             for fy in glob.glob(op.join(vimdir, 'rcdir', "*")):
@@ -493,6 +499,7 @@ def main_vim(args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--prefix',help='install directory',default=op.expanduser('~/opt'))
+    parser.add_argument('--vim_prefix',help='Vim configuration directory',default=None)
     parser.add_argument('--download',help='download some files (from git)',action='store_true')
     parser.add_argument('--link',help="link files instead of copy",action='store_true')
     parser.add_argument('--test',help="don't copy, just show command",action='store_true')
