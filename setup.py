@@ -354,6 +354,8 @@ def main_conf(args):
         pyopt += ' --link'
     if args.force:
         pyopt += ' --force'
+    if args.vim_prefix is not None:
+        pyopt += ' --vim_prefix '+args.vim_prefix
     up_stup = \
             "alias update_setup='cd {}".format(args.fpath.replace('\\', '\\\\').replace(' ', '\ ')) +\
             " && git pull" +\
