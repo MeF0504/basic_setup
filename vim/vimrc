@@ -46,6 +46,7 @@ syntax enable
 " about SID
 " :scriptnames          ... List all sourced script names
 " :echo expand('<SID>') ... Get the current file SID
+" :filter {str} {cmd} ... restrict the output.
 
 " about <Cmd>
 " mapping でcmd modeに移るときは : よりも <Cmd> の方が良さそう
@@ -55,6 +56,13 @@ syntax enable
 "" }}}
 if exists('$VIM_TERMINAL')
     echoerr 'Warning!! vim is already opened!!'
+endif
+
+if 0
+    augroup viminitlocal
+        autocmd SourcePre * call meflib#debug#debug_log(expand('<afile>'), 'source pre')
+        autocmd SourcePost * call meflib#debug#debug_log(expand('<afile>'), 'source post')
+    augroup END
 endif
 
 try
