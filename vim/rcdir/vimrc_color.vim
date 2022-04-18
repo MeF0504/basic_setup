@@ -239,8 +239,8 @@ function! <SID>my_color_set()
     " }}}
 
     " indent-guides {{{
-    highlight IndentGuidesOdd ctermbg=17 guibg=#003851
-    highlight IndentGuidesEven ctermbg=54 guibg=#3f0057
+    highlight IndentGuidesOdd ctermfg=17 ctermbg=17 guifg=#003851 guibg=#003851
+    highlight IndentGuidesEven ctermfg=54 ctermbg=54 guifg=#3f0057 guibg=#3f0057
     " }}}
 
     " anzu {{{
