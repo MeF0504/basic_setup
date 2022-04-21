@@ -62,6 +62,10 @@ endif
 [[plugins]]
 repo = 'MeF0504/hicolcode.vim'
 
+# git log 表示用plugin
+[[plugins]]
+repo = 'MeF0504/gitewer.vim'
+
 # neosnippet用のsnipets
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
@@ -701,20 +705,20 @@ let g:fern_search_ctrlp_open_file = 1
 '''
 # }}}
 
-# tig 用 plugin
-[[plugins]]
-repo = 'iberianpig/tig-explorer.vim'
-if = '''executable('tig')'''
-hook_add = '''
-"" tig-explorer {{{
-command! TigDiff vertical TigOpenFileWithCommit! HEAD % 0
-" }}}
-'''
+# # tig 用 plugin
+# [[plugins]]
+# repo = 'iberianpig/tig-explorer.vim'
+# if = '''executable('tig')'''
+# hook_add = '''
+# "" tig-explorer {{{
+# command! TigDiff vertical TigOpenFileWithCommit! HEAD % 0
+# " }}}
+# '''
 
-# required for tig-explorer
-[[plugins]]
-repo = 'rbgrouleff/bclose.vim'
-if = '''executable('tig') && has('nvim')'''
+# # required for tig-explorer
+# [[plugins]]
+# repo = 'rbgrouleff/bclose.vim'
+# if = '''executable('tig') && has('nvim')'''
 
 # indent のlevelを見やすくする
 [[plugins]]
