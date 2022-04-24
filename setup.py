@@ -425,6 +425,7 @@ def main_vim(args):
     rcpath = op.join(vim_config_path, 'rcdir')
     ftpath = op.join(vim_config_path, 'ftplugin')
     tmpath = op.join(vim_config_path, 'toml')
+    plgpath = op.join(vim_config_path, 'vimplug')
     alpath = op.join(vim_config_path, 'autoload')
     libpath = op.join(vim_config_path, 'autoload/meflib')
     mkdir(op.join(vim_config_path, "swp"))
@@ -449,6 +450,9 @@ def main_vim(args):
             for fy in glob.glob(op.join(vimdir, 'toml', "*")):
                 fname = op.basename(fy)
                 files[fy] = op.join(tmpath, fname)
+            for fy in glob.glob(op.join(vimdir, 'vimplug', "*")):
+                fname = op.basename(fy)
+                files[fy] = op.join(plgpath, fname)
             for fy in glob.glob(op.join(vimdir, 'autoload', "*")):
                 if op.isfile(fy):
                     fname = op.basename(fy)
@@ -456,6 +460,11 @@ def main_vim(args):
             for fy in glob.glob(op.join(vimdir, 'autoload/meflib', "*")):
                 fname = op.basename(fy)
                 files[fy] = op.join(libpath, fname)
+
+    if args.download:
+        print('\ndownload vimPlug')
+        mkdir(alpath)
+        urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim', op.join(alpath, 'plug.vim'))
 
     if (args.type != 'min') and args.download and chk_cmd('sh', True):
         print('\nclone dein')
