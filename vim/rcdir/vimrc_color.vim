@@ -326,5 +326,9 @@ augroup colorLocal
     autocmd FileType zsh ++once highlight link zshStringDelimiter Quote
 augroup END
 
-execute 'colorscheme '..meflib#get_local_var('colorscheme', 'evening')
+try
+    execute 'colorscheme '..meflib#get_local_var('colorscheme', 'evening')
+catch
+    colorsche evening
+endtry
 
