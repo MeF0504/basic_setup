@@ -979,7 +979,8 @@ function! <SID>grep_comp(arglead, cmdline, cursorpos) abort
         return filter(map(opts, 'v:val."="'), '!stridx(tolower(v:val), arglead) && match(cmdline, v:val)==-1')
     elseif cur_opt =~ 'dir='
         let arg = split(cur_opt, '=', 1)[1]
-        return map(split(glob(arg..'*'), '\n'), "'dir='..v:val")
+        let files = split(glob(arg..'*'), '\n')
+        return map(files+['opened'], "'dir='..v:val")
     else
         return []
     endif
@@ -1035,7 +1036,7 @@ function! <SID>Mygrep(...)
             let bufnrs = tabpagebuflist(i)
             for bn in bufnrs
                 let bufname = bufname(bn)
-                if match(l:dir, bufname) == -1
+                if (match(l:dir, bufname) == -1) && filereadable(bufname)
                     let l:dir .= ' '.bufname
                 endif
             endfor
