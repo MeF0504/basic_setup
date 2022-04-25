@@ -877,7 +877,7 @@ if meflib#get_local_var('load_plugin',0,'denops') " &&(denops#server#status()=='
     Plug 'Shougo/ddc.vim'
     " {{{
     function! s:ddc_hook() abort
-        echomsg 'ddc set'
+        echomsg 'ddc setting start'
         " add sources
         call ddc#custom#patch_global('sources', ['file', 'vim-lsp', 'around', 'neosnippet'])
         " set basic options
@@ -964,9 +964,10 @@ if meflib#get_local_var('load_plugin',0,'denops') " &&(denops#server#status()=='
         " on.
         call ddc#enable()
 
+        echomsg 'ddc setting finish'
     endfunction
     " autocmd PlugLocal User ddc.vim call s:ddc_hook()
-    autocmd PlugLocal InsertEnter * call s:ddc_hook()
+    autocmd PlugLocal InsertEnter * ++once call s:ddc_hook()
     " }}}
 endif
 
