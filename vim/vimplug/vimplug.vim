@@ -415,6 +415,9 @@ if !meflib#get_local_var('load_plugin', 0, 'hitspop')
     let s:anzu_bufid = -1
     let s:anzu_popid = -1
     function! <SID>Show_anzu_float() abort
+        if !exists('g:loaded_anzu')
+            return
+        endif
         let anzu_str = anzu#search_status()
         if empty(anzu_str)
             call meflib#floating#close(s:anzu_popid)
