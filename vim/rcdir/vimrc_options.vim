@@ -109,6 +109,10 @@ catch
 endtry
 " terminalでもgui colorを使う
 " set termguicolors " if needed
+" windowsでgit bashから起動するとバグることが多々あるので。
+if has('win32') || has('win64')
+    set shell=cmd.exe
+endif
 
 " directory 設定系
 " doc directoryを追加
