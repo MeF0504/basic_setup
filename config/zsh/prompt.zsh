@@ -11,7 +11,7 @@ function get_ip() {
             local ip="$( timeout "$to" curl ifconfig.io 2> /dev/null)"
         elif [[ "$(which timeout_local &> /dev/null; echo $?)" -eq 0 ]]; then
             # echo "2-${to}" >&2
-            local ip="$( timeout_local "$to" curl ifconfig.io 2> /dev/null)"
+            local ip="$( timeout_local "$to" 'curl ifconfig.io 2> /dev/null')"
         else
             # echo "3-${to}" >&2
             local ip="$(curl --max-time "$to" ifconfig.io 2> /dev/null)"
