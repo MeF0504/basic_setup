@@ -459,7 +459,7 @@ autocmd PlugLocal FileType tex
 
 " vim の document
 " if !has('nvim')
-Plug 'vim-jp/vimdoc-ja', PlugCond(!has('nvim'))
+Plug 'vim-jp/vimdoc-ja'
 " {{{
 " https://gorilla.netlify.app/articles/20190427-vim-help-jp.html
 " helpを日本語優先にする
@@ -469,23 +469,23 @@ autocmd PlugLocal User vimdoc-ja set helplang=ja
 " }}}
 " endif
 
-" command line と検索時に補完してくれるplugin
-Plug 'gelguy/wilder.nvim'
-" {{{
-" from https://github.com/gelguy/wilder.nvim
-" call wilder#enable_cmdline_enter()
+" " command line と検索時に補完してくれるplugin
+" Plug 'gelguy/wilder.nvim'
+" " {{{
+" " from https://github.com/gelguy/wilder.nvim
+" " call wilder#enable_cmdline_enter()
 
-set wildcharm=<Tab>
+" set wildcharm=<Tab>
 
-" 検索時のみ補完する
-" autocmd PlugLocal User wilder.vim call wilder#setup({
-autocmd PlugLocal VimEnter * call wilder#setup({
-    \ 'enable_cmdline_enter': v:true,
-    \ 'modes': ['/', '?'],
-    \ 'next_key': '<Tab>',
-    \ 'previous_key': '<S-Tab>',
-    \ })
-" }}}
+" " 検索時のみ補完する
+" " autocmd PlugLocal User wilder.vim call wilder#setup({
+" autocmd PlugLocal VimEnter * call wilder#setup({
+"     \ 'enable_cmdline_enter': v:true,
+"     \ 'modes': ['/', '?'],
+"     \ 'next_key': '<Tab>',
+"     \ 'previous_key': '<S-Tab>',
+"     \ })
+" " }}}
 
 " if !has('nvim')
 " for deoplete and wilder
