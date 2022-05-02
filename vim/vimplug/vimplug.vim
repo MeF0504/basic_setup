@@ -139,18 +139,32 @@ function! <SID>quickrun_wrapper()
         return
     endif
     cclose
-    let qrun_conf = findfile('.qrun_conf.vim', expand('%:h')..';')
+    let qrun_conf = findfile('.qrun_conf.vim', expand('%:p:h')..';')
     if !empty(qrun_conf)
         echomsg printf('[qrun-wrapper] configure file is found ... %s', qrun_conf)
+        call meflib#set_local_var('qrun_finished', 0)
         execute 'source '..qrun_conf
-        if meflib#get_local_var('qrun_opt', 0)
-            call call(meflib#get_local_var('qrun_func', s:sid..'echo_err'), [])
+        if meflib#get_local_var('qrun_finished', 0)
             return
         endif
     endif
     echomsg '[qrun-wrapper] use default settings.'
     QuickRun
 endfunction
+" }}}
+
+" .qrun_conf.vim sample {{{
+" let make_file = findfile('Makefile', expand('%:p:h')..';')
+" if !empty(make_file)
+"     let q_config = {
+"                 \ 'command': 'make',
+"                 \ 'exec' : ['%c']
+"     }
+"     call quickrun#run(q_config)
+"     call meflib#set_local_var('qrun_finished', 1)
+" else
+"     call meflib#set_local_var('qrun_finished', 0)
+" endif
 " }}}
 
 nnoremap <silent> <Leader>q :call <SID>quickrun_wrapper()<CR>
