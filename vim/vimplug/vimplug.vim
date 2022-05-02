@@ -369,6 +369,9 @@ Plug 'tyru/current-func-info.vim'
 autocmd PlugLocal VimEnter * call s:cfi_hook()
 "" current-func-info.vim {{{
 function! s:cfi_hook() abort
+    if !exists('g:loaded_cfi')
+        return
+    endif
     let s:cfi_bufid = -1
     let s:cfi_popid = -1
     function! <SID>Show_cfi()
@@ -826,6 +829,9 @@ function! <SID>select_float()
 endfunction
 
 function! s:vim_lsp_hook() abort
+    if !exists('g:lsp_loaded')
+        return
+    endif
     let lsp_map1 =  maparg('<c-]>', 'n')
     if empty(lsp_map1)
         let lsp_map1 = '<c-]>'
