@@ -12,3 +12,7 @@ Plug 'haishanh/night-owl.vim'
 
 Plug 'MeF0504/inkpotter.vim'
 
+Plug 'ulwlu/elly.vim'
+
+Plug 'chasinglogic/modus-themes-vim'
+
