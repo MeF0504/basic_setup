@@ -114,16 +114,20 @@ if !exists('$SSH_CONNECTION') && meflib#get_local_var('auto_ime_off', 0)==1   " 
     if has('win32') || has('win64')
         autocmd local InsertLeave * set iminsert=0
     elseif has('mac')
-            " 参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
+        " 参考：https://rcmdnk.com/blog/2017/03/10/computer-mac-vim/
+        let s:imeoff = ['osascript', '-e', 'tell application "System Events" to key code {102}']
         if has('nvim')
-            " nvimはjob_startが無い？っぽいのでとりあえず昔の方法で
-            let s:imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
-            autocmd local InsertLeave * call system(s:imeoff)
+            " nvimはjob_startが無い？っぽいのでとりあえず昔の方法で → jobstartで
+            " let s:imeoff = 'osascript -e "tell application \"System Events\" to key code 102"'
+            " autocmd local InsertLeave * call system(s:imeoff)
+            autocmd local InsertLeave * call jobstart(
+                        \ s:imeoff,
+                        \ {'stdin': 'null', 'stderr_buffered': v:false, 'stdout_buffered': v:false})
         else
             " 参考2: https://moyapro.com/2019/04/14/disable-ime-on-mac-vim/
             " 非同期で動かせるらしい
             autocmd local InsertLeave * call job_start(
-                        \ ['osascript', '-e', 'tell application "System Events" to key code {102}'],
+                        \ s:imeoff,
                         \ #{in_io: 'null', out_io: 'null', err_io: 'null'})
         endif
     endif
