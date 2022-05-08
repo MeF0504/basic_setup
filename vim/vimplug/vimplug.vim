@@ -170,7 +170,6 @@ endfunction
 nnoremap <silent> <Leader>q :call <SID>quickrun_wrapper()<CR>
 " }}}
 
-" if has('nvim')
 " job runner of quickrun for Neovim (unofficial)
 Plug 'lambdalisue/vim-quickrun-neovim-job', PlugCond(has('nvim'))
 "" vim-auickrun-neovim-job {{{
@@ -192,7 +191,6 @@ Plug 'statiolake/vim-quickrun-runner-nvimterm', PlugCond(has('nvim'))
 " to check nvimterm is loaded
 autocmd PlugLocal User vim-quickrun-runner-nvimterm call meflib#set_local_var('quickrun_nvimterm', 1)
 " }}}
-" endif
 
 " 背景透過
 Plug 'miyakogi/seiya.vim'
@@ -486,38 +484,17 @@ autocmd PlugLocal User vimdoc-ja set helplang=ja
 " }}}
 " endif
 
-" " command line と検索時に補完してくれるplugin
-" Plug 'gelguy/wilder.nvim'
-" " {{{
-" " from https://github.com/gelguy/wilder.nvim
-" " call wilder#enable_cmdline_enter()
-
-" set wildcharm=<Tab>
-
-" " 検索時のみ補完する
-" " autocmd PlugLocal User wilder.vim call wilder#setup({
-" autocmd PlugLocal VimEnter * call wilder#setup({
-"     \ 'enable_cmdline_enter': v:true,
-"     \ 'modes': ['/', '?'],
-"     \ 'next_key': '<Tab>',
-"     \ 'previous_key': '<S-Tab>',
-"     \ })
-" " }}}
-
-" if !has('nvim')
-" for deoplete and wilder
+" for deoplete
 " vim でneovim 用 pluginを動かすためのplugin
 Plug 'roxma/nvim-yarp', PlugCond(!has('nvim'))
 
-" for deoplete and wilder
+" for deoplete
 " vim でneovim 用 pluginを動かすためのplugin
 Plug 'roxma/vim-hug-neovim-rpc', PlugCond(!has('nvim'))
-" endif
 
 " visual modeで選択した範囲をgcでコメントアウトしてくれるplugin
 Plug 'tpope/vim-commentary'
 
-" if meflib#get_local_var('load_plugin', 0, 'hitspop')
 " 検索のhit数をpopupで表示するplugin
 Plug 'obcat/vim-hitspop', PlugCond(meflib#get_local_var('load_plugin', 0, 'hitspop'))
 " {{{
@@ -529,7 +506,6 @@ if meflib#get_local_var('load_plugin', 0, 'hitspop')
     let g:hitspop_column = 'winright'
 endif
 " }}}
-" endif
 
 " 英語翻訳プラグイン
 " https://qiita.com/gorilla0513/items/37c80569ff8f3a1c721c
@@ -550,13 +526,11 @@ highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline
 " }}}
 
 " An ecosystem of Vim/Neovim which allows developers to write plugins in Deno. だそうです
-" if meflib#get_local_var('load_plugin', 0, 'denops')
 " for ddc.vim
 Plug 'vim-denops/denops.vim', PlugCond(meflib#get_local_var('load_plugin', 0, 'denops'))
 
 " denops test
 Plug 'vim-denops/denops-helloworld.vim', PlugCond(meflib#get_local_var('load_plugin', 0, 'denops'))
-" endif
 
 " Filer
 " fern plugins {{{
@@ -657,20 +631,6 @@ endfunction
 autocmd PlugLocal Colorscheme * call s:set_fern_hi()
 "" }}}
 
-" if executable('tig')
-"     " tig 用 plugin
-"     Plug 'iberianpig/tig-explorer.vim'
-"     "" tig-explorer {{{
-"     command! TigDiff vertical TigOpenFileWithCommit! HEAD % 0
-"     " }}}
-
-"     if has('nvim')
-"         " required for tig-explorer
-"         Plug 'rbgrouleff/bclose.vim'
-"     endif
-" endif
-" }}}
-
 " indent のlevelを見やすくする
 Plug 'nathanaelkane/vim-indent-guides'
 "" indent-guides {{{
@@ -687,15 +647,11 @@ let g:indent_guides_default_mapping = 0
 " }}}
 
 " vim 新機能用pluginっぽい
-" if has('patch-8.1.1705')
 " showcase of new vim functions.
 Plug 'vim/killersheep', PlugCond(has('patch-8.1.1705'))
-" endif
 
 " toml 用 syntax
-" if !has('patch-8.2.2106')
 Plug 'cespare/vim-toml', PlugCond(has('patch-8.2.2106'))
-" endif
 
 " ファイルの一部のsyntax highlightを違うfiletypeにする
 Plug 'inkarkat/vim-SyntaxRange', PlugCond(1, {'for': ['toml', 'markdown']})
