@@ -39,7 +39,9 @@ def sort_col(cols, sort):
         elif sort == 'green':
             col_nums.append(b)
         elif sort == 'all':
-            col_nums.append(r*256*256+g*256+b)
+            # col_nums.append(r*256*256+g*256+b)
+            # col_nums.append(r+g+b)
+            col_nums.append(r*0.299+g*0.587+b*0.114)
     idx = np.argsort(col_nums)
     return names[idx]
 
