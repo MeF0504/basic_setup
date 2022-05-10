@@ -4,6 +4,7 @@ scriptencoding utf-8
 let s:pop_index = 0
 let s:pop_ids = []
 function! meflib#floating#open(bufid, popid, str_list, config) abort
+    " {{{ config list (not completed)
     " popid < 0; create new popup window, >= 0; update contents
     " bufid < 0; create new buffer, >= 0; use this buffer.
     " NOTE: currently this function is not aim to display normal buffer.
@@ -48,6 +49,7 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
     " mapping
     " filtermode
     " callback
+    " }}}
 
     let bufid = -1
     let popid = -1
@@ -158,7 +160,11 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
             call nvim_win_set_config(popid, nv_config)
         endif
         if has_key(a:config, 'highlight')
-            call win_execute(popid, "setlocal winhighlight=Normal:".a:config['highlight'])
+            call win_execute(popid, printf(
+                        \ "setlocal winhighlight=Normal:%s,Search:%s",
+                        \ a:config['highlight'], a:config['highlight']))
+        else
+            call win_execute(popid, "setlocal winhighlight=Search:Normal")
         endif
     endif
 
