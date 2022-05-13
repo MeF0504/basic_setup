@@ -69,7 +69,25 @@ function! s:outliner_hook() abort
                     \ 'pattern': '^[a-z]*map ',
                     \ 'line': 0,
                     \},
+                \ 'Plug': {
+                    \ 'pattern': '^Plug ',
+                    \ 'line': 0,
+                    \},
                 \}, 'keep')
+    let g:outliner_settings.bib = get(g:outliner_settings, 'bib', {})
+    call extend(g:outliner_settings.bib, {
+                \ 'article': {
+                    \ 'pattern': '^@article',
+                    \ 'line': 0,
+                    \},
+                \ }, 'keep')
+    let g:outliner_settings.sshconfig = get(g:outliner_settings, 'sshconfig', {})
+    call extend(g:outliner_settings.sshconfig, {
+                \ 'host': {
+                    \ 'pattern': '^Host\>',
+                    \ 'line': 0,
+                    \ },
+                \ }, 'keep')
 
     let g:outliner_settings.python = get(g:outliner_settings, 'python', {})
     call extend(g:outliner_settings.python, {

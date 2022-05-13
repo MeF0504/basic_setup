@@ -1124,95 +1124,95 @@ command! CCP call <SID>chk_current_position()
 nnoremap <silent> <leader>c :CCP<CR>
 " }}}
 
-" ファイル内の特定のkeywordを探してlistする {{{
-function! s:show_table_of_contents()
-    if &filetype == 'toml'
-        let tables = {
-                    \ 'plugins': '^repo',
-                    \ }
-    elseif &filetype == 'python'
-        let tables = {
-                    \ 'functions': '^\s*def',
-                    \ 'classes': '^\s*class',
-                    \ }
-    elseif &filetype == 'sshconfig'
-        let tables = {
-                    \ 'Hosts': '^Host\>',
-                    \ }
-    elseif &filetype == 'bib'
-        let tables = {
-                    \ 'articles' : '^@article',
-                    \ }
-    else
-        let tables = {}
-    endif
-
-    cal extend(tables, meflib#get_local_var('table_of_contents', {}), 'force')
-
-    if len(tables) == 0
-        return
-    endif
-
-    let res_table = {}
-    let res_table['filename'] = expand('%') " (for jumping, future plan?)
-    for k in keys(tables)
-        let tmp_res = []
-        for lnum in range(1, line('$'))
-            let l_str = getline(lnum)
-            if match(l_str, tables[k]) != -1
-                let tmp_res = add(tmp_res, "\t".l_str.' @ '.lnum)
-            endif
-        endfor
-        let res_table[k] = tmp_res
-    endfor
-
-    pclose
-    silent 10split Table_of_Contents
-    0,$delete _
-    setlocal noswapfile
-    setlocal nobackup
-    setlocal noundofile
-    setlocal buftype=nofile
-    setlocal nowrap
-    setlocal nobuflisted
-    setlocal previewwindow
-    setlocal nofoldenable
-    setlocal foldmethod=indent
-    setlocal foldenable
-
-    for k in keys(res_table)
-        if k == 'filename'
-            continue
-        endif
-        if len(res_table[k]) == 0
-            continue
-        endif
-        execute "syntax keyword ToCkeys ".k
-        call append(line('$'), k)
-        call append(line('$'), res_table[k])
-    endfor
-    0delete _
-    0   " move to top
-    normal! zR
-
-    " map test
-    nnoremap <silent> <buffer> <expr> <CR> <SID>jump_line().'<CR>'
-    wincmd p
-endfunction
-
-function! <SID>jump_line()
-    let line = getline('.')
-    let idx = strridx(line, '@')
-    if idx == -1
-        return ''
-    endif
-    let lnum = line[idx+2:]
-    let ret = ':wincmd p | '.lnum
-    return ret
-endfunction
-command! ShowTableOfContents call s:show_table_of_contents()
-nnoremap <silent> <leader>y :ShowTableOfContents<CR>
-" }}}
+"" " ファイル内の特定のkeywordを探してlistする {{{
+"" function! s:show_table_of_contents()
+""     if &filetype == 'toml'
+""         let tables = {
+""                     \ 'plugins': '^repo',
+""                     \ }
+""     elseif &filetype == 'python'
+""         let tables = {
+""                     \ 'functions': '^\s*def',
+""                     \ 'classes': '^\s*class',
+""                     \ }
+""     elseif &filetype == 'sshconfig'
+""         let tables = {
+""                     \ 'Hosts': '^Host\>',
+""                     \ }
+""     elseif &filetype == 'bib'
+""         let tables = {
+""                     \ 'articles' : '^@article',
+""                     \ }
+""     else
+""         let tables = {}
+""     endif
+"" 
+""     cal extend(tables, meflib#get_local_var('table_of_contents', {}), 'force')
+"" 
+""     if len(tables) == 0
+""         return
+""     endif
+"" 
+""     let res_table = {}
+""     let res_table['filename'] = expand('%') " (for jumping, future plan?)
+""     for k in keys(tables)
+""         let tmp_res = []
+""         for lnum in range(1, line('$'))
+""             let l_str = getline(lnum)
+""             if match(l_str, tables[k]) != -1
+""                 let tmp_res = add(tmp_res, "\t".l_str.' @ '.lnum)
+""             endif
+""         endfor
+""         let res_table[k] = tmp_res
+""     endfor
+"" 
+""     pclose
+""     silent 10split Table_of_Contents
+""     0,$delete _
+""     setlocal noswapfile
+""     setlocal nobackup
+""     setlocal noundofile
+""     setlocal buftype=nofile
+""     setlocal nowrap
+""     setlocal nobuflisted
+""     setlocal previewwindow
+""     setlocal nofoldenable
+""     setlocal foldmethod=indent
+""     setlocal foldenable
+"" 
+""     for k in keys(res_table)
+""         if k == 'filename'
+""             continue
+""         endif
+""         if len(res_table[k]) == 0
+""             continue
+""         endif
+""         execute "syntax keyword ToCkeys ".k
+""         call append(line('$'), k)
+""         call append(line('$'), res_table[k])
+""     endfor
+""     0delete _
+""     0   " move to top
+""     normal! zR
+"" 
+""     " map test
+""     nnoremap <silent> <buffer> <expr> <CR> <SID>jump_line().'<CR>'
+""     wincmd p
+"" endfunction
+"" 
+"" function! <SID>jump_line()
+""     let line = getline('.')
+""     let idx = strridx(line, '@')
+""     if idx == -1
+""         return ''
+""     endif
+""     let lnum = line[idx+2:]
+""     let ret = ':wincmd p | '.lnum
+""     return ret
+"" endfunction
+"" command! ShowTableOfContents call s:show_table_of_contents()
+"" nnoremap <silent> <leader>y :ShowTableOfContents<CR>
+"" " }}}
 
 "  XPM test function {{{
 function <SID>xpm_loader()
