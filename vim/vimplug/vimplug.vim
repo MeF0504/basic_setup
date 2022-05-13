@@ -45,6 +45,47 @@ endif
 " color codeに色を付ける
 Plug 'MeF0504/hicolcode.vim', PlugCond(1, {'on': 'ColCode'})
 
+" 簡易，柔軟 outliner生成器
+Plug 'MeF0504/outliner.vim', PlugCond(1, {'on': 'OutLiner'})
+" {{{ outliner.vim
+function! s:outliner_hook() abort
+    let g:outliner_settings = get(g:, 'outliner_settings', {})
+
+    let g:outliner_settings._ = get(g:outliner_settings, '_', {})
+    call extend(g:outliner_settings._, {
+                \ 'function': {
+                    \ 'pattern': '^{',
+                    \ 'line': -1,
+                    \}
+                \}, 'keep')
+
+    let g:outliner_settings.vim = get(g:outliner_settings, 'vim', {})
+    call extend(g:outliner_settings.vim, {
+                \ 'function': {
+                    \ 'pattern': '^\s*function',
+                    \ 'line': 0,
+                    \ },
+                \ 'map': {
+                    \ 'pattern': '^[a-z]*map ',
+                    \ 'line': 0,
+                    \},
+                \}, 'keep')
+
+    let g:outliner_settings.python = get(g:outliner_settings, 'python', {})
+    call extend(g:outliner_settings.python, {
+                \ 'function': {
+                    \ 'pattern': '^\s*def',
+                    \ 'line': 0,
+                    \},
+                \ 'class': {
+                    \ 'pattern': '^\s*class',
+                    \ 'line': 0,
+                    \},
+                \}, 'keep')
+endfunction
+" }}}
+autocmd PlugLocal User outliner.vim call s:outliner_hook()
+
 " neosnippet用のsnipets
 Plug 'Shougo/neosnippet-snippets'
 
@@ -67,7 +108,7 @@ function! s:quickrun_hook() abort
         \ 'outputter/error/error'   : 'multi',
         \ 'hook/time/enable'        : 1,
         \ },
-        \ 'force')
+        \ 'keep')
     if has('job')
         let g:quickrun_config._.runner = 'job'
         let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
