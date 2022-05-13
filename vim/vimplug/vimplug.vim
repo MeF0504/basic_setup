@@ -713,7 +713,7 @@ Plug 'vim/killersheep', PlugCond(has('patch-8.1.1705'))
 Plug 'cespare/vim-toml', PlugCond(has('patch-8.2.2106'))
 
 " ファイルの一部のsyntax highlightを違うfiletypeにする
-Plug 'inkarkat/vim-SyntaxRange', PlugCond(1, {'for': ['toml', 'markdown']})
+Plug 'inkarkat/vim-SyntaxRange', PlugCond(1, {'for': ['toml', 'markdown', 'vim']})
 " {{{
 function! s:syntaxRange_hook() abort
     if &filetype == 'toml'
@@ -724,6 +724,9 @@ function! s:syntaxRange_hook() abort
     elseif &filetype == 'markdown'
         call s:syntax_range_md()
         autocmd PlugLocal BufWinEnter *.md call s:syntax_range_md()
+    elseif &filetype == 'vim'
+        call s:syntax_range_vim()
+        autocmd PlugLocal BufWinEnter *.vim call s:syntax_range_vim()
     endif
 endfunction
 " https://qiita.com/tmsanrinsha/items/9670628aef3144c7919b
@@ -738,6 +741,11 @@ endfunction
 
 function! s:syntax_range_md() abort
     call SyntaxRange#Include('^\s*```\s*vim', '```', 'vim', '')
+endfunction
+
+function! s:syntax_range_vim() abort
+    let start = '^\s*python[3x]*.*EOL$'
+    call SyntaxRange#Include(start, 'EOL', 'python', '')
 endfunction
 autocmd PlugLocal User vim-SyntaxRange call s:syntaxRange_hook()
 " autocmd PlugLocal VimEnter * call s:syntaxRange_hook()
