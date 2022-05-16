@@ -139,6 +139,11 @@ function! <SID>my_color_set_inkpotter()
     highlight HiTagImports ctermfg=225 guifg=#f0b7f0
 endfunction
 
+function! <SID>my_color_set_modus_operandi() abort
+    " ctermがない？
+    highlight DiffDelete gui=Bold guifg=#939393 guibg=#e0ffff
+endfunction
+
 function! <SID>my_color_set()
     """ general settings
     " link {{{
@@ -158,10 +163,17 @@ function! <SID>my_color_set()
     " }}}
 
     " tab line {{{
-    highlight TabLine cterm=None ctermfg=248 ctermbg=16 guifg=#a8a8a8 guibg=#000000
-    highlight TabLineSel cterm=Bold,underline ctermfg=15 ctermbg=243 gui=Bold,Underline guifg=White guibg=#767676
-    highlight TabLineFill cterm=Bold ctermfg=45 ctermbg=16 gui=Bold guifg=#00d7ff guibg=#000000
-    highlight TabLineDir cterm=Bold ctermfg=24 ctermbg=250 gui=Bold guifg=#005f87 guibg=#bcbcbc
+    if &background == 'dark'
+        highlight TabLine cterm=None ctermfg=248 ctermbg=16 guifg=#a8a8a8 guibg=#000000
+        highlight TabLineSel cterm=Bold,underline ctermfg=15 ctermbg=243 gui=Bold,Underline guifg=White guibg=#767676
+        highlight TabLineFill cterm=Bold ctermfg=45 ctermbg=16 gui=Bold guifg=#00d7ff guibg=#000000
+        highlight TabLineDir cterm=Bold ctermfg=24 ctermbg=250 gui=Bold guifg=#005f87 guibg=#bcbcbc
+    else
+        highlight TabLine cterm=None ctermfg=236 ctermbg=81 guifg=#303030 guibg=#84cafa
+        highlight TabLineSel cterm=Bold,underline ctermfg=16 ctermbg=253 gui=Bold,Underline guifg=Black guibg=#dadada
+        highlight TabLineFill cterm=Bold ctermfg=20 ctermbg=159 gui=Bold guifg=#0000f0 guibg=#a5f0ff
+        highlight TabLineDir cterm=Bold ctermfg=191 ctermbg=24 gui=Bold guifg=#e0f377 guibg=#00538f
+    endif
     " }}}
 
     " 全角スペース表示 {{{
@@ -184,11 +196,19 @@ function! <SID>my_color_set()
         highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249 gui=NONE guifg=#121212 guibg=#b2b2b2
     endif
 
-    highlight StatusLine_ST cterm=None ctermfg=10 ctermbg=236 gui=NONE guifg=#00FF00 guibg=#333333
-    highlight StatusLine_FT cterm=bold ctermfg=253 ctermbg=17 gui=Bold guifg=#dadada guibg=#00005f
-    highlight StatusLine_FF cterm=bold ctermfg=253 ctermbg=88 gui=Bold guifg=#dadada guibg=#870000
-    highlight StatusLine_LN cterm=bold ctermfg=253 ctermbg=29 gui=Bold guifg=#dadada guibg=#00875f
-    highlight StatusLine_CHK cterm=bold ctermfg=233 ctermbg=190 gui=Bold guifg=#121212 guibg=#d7ff00
+    if &background == 'dark'
+        highlight StatusLine_ST cterm=None ctermfg=10 ctermbg=236 gui=NONE guifg=#00FF00 guibg=#333333
+        highlight StatusLine_FT cterm=bold ctermfg=253 ctermbg=17 gui=Bold guifg=#dadada guibg=#00005f
+        highlight StatusLine_FF cterm=bold ctermfg=253 ctermbg=88 gui=Bold guifg=#dadada guibg=#870000
+        highlight StatusLine_LN cterm=bold ctermfg=253 ctermbg=29 gui=Bold guifg=#dadada guibg=#00875f
+        highlight StatusLine_CHK cterm=bold ctermfg=233 ctermbg=190 gui=Bold guifg=#121212 guibg=#d7ff00
+    else
+        highlight StatusLine_ST cterm=None ctermfg=29 ctermbg=253 gui=NONE guifg=#008050 guibg=#dddddd
+        highlight StatusLine_FT cterm=bold ctermfg=236 ctermbg=68 gui=Bold guifg=#303030 guibg=#5090ff
+        highlight StatusLine_FF cterm=bold ctermfg=236 ctermbg=210 gui=Bold guifg=#303030 guibg=#ffa0a0
+        highlight StatusLine_LN cterm=bold ctermfg=236 ctermbg=119 gui=Bold guifg=#303030 guibg=#70ff80
+        highlight StatusLine_CHK cterm=bold ctermfg=233 ctermbg=190 gui=Bold guifg=#121212 guibg=#d7ff00
+    endif
     highlight Mode_N cterm=bold ctermfg=253 ctermbg=0 gui=Bold guifg=#dadada guibg=Black
     highlight Mode_I cterm=bold ctermfg=253 ctermbg=9 gui=Bold guifg=#dadada guibg=Red
     highlight Mode_V cterm=bold ctermfg=253 ctermbg=13 gui=Bold guifg=#dadada guibg=Fuchsia
@@ -239,12 +259,24 @@ function! <SID>my_color_set()
     " }}}
 
     " indent-guides {{{
-    highlight IndentGuidesOdd ctermfg=17 ctermbg=17 guifg=#003851 guibg=#003851
-    highlight IndentGuidesEven ctermfg=54 ctermbg=54 guifg=#3f0057 guibg=#3f0057
+    if &background == 'dark'
+        highlight IndentGuidesOdd ctermfg=17 ctermbg=17 guifg=#003851 guibg=#003851
+        highlight IndentGuidesEven ctermfg=54 ctermbg=54 guifg=#3f0057 guibg=#3f0057
+    else
+        highlight IndentGuidesOdd ctermfg=147 ctermbg=147 guifg=#a0f8f8 guibg=#a0f8f8
+        highlight IndentGuidesEven ctermfg=219 ctermbg=219 guifg=#f8a0f8 guibg=#f8a0f8
+    endif
     " }}}
 
     " anzu {{{
     highlight link AnzuPopup hitspopNormal
+    " }}}
+
+    " Gitewer {{{
+    if &background == 'light'
+        highlight GitewerDate ctermfg=135 guifg=#af8700
+        highlight GitewerCommit ctermfg=243 guifg=#767676
+    endif
     " }}}
 
     " colorscheme specified setings
