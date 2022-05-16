@@ -198,7 +198,7 @@ function! <SID>my_color_set()
     " }}}
 
     " その他 {{{
-    highlight ToCkeys ctermfg=10 guifg=Lime
+    " highlight ToCkeys ctermfg=10 guifg=Lime
     if (&background == 'light') && exists(':SeiyaDisable')
         silent SeiyaDisable
     endif
