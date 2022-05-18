@@ -92,11 +92,11 @@ function! s:outliner_hook() abort
     let g:outliner_settings.python = get(g:outliner_settings, 'python', {})
     call extend(g:outliner_settings.python, {
                 \ 'function': {
-                    \ 'pattern': '^\s*def',
+                    \ 'pattern': '^\s*def\s',
                     \ 'line': 0,
                     \},
                 \ 'class': {
-                    \ 'pattern': '^\s*class',
+                    \ 'pattern': '^\s*class\s',
                     \ 'line': 0,
                     \},
                 \}, 'keep')
