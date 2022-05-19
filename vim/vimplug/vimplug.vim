@@ -532,7 +532,6 @@ autocmd PlugLocal FileType tex
 "}}}
 
 " vim の document
-" if !has('nvim')
 Plug 'vim-jp/vimdoc-ja'
 " {{{
 " https://gorilla.netlify.app/articles/20190427-vim-help-jp.html
@@ -541,7 +540,6 @@ Plug 'vim-jp/vimdoc-ja'
 autocmd PlugLocal User vimdoc-ja set helplang=ja
 " endif
 " }}}
-" endif
 
 " for deoplete
 " vim でneovim 用 pluginを動かすためのplugin
