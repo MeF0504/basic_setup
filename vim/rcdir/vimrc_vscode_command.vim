@@ -8,6 +8,8 @@ if !exists('g:vscode')
     finish
 endif
 
+set foldcolumn=0
+
 " vim searching overwapping {{{
 nnoremap / <Cmd>call VSCodeNotify('actions.find')<CR>
 nnoremap n <Cmd>call VSCodeNotify('editor.action.nextMatchFindAction')<CR>
@@ -24,3 +26,7 @@ nmap <leader>q <Cmd>QuickRun<CR>
 
 command! Replace call VSCodeNotify('editor.action.startFindReplaceAction')
 " }}}
+
+" commentary-like map
+nnoremap gcc <Cmd>call VSCodeNotify('editor.action.commentLine')<CR>
+vnoremap gc <Cmd>call VSCodeNotifyVisual('editor.action.commentLine', 0)<CR>
