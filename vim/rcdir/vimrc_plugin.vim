@@ -9,7 +9,7 @@ scriptencoding utf-8
 function! <SID>leader_map()
     map <Leader>
 endfunction
-nnoremap <silent> <Leader><Leader> :call <SID>leader_map()<CR>
+nnoremap <silent> <Leader><Leader> <Cmd>call <SID>leader_map()<CR>
 " }}}
 
 "単語のハイライト情報をget "{{{
@@ -216,7 +216,7 @@ endfunction
 
 command! Tls call s:file_list()
 
-nnoremap <silent> <leader>l :Tls<CR>
+nnoremap <silent> <leader>l <Cmd>Tls<CR>
 
 " }}}
 
@@ -829,7 +829,7 @@ endfunction
 
 command! -nargs=? ChkExist call <SID>ChkFileExist(<f-args>)
 vnoremap <Leader>f v:ChkExist<CR>
-nnoremap <expr> <Leader>f ':ChkExist ' . expand('<cfile>') . '<CR>'
+nnoremap <expr> <Leader>f '<Cmd>ChkExist ' . expand('<cfile>') . '<CR>'
 " }}}
 
 " 行単位で差分を取る {{{
@@ -1121,7 +1121,7 @@ function! <SID>chk_current_position()
 endfunction
 
 command! CCP call <SID>chk_current_position()
-nnoremap <silent> <leader>c :CCP<CR>
+nnoremap <silent> <leader>c <Cmd>CCP<CR>
 " }}}
 
 "  XPM test function {{{

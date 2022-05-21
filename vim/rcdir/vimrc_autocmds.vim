@@ -66,7 +66,7 @@ endif
 autocmd local QuickFixCmdPost *grep* cwindow
 
 "quick fix windowでc-tで新しいtabで開く
-autocmd local Filetype qf nnoremap <buffer><silent> <c-t> <c-w><s-t><CR>:cclose<CR>
+autocmd local Filetype qf nnoremap <buffer><silent> <c-t> <c-w><s-t><CR><Cmd>cclose<CR>
 
 " .mine系ファイルのtype設定
 autocmd local BufEnter *bashrc* set filetype=sh

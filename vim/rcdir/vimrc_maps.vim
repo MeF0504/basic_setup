@@ -34,15 +34,15 @@ endif
 if exists('g:vscode')
     nnoremap <silent> T <Cmd>call VSCodeNotify('workbench.action.quickOpen')<CR>
 else
-    nnoremap T :tabnew<space>
+    nnoremap T :<c-u>tabnew<space>
 endif
 
 " quick fix window
 if !exists('g:vscode')
-    nnoremap <silent> co :botright copen<CR>
-    nnoremap <silent> cc :cclose<CR>
-    nnoremap <silent> cn :cnewer<CR>
-    nnoremap <silent> cp :colder<CR>
+    nnoremap <silent> co <Cmd>botright copen<CR>
+    nnoremap <silent> cc <Cmd>cclose<CR>
+    nnoremap <silent> cn <Cmd>cnewer<CR>
+    nnoremap <silent> cp <Cmd>colder<CR>
 endif
 
 " search
@@ -55,11 +55,11 @@ nmap g<Left> gT
 nmap gl gt
 nmap gh gT
 " ↓ <num>gt に合わせて0gt
-nnoremap <silent> 0gt :tablast<CR>
-nnoremap <silent> g> :tabmove +1<CR>
-nnoremap <silent> g< :tabmove -1<CR>
-nnoremap <silent> g$> :tabmove $<CR>
-nnoremap <silent> g0< :tabmove 0<CR>
+nnoremap <silent> 0gt <Cmd>tablast<CR>
+nnoremap <silent> g> <Cmd>tabmove +1<CR>
+nnoremap <silent> g< <Cmd>tabmove -1<CR>
+nnoremap <silent> g$> <Cmd>tabmove $<CR>
+nnoremap <silent> g0< <Cmd>tabmove 0<CR>
 
 " 画面自体を左右に移動
 nnoremap <expr> H winwidth('.')/3.'zh'
@@ -114,15 +114,15 @@ else
     " 候補が複数ある場合にリストを表示
     nnoremap <c-]> g<c-]>
     " 分割で表示
-    nnoremap <silent> g<c-]> :vertical stjump<CR>
+    nnoremap <silent> g<c-]> <Cmd>vertical stjump<CR>
     " preview で開く
-    nnoremap <silent> <c-p> :execute "ptjump "..expand("<cword>")<CR>
+    nnoremap <silent> <c-p> <Cmd>execute "ptjump "..expand("<cword>")<CR>
     "jump先をnew tabで開く
-    nnoremap <silent> <c-j> :execute "tab tjump "..expand("<cword>")<CR>
+    nnoremap <silent> <c-j> <Cmd>execute "tab tjump "..expand("<cword>")<CR>
 endif
 
 " \で検索のハイライトを消す
-nnoremap <silent> \ :nohlsearch<CR>
+nnoremap <silent> \ <Cmd>nohlsearch<CR>
 
 " 1行複製をよく使うので...
 nnoremap yp yyp
@@ -138,7 +138,7 @@ function! <SID>close_con()
             \ || (&filetype=='qf')
             \ || (&filetype=='help')
 endfunction
-nnoremap <silent> <expr> q <SID>close_con()==1 ? ':quit<CR>' : 'q'
+nnoremap <silent> <expr> q <SID>close_con()==1 ? '<Cmd>quit<CR>' : 'q'
 
 " terminal mode設定
 if has('terminal') || has('nvim')

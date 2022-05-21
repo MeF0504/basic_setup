@@ -226,7 +226,7 @@ endfunction
 " endif
 " }}}
 
-nnoremap <silent> <Leader>q :call <SID>quickrun_wrapper()<CR>
+nnoremap <silent> <Leader>q <Cmd>call <SID>quickrun_wrapper()<CR>
 " }}}
 
 " job runner of quickrun for Neovim (unofficial)
@@ -320,7 +320,7 @@ function! Open_taglist() abort
     let g:Tlist_Use_Right_Window = l:tlist_right_old
     " }}}
 endfunction
-nnoremap <silent> <Leader>t :call Open_taglist()<CR>
+nnoremap <silent> <Leader>t <Cmd>call Open_taglist()<CR>
 
 function! s:tlist_all_comp(arglead, cmdline, cursorpos) abort
     " {{{
@@ -431,7 +431,7 @@ function! <SID>show_ctrlp_help()
         \ }
     let [s:ctrlp_help_bufid, s:ctrlp_help_popid] = meflib#floating#open(s:ctrlp_help_bufid, s:ctrlp_help_popid, s:ctrlp_help, config)
 endfunction
-autocmd PlugLocal FileType ctrlp ++once nnoremap <buffer> <silent> ? :call <SID>show_ctrlp_help()<CR>
+autocmd PlugLocal FileType ctrlp ++once nnoremap <buffer> <silent> ? <Cmd>call <SID>show_ctrlp_help()<CR>
 "}}}
 
 " current lineの関数表示用plugin (StatusLine用)
@@ -509,7 +509,7 @@ if !meflib#get_local_var('load_plugin', 0, 'hitspop')
             \ }
             let [s:anzu_bufid, s:anzu_popid] = meflib#floating#open(s:anzu_bufid, s:anzu_popid, [anzu_str], config)
     endfunction
-    nnoremap <silent> \ :<c-u>call anzu#clear_search_status() <bar> nohlsearch<CR>
+    nnoremap <silent> \ <Cmd>call anzu#clear_search_status() <bar> nohlsearch<CR>
     autocmd PlugLocal CursorMoved * call <SID>Show_anzu_float()
     autocmd PlugLocal TabLeave * call meflib#floating#close(s:anzu_popid) | let s:anzu_popid=-1
     autocmd PlugLocal QuitPre * call meflib#floating#close(s:anzu_popid) | let s:anzu_popid=-1
@@ -672,7 +672,7 @@ endfunction
 autocmd PlugLocal FileType fern call s:set_fern_map()
 
 " host map
-nnoremap <silent> <leader>n :Fern . -drawer -toggle -reveal=%<CR>
+nnoremap <silent> <leader>n <Cmd>Fern . -drawer -toggle -reveal=%<CR>
 
 " 色設定
 function! s:set_fern_hi()
@@ -794,7 +794,7 @@ Plug 'sjl/gundo.vim', PlugCond(1, {'on': 'GundoToggle'})
 if has('python3')
     let g:gundo_prefer_python3 = 1
 endif
-nnoremap <silent> <Leader>u :GundoToggle<CR>
+nnoremap <silent> <Leader>u <Cmd>GundoToggle<CR>
 " }}}
 
 Plug 'prabirshrestha/vim-lsp'
