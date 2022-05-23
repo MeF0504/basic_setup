@@ -241,14 +241,15 @@ function! s:quickrun_nvim_job_hook() abort
     let s:cur_status = meflib#get_local_var('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
     call meflib#set_local_var('statusline', s:cur_status..s:quickrun_status, '_')
 endfunction
-autocmd PlugLocal User vim-quickrun-neovim-job call s:quickrun_nvim_job_hook()
+" plugin directoryが無いとlazy loadはされないらしい。それもそうか。
+autocmd PlugLocal User vim-quickrun call s:quickrun_nvim_job_hook()
 " }}}
 
 " terminal runner of quickrun for Neovim (unofficial)
 Plug 'statiolake/vim-quickrun-runner-nvimterm', PlugCond(has('nvim'))
 "" vim-auickrun-runner-nvimterm {{{
 " to check nvimterm is loaded
-autocmd PlugLocal User vim-quickrun-runner-nvimterm call meflib#set_local_var('quickrun_nvimterm', 1)
+autocmd PlugLocal User vim-quickrun call meflib#set_local_var('quickrun_nvimterm', 1)
 " }}}
 
 " 背景透過
@@ -758,10 +759,11 @@ Plug 'Shougo/neosnippet.vim'
 " vim script 用補完 plugin
 Plug 'Shougo/neco-vim', PlugCond(1, {'for': 'vim'})
 
-if meflib#get_local_var('load_plugin', 0, 'deoplete')
-    " dark powered 補完plugin
-    Plug 'Shougo/deoplete.nvim'
-    " {{{
+let g:l_deo = meflib#get_local_var('load_plugin', 0, 'deoplete')
+" dark powered 補完plugin
+Plug 'Shougo/deoplete.nvim', PlugCond(g:l_deo)
+" {{{
+if g:l_deo
     let g:deoplete#enable_at_startup = 1
     inoremap <expr><tab> pumvisible() ? "\<C-n>" :
             \ neosnippet#expandable_or_jumpable() ?
@@ -778,17 +780,19 @@ if meflib#get_local_var('load_plugin', 0, 'deoplete')
     autocmd PlugLocal FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
     " auto close preview window.
     autocmd PlugLocal CompleteDone * silent! pclose!
-    " }}}
-    " syntax file から補完候補を作成
-    Plug 'Shougo/neco-syntax'
-    " c言語用補完 plugin
-    Plug 'Shougo/deoplete-clangx', {'for': 'c'}
-    " python 用補完 plugin
-    Plug 'deoplete-plugins/deoplete-jedi', {'for': 'python'}
-    " zsh 用補完 plugin
-    Plug 'deoplete-plugins/deoplete-zsh', {'for': 'zsh'}
 endif
+" }}}
+" syntax file から補完候補を作成
+Plug 'Shougo/neco-syntax', PlugCond(g:l_deo)
+" c言語用補完 plugin
+Plug 'Shougo/deoplete-clangx', PlugCond(g:l_deo, {'for': 'c'})
+" python 用補完 plugin
+Plug 'deoplete-plugins/deoplete-jedi', PlugCond(g:l_deo, {'for': 'python'})
+" zsh 用補完 plugin
+Plug 'deoplete-plugins/deoplete-zsh', PlugCond(g:l_deo, {'for': 'zsh'})
+unlet g:l_deo
 
+" vimの編集履歴を表示／適用してくれる plugin
 Plug 'sjl/gundo.vim', PlugCond(1, {'on': 'GundoToggle'})
 " {{{ "Gundo
 if has('python3')
@@ -797,6 +801,7 @@ endif
 nnoremap <silent> <Leader>u <Cmd>GundoToggle<CR>
 " }}}
 
+" vimでLSP (Language Server Protocol)を扱うためのplugin
 Plug 'prabirshrestha/vim-lsp'
 "" vim-lsp {{{
 " https://qiita.com/kitagry/items/216c2cf0066ff046d200
@@ -904,114 +909,117 @@ endfunction
 " autocmd PlugLocal User vim-lsp call s:vim_lsp_hook()
 autocmd PlugLocal VimEnter * call s:vim_lsp_hook()
 "" }}}
+" vim-lspの設定用plugin
 Plug 'mattn/vim-lsp-settings'
 
-if meflib#get_local_var('load_plugin',0,'denops') " &&(denops#server#status()=='running')
-    " 新世代(2021) dark deno-powered completion framework
-    " plugins for ddc.vim {{{
-    Plug 'Shougo/ddc-around'
-    Plug 'Shougo/ddc-matcher_head'
-    Plug 'Shougo/ddc-sorter_rank'
-    Plug 'LumaKernel/ddc-file'
-    Plug 'LumaKernel/ddc-tabnine'
-    Plug 'shun/ddc-vim-lsp'
-    Plug 'Shougo/ddc-converter_remove_overlap'
-    " }}}
+" 新世代(2021) dark deno-powered completion framework
+let g:l_ddc = meflib#get_local_var('load_plugin',0,'denops')
+" plugins for ddc.vim {{{
+Plug 'Shougo/ddc-around', PlugCond(g:l_ddc)
+Plug 'Shougo/ddc-matcher_head', PlugCond(g:l_ddc)
+Plug 'Shougo/ddc-sorter_rank', PlugCond(g:l_ddc)
+Plug 'LumaKernel/ddc-file'
+Plug 'LumaKernel/ddc-tabnine', PlugCond(g:l_ddc)
+Plug 'shun/ddc-vim-lsp', PlugCond(g:l_ddc)
+Plug 'Shougo/ddc-converter_remove_overlap', PlugCond(g:l_ddc)
+" }}}
 
-    Plug 'Shougo/ddc.vim'
-    " {{{
-    function! s:ddc_hook() abort
-        echomsg 'ddc setting start'
-        " add sources
-        call ddc#custom#patch_global('sources', ['file', 'vim-lsp', 'around', 'neosnippet'])
-        " set basic options
-        call ddc#custom#patch_global(
-            \ 'sourceOptions', {
-                \ '_': {
-                    \ 'matchers': ['matcher_head'],
-                    \ 'sorters': ['sorter_rank'],
-                    \ 'converters': ['converter_remove_overlap'],
-                \ },
-            \ })
-
-        " set sorce-specific options
-        call ddc#custom#patch_global(
-            \ 'sourceOptions', {
-                \ 'around': {
-                    \ 'mark': 'A',
-                \ },
-                \ 'file': {
-                    \ 'mark': 'F',
-                    \ 'isVolatile': v:true,
-                    \ 'forceCompletionPattern': '\S/\S*',
-                \ },
-                \ 'neosnippet': {
-                    \ 'mark': 'ns',
-                    \ 'dup': v:true,
-                \ },
-                \ 'tabnine': {
-                    \ 'mark': 'TN',
-                    \ 'maxCandidate': 5,
-                    \ 'isVolatile': v:true,
-                \ },
-                \ 'vim-lsp': {
-                    \ 'mark': 'lsp',
-                \ },
+Plug 'Shougo/ddc.vim', PlugCond(g:l_ddc)
+" {{{
+function! s:ddc_hook() abort
+    echomsg 'ddc setting start'
+    " add sources
+    call ddc#custom#patch_global('sources', ['file', 'vim-lsp', 'around', 'neosnippet'])
+    " set basic options
+    call ddc#custom#patch_global(
+        \ 'sourceOptions', {
+            \ '_': {
+                \ 'matchers': ['matcher_head'],
+                \ 'sorters': ['sorter_rank'],
+                \ 'converters': ['converter_remove_overlap'],
             \ },
-            \ 'sourceParams', {
-                \ 'tabnine': {
-                    \ 'maxNumResults': 10,
-                    \ 'storageDir': expand('~/.cache/ddc-tabline'),
-                \ },
-            \ }
-        \ )
-        " storageDir doesn't work??
+        \ })
 
-        " set filetype-specific options
-        call ddc#custom#patch_filetype(['ps1', 'dosbatch', 'autohotkey', 'registry'], {
-            \ 'sourceOptions': {
-                \ 'file': {
-                    \ 'forceCompletionPattern': '\S\\\S*',
-                \ },
+    " set sorce-specific options
+    call ddc#custom#patch_global(
+        \ 'sourceOptions', {
+            \ 'around': {
+                \ 'mark': 'A',
             \ },
-            \ 'sourceParams': {
-                \ 'file': {
-                    \ 'mode': 'win32',
-                \ },
-            \ }
-        \ })
-        call ddc#custom#patch_filetype(['vim', 'toml'], {
-            \ 'sources': ['necovim', 'file', 'around'],
-            \ 'sourceOptions': {
-                \ 'necovim': {
-                    \ 'mark': 'vim',
-                    \ 'maxCandidate': 5,
-                \},
-            \}
-        \ })
-        call ddc#custom#patch_filetype(['python', 'c', 'cpp'], {
-            \ 'sources': ['file', 'vim-lsp', 'around', 'tabnine'],
-        \ })
+            \ 'file': {
+                \ 'mark': 'F',
+                \ 'isVolatile': v:true,
+                \ 'forceCompletionPattern': '\S/\S*',
+            \ },
+            \ 'neosnippet': {
+                \ 'mark': 'ns',
+                \ 'dup': v:true,
+            \ },
+            \ 'tabnine': {
+                \ 'mark': 'TN',
+                \ 'maxCandidate': 5,
+                \ 'isVolatile': v:true,
+            \ },
+            \ 'vim-lsp': {
+                \ 'mark': 'lsp',
+            \ },
+        \ },
+        \ 'sourceParams', {
+            \ 'tabnine': {
+                \ 'maxNumResults': 10,
+                \ 'storageDir': expand('~/.cache/ddc-tabline'),
+            \ },
+        \ }
+    \ )
+    " storageDir doesn't work??
 
-        " Mappings
-        " <TAB>: completion.
-        inoremap <silent><expr> <TAB>
-        \ pumvisible() ? '<C-n>' :
-        \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
-        \ '<TAB>' : ddc#map#manual_complete()
-        " <S-TAB>: completion back.
-        inoremap <expr><S-TAB>  pumvisible() ? '<C-p>' : '<C-h>'
+    " set filetype-specific options
+    call ddc#custom#patch_filetype(['ps1', 'dosbatch', 'autohotkey', 'registry'], {
+        \ 'sourceOptions': {
+            \ 'file': {
+                \ 'forceCompletionPattern': '\S\\\S*',
+            \ },
+        \ },
+        \ 'sourceParams': {
+            \ 'file': {
+                \ 'mode': 'win32',
+            \ },
+        \ }
+    \ })
+    call ddc#custom#patch_filetype(['vim', 'toml'], {
+        \ 'sources': ['necovim', 'file', 'around'],
+        \ 'sourceOptions': {
+            \ 'necovim': {
+                \ 'mark': 'vim',
+                \ 'maxCandidate': 5,
+            \},
+        \}
+    \ })
+    call ddc#custom#patch_filetype(['python', 'c', 'cpp'], {
+        \ 'sources': ['file', 'vim-lsp', 'around', 'tabnine'],
+    \ })
 
-        " automatically close preview window.
-        autocmd PlugLocal CompleteDone * silent! pclose!
+    " Mappings
+    " <TAB>: completion.
+    inoremap <silent><expr> <TAB>
+    \ pumvisible() ? '<C-n>' :
+    \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+    \ '<TAB>' : ddc#map#manual_complete()
+    " <S-TAB>: completion back.
+    inoremap <expr><S-TAB>  pumvisible() ? '<C-p>' : '<C-h>'
 
-        " on.
-        call ddc#enable()
+    " automatically close preview window.
+    autocmd PlugLocal CompleteDone * silent! pclose!
 
-        echomsg 'ddc setting finish'
-    endfunction
+    " on.
+    call ddc#enable()
+
+    echomsg 'ddc setting finish'
+endfunction
+if g:l_ddc
     " autocmd PlugLocal User ddc.vim call s:ddc_hook()
     autocmd PlugLocal InsertEnter * ++once call s:ddc_hook()
-    " }}}
 endif
+" }}}
+unlet g:l_ddc
 
