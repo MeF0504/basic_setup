@@ -60,6 +60,7 @@ endif
 
 if 0
     augroup viminitlocal
+        autocmd!
         autocmd SourcePre * call meflib#debug#debug_log(expand('<afile>'), 'source pre')
         autocmd SourcePost * call meflib#debug#debug_log(expand('<afile>'), 'source post')
     augroup END
