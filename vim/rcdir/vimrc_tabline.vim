@@ -112,8 +112,13 @@ function! s:set_tabline()
             let all_wins += tabpagewinnr(ctn_r, '$')
             " add title to tabline if possible
             if tab_fin_r == 0
-                let title = s:get_title(ctn_r)
-                if tab_len+len(title)+1 < width
+                if tab_len+1 < width
+                    let title = s:get_title(ctn_r)
+                    if tab_len+len(title)+1 > width
+                        " cut the title if it is long.
+                        let title = title[:width-tab_len-3].'..'
+                        let tab_fin_l = 1
+                    endif
                     let tab_len += len(title)+1
                     let tmp_s = '%'.ctn_r.'T'
                     let tmp_s .= '%#TabLine#'
