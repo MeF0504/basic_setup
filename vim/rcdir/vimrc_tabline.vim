@@ -117,7 +117,7 @@ function! s:set_tabline()
                     if tab_len+len(title)+1 > width
                         " cut the title if it is long.
                         let title = title[:width-tab_len-3].'..'
-                        let tab_fin_l = 1
+                        let tab_fin_r = 1
                     endif
                     let tab_len += len(title)+1
                     let tmp_s = '%'.ctn_r.'T'
