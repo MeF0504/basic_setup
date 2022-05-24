@@ -242,14 +242,14 @@ function! s:quickrun_nvim_job_hook() abort
     call meflib#set_local_var('statusline', s:cur_status..s:quickrun_status, '_')
 endfunction
 " plugin directoryが無いとlazy loadはされないらしい。それもそうか。
-autocmd PlugLocal User vim-quickrun call s:quickrun_nvim_job_hook()
+autocmd PlugLocal User vim-quickrun if has('nvim') | call s:quickrun_nvim_job_hook() | endif
 " }}}
 
 " terminal runner of quickrun for Neovim (unofficial)
 Plug 'statiolake/vim-quickrun-runner-nvimterm', PlugCond(has('nvim'))
 "" vim-auickrun-runner-nvimterm {{{
 " to check nvimterm is loaded
-autocmd PlugLocal User vim-quickrun call meflib#set_local_var('quickrun_nvimterm', 1)
+autocmd PlugLocal User vim-quickrun if has('nvim') | call meflib#set_local_var('quickrun_nvimterm', 1) | endif
 " }}}
 
 " 背景透過
