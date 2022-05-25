@@ -83,8 +83,13 @@ function! s:set_tabline()
             let all_wins += tabpagewinnr(ctn_l, '$')
             " add title to tabline if possible
             if tab_fin_l == 0
-                let title = s:get_title(ctn_l)
-                if tab_len+len(title)+1 < width || ctn_l == cur_tab_no
+                if tab_len+1 < width || ctn_l == cur_tab_no
+                    let title = s:get_title(ctn_l)
+                    if tab_len+len(title)+1 > width
+                        " cut the title if it is long.
+                        let title = title[len(title)-(width-tab_len-1):]
+                        let tab_fin_l = 1
+                    endif
                     let tab_len += len(title)+1
                     let tmp_s = '%'.ctn_l.'T'
                     let tmp_s .= '%#' . (ctn_l == cur_tab_no ? 'TabLineSel' : 'TabLine') . '#'
@@ -105,7 +110,7 @@ function! s:set_tabline()
             endif
         endif
 
-        " right side if current tab page.
+        " right side of current tab page.
         let ctn_r = cur_tab_no + i
         if ctn_r <= tabpagenr('$')
             " count windows
