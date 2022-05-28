@@ -8,9 +8,6 @@ else
         let s:plug_dir = expand('~')..'/.vim/plugged'
     endif
 endif
-if &runtimepath !~# '/vim-plug'
-    execute 'set runtimepath+='..substitute(s:plug_dir, ' ', '\\ ', 'g')
-endif
 
 augroup PlugLocal
     autocmd!
