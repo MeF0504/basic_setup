@@ -851,11 +851,10 @@ endfunction
 function! <SID>select_float()
     let res = ""
     let old_cmdheight = &cmdheight
-    set cmdheight=5
+    set cmdheight=4
     echo  " 1: help\n"..
         \ " 2: definition\n"..
-        \ " 3: type definition\n"..
-        \ " 4: references: "
+        \ " 3: type definition: "
     let num = nr2char(getchar())
     if num == '1'
         let res = "\<Plug>(lsp-hover)"
@@ -863,8 +862,6 @@ function! <SID>select_float()
         let res = "\<Plug>(lsp-peek-definition)"
     elseif num == '3'
         let res = "\<Plug>(lsp-peek-type-definition)"
-    elseif num == '4'
-        let res = "\<Plug>(lsp-references)"
     endif
     let &cmdheight = old_cmdheight
     redraw!
@@ -887,8 +884,9 @@ function! s:vim_lsp_hook() abort
     if empty(lsp_map3)
         let lsp_map3 = '<c-p>'
     endif
-    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-definition)' : '"..lsp_map1."'"
-    execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1)==1 ? '<Cmd>tab LspDefinition<CR>' : '".lsp_map2."'"
+    " やっぱりVSCodeと一致させるためにc-jはreferencesにする
+    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? <SID>chk_tab_jump() : '"..lsp_map1."'"
+    execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-references)' : '".lsp_map2."'"
     execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1)==1 ? <SID>select_float() : '".lsp_map3."'"
     " help file でバグる？
     autocmd PlugLocal FileType help nnoremap <buffer> <c-]> <c-]>
