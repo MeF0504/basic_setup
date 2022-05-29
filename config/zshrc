@@ -383,6 +383,10 @@ fi
 
 # }}}
 
+# load fzf settings {{{
+[ -f ${HOME}/.fzf.zsh ] && source ${HOME}/.fzf.zsh
+# }}}
+
 ##{{{ load user .zshrc configuration file
 #
 [ -f ${HOME}/.zsh/complete.zsh ] && source ${HOME}/.zsh/complete.zsh
