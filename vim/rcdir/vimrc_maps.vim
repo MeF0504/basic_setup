@@ -46,8 +46,13 @@ if !exists('g:vscode')
 endif
 
 " search
-nnoremap / /\v
-nnoremap * /\v<<c-r><c-w>><CR>
+if !exists('g:vscode')
+    nnoremap / /\v
+    nnoremap * /\v<<c-r><c-w>><CR>
+else
+    nnoremap / <Cmd>call VSCodeNotify('actions.find')<CR>
+    nnoremap * <Cmd>call VSCodeNotify('actions.find')<CR>
+endif
 
 " tab 移動
 nmap g<Right> gt

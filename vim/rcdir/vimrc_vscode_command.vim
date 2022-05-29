@@ -11,7 +11,6 @@ endif
 set foldcolumn=0
 
 " vim searching overwapping {{{
-nnoremap / <Cmd>call VSCodeNotify('actions.find')<CR>
 nnoremap n <Cmd>call VSCodeNotify('editor.action.nextMatchFindAction')<CR>
 nnoremap N <Cmd>call VSCodeNotify('editor.action.previousMatchFindAction')<CR>
 " }}}
