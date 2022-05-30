@@ -27,10 +27,12 @@ command! Terminal call VSCodeNotify('workbench.action.terminal.new')
 
 command! QuickRun call VSCodeNotify('workbench.action.debug.start')
 function! <SID>quickrun_wrapper() abort
-    " texは，後で自動buildを切って，build dir指定とかをやりたい。
-    " launch.jsonを作ればうまくいくか？
     if &filetype == 'markdown'
         let cmd = 'markdown.showPreviewToSide'
+    elseif &filetype == 'tex'
+        " 細かい設定はlatex-workshop.latex.recipesとtoolsをいじってくれなのだ
+        " https://texwiki.texjp.org/?Visual%20Studio%20Code%2FLaTeX
+        let cmd = 'latex-workshop.build'
     else
         let cmd = 'workbench.action.debug.start'
     endif
