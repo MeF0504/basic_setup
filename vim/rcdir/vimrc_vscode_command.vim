@@ -26,7 +26,17 @@ command! -nargs=0 Gregrep call VSCodeNotify('workbench.action.findInFiles')
 command! Terminal call VSCodeNotify('workbench.action.terminal.new')
 
 command! QuickRun call VSCodeNotify('workbench.action.debug.start')
-nmap <leader>q <Cmd>QuickRun<CR>
+function! <SID>quickrun_wrapper() abort
+    " texは，後で自動buildを切って，build dir指定とかをやりたい。
+    " launch.jsonを作ればうまくいくか？
+    if &filetype == 'markdown'
+        let cmd = 'markdown.showPreviewToSide'
+    else
+        let cmd = 'workbench.action.debug.start'
+    endif
+    call VSCodeNotify(cmd)
+endfunction
+nmap <leader>q <Cmd>call <SID>quickrun_wrapper()<CR>
 
 command! Replace call VSCodeNotify('editor.action.startFindReplaceAction')
 " }}}
