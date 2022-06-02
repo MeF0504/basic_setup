@@ -85,7 +85,15 @@ alias del="mv_Trash.py"
 
 ## if use terminology [https://www.enlightenment.org/about-terminology.md]
 if [ "$TERMINOLOGY" = 1 ]; then
-    alias ls="tyls -m"
+    _ls_wrapper()
+    {
+        if ["$#" -eq 0 ]; then
+            tyls -m
+        else
+            ls $@
+        fi
+    }
+    alias ls="_ls_wrapper"
 fi
 
 ## remote host
