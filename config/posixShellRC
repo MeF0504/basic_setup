@@ -87,7 +87,7 @@ alias del="mv_Trash.py"
 if [ "$TERMINOLOGY" = 1 ]; then
     _ls_wrapper()
     {
-        if ["$#" -eq 0 ]; then
+        if [ "$#" -eq 0 ]; then
             tyls -m
         else
             ls $@
