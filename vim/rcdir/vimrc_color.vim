@@ -279,6 +279,19 @@ function! <SID>my_color_set()
     endif
     " }}}
 
+    " Fern {{{
+    highlight FernMarkedText ctermfg=196 guifg=#ff0000
+    highlight FernRootSymbol ctermfg=11 guifg=#ffff00
+    highlight FernBranchSymbol ctermfg=10 guifg=#00ff00
+    highlight FernBranchText ctermfg=2 guifg=#008000
+    highlight FernLeafSymbol ctermfg=43 guifg=#00af5f
+    if &background == 'dark'
+        highlight FernRootText ctermfg=220 guifg=#d0d000
+    else
+        highlight FernRootText ctermfg=100 guifg=#9a9a00
+    endif
+    " }}}
+
     " colorscheme specified setings
     let colname = substitute(g:colors_name, "-", "_", "g")
     let local_scheme_func = s:sid..'my_color_set_'..colname

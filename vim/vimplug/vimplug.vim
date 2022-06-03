@@ -579,8 +579,6 @@ Plug 'itchyny/vim-cursorword'
 " {{{
 " デフォルトのhighlightをoff
 let g:cursorword_highlight = 0
-highlight CursorWord1 ctermfg=None ctermbg=None cterm=None
-highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline
 " }}}
 
 " An ecosystem of Vim/Neovim which allows developers to write plugins in Deno. だそうです
@@ -675,18 +673,7 @@ autocmd PlugLocal FileType fern call s:set_fern_map()
 " host map
 nnoremap <silent> <leader>n <Cmd>Fern . -drawer -toggle -reveal=%<CR>
 
-" 色設定
-function! s:set_fern_hi()
-    highlight FernMarkedText ctermfg=196 guifg=#ff0000
-    highlight FernRootSymbol ctermfg=11 guifg=#ffff00
-    highlight FernRootText ctermfg=220 guifg=#d0d000
-    highlight FernBranchSymbol ctermfg=10 guifg=#00ff00
-    highlight FernBranchText ctermfg=2 guifg=#008000
-    highlight FernLeafSymbol ctermfg=43 guifg=#00af5f
-    " highlight FernLeafText ctermfg=41 guifg=#00d75f
-endfunction
-" autocmd PlugLocal User FernHighlight call s:set_fern_hi()
-autocmd PlugLocal Colorscheme * call s:set_fern_hi()
+" 色設定は他のと同様に vimrc_color に移動
 "" }}}
 
 " indent のlevelを見やすくする
