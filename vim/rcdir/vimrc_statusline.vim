@@ -6,9 +6,6 @@ scriptencoding utf-8
 set laststatus=2
 " コマンドラインの画面上の行数
 set cmdheight=2
-augroup slLocal
-    autocmd!
-augroup END
 
 " Anywhere SID.
 function! s:SID_PREFIX() " tentative
@@ -131,7 +128,10 @@ function! <SID>Set_statusline(cur_win)
 endfunction
 let &statusline = '%!'..s:sid..'Set_statusline(1)'
 
-" on/off 設定
-autocmd slLocal WinEnter * if &buftype != 'quickfix' | let &statusline='%!'..s:sid..'Set_statusline(1)' | endif
-autocmd slLocal WinLeave * if &buftype != 'quickfix' | execute 'setlocal statusline=%!'..s:sid..'Set_statusline(0)' | endif
+augroup slLocal
+    autocmd!
+    " on/off 設定
+    autocmd WinEnter * if &buftype != 'quickfix' | let &statusline='%!'..s:sid..'Set_statusline(1)' | endif
+    autocmd WinLeave * if &buftype != 'quickfix' | execute 'setlocal statusline=%!'..s:sid..'Set_statusline(0)' | endif
+augroup END
 
