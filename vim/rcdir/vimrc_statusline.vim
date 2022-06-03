@@ -17,20 +17,39 @@ else
     let s:sid = expand('<SID>')
 endif
 
-function! <SID>get_fileformat(os)
-    if a:os == 'unix'
-        return 'unix,LF'
+let s:show_ft_ff = 1
+" file format 設定
+function! <SID>get_fileformat(short, os) abort
+    if !s:show_ft_ff
+        return ''
+    endif
+
+    if a:short
+        let ff = a:os
+    elseif a:os == 'unix'
+        let ff = 'unix,LF'
     elseif a:os == 'mac'
-        return 'mac,CR'
+        let ff = 'mac,CR'
     elseif a:os == 'dos'
-        return 'dos,CRLF'
+        let ff = 'dos,CRLF'
+    else
+        let ff = ''
+    endif
+    let fe = &fileencoding
+    " 何故か最初に2個spaceが必要？
+    return printf('  %s:%s ', ff, fe)
+endfunction
+
+" file type 設定
+function! s:get_filetype() abort
+    if s:show_ft_ff
+        return printf(' %s ', &filetype)
     else
         return ''
     endif
 endfunction
 
 " mode変換用string
-let s:mode_str = '%%mode'
 function! <SID>get_mode()
     let st_modes =
                 \ {'n':'NORMAL',
@@ -75,14 +94,19 @@ let s:st_filename2 = " %t ".s:st_status." "
 " 切り詰め位置 右端に表示
 let s:st_turn = "%<%="
 " filetype
-let s:st_ft = "%#StatusLine_FT# %{&filetype} "
+let s:st_ft = "%#StatusLine_FT#%{"..s:sid.."get_filetype()}"
 " file format
-let s:st_ff1 = "%#StatusLine_FF# %{"..s:sid.."get_fileformat(&fileformat)}:%{&fileencoding} "
-let s:st_ff2 = "%#StatusLine_FF# %{&fileformat}:%{&fileencoding} "
+let s:st_ff1 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(0, &fileformat)}"
+let s:st_ff2 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(1, &fileformat)}"
 " 今の行/全体の行-今の列 [%表示]
 let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]"
 " winwidthが60より短い時は列と%はなし
 let s:st_ln2 = "%#StatusLine_LN# %l/%L"
+if has('patch-8.2.2854') || has('nvim-0.5.0')
+    let s:st_mode = "%{%".s:sid."get_mode()%}"
+else
+    let s:st_mode = ''
+endif
 
 " パスを除くファイル名 修正フラグ 読込専用 ヘルプ preview_window
 let s:st_off = "%t %m%{&readonly?'[RO]':''}%h%w"
@@ -92,9 +116,9 @@ let s:st_off = "%t %m%{&readonly?'[RO]':''}%h%w"
 " 'off': statusline for off window
 " other(num): statusline for short window. num=max width for this statusline
 call meflib#set_local_var('statusline', {
-            \ '_':   s:mode_str.s:st_filename1.s:st_turn.s:st_ft.s:st_ff1.s:st_ln1,
+            \ '_':   s:st_mode.s:st_filename1.s:st_turn.s:st_ft.s:st_ff1.s:st_ln1,
             \ 'off': s:st_off,
-            \ '60':  s:mode_str.s:st_filename2.s:st_turn.s:st_ft.s:st_ff2.s:st_ln2,
+            \ '60':  s:st_mode.s:st_filename2.s:st_turn.s:st_ft.s:st_ff2.s:st_ln2,
             \ })
 
 let s:def_statusline = &statusline
@@ -119,16 +143,6 @@ function! <SID>Set_statusline(cur_win)
         endfor
     endif
 
-    " replace mode_str to mode information
-    if meflib#get_local_var('st_showmode', 1)
-        let sl_mode = <SID>get_mode()
-    else
-        let sl_mode = ''
-    endif
-    if match(st_str, s:mode_str) != -1
-        let st_str = substitute(st_str, s:mode_str, sl_mode, 'g')
-    endif
-
     return st_str
 endfunction
 let &statusline = '%!'..s:sid..'Set_statusline(1)'
@@ -138,5 +152,9 @@ augroup slLocal
     " on/off 設定
     autocmd WinEnter * if &buftype != 'quickfix' | let &statusline='%!'..s:sid..'Set_statusline(1)' | endif
     autocmd WinLeave * if &buftype != 'quickfix' | execute 'setlocal statusline=%!'..s:sid..'Set_statusline(0)' | endif
+    autocmd CursorMoved * let s:show_ft_ff = 0
+    autocmd CursorMovedI * let s:show_ft_ff = 0
+    autocmd CursorHold * let s:show_ft_ff = 1
+    autocmd CursorHoldI * let s:show_ft_ff = 1
 augroup END
 
