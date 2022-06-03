@@ -919,7 +919,7 @@ let g:l_ddc = meflib#get_local_var('load_plugin',0,'denops')
 Plug 'Shougo/ddc-around', PlugCond(g:l_ddc)
 Plug 'Shougo/ddc-matcher_head', PlugCond(g:l_ddc)
 Plug 'Shougo/ddc-sorter_rank', PlugCond(g:l_ddc)
-Plug 'LumaKernel/ddc-file'
+Plug 'LumaKernel/ddc-file', PlugCond(g:l_ddc)
 Plug 'LumaKernel/ddc-tabnine', PlugCond(g:l_ddc)
 Plug 'shun/ddc-vim-lsp', PlugCond(g:l_ddc)
 Plug 'Shougo/ddc-converter_remove_overlap', PlugCond(g:l_ddc)
