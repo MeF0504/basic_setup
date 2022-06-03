@@ -120,8 +120,13 @@ function! <SID>Set_statusline(cur_win)
     endif
 
     " replace mode_str to mode information
-    if (meflib#get_local_var('st_showmode', 1) != 0) && (match(st_str, s:mode_str)!=-1)
-        let st_str = substitute(st_str, s:mode_str, <SID>get_mode(), 'g')
+    if meflib#get_local_var('st_showmode', 1)
+        let sl_mode = <SID>get_mode()
+    else
+        let sl_mode = ''
+    endif
+    if match(st_str, s:mode_str) != -1
+        let st_str = substitute(st_str, s:mode_str, sl_mode, 'g')
     endif
 
     return st_str
