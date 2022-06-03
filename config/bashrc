@@ -82,7 +82,7 @@ export HISTIGNORE=pwd:history:ls
 # }}}
 
 # load fzf settings {{{
-[ -f ${HOME}/.fzf.bash ] && source ${HOME}/.fzf.bash
+[[ -f ${HOME}/.fzf.bash ]] && source ${HOME}/.fzf.bash
 # }}}
 
 ##{{{ load user .bashrc configuration file
