@@ -47,6 +47,10 @@ export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}\n${_PS_TIME}${_PS_USER}${_PS_GIT
 
 # }}}
 
+# tab title {{{
+echo -ne "\033]0;Git Bash @ $HOSTNAME\a"
+# }}}
+
 ##{{{ key bind
 # ctrl-b,f で前後の単語に移動
 # https://qiita.com/yamamoto_hiroya/items/2f5c549c2da25cb9eb78
