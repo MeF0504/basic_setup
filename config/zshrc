@@ -144,7 +144,7 @@ function do_enter() {
         return 0
     fi
     echo
-    source $HOME/.zsh/enter.zsh
+    zsh $HOME/.zsh/enter.zsh
     echo '\n'
     zle reset-prompt  # 上の処理で表示があるとこっち?
     return 0
