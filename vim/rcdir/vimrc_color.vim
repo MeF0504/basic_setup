@@ -143,6 +143,8 @@ function! <SID>my_color_set_modus_operandi() abort
     " ctermがない？
     highlight DiffDelete gui=Bold guifg=#939393 guibg=#e0ffff
     highlight SpecialKey gui=None guifg=#101010 guibg=#cacaca
+    highlight ErrorMsg gui=Bold guifg=#000000 guibg=#a80000
+    highlight WarningMsg gui=Bold guifg=#000000 guibg=#909000
 endfunction
 
 function! <SID>my_color_set()
