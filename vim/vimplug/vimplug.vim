@@ -1012,3 +1012,6 @@ endif
 " }}}
 unlet g:l_ddc
 
+let g:readme_viewer#plugin_manager = 'vim-plug'
+Plug '4513ECHO/vim-readme-viewer', PlugCond(1, { 'on': 'PlugReadme' })
+
