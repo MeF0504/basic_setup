@@ -704,12 +704,12 @@ Plug 'inkarkat/vim-SyntaxRange', PlugCond(1, {'for': ['toml', 'markdown', 'vim']
 " {{{
 function! s:syntaxRange_hook() abort
     if &filetype == 'toml'
-        call s:syntax_range_dein()
+        " call s:syntax_range_dein()
         " autocmdのタイミングが悪い (vim-tomlに上書きされる)ので，調整
         " autocmd PlugLocal BufNewFile,BufRead dein*.toml call s:syntax_range_dein()
         autocmd PlugLocal BufWinEnter dein*.toml call s:syntax_range_dein()
     elseif &filetype == 'markdown'
-        call s:syntax_range_md()
+        " call s:syntax_range_md()
         autocmd PlugLocal BufWinEnter *.md call s:syntax_range_md()
     elseif &filetype == 'vim'
         call s:syntax_range_vim()
