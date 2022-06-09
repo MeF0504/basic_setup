@@ -38,6 +38,8 @@ if !meflib#get_local_var('load_plugin', 0, 'denops')
 endif
 " }}}
 
+let g:lazy_plugins = []
+let g:insert_plugins = []
 call plug#begin(s:plug_dir)
 
 " for doc
@@ -84,4 +86,22 @@ if filereadable(s:plug_file)
 endif
 
 call plug#end()
+
+" https://zenn.dev/kawarimidoll/articles/8172a4c29a6653
+function! s:lazy_load(timer) abort
+    if !empty(g:lazy_plugins)
+        call plug#load(g:lazy_plugins)
+    endif
+endfunction
+
+" 遅延読み込み
+call timer_start(100, function("s:lazy_load"))
+
+function! s:insert_load() abort
+    if !empty(g:insert_plugins)
+        call plug#load(g:insert_plugins)
+    endif
+endfunction
+
+autocmd PlugLocal InsertEnter * ++once call s:insert_load()
 

@@ -479,9 +479,10 @@ endfunction
 " }}}
 
 " 検索時にhit数をcountしてくれるplugin
-Plug 'osyo-manga/vim-anzu', PlugCond(!meflib#get_local_var('load_plugin', 0, 'hitspop'))
+Plug 'osyo-manga/vim-anzu', PlugCond(!meflib#get_local_var('load_plugin', 0, 'hitspop'), {'on':[]})
 "" vim-anzu {{{
 if !meflib#get_local_var('load_plugin', 0, 'hitspop')
+    call add(g:lazy_plugins, 'vim-anzu')
     " max search count
     let g:anzu_search_limit = 3000
     " mapping
@@ -545,11 +546,17 @@ autocmd PlugLocal User vimdoc-ja set helplang=ja
 
 " for deoplete
 " vim でneovim 用 pluginを動かすためのplugin
-Plug 'roxma/nvim-yarp', PlugCond(!has('nvim'))
+Plug 'roxma/nvim-yarp', PlugCond(!has('nvim'), {'on':[]})
+if !has('nvim')
+    call add(g:insert_plugins, 'nvim-yarp')
+endif
 
 " for deoplete
 " vim でneovim 用 pluginを動かすためのplugin
-Plug 'roxma/vim-hug-neovim-rpc', PlugCond(!has('nvim'))
+Plug 'roxma/vim-hug-neovim-rpc', PlugCond(!has('nvim'), {'on':[]})
+if !has('nvim')
+    call add(g:insert_plugins, 'vim-hug-neovim-rpc')
+endif
 
 " visual modeで選択した範囲をgcでコメントアウトしてくれるplugin
 Plug 'tpope/vim-commentary'
@@ -749,9 +756,10 @@ Plug 'Shougo/neco-vim', PlugCond(1, {'for': 'vim'})
 
 let g:l_deo = meflib#get_local_var('load_plugin', 0, 'deoplete')
 " dark powered 補完plugin
-Plug 'Shougo/deoplete.nvim', PlugCond(g:l_deo)
+Plug 'Shougo/deoplete.nvim', PlugCond(g:l_deo, {'on':[]})
 " {{{
 if g:l_deo
+    call add(g:insert_plugins, 'deoplete.nvim')
     let g:deoplete#enable_at_startup = 1
     inoremap <expr><tab> pumvisible() ? "\<C-n>" :
             \ neosnippet#expandable_or_jumpable() ?
@@ -783,9 +791,9 @@ unlet g:l_deo
 " vimの編集履歴を表示／適用してくれる plugin
 Plug 'sjl/gundo.vim', PlugCond(1, {'on': 'GundoToggle'})
 " {{{ "Gundo
-if has('python3')
-    let g:gundo_prefer_python3 = 1
-endif
+" if has('python3') " pythonをcheckするのに時間が掛かっているっぽい
+let g:gundo_prefer_python3 = 1
+" endif
 nnoremap <silent> <Leader>u <Cmd>GundoToggle<CR>
 " }}}
 
