@@ -72,13 +72,13 @@ let g:parenmatch_highlight = 0
 " }}}
 
 " color schemes
-let s:colorscheme_file = expand('<sfile>:h:h').'/vimplug/colorscheme.vim'
+let s:colorscheme_file = expand('<sfile>:h:h').'/plug_list/colorscheme.vim'
 if filereadable(s:colorscheme_file)
     execute 'source '..s:colorscheme_file
 endif
 
 " usual (somewhat heavy) plugins
-let s:plug_file = expand('<sfile>:h:h').'/vimplug/vimplug.vim'
+let s:plug_file = expand('<sfile>:h:h').'/plug_list/vimplug.vim'
 if filereadable(s:plug_file)
     execute 'source '..s:plug_file
 endif
