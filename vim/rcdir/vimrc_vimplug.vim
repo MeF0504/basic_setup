@@ -92,6 +92,7 @@ function! s:lazy_load(timer) abort
     if !empty(g:lazy_plugins)
         call plug#load(g:lazy_plugins)
     endif
+    unlet g:lazy_plugins
 endfunction
 
 " 遅延読み込み
@@ -101,6 +102,7 @@ function! s:insert_load() abort
     if !empty(g:insert_plugins)
         call plug#load(g:insert_plugins)
     endif
+    unlet g:insert_plugins
 endfunction
 
 autocmd PlugLocal InsertEnter * ++once call s:insert_load()
