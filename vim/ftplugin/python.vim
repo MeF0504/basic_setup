@@ -13,7 +13,7 @@ set errorformat=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 command! -buffer PySyntax !python3 -m py_compile %
 
 " help 確認用コマンド
-function! s:python_help(module) abort
+function! s:python_help_old(module) abort
     " {{{
     if a:module == '-h'
         echo '>>> usage :PyHelp module [function]'
@@ -95,6 +95,37 @@ EOF
 
     " }}}
 endfunction
+
+" pydocとかいう便利ツールがあるじゃん
+function! s:python_help(module) abort
+    let pydoc_cmd = meflib#get_local_var('pydoc_cmd', 'pydoc3')
+    if !executable(pydoc_cmd)
+        echohl ErrorMsg
+        echo printf('this command requires %s.', pydoc_cmd)
+        echohl None
+        return
+    endif
+
+    let cmd = printf('%s %s', pydoc_cmd, a:module)
+    let res = systemlist(cmd)
+
+    pclose
+    silent split PythonHelp
+    setlocal noswapfile
+    setlocal nobackup
+    setlocal noundofile
+    setlocal buftype=nofile
+    " setlocal nowrap
+    setlocal nobuflisted
+    setlocal previewwindow
+    setlocal modifiable
+    silent %delete _
+    call append(0, res)
+    setlocal nomodifiable
+    normal! gg
+
+endfunction
+
 command! -buffer -nargs=1 PyHelp call s:python_help(<f-args>)
 
 " template
