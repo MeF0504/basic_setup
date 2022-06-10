@@ -19,18 +19,19 @@ endif
 
 let s:show_ft_ff = 1
 " file format 設定
-function! <SID>get_fileformat(short, os) abort
+function! <SID>get_fileformat(short) abort
     if !s:show_ft_ff
         return ''
     endif
 
+    let ff = &fileformat
     if a:short
-        let ff = a:os
-    elseif a:os == 'unix'
+        " do nothing
+    elseif ff == 'unix'
         let ff = 'unix,LF'
-    elseif a:os == 'mac'
+    elseif ff == 'mac'
         let ff = 'mac,CR'
-    elseif a:os == 'dos'
+    elseif ff == 'dos'
         let ff = 'dos,CRLF'
     else
         let ff = ''
@@ -80,26 +81,33 @@ function! <SID>get_mode()
     return st_mode
 endfunction
 
+function! <SID>get_rel_filename(status) abort
+    let width = winwidth(0)*2/3
+    return " %."..width.."(%f "..a:status.."%)"
+endfunction
+
 " 修正フラグ 読込専用 ヘルプ preview_window
 let s:st_status = "%#StatusLine_ST#%M%R%H%W%#StatusLine#"
 " ファイル名&file status (最大長 windowの2/3)
 if has('patch-8.2.2854') || has('nvim-0.5.0')
-    let s:st_filename1 = printf(" %%{%%'%s'.%s.'%s %s %s'%%} ", '%.', 'winwidth(0)*2/3', '(%f', s:st_status, '%)')
+    let s:st_filename1 = "%{%"..s:sid.."get_rel_filename('"..s:st_status.."')%}"
 else
     " 古いとサポートしていないっぽい
     let s:st_filename1 = " %f". s:st_status." "
 endif
 " winwidthが60より短い場合はファイル名のみ
 let s:st_filename2 = " %t ".s:st_status." "
-" 切り詰め位置 右端に表示
-let s:st_turn = "%<%="
+" 切り詰め位置
+let s:st_turn = "%<"
+" 右端に表示
+let s:st_right = "%="
 " filetype
 let s:st_ft = "%#StatusLine_FT#%{"..s:sid.."get_filetype()}"
 " file format
-let s:st_ff1 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(0, &fileformat)}"
-let s:st_ff2 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(1, &fileformat)}"
+let s:st_ff1 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(0)}"
+let s:st_ff2 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(1)}"
 " 今の行/全体の行-今の列 [%表示]
-let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%P]"
+let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%p%%]"
 " winwidthが60より短い時は列と%はなし
 let s:st_ln2 = "%#StatusLine_LN# %l/%L"
 if has('patch-8.2.2854') || has('nvim-0.5.0')
@@ -116,9 +124,9 @@ let s:st_off = "%t %m%{&readonly?'[RO]':''}%h%w"
 " 'off': statusline for off window
 " other(num): statusline for short window. num=max width for this statusline
 call meflib#set_local_var('statusline', {
-            \ '_':   s:st_mode.s:st_filename1.s:st_turn.s:st_ft.s:st_ff1.s:st_ln1,
+            \ '_':   s:st_mode.s:st_filename1.s:st_right.s:st_ft.s:st_ff1.s:st_turn.s:st_ln1,
             \ 'off': s:st_off,
-            \ '60':  s:st_mode.s:st_filename2.s:st_turn.s:st_ft.s:st_ff2.s:st_ln2,
+            \ '60':  s:st_mode.s:st_filename2.s:st_right.s:st_ft.s:st_ff2.s:st_turn.s:st_ln2,
             \ })
 
 let s:def_statusline = &statusline

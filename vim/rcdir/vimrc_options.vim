@@ -168,7 +168,7 @@ if has('nvim')
 endif
 
 " 基本的なstatusline 設定
-set statusline=%f%m%r%h%w%<%=%y\ %l/%L\ [%P]
+set statusline=%f%m%r%h%w%<%=%y\ %l/%L\ [%p%%]
 
 " tex flavor
 let g:tex_flavor = 'latex'
