@@ -12,13 +12,17 @@ basic_setup/
 |__ config/
 |   |__ bashrc
 |   |__ gitignore_global
+|   |__ gitmessage_global
 |   |__ matplotlibrc
 |   |__ other_softwares.sh
 |   |__ posixShellRC
+|   |__ rm_info.sh
 |   |__ screenrc
 |   |__ ssh_config
 |   |__ terminator_config
+|   |__ terminology_base.cfg
 |   |__ test_setup.sh
+|   |__ tigrc
 |   |__ zlogin
 |   |__ zshrc
 |   |__ marp/
@@ -35,12 +39,12 @@ basic_setup/
 |   |   |__ envar
 |   |   |__ fnum
 |   |   |__ get_fonts
+|   |   |__ get_mpl_cols
 |   |   |__ lsn
 |   |   |__ mv_Trash.py
 |   |   |__ optlink
 |   |   |__ pdf2jpg
 |   |   |__ pytree
-|   |   |__ pyviewer
 |   |   |__ rm_old_files.py
 |   |   |__ shows
 |   |   |__ version.py
@@ -52,6 +56,7 @@ basic_setup/
 |   |   |__ runge_kutta.py
 |   |   |__ xpm_loader.py
 |   |__ test/
+|   |   |__ _pyviewer_old
 |   |   |__ rm_debug.py
 |   |   |__ setup_file_template.json
 |   |   |__ syntax_test.vim
@@ -66,6 +71,7 @@ basic_setup/
 |   |__ gvimrc
 |   |__ vimrc
 |   |__ autoload/
+|   |   |__ meflib.vim
 |   |   |__ meflib/
 |   |   |   |__ basic.vim
 |   |   |   |__ debug.vim
@@ -78,6 +84,13 @@ basic_setup/
 |   |   |__ python.vim
 |   |   |__ qf.vim
 |   |   |__ tex.vim
+|   |__ plug_list/
+|   |   |__ colorscheme.vim
+|   |   |__ dein.toml
+|   |   |__ dein_colorscheme.toml
+|   |   |__ dein_lazy.toml
+|   |   |__ dein_min.toml
+|   |   |__ vimplug.vim
 |   |__ rcdir/
 |   |   |__ vimrc_autocmds.vim
 |   |   |__ vimrc_color.vim
@@ -88,9 +101,7 @@ basic_setup/
 |   |   |__ vimrc_plugin.vim
 |   |   |__ vimrc_statusline.vim
 |   |   |__ vimrc_tabline.vim
-|   |__ toml/
-|   |   |__ dein.toml
-|   |   |__ dein_lazy.toml
-|   |   |__ dein_min.toml
+|   |   |__ vimrc_vimplug.vim
+|   |   |__ vimrc_vscode_command.vim
 ```
 
