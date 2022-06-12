@@ -801,8 +801,12 @@ nnoremap <silent> <Leader>u <Cmd>GundoToggle<CR>
 Plug 'prabirshrestha/vim-lsp'
 "" vim-lsp {{{
 " https://qiita.com/kitagry/items/216c2cf0066ff046d200
-" errorとかwarning表示はとりあえずoff
-let g:lsp_diagnostics_enabled = 0
+" doc diagは欲しいので，とりあえずsignだけ有効にしてみる。
+let g:lsp_diagnostics_enabled = 1
+let g:lsp_diagnostics_highlights_enabled = 0
+let g:lsp_diagnostics_signs_enabled = 1
+let g:lsp_diagnostics_signs_insert_mode_enabled = 1
+let g:lsp_diagnostics_virtual_text_enabled = 0
 " highlightはvim-cursorwordで表示しているので使わない
 let g:lsp_document_highlight_enabled = 0
 " LspPeekDefinition で表示する位置
