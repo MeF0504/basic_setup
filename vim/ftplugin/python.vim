@@ -121,6 +121,9 @@ function! s:python_help(module) abort
     setlocal modifiable
     silent %delete _
     call append(0, res)
+    if has('win32') || has('win64')
+        %s///g
+    endif
     setlocal nomodifiable
     normal! gg
 
