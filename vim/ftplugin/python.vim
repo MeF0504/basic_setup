@@ -151,3 +151,7 @@ command! -buffer Template :call s:py_template()
 " debug command
 command -buffer DebugPrint call append(line('.')-1, 'print("\033[32m#####debug {} \033[0m".format(""))')
 
+" \ で終わったときのindent量を設定
+" $VIMRUNTIME/indent/python.vim
+let g:pyindent_continue = shiftwidth()
+
