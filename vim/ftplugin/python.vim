@@ -159,5 +159,7 @@ let g:pyindent_continue = shiftwidth()
 
 " PEP8より
 " https://pep8-ja.readthedocs.io/ja/latest/
+" 最長文字をccで確認はしたいが，折返しはしたくない...
 setlocal textwidth=79
+setlocal formatoptions-=tc
 
