@@ -10,7 +10,8 @@ set suffixesadd+=.py
 " if needed
 set errorformat=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 
-command! -buffer PySyntax !python3 -m py_compile %
+" これはlspで代替出来ると思うので一旦コメントアウト
+" command! -buffer PySyntax !python3 -m py_compile %
 
 " help 確認用コマンド
 function! s:python_help_old(module) abort
@@ -98,6 +99,7 @@ endfunction
 
 " pydocとかいう便利ツールがあるじゃん
 function! s:python_help(module) abort
+    " {{{
     let pydoc_cmd = meflib#get_local_var('pydoc_cmd', 'pydoc3')
     if !executable(pydoc_cmd)
         echohl ErrorMsg
@@ -126,7 +128,7 @@ function! s:python_help(module) abort
     endif
     setlocal nomodifiable
     normal! gg
-
+    " }}}
 endfunction
 
 command! -buffer -nargs=1 PyHelp call s:python_help(<f-args>)
@@ -154,4 +156,8 @@ command -buffer DebugPrint call append(line('.')-1, 'print("\033[32m#####debug {
 " \ で終わったときのindent量を設定
 " $VIMRUNTIME/indent/python.vim
 let g:pyindent_continue = shiftwidth()
+
+" PEP8より
+" https://pep8-ja.readthedocs.io/ja/latest/
+setlocal textwidth=79
 
