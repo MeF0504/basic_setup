@@ -98,8 +98,8 @@ fi
 
 ## remote host
 if [ "$SSH_CLIENT" != "" ]; then
-    alias su=''
-    alias sudo=''
+    alias su='echo "su is not available in remote host"'
+    alias sudo='echo "sudo is not available in remote host"&&'
 fi
 
 if [ "${VIM_TERMINAL}"  != "" ]; then
@@ -113,6 +113,7 @@ alias iv='for iv in {4..1}; do; echo -n ${iv}..\ ;sleep 1;done; echo'
 # OS specified aliases
 if [ "$(uname)" = "Darwin" ]; then
     alias ldd="echo 'in macOS, ldd doesn't exist. && echo 'Use otool -L instead.' && echo '----------' &&  otool -L"
+    alias cpu_temp='sudo powermetrics -n 1 | grep temperature'
 elif [ "$(uname)" = "Linux" ]; then
     : # do nothing now.
 fi
