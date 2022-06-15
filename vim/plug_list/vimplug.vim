@@ -544,19 +544,67 @@ autocmd PlugLocal User vimdoc-ja set helplang=ja
 " endif
 " }}}
 
-" for deoplete
-" vim でneovim 用 pluginを動かすためのplugin
-Plug 'roxma/nvim-yarp', PlugCond(!has('nvim'), {'on':[]})
-if !has('nvim')
-    call add(g:insert_plugins, 'nvim-yarp')
-endif
+" command line と検索時に補完してくれるplugin
+" {{{
+" from https://github.com/gelguy/wilder.nvim
+function! UpdateRemotePlugins(...)
+    if has('nvim')
+        " Needed to refresh runtime files
+        let &rtp = &rtp
+        UpdateRemotePlugins
+    else
+        " do nothing
+    endif
+endfunction
 
-" for deoplete
+function! s:wilder_hook() abort
+
+    " Default keys
+    call wilder#setup({
+                \ 'modes': ['/', '?'],
+                \ 'enable_cmdline_enter': 0,
+                \ 'next_key': '<Tab>',
+                \ 'previous_key': '<S-Tab>',
+                \ 'accept_key': '<Up>',
+                \ 'reject_key': '<Down>',
+                \ })
+
+    " \v 付きでも動くようにする
+    " https://github.com/gelguy/wilder.nvim/issues/56
+    call wilder#set_option('pipeline', [
+      \   wilder#branch(
+      \     wilder#cmdline_pipeline(),
+      \     [
+      \       {_, x -> x[:1] ==# '\v' ? x[2:] : x},
+      \     ] + wilder#search_pipeline(),
+      \   ),
+      \ ])
+
+    if has('nvim')
+        let mode = 'float'
+    elseif has('popupwin')
+        let mode = 'popup'
+    else
+        let mode = 'statusline'
+    endif
+    call wilder#set_option('renderer', wilder#popupmenu_renderer({
+                \ 'mode': mode,
+                \ 'highlighter': wilder#basic_highlighter(),
+                \ }))
+endfunction
+
+" }}}
+Plug 'gelguy/wilder.nvim', PlugCond(1, {'do': function('UpdateRemotePlugins'), 'on': []})
+call add(g:lazy_plugins, 'wilder.nvim')
+autocmd PlugLocal User wilder.nvim call s:wilder_hook()
+
+" for deoplete and wilder
 " vim でneovim 用 pluginを動かすためのplugin
-Plug 'roxma/vim-hug-neovim-rpc', PlugCond(!has('nvim'), {'on':[]})
-if !has('nvim')
-    call add(g:insert_plugins, 'vim-hug-neovim-rpc')
-endif
+Plug 'roxma/nvim-yarp', PlugCond(!has('nvim'))
+
+" for deoplete and wilder
+" vim でneovim 用 pluginを動かすためのplugin
+Plug 'roxma/vim-hug-neovim-rpc', PlugCond(!has('nvim'))
 
 " visual modeで選択した範囲をgcでコメントアウトしてくれるplugin
 Plug 'tpope/vim-commentary'
