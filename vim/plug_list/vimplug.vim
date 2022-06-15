@@ -17,7 +17,7 @@ Plug 'MeF0504/sl.vim', PlugCond(1, {'on': 'SL'})
 Plug 'MeF0504/vim-popsyntax', PlugCond(1, {'on': 'PopSyntaxToggle'})
 
 " 単語に色を付ける
-Plug 'MeF0504/vim-wordcolor'
+" Plug 'MeF0504/vim-wordcolor'
 "" wordcolor {{{
 let g:word_color_mapping = '//'
 " }}}
@@ -1072,6 +1072,18 @@ endif
 " }}}
 unlet g:l_ddc
 
+" readme をhelpとして見れるようにする
 let g:readme_viewer#plugin_manager = 'vim-plug'
 Plug '4513ECHO/vim-readme-viewer', PlugCond(1, { 'on': 'PlugReadme' })
+
+" カーソルの下の文字とかをhighlight
+Plug 'azabiong/vim-highlighter', PlugCond(1, {'on': 'Hi'})
+" {{{
+" function! s:highlighter_hook() abort
+" endfunction
+" autocmd PlugLocal User vim-highlighter call s:highlighter_hook()
+let g:HiClear = '\\'
+nnoremap // :<c-u>Hi + 
+" }}}
+
 
