@@ -113,6 +113,8 @@ endtry
 if has('win32') || has('win64')
     set shell=cmd.exe
 endif
+" CursorHoldの時間
+set updatetime=2000
 
 " directory 設定系
 " doc directoryを追加
