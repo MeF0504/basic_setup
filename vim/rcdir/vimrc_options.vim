@@ -160,8 +160,13 @@ endif
 if has('nvim')
     if has('nvim-0.4.0')
         " pop-up menuを半透明にする [0-100(%)]
-        " やっぱり見づらいので0にする...
-        set pumblend=0
+        if &termguicolors
+            " gui colorなら良さそう
+            set pumblend=18
+        else
+            " ctermだと見づらいので0
+            set pumblend=0
+        endif
     endif
     if has('nvim-0.2.0')
         " 置換をinteractiveに行う
