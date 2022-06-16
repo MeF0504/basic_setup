@@ -540,7 +540,7 @@ vnoremap <expr> # <SID>chk_braket()
 " termonal commandを快適に使えるようにする {{{
 "" http://koturn.hatenablog.com/entry/2018/02/12/140000
 let s:term_opts = ['win', 'term']
-let s:term_win_opts = ['S', 'V', 'F']
+let s:term_win_opts = ['S', 'V', 'F', 'P']
 function! s:complete_term(arglead, cmdline, cursorpos) abort
     ":h :command-completion-custom
     let arglead = tolower(a:arglead)
@@ -675,6 +675,18 @@ function! s:Terminal(...) abort
     if match(s:term_win_opts, win_opt) == -1
         let win_opt = 'S'
     endif
+    let float_opt = {
+                \ 'relative': 'win',
+                \ 'line': &lines/2-&cmdheight-1,
+                \ 'col': 5,
+                \ 'maxheight': &lines/2-&cmdheight,
+                \ 'maxwidth': &columns-10,
+                \ 'win_enter': 1,
+                \ 'border': [],
+                \ 'nv_border': "rounded",
+                \ 'minwidth': &columns-10,
+                \ 'minheight': &lines/2-&cmdheight,
+                \ }
 
     let term_opt = ''
     if has('win32') || has('win64')
@@ -722,6 +734,10 @@ function! s:Terminal(...) abort
                     botright vertical new
                 elseif win_opt == 'F'
                     tabnew
+                elseif win_opt == 'P'
+                    highlight TermNormal ctermbg=None guibg=None
+                    call extend(float_opt, {'highlight': 'TermNormal'}, 'force')
+                    let [bid, pid] = meflib#floating#open(-1, -1, [], float_opt)
                 else
                     echo 'not a supported option. return'
                     return
@@ -754,6 +770,17 @@ function! s:Terminal(...) abort
                 elseif win_opt == 'F'
                     tabnew
                     let term_opt = ' ++curwin'.term_opt
+                elseif win_opt == 'P'
+                    if empty(opts.no_opt)
+                        let cmd = [&shell]
+                        let term_finish = 'close'
+                    else
+                        let cmd = opts.no_opt
+                        let term_finish = 'open'
+                    endif
+                    let bid = term_start(cmd, {'hidden': 1, 'term_finish': term_finish})
+                    call meflib#floating#open(bid, -1, [], float_opt)
+                    return
                 else
                     echo 'not a supported option. return'
                     return

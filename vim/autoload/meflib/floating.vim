@@ -49,6 +49,7 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
     " mapping
     " filtermode
     " callback
+    "  <= win_enter
     " }}}
 
     let bufid = -1
@@ -100,7 +101,9 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
             let popid = a:popid
             call popup_setoptions(popid, v_config)
         endif
-        call popup_settext(popid, a:str_list)
+        if !empty(a:str_list)
+            call popup_settext(popid, a:str_list)
+        endif
 
     elseif has('nvim')
         if !has_key(a:config, 'relative') || !has_key(a:config, 'line') || !has_key(a:config, 'col')
@@ -117,6 +120,10 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
         if has_key(a:config, 'maxwidth')
             let nv_config['width'] = a:config['maxwidth']
         else
+            if empty(a:str_list)
+                echo 'maxwidth is required when str_list is empty.'
+                return [-1, -1]
+            endif
             let width = 1
             for st in a:str_list
                 if len(st) > width
@@ -128,6 +135,10 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
         if has_key(a:config, 'maxheight')
             let nv_config['height'] = a:config['maxheight']
         else
+            if empty(a:str_list)
+                echo 'maxheight is required when str_list is empty.'
+                return [-1, -1]
+            endif
             let nv_config['height'] = len(a:str_list)
         endif
         if has_key(a:config, 'pos')
@@ -145,15 +156,29 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
             endif
             let nv_config['anchor'] = anc
         endif
+        if has_key(a:config, 'win_enter')
+            if a:config['win_enter']
+                let win_enter = v:true
+            else
+                let win_enter = v:false
+            endif
+        else
+            let win_enter = v:false
+        endif
+        if has_key(a:config, 'nv_border')
+            let nv_config['border'] = a:config['nv_border']
+        endif
 
         if empty(getbufinfo(a:bufid))
             let bufid = nvim_create_buf(v:false, v:true)
         else
             let bufid = a:bufid
         endif
-        call nvim_buf_set_lines(bufid, 0, -1, 0, a:str_list)
+        if !empty(a:str_list)
+            call nvim_buf_set_lines(bufid, 0, -1, 0, a:str_list)
+        endif
         if a:popid < 0
-            let popid = nvim_open_win(bufid, v:false, nv_config)
+            let popid = nvim_open_win(bufid, win_enter, nv_config)
             call add(s:pop_ids, popid)
         else
             let popid = a:popid
