@@ -145,6 +145,7 @@ function! <SID>my_color_set_modus_operandi() abort
     highlight SpecialKey gui=None guifg=#101010 guibg=#cacaca
     highlight ErrorMsg gui=Bold guifg=#000000 guibg=#a80000
     highlight WarningMsg gui=Bold guifg=#000000 guibg=#909000
+    highlight Folded gui=None guifg=#3d3d3d guibg=#f5dad0
 endfunction
 
 function! <SID>my_color_set()
