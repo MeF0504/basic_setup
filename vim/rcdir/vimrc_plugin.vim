@@ -609,45 +609,117 @@ function! s:open_term(bufname) abort
 endfunction
 
 " https://qiita.com/shiena/items/1dcb20e99f43c9383783
-let s:term_cnt = 1
-function! s:open_term_win(opts)
-    " 日本語Windowsの場合`ja`が設定されるので、入力ロケールに合わせたUTF-8に設定しなおす
-    let env = {}
-    if executable('locale.exe')
-        let env['LANG'] = systemlist('"locale.exe" -iU')[0]
-    endif
+function! s:set_term_opt(is_float, name, finish) abort
+    let term_opt = {}
 
-    " remote連携のための設定
-    if has('clientserver')
-        call extend(env, {
-                    \ 'GVIM': $VIMRUNTIME,
-                    \ 'VIM_SERVERNAME': v:servername,
+    let env = {}
+    if has('win32') || has('win64')
+        " 日本語Windowsの場合`ja`が設定されるので、入力ロケールに合わせたUTF-8に設定しなおす
+        if executable('locale.exe')
+            let env['LANG'] = systemlist('"locale.exe" -iU')[0]
+        endif
+
+        " remote連携のための設定
+        if has('clientserver')
+            call extend(env, {
+                        \ 'GVIM': $VIMRUNTIME,
+                        \ 'VIM_SERVERNAME': v:servername,
+                        \ })
+        endif
+
+        if !has('nvim')
+            call extend(term_opt, {
+                        \ 'term_name': a:name.'_'.s:term_cnt,
+                        \ 'cwd': $USERPROFILE,
+                        \ })
+            let s:term_cnt += 1
+        endif
+    endif
+    if !has('nvim')
+        if a:is_float
+            call extend(term_opt, {
+                        \ 'hidden': v:true,
+                        \ 'curwin': v:false,
+                        \ })
+        else
+            call extend(term_opt, {
+                        \ 'curwin': v:true,
+                        \ })
+        endif
+        call extend(term_opt, {
+                    \ 'term_finish': a:finish,
+                    \ 'ansi_colors': meflib#basic#get_term_color(),
                     \ })
     endif
 
+    let term_opt.env = env
+    return term_opt
+endfunction
+
+let s:term_cnt = 1
+function! s:open_term_win(opts)
     " term_startでgit for windowsのbashを実行する
-    let term_opt = split(a:opts, ' ')
-    if len(term_opt) == 0
-        let term_opt = meflib#get_local_var('win_term_cmd', ['bash.exe', '-l'])
+    let cmd = a:opts
+    if empty(cmd)
+        let cmd = meflib#get_local_var('win_term_cmd', ['bash.exe', '-l'])
         let term_fin = 'close'
     else
         let term_fin = 'open'
     endif
+
+    let term_opt = s:set_term_opt(0, '!'.cmd[0], term_fin)
     if has('nvim')
-        call termopen(term_opt, {
-                    \ 'env': env,
-                    \ })
+        call termopen(cmd, term_opt)
         startinsert
     else
-        call term_start(term_opt, {
-                    \ 'term_name': '!'.term_opt[0].'_'.s:term_cnt,
-                    \ 'term_finish': term_fin,
-                    \ 'curwin': v:true,
-                    \ 'cwd': $USERPROFILE,
-                    \ 'env': env,
-                    \ 'ansi_colors': meflib#basic#get_term_color(),
-                    \ })
+        call term_start(cmd, term_opt)
+    endif
+endfunction
+
+function! s:open_term_float(opts) abort
+    let float_opt = {
+                \ 'relative': 'win',
+                \ 'line': &lines/2-&cmdheight-1,
+                \ 'col': 5,
+                \ 'maxheight': &lines/2-&cmdheight,
+                \ 'maxwidth': &columns-10,
+                \ 'win_enter': 1,
+                \ 'border': [],
+                \ 'nv_border': "rounded",
+                \ 'minwidth': &columns-10,
+                \ 'minheight': &lines/2-&cmdheight,
+                \ }
+    let cmd = a:opts
+    if empty(cmd)
+        if has('win32') || has('win64')
+            let cmd = meflib#get_local_var('win_term_cmd', ['bash.exe', '-l'])
+        else
+            let cmd = [&shell]
+        endif
+        let term_finish = 'close'
+    else
+        let term_finish = 'open'
+    endif
+
+    let term_opt = s:set_term_opt(1, '!'.cmd[0], term_finish)
+
+    if has('nvim')
+        highlight TermNormal ctermbg=None guibg=None
+        call extend(float_opt, {'highlight': 'TermNormal'}, 'force')
+        let [bid, pid] = meflib#floating#open(-1, -1, [], float_opt)
+        call termopen(cmd, term_opt)
+        startinsert
+    else
+        let bid = term_start(cmd, term_opt)
+        if bid == 0
+            echohl ErrorMsg
+            echo 'fail to open the terminal.'
+            echohl None
+            return
+        endif
+        call meflib#floating#open(bid, -1, [], float_opt)
         let s:term_cnt += 1
+        return
     endif
 endfunction
 
@@ -675,18 +747,6 @@ function! s:Terminal(...) abort
     if match(s:term_win_opts, win_opt) == -1
         let win_opt = 'S'
     endif
-    let float_opt = {
-                \ 'relative': 'win',
-                \ 'line': &lines/2-&cmdheight-1,
-                \ 'col': 5,
-                \ 'maxheight': &lines/2-&cmdheight,
-                \ 'maxwidth': &columns-10,
-                \ 'win_enter': 1,
-                \ 'border': [],
-                \ 'nv_border': "rounded",
-                \ 'minwidth': &columns-10,
-                \ 'minheight': &lines/2-&cmdheight,
-                \ }
 
     let term_opt = ''
     if has('win32') || has('win64')
@@ -707,13 +767,15 @@ function! s:Terminal(...) abort
                 botright vertical new
             elseif win_opt == 'F'
                 tabnew
+            elseif win_opt == 'P'
+                call s:open_term_float(opts['no_opt'])
+                return
             else
                 echo 'not a supported option. return'
                 return
             endif
         endif
-        let term_opt .= ' '.join(opts['no_opt'])
-        call s:open_term_win(term_opt)
+        call s:open_term_win(opts['no_opt'])
 
     else
         if has('nvim')
@@ -735,9 +797,8 @@ function! s:Terminal(...) abort
                 elseif win_opt == 'F'
                     tabnew
                 elseif win_opt == 'P'
-                    highlight TermNormal ctermbg=None guibg=None
-                    call extend(float_opt, {'highlight': 'TermNormal'}, 'force')
-                    let [bid, pid] = meflib#floating#open(-1, -1, [], float_opt)
+                    call s:open_term_float(opts['no_opt'])
+                    return
                 else
                     echo 'not a supported option. return'
                     return
@@ -771,15 +832,7 @@ function! s:Terminal(...) abort
                     tabnew
                     let term_opt = ' ++curwin'.term_opt
                 elseif win_opt == 'P'
-                    if empty(opts.no_opt)
-                        let cmd = [&shell]
-                        let term_finish = 'close'
-                    else
-                        let cmd = opts.no_opt
-                        let term_finish = 'open'
-                    endif
-                    let bid = term_start(cmd, {'hidden': 1, 'term_finish': term_finish})
-                    call meflib#floating#open(bid, -1, [], float_opt)
+                    call s:open_term_float(opts['no_opt'])
                     return
                 else
                     echo 'not a supported option. return'
