@@ -296,6 +296,14 @@ function! <SID>my_color_set()
     endif
     " }}}
 
+    " Match up {{{
+    if &background == 'dark'
+        highlight MatchWord ctermfg=None ctermbg=233 guifg=NONE guibg=#003030
+    else
+        highlight MatchWord ctermfg=None ctermbg=253 guifg=NONE guibg=#dadaff
+    endif
+    " }}}
+
     " colorscheme specified setings
     let colname = substitute(g:colors_name, "-", "_", "g")
     let local_scheme_func = s:sid..'my_color_set_'..colname
