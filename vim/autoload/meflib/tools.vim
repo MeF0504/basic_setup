@@ -84,7 +84,7 @@ endfunction
 function! meflib#tools#eijiro(word)
     let url = '"https://eowf.alc.co.jp/search?q='.a:word.'"'
     let web_cmd = meflib#basic#get_exe_cmd()
-    if !executable(web_cmd)
+    if !empty(web_cmd)
         echo 'command '.web_cmd.' is not supported in this system.'
         return
     endif
