@@ -36,6 +36,14 @@ function! meflib#basic#set_local_var(var_name, val, ...) abort
     endif
 endfunction
 
+function! meflib#basic#add_local_var(var_name, var) abort
+    if has_key(a:var_name, s:local_var_dict)
+        call add(s:local_var_dict[var_name], a:var)
+    else
+        let s:local_var_dict[a:var_name] = [a:var]
+    endif
+endfunction
+
 function! s:show_vars(var_dict) abort
     for vname in sort(keys(a:var_dict))
         let var = a:var_dict[vname]

@@ -124,8 +124,8 @@ function! s:quickrun_hook() abort
     if has('job')
         let g:quickrun_config._.runner = 'job'
         let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
-        let s:cur_status = meflib#get_local_var('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
-        call meflib#set_local_var('statusline', s:cur_status..s:quickrun_status, '_')
+        let s:cur_status = meflib#get('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
+        call meflib#set('statusline', s:cur_status..s:quickrun_status, '_')
     endif
 
     " python
@@ -195,9 +195,9 @@ function! <SID>quickrun_wrapper()
     let qrun_conf = findfile('.qrun_conf.vim', expand('%:p:h')..';')
     if !empty(qrun_conf)
         echomsg printf('[qrun-wrapper] configure file is found ... %s', qrun_conf)
-        call meflib#set_local_var('qrun_finished', 0)
+        call meflib#set('qrun_finished', 0)
         execute 'source '..qrun_conf
-        if meflib#get_local_var('qrun_finished', 0)
+        if meflib#get('qrun_finished', 0)
             return
         endif
     endif
@@ -214,9 +214,9 @@ endfunction
 "                 \ 'exec' : ['%c']
 "     }
 "     call quickrun#run(q_config)
-"     call meflib#set_local_var('qrun_finished', 1)
+"     call meflib#set('qrun_finished', 1)
 " else
-"     call meflib#set_local_var('qrun_finished', 0)
+"     call meflib#set('qrun_finished', 0)
 " endif
 " }}}
 
@@ -232,8 +232,8 @@ function! s:quickrun_nvim_job_hook() abort
     let g:quickrun_config._ = get(g:quickrun_config, '_', {})
     let g:quickrun_config._.runner = 'neovim_job'
     let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
-    let s:cur_status = meflib#get_local_var('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
-    call meflib#set_local_var('statusline', s:cur_status..s:quickrun_status, '_')
+    let s:cur_status = meflib#get('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
+    call meflib#set('statusline', s:cur_status..s:quickrun_status, '_')
 endfunction
 " plugin directoryが無いとlazy loadはされないらしい。それもそうか。
 autocmd PlugLocal User vim-quickrun if has('nvim') | call s:quickrun_nvim_job_hook() | endif
@@ -243,7 +243,7 @@ autocmd PlugLocal User vim-quickrun if has('nvim') | call s:quickrun_nvim_job_ho
 Plug 'statiolake/vim-quickrun-runner-nvimterm', PlugCond(has('nvim'))
 "" vim-auickrun-runner-nvimterm {{{
 " to check nvimterm is loaded
-autocmd PlugLocal User vim-quickrun if has('nvim') | call meflib#set_local_var('quickrun_nvimterm', 1) | endif
+autocmd PlugLocal User vim-quickrun if has('nvim') | call meflib#set('quickrun_nvimterm', 1) | endif
 " }}}
 
 " 背景透過
@@ -340,7 +340,7 @@ function! s:tlist_all(...) abort
     if empty(cwd)
         let cwd = '.'
     endif
-    let tlist_session_name = cwd..'/'..meflib#get_local_var('tlist_session_name', '.tlist_session')
+    let tlist_session_name = cwd..'/'..meflib#get('tlist_session_name', '.tlist_session')
     if a:0 == 0
         let ext = ''
     elseif a:1 == 'help'
@@ -473,9 +473,9 @@ endfunction
 " }}}
 
 " 検索時にhit数をcountしてくれるplugin
-Plug 'osyo-manga/vim-anzu', PlugCond(!meflib#get_local_var('load_plugin', 0, 'hitspop'), {'on':[]})
+Plug 'osyo-manga/vim-anzu', PlugCond(!meflib#get('load_plugin', 0, 'hitspop'), {'on':[]})
 "" vim-anzu {{{
-if !meflib#get_local_var('load_plugin', 0, 'hitspop')
+if !meflib#get('load_plugin', 0, 'hitspop')
     call add(g:lazy_plugins, 'vim-anzu')
     " max search count
     let g:anzu_search_limit = 3000
@@ -604,9 +604,9 @@ Plug 'roxma/vim-hug-neovim-rpc', PlugCond(!has('nvim'))
 Plug 'tpope/vim-commentary'
 
 " 検索のhit数をpopupで表示するplugin
-Plug 'obcat/vim-hitspop', PlugCond(meflib#get_local_var('load_plugin', 0, 'hitspop'))
+Plug 'obcat/vim-hitspop', PlugCond(meflib#get('load_plugin', 0, 'hitspop'))
 " {{{
-if meflib#get_local_var('load_plugin', 0, 'hitspop')
+if meflib#get('load_plugin', 0, 'hitspop')
     " https://zenn.dev/obcat/articles/4ef6822de53b643bbd01
     " :nohlsearch で消える→ 自分は\で消える
     " 右下に表示
@@ -633,10 +633,10 @@ let g:cursorword_highlight = 0
 
 " An ecosystem of Vim/Neovim which allows developers to write plugins in Deno. だそうです
 " for ddc.vim
-Plug 'vim-denops/denops.vim', PlugCond(meflib#get_local_var('load_plugin', 0, 'denops'))
+Plug 'vim-denops/denops.vim', PlugCond(meflib#get('load_plugin', 0, 'denops'))
 
 " denops test
-Plug 'vim-denops/denops-helloworld.vim', PlugCond(meflib#get_local_var('load_plugin', 0, 'denops'))
+Plug 'vim-denops/denops-helloworld.vim', PlugCond(meflib#get('load_plugin', 0, 'denops'))
 
 " Filer
 " fern plugins {{{
@@ -796,7 +796,7 @@ Plug 'Shougo/neosnippet.vim'
 " vim script 用補完 plugin
 Plug 'Shougo/neco-vim', PlugCond(1, {'for': 'vim'})
 
-let g:l_deo = meflib#get_local_var('load_plugin', 0, 'deoplete')
+let g:l_deo = meflib#get('load_plugin', 0, 'deoplete')
 " dark powered 補完plugin
 Plug 'Shougo/deoplete.nvim', PlugCond(g:l_deo, {'on':[]})
 " {{{
@@ -956,7 +956,7 @@ autocmd PlugLocal VimEnter * call s:vim_lsp_hook()
 Plug 'mattn/vim-lsp-settings'
 
 " 新世代(2021) dark deno-powered completion framework
-let g:l_ddc = meflib#get_local_var('load_plugin',0,'denops')
+let g:l_ddc = meflib#get('load_plugin',0,'denops')
 " plugins for ddc.vim {{{
 Plug 'Shougo/ddc-around', PlugCond(g:l_ddc)
 Plug 'Shougo/ddc-matcher_head', PlugCond(g:l_ddc)

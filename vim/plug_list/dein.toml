@@ -92,8 +92,8 @@ call extend(g:quickrun_config._, {
 if has('job')
     let g:quickrun_config._.runner = 'job'
     let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
-    let s:cur_status = meflib#get_local_var('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
-    call meflib#set_local_var('statusline', s:cur_status..s:quickrun_status, '_')
+    let s:cur_status = meflib#get('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
+    call meflib#set('statusline', s:cur_status..s:quickrun_status, '_')
 endif
 
 " python
@@ -164,8 +164,8 @@ function! <SID>quickrun_wrapper()
     if !empty(qrun_conf)
         echomsg printf('[qrun-wrapper] configure file is found ... %s', qrun_conf)
         execute 'source '..qrun_conf
-        if meflib#get_local_var('qrun_opt', 0)
-            call call(meflib#get_local_var('qrun_func', s:sid..'echo_err'), [])
+        if meflib#get('qrun_opt', 0)
+            call call(meflib#get('qrun_func', s:sid..'echo_err'), [])
             return
         endif
     endif
@@ -190,8 +190,8 @@ if has('nvim')
     let g:quickrun_config._ = get(g:quickrun_config, '_', {})
     let g:quickrun_config._.runner = 'neovim_job'
     let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
-    let s:cur_status = meflib#get_local_var('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
-    call meflib#set_local_var('statusline', s:cur_status..s:quickrun_status, '_')
+    let s:cur_status = meflib#get('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
+    call meflib#set('statusline', s:cur_status..s:quickrun_status, '_')
 endif
 " }}}
 '''
@@ -203,7 +203,7 @@ if = '''has('nvim')'''
 hook_add = '''
 "" vim-auickrun-runner-nvimterm {{{
 " to check nvimterm is loaded
-call meflib#set_local_var('quickrun_nvimterm', 1)
+call meflib#set('quickrun_nvimterm', 1)
 " }}}
 '''
 
@@ -305,7 +305,7 @@ function! s:tlist_all(...) abort
     if empty(cwd)
         let cwd = '.'
     endif
-    let tlist_session_name = cwd..'/'..meflib#get_local_var('tlist_session_name', '.tlist_session')
+    let tlist_session_name = cwd..'/'..meflib#get('tlist_session_name', '.tlist_session')
     if a:0 == 0
         let ext = ''
     elseif a:1 == 'help'
@@ -437,10 +437,10 @@ autocmd deinLocal QuitPre * call meflib#floating#close(s:cfi_popid) | let s:cfi_
 # 検索時にhit数をcountしてくれるplugin
 [[plugins]]
 repo = 'osyo-manga/vim-anzu'
-if = '''!meflib#get_local_var('load_plugin', 0, 'hitspop')'''
+if = '''!meflib#get('load_plugin', 0, 'hitspop')'''
 hook_add = '''
 "" vim-anzu {{{
-if !meflib#get_local_var('load_plugin', 0, 'hitspop')
+if !meflib#get('load_plugin', 0, 'hitspop')
     " max search count
     let g:anzu_search_limit = 3000
     " mapping
@@ -546,7 +546,7 @@ repo = 'tpope/vim-commentary'
 # 検索のhit数をpopupで表示するplugin
 [[plugins]]
 repo = 'obcat/vim-hitspop'
-if = '''meflib#get_local_var('load_plugin', 0, 'hitspop')'''
+if = '''meflib#get('load_plugin', 0, 'hitspop')'''
 hook_add = '''
 " {{{
 if exists('*searchcount') && exists('*popup_create')
@@ -587,12 +587,12 @@ highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline
 # for ddc.vim
 [[plugins]]
 repo = 'vim-denops/denops.vim'
-if = '''meflib#get_local_var('load_plugin', 0, 'denops')'''
+if = '''meflib#get('load_plugin', 0, 'denops')'''
 
 # denops test
 [[plugins]]
 repo = 'vim-denops/denops-helloworld.vim'
-if = '''meflib#get_local_var('load_plugin', 0, 'denops')'''
+if = '''meflib#get('load_plugin', 0, 'denops')'''
 
 # Filer
 [[plugins]]

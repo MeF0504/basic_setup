@@ -123,7 +123,7 @@ let s:st_off = "%t %m%{&readonly?'[RO]':''}%h%w"
 " '_': basic statusline
 " 'off': statusline for off window
 " other(num): statusline for short window. num=max width for this statusline
-call meflib#set_local_var('statusline', {
+call meflib#set('statusline', {
             \ '_':   s:st_mode.s:st_filename1.s:st_right.s:st_ft.s:st_ff1.s:st_turn.s:st_ln1,
             \ 'off': s:st_off,
             \ '60':  s:st_mode.s:st_filename2.s:st_right.s:st_ft.s:st_ff2.s:st_turn.s:st_ln2,
@@ -131,7 +131,7 @@ call meflib#set_local_var('statusline', {
 
 let s:def_statusline = &statusline
 function! <SID>Set_statusline(cur_win)
-    let st_config = meflib#get_local_var('statusline', {'_':s:def_statusline})
+    let st_config = meflib#get('statusline', {'_':s:def_statusline})
     if (type(st_config) != type({})) || !has_key(st_config, '_')
         let st_config = {'_':s:def_statusline}
     endif

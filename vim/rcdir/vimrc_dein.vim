@@ -19,19 +19,19 @@ let s:color_file = s:vim_dir . 'plug_list/dein_colorscheme.toml'
 let s:lazy_file  = s:vim_dir . 'plug_list/dein_lazy.toml'
 
 " condition check of loading plugins. {{{
-call meflib#set_local_var('load_plugin', {})
+call meflib#set('load_plugin', {})
 if exists('*searchcount') && exists('*popup_create')
-    call meflib#set_local_var('load_plugin', 1, 'hitspop')
+    call meflib#set('load_plugin', 1, 'hitspop')
 endif
 if executable('deno')
     if has('patch-8.2.3452') || has('nvim-0.6.0')
-        call meflib#set_local_var('load_plugin', 1, 'denops')
+        call meflib#set('load_plugin', 1, 'denops')
     endif
 endif
-if !meflib#get_local_var('load_plugin', 0, 'denops')
+if !meflib#get('load_plugin', 0, 'denops')
     if has('python3')
         if v:version>=801 || has('nvim-0.3.0')
-            call meflib#set_local_var('load_plugin', 1, 'deoplete')
+            call meflib#set('load_plugin', 1, 'deoplete')
         endif
     endif
 endif
@@ -97,8 +97,8 @@ endif
 
 " show the status of dein in statusline.
 let s:dein_status = "%#StatusLine_CHK#%{empty(dein#get_progress())?'':'^...'}%#StatusLine#"
-let s:cur_status = meflib#get_local_var('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
-call meflib#set_local_var('statusline', s:cur_status..s:dein_status, '_')
+let s:cur_status = meflib#get('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
+call meflib#set('statusline', s:cur_status..s:dein_status, '_')
 
 " Plugin remove check
 let s:removed_plugins = dein#check_clean()
