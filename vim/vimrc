@@ -101,7 +101,7 @@ call s:source_file('rcdir/vimrc_plugin.vim', !exists('g:vscode'))
 " vim dein (plugin manager) setting
 " call s:source_file('rcdir/vimrc_dein.vim', !exists('g:vscode'))
 " vimPlug (plugin manager) setting
-call s:source_file('rcdir/vimrc_vimplug.vim', !exists('g:vscode'))
+call s:source_file('rcdir/vimrc_vimplug.vim', 1)
 " color settings
 if !has('gui_running') && (&t_Co == 256)
     if !s:source_file('rcdir/vimrc_color.vim', !exists('g:vscode'))
