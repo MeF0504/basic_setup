@@ -55,8 +55,9 @@ Plug 'MeF0504/dino.vim', PlugCond(1, {'on': 'Dino'})
 Plug 'MeF0504/vim-monoTone'
 
 " window のresize, 移動用plugin
-Plug 'simeji/winresizer'
+Plug 'simeji/winresizer', PlugCond(1, {'on': 'WinResizerStartResize'})
 " {{{
+nnoremap <leader>w <Cmd>WinResizerStartResize<CR>
 let g:winresizer_finish_with_escape = 0
 let g:winresizer_start_key = '<leader>w'
 let g:winresizer_vert_resize = 5
