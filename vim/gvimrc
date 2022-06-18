@@ -44,19 +44,11 @@ else
     highlight Normal ctermbg=0 guibg=Black
 endif
 
-"その他 GUI 設定 {{{
-"透過
-autocmd gLocal GUIEnter * set transparency=240 "0~255?
+" その他 GUI 設定 {{{
+" 透過はもうsupportされていないっぽい
+" autocmd gLocal GUIEnter * set transparency=240 "0~255?
 
-function! Hide(...)
-    let l:tra = &transparency
-    let l:time = get(a:,1,5)
-    set transparency=1
-    execute "sleep " . l:time
-    execute "set transparency=" . l:tra
-endfunction
-
-"local設定ファイル
+" local設定ファイル
 let s:localgrc = s:vimdir . 'rcdir/gvimrc.mine'
 if filereadable(s:localgrc)
     execute "source " . s:localgrc
