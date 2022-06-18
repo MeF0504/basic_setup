@@ -743,10 +743,10 @@ let g:indent_guides_default_mapping = 0
 
 " vim 新機能用pluginっぽい
 " showcase of new vim functions.
-Plug 'vim/killersheep', PlugCond(has('patch-8.1.1705'))
+Plug 'vim/killersheep', PlugCond(has('patch-8.1.1705'), {'on': 'KillKillKill'})
 
 " toml 用 syntax
-Plug 'cespare/vim-toml', PlugCond(has('patch-8.2.2106'))
+Plug 'cespare/vim-toml', PlugCond(!has('patch-8.2.2106'), {'for': 'toml'})
 
 " ファイルの一部のsyntax highlightを違うfiletypeにする
 Plug 'inkarkat/vim-SyntaxRange', PlugCond(1, {'for': ['toml', 'markdown', 'vim']})
@@ -1089,6 +1089,7 @@ let g:loaded_matchparen = 1
 let g:loaded_parenmatch = 1
 " 画面外の対応はひとまず良いかな...
 let g:matchup_matchparen_offscreen = {}
+nnoremap <leader>c <Cmd>MatchupWhereAmI?<CR>
 " }}}
 
 " 色々な言語のtemplate
