@@ -63,3 +63,36 @@ let g:pyindent_continue = shiftwidth()
 setlocal textwidth=79
 setlocal formatoptions-=tc
 
+" {{{ 今自分がどの関数/class/for/if内にいるのか表示する
+function! <SID>chk_current_position_python()
+    let hit_str = split('def class if else elif for with', ' ')
+
+    let res = []
+    let tablevel = match(getline('.'), '\S')
+    let clnnr = line('.')
+    for lnnr in range(clnnr)
+        let ln = getline(clnnr-lnnr-1)
+        let tmp_tablevel = match(ln, '\S')
+        " echo tmp_tablevel . '-' . tablevel
+        if tmp_tablevel < tablevel
+            for hs in hit_str
+                let match_level = match(ln, '\<'.hs.'\>')
+                if (match_level != -1) && (match_level == tmp_tablevel)
+                    " echo ln
+                    call insert(res, printf('%d: %s', clnnr-lnnr-1, ln))
+                    if match('elif else', '\<'.hs.'\>') == -1
+                        let tablevel = tmp_tablevel
+                    endif
+                endif
+            endfor
+        endif
+    endfor
+
+    for tmp_ln in res
+        echo tmp_ln
+    endfor
+endfunction
+" MatchupWhereAmI は python だと動かないっぽいので自作を復元
+nnoremap <buffer> <leader>c <Cmd>call <SID>chk_current_position_python()<CR>
+" }}}
+
