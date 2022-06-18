@@ -476,7 +476,7 @@ endfunction
 Plug 'osyo-manga/vim-anzu', PlugCond(!meflib#get('load_plugin', 0, 'hitspop'), {'on':[]})
 "" vim-anzu {{{
 if !meflib#get('load_plugin', 0, 'hitspop')
-    call add(g:lazy_plugins, 'vim-anzu')
+    call meflib#add('lazy_plugins', 'vim-anzu')
     " max search count
     let g:anzu_search_limit = 3000
     " mapping
@@ -589,7 +589,7 @@ endfunction
 
 " }}}
 Plug 'gelguy/wilder.nvim', PlugCond(1, {'do': function('UpdateRemotePlugins'), 'on': []})
-call add(g:lazy_plugins, 'wilder.nvim')
+call meflib#add('lazy_plugins', 'wilder.nvim')
 autocmd PlugLocal User wilder.nvim call s:wilder_hook()
 
 " for deoplete and wilder
@@ -801,7 +801,7 @@ let g:l_deo = meflib#get('load_plugin', 0, 'deoplete')
 Plug 'Shougo/deoplete.nvim', PlugCond(g:l_deo, {'on':[]})
 " {{{
 if g:l_deo
-    call add(g:insert_plugins, 'deoplete.nvim')
+    call meflib#add('insert_plugins', 'deoplete.nvim')
     let g:deoplete#enable_at_startup = 1
     inoremap <expr><tab> pumvisible() ? "\<C-n>" :
             \ neosnippet#expandable_or_jumpable() ?

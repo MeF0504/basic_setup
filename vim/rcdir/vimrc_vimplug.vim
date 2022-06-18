@@ -38,7 +38,6 @@ if !meflib#get('load_plugin', 0, 'denops')
 endif
 " }}}
 
-let g:lazy_plugins = []
 let g:insert_plugins = []
 call plug#begin(s:plug_dir)
 
@@ -95,22 +94,21 @@ endif
 call plug#end()
 
 " https://zenn.dev/kawarimidoll/articles/8172a4c29a6653
-function! s:lazy_load(timer) abort
-    if !empty(g:lazy_plugins)
-        call plug#load(g:lazy_plugins)
-    endif
-    unlet g:lazy_plugins
-endfunction
-
 " 遅延読み込み
+function! s:lazy_load(timer) abort
+    let lazy_plugins = meflib#get('lazy_plugins', [])
+    if !empty(lazy_plugins)
+        call plug#load(lazy_plugins)
+    endif
+endfunction
 call timer_start(100, function("s:lazy_load"))
 
+" InsertEnter で読み込み
 function! s:insert_load() abort
-    if !empty(g:insert_plugins)
-        call plug#load(g:insert_plugins)
+    let insert_plugins = meflib#get('insert_plugins', [])
+    if !empty(insert_plugins)
+        call plug#load(insert_plugins)
     endif
-    unlet g:insert_plugins
 endfunction
-
 autocmd PlugLocal InsertEnter * ++once call s:insert_load()
 
