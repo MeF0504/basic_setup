@@ -4,17 +4,178 @@ scriptencoding utf-8
 
 " vim (almost) self-made function file
 
-" map leader にmapされているmapを表示 {{{
-" nnoremap <Leader><Leader> :map mapleader<CR>
-function! <SID>leader_map()
-    map <Leader>
+""開いているファイル情報を表示（ざっくり）{{{
+function! meflib#tools#fileinfo() abort
+    let file = expand('%')
+    if file == ''
+        return
+    endif
+    if !has('pythonx')
+        if has('win32') || has('win64')
+            let s:ls = 'dir '
+        else
+            let s:ls='ls -l '
+        endif
+        execute "!" . s:ls . file
+        return
+    else
+        pythonx << EOL
+import vim
+import os
+try:
+    import datetime
+except ImportError as e:
+    datetime_ok = False
+else:
+    datetime_ok = True
+
+fname = vim.eval('file')
+res = ''
+
+# access
+if os.access(fname, os.R_OK): res += 'r'
+else: res += '-'
+if os.access(fname, os.W_OK): res += 'w'
+else: res += '-'
+if os.access(fname, os.X_OK): res += 'x'
+else: res += '-'
+
+# time stamp
+if datetime_ok:
+    stat = os.stat(fname)
+    # meta data update (UNIX), created (Windows)
+    # dt = datetime.datetime.fromtimestamp(stat.st_ctime)
+    # created (some OS)
+    # dt = datetime.datetime.fromtimestamp(stat.st_birthtime)
+    # last update
+    dt = datetime.datetime.fromtimestamp(stat.st_mtime)
+    # last access
+    # dt = datetime.datetime.fromtimestamp(stat.st_atime)
+    res += dt.strftime(' %Y/%m/%d-%H:%M:%S')
+else:
+    res += ' ????/??/??-?:?:?'
+
+# file size
+filesize = os.path.getsize(fname)
+prefix = ''
+if filesize > 1024**3:
+    filesize /= 1024**3
+    prefix = 'G'
+elif filesize > 1024**2:
+    filesize /= 1024**2
+    prefix = 'M'
+elif filesize > 1024:
+    filesize /= 1024
+    prefix = 'k'
+res += ' ({:.1f} {}B)'.format(filesize, prefix)
+
+# file name
+res += '  '+fname
+if os.path.islink(fname):
+    res += ' => '+os.path.realpath(fname)
+
+print(res)
+EOL
+    endif
 endfunction
-nnoremap <silent> <Leader><Leader> <Cmd>call <SID>leader_map()<CR>
+"}}}
+
+" 辞書（というか英辞郎）で検索 {{{
+function! meflib#tools#eijiro(word)
+    let url = '"https://eowf.alc.co.jp/search?q='.a:word.'"'
+    let web_cmd = meflib#basic#get_exe_cmd()
+    if !executable(web_cmd)
+        echo 'command '.web_cmd.' is not supported in this system.'
+        return
+    endif
+    call system(printf('%s %s', web_cmd, url))
+endfunction
+" }}}
+
+" ctags command {{{
+function! meflib#tools#exec_ctags(...) abort
+    if !executable('ctags')
+        echohl ErrorMsg
+        echomsg 'ctags is not executable'
+        echohl None
+        return
+    endif
+
+    if a:0 == 0
+        let cwd = meflib#basic#get_top_dir(expand('%:h'))
+    else
+        let cwd = a:1
+    endif
+    if !isdirectory(cwd)
+        echohl ErrorMsg
+        echomsg printf('"%s" is not a directory', cwd)
+        echohl None
+        return
+    endif
+
+    let ctags_opt = meflib#get_local_var('ctags_opt', '')
+    let out_file_name = printf('%s/.%s_tags', cwd, &filetype)
+    let ctags_out = '-f '..out_file_name
+    if &filetype == 'cpp'
+        let ft = 'c++'
+    else
+        let ft = &filetype
+    endif
+    let spec_ft = '--languages='..ft
+
+    let ctags_cmd = printf('ctags %s %s %s -R %s', ctags_opt, ctags_out, spec_ft, cwd)
+    call system(ctags_cmd)
+    echomsg ctags_cmd
+endfunction
+" }}}
+
+" job status check {{{
+function! meflib#tools#chk_job_status() abort
+    if has('job')
+        let jobs = job_info()
+        for idx in range(len(jobs))
+            let job = jobs[idx]
+            echo idx
+            echon ' '
+            echohl Type
+            echon job_status(job)
+            echohl None
+            echon ' '
+            echohl Statement
+            echon job_info(job).cmd
+            echohl None
+        endfor
+        let num = input('please select job to kill (empty cancel): ')
+        if !empty(num) && num>=0 && num<len(jobs)
+            if job_status(jobs[num]) == 'run'
+                call job_stop(jobs[num])
+            else
+                call job_stop(jobs[num], 'kill')
+            endif
+        endif
+    elseif has('nvim')
+        for chan in nvim_list_chans()
+            echo chan.id
+            if has_key(chan, 'mode')
+                echon ' '
+                echohl Type
+                echon chan.mode
+                echohl None
+            endif
+            if has_key(chan, 'argv')
+                echon ' '
+                echohl Statement
+                echon chan.argv
+                echohl None
+            endif
+        endfor
+    endif
+endfunction
 " }}}
 
 "vimでbinary fileを閲覧，編集 "{{{
 let s:bin_fts = ''
-function! <SID>BinaryMode()
+function! meflib#tools#BinaryMode()
     " :h using-xxd
     " vim -b : edit binary using xxd-format!
     let ext = '.'.expand('%:e')
@@ -38,15 +199,11 @@ function! <SID>BinaryMode()
     augroup END
     e!
 endfunction
-
-command! BinMode call <SID>BinaryMode()
-
 " }}}
 
 " 開いているfile一覧 {{{
 let s:cur_winID = win_getid()
-
-function! s:file_list() abort
+function! meflib#tools#file_list() abort
     let l:fnames = {}
     " tab number
     for i in range(1,tabpagenr('$'))
@@ -139,63 +296,10 @@ function! s:file_list() abort
         endif
     endwhile
 endfunction
-
-command! Tls call s:file_list()
-
-nnoremap <silent> <leader>l <Cmd>Tls<CR>
-
 " }}}
 
 " termonal commandを快適に使えるようにする {{{
 "" http://koturn.hatenablog.com/entry/2018/02/12/140000
-let s:term_opts = ['win', 'term']
-let s:term_win_opts = ['S', 'V', 'F', 'P']
-function! s:complete_term(arglead, cmdline, cursorpos) abort
-    ":h :command-completion-custom
-    let arglead = tolower(a:arglead)
-    let cmdline = tolower(a:cmdline)
-    let opt_idx = strridx(cmdline, '-')
-    let end_space_idx = strridx(cmdline, ' ')
-    " return ['-1-'.a:arglead, '-2-'.a:cmdline, '-3-'.a:cursorpos, '-4-'.a:cmdline[opt_idx:]]
-    if arglead[0] == '-'
-        " select option
-        let res = []
-        for opt in s:term_opts
-            let res += ['-'.opt]
-        endfor
-        return filter(res, '!stridx(tolower(v:val), arglead)')
-    elseif cmdline[opt_idx:end_space_idx-1] == '-win'
-        return s:term_win_opts
-    elseif cmdline[opt_idx:end_space_idx-1] == '-term'
-        if exists('*term_list')
-            let term_names = filter(map(term_list(), 'bufname(v:val)'), '!stridx(tolower(v:val), arglead)')
-        else
-            if has('nvim')
-                let st_idx = 6
-                let term_head = 'term://'
-            else
-                let st_idx = 0
-                let term_head = '!'
-            endif
-            let term_list = []
-            for i in range(1, tabpagenr('$'))
-                for j in tabpagebuflist(i)
-                    let bname = bufname(j)
-                    if bname[:st_idx] == term_head
-                        let term_list += [bname]
-                    endif
-                endfor
-            endfor
-            let term_names = filter(term_list, '!stridx(tolower(v:val), arglead)')
-        endif
-        return term_names
-    else
-        " shell コマンド一覧が得られたら嬉しい
-        " $PATHでfor文を回す手もあるが，時間が掛かりそう...
-        return []
-    endif
-endfunction
-
 function! s:open_term(bufname) abort
     let bufn = bufnr(a:bufname)
     if bufn == -1
@@ -332,7 +436,7 @@ function! s:open_term_float(opts) abort
     endif
 endfunction
 
-function! s:Terminal(...) abort
+function! meflib#tools#Terminal(...) abort
     if !has('terminal') && !has('nvim')
         echoerr "this vim doesn't support terminal!!"
         return
@@ -351,9 +455,6 @@ function! s:Terminal(...) abort
     elseif !empty(meflib#get_local_var('term_default', ''))
         let win_opt = meflib#get_local_var('term_default', 'S')
     else
-        let win_opt = 'S'
-    endif
-    if match(s:term_win_opts, win_opt) == -1
         let win_opt = 'S'
     endif
 
@@ -459,14 +560,10 @@ function! s:Terminal(...) abort
     setlocal foldcolumn=0
     setlocal nonumber
 endfunction
-
-command! -nargs=? -complete=customlist,s:complete_term  Terminal call s:Terminal(<f-args>)
-
-
 " }}}
 
 " ファイルの存在チェック {{{
-function! <SID>Jump_path() abort
+function! meflib#tools#Jump_path() abort
     let line = getline('.')
     let fname = fnamemodify(expand('<cfile>'), ':p')
     let lnum = 1
@@ -509,12 +606,10 @@ function! <SID>Jump_path() abort
         execute lnum
     endif
 endfunction
-
-nnoremap <leader>f <Cmd>call <SID>Jump_path()<CR>
 " }}}
 
 " 行単位で差分を取る {{{
-function! <SID>diff_line(...) abort
+function! meflib#tools#diff_line(...) abort
     " http://t2y.hatenablog.jp/entry/20110210/1297338263
     let help_str = ":DiffLine [file1:]start1[-end1] [file2:]start2[-end2]\n"
                 \."if file is not specified, use current file.\n"
@@ -631,9 +726,6 @@ EOF
     wincmd p
     delcommand TmpPython
 endfunction
-
-command! -nargs=+ -complete=file DiffLine call <SID>diff_line(<f-args>)
-
 " }}}
 
 " 自作grep {{{
@@ -650,23 +742,7 @@ function! <SID>echo_gregrep_help()
     echo "e.g. :GREgrep wd=<are> dir=opened"
 endfunction
 
-function! <SID>grep_comp(arglead, cmdline, cursorpos) abort
-    let arglead = tolower(a:arglead)
-    let cmdline = tolower(a:cmdline)
-    let cur_opt = split(cmdline, ' ', 1)[-1]
-    if (match(cur_opt, '=') == -1)
-        let opts = ['wd', 'dir', 'ex']
-        return filter(map(opts, 'v:val."="'), '!stridx(tolower(v:val), arglead) && match(cmdline, v:val)==-1')
-    elseif cur_opt =~ 'dir='
-        let arg = split(cur_opt, '=', 1)[1]
-        let files = split(glob(arg..'*'), '\n')
-        return map(files+['opened'], "'dir='..v:val")
-    else
-        return []
-    endif
-endfunction
-
-function! <SID>Mygrep(...)
+function! meflib#tools#Mygrep(...)
     let def_dir = '.'
     if meflib#get_local_var('get_top_dir', 0) == 1
         let top_dir = meflib#basic#get_top_dir(expand('%:h'))
@@ -758,12 +834,10 @@ function! <SID>Mygrep(...)
         echo "not supported grepprg"
     endif
 endfunction
-command! -nargs=? -complete=customlist,<sid>grep_comp Gregrep call <SID>Mygrep(<f-args>)
-command! -nargs=? -complete=customlist,<sid>grep_comp GREgrep Gregrep
 " }}}
 
-"  XPM test function {{{
-function <SID>xpm_loader()
+" XPM test function {{{
+function meflib#tools#xpm_loader()
     let file = expand('%')
     if has('gui_running')
         let is_gui = 1
@@ -794,6 +868,5 @@ for i,vim_setting in enumerate(xpm.vim_settings):
 vim.command(xpm.vim_finally)
 EOL
 endfunction
-command! XPMLoader call <SID>xpm_loader()
 " }}}
 

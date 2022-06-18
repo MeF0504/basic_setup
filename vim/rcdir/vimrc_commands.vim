@@ -6,122 +6,23 @@ augroup cmdLocal
     autocmd!
 augroup END
 
-"diff系command {{{
-
+ map leader にmapされているmapを表示 {{{
+" nnoremap <Leader><Leader> :map mapleader<CR>
+function! <SID>leader_map()
+    map <Leader>
+endfunction
+nnoremap <silent> <Leader><Leader> <Cmd>call <SID>leader_map()<CR>
+" }}}
+" diff系command {{{
 command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command! -nargs=1 -complete=file Diff vertical diffsplit <args>
 "}}}
-
-"開いているファイル情報を表示（ざっくり）{{{
-function! s:fileinfo() abort
-    let file = expand('%')
-    if file == ''
-        return
-    endif
-    if !has('pythonx')
-        if has('win32') || has('win64')
-            let s:ls = 'dir '
-        else
-            let s:ls='ls -l '
-        endif
-        execute "!" . s:ls . file
-        return
-    else
-        pythonx << EOL
-import vim
-import os
-try:
-    import datetime
-except ImportError as e:
-    datetime_ok = False
-else:
-    datetime_ok = True
-
-fname = vim.eval('file')
-res = ''
-
-# access
-if os.access(fname, os.R_OK): res += 'r'
-else: res += '-'
-if os.access(fname, os.W_OK): res += 'w'
-else: res += '-'
-if os.access(fname, os.X_OK): res += 'x'
-else: res += '-'
-
-# time stamp
-if datetime_ok:
-    stat = os.stat(fname)
-    # meta data update (UNIX), created (Windows)
-    # dt = datetime.datetime.fromtimestamp(stat.st_ctime)
-    # created (some OS)
-    # dt = datetime.datetime.fromtimestamp(stat.st_birthtime)
-    # last update
-    dt = datetime.datetime.fromtimestamp(stat.st_mtime)
-    # last access
-    # dt = datetime.datetime.fromtimestamp(stat.st_atime)
-    res += dt.strftime(' %Y/%m/%d-%H:%M:%S')
-else:
-    res += ' ????/??/??-?:?:?'
-
-# file size
-filesize = os.path.getsize(fname)
-prefix = ''
-if filesize > 1024**3:
-    filesize /= 1024**3
-    prefix = 'G'
-elif filesize > 1024**2:
-    filesize /= 1024**2
-    prefix = 'M'
-elif filesize > 1024:
-    filesize /= 1024
-    prefix = 'k'
-res += ' ({:.1f} {}B)'.format(filesize, prefix)
-
-# file name
-res += '  '+fname
-if os.path.islink(fname):
-    res += ' => '+os.path.realpath(fname)
-
-print(res)
-EOL
-    endif
-endfunction
-command! FileInfo call s:fileinfo()
-"}}}
-
-" 辞書（というか英辞郎）で検索 {{{
-function! s:eijiro(web, word)
-    let dic_file = meflib#get_local_var('dic_file', '')
-    if !filereadable(dic_file) && !a:web
-        echo printf('dictionary file %s is not readable.', dic_file)
-        return
-    endif
-    if filereadable(dic_file) && !a:web
-        " localに辞書ファイルがある場合はそれを参照
-        execute "vimgrep /\\<".a:word."\\>/j "..dic_file
-        return
-    endif
-
-    let url = '"https://eowf.alc.co.jp/search?q='.a:word.'"'
-    let web_cmd = meflib#basic#get_exe_cmd()
-    if !executable(web_cmd)
-        echo 'command '.web_cmd.' is not supported in this system.'
-        return
-    endif
-    call system(printf('%s %s', web_cmd, url))
-endfunction
-command -nargs=1 EijiroWeb call s:eijiro(1, <f-args>)
-command -nargs=1 Eijiro call s:eijiro(0, <f-args>)
-" }}}
-
 " conflict commentを検索 {{{
 command! SearchConf /<<<<<<<\|=======\|>>>>>>>
 " }}}
-
 " expandを打つのがめんどくさい {{{
 command! -nargs=1 Echopand echo expand(<f-args>)
 " }}}
-
 " ipython を呼ぶ用 {{{
 let s:ipythons = {'ipython':'Ipython', 'ipython2':'Ipython2', 'ipython3':'Ipython3'}
 for s:ipy in keys(s:ipythons)
@@ -134,22 +35,15 @@ for s:ipy in keys(s:ipythons)
     endif
 endfor
 " }}}
-
 " Spell check {{{
 command! Spell if &spell!=1 | setlocal spell | echo 'spell: on' | else | setlocal nospell | echo 'spell: off' | endif
 " }}}
-
 " 要らない？user関数を消す {{{
 function! s:del_comds()
     let del_commands = meflib#get_local_var('del_commands', [])
     for dc in del_commands
         if exists(':'.dc) == 2
             execute 'delcommand '.dc
-            " echo 'delete '.dc
-            " sleep 1
-        else
-            " echo 'not delete '.dc
-            " sleep 1
         endif
     endfor
 endfunction
@@ -159,91 +53,100 @@ else
     autocmd cmdLocal VimEnter * ++once call s:del_comds()
 endif
 " }}}
-
+" 開いているファイル情報を表示（ざっくり）{{{
+command! FileInfo call meflib#tools#fileinfo()
+" }}}
+" 辞書（というか英辞郎）で検索 {{{
+command! -nargs=1 EijiroWeb call meflib#tools#eijiro(<f-args>)
+" }}}
 " ctags command {{{
-function! s:exec_ctags(...) abort
-    if !executable('ctags')
-        echohl ErrorMsg
-        echomsg 'ctags is not executable'
-        echohl None
-        return
-    endif
-
-    if a:0 == 0
-        let cwd = meflib#basic#get_top_dir(expand('%:h'))
-    else
-        let cwd = a:1
-    endif
-    if !isdirectory(cwd)
-        echohl ErrorMsg
-        echomsg printf('"%s" is not a directory', cwd)
-        echohl None
-        return
-    endif
-
-    let ctags_opt = meflib#get_local_var('ctags_opt', '')
-    let out_file_name = printf('%s/.%s_tags', cwd, &filetype)
-    let ctags_out = '-f '..out_file_name
-    if &filetype == 'cpp'
-        let ft = 'c++'
-    else
-        let ft = &filetype
-    endif
-    let spec_ft = '--languages='..ft
-
-    let ctags_cmd = printf('ctags %s %s %s -R %s', ctags_opt, ctags_out, spec_ft, cwd)
-    call system(ctags_cmd)
-    echomsg ctags_cmd
-endfunction
-command! -nargs=? Ctags call s:exec_ctags(<f-args>)
-
+command! -nargs=? Ctags call meflib#tools#exec_ctags(<f-args>)
 " }}}
-
 " job status check {{{
-if has('job')
-    function! <SID>chk_job_status() abort
-        let jobs = job_info()
-        for idx in range(len(jobs))
-            let job = jobs[idx]
-            echo idx
-            echon ' '
-            echohl Type
-            echon job_status(job)
-            echohl None
-            echon ' '
-            echohl Statement
-            echon job_info(job).cmd
-            echohl None
-        endfor
-        let num = input('please select job to kill (empty cancel): ')
-        if !empty(num) && num>=0 && num<len(jobs)
-            if job_status(jobs[num]) == 'run'
-                call job_stop(jobs[num])
-            else
-                call job_stop(jobs[num], 'kill')
-            endif
-        endif
-    endfunction
-    command! JobStatus call <SID>chk_job_status()
-elseif has('nvim')
-    function! <SID>chk_job_status()
-        for chan in nvim_list_chans()
-            echo chan.id
-            if has_key(chan, 'mode')
-                echon ' '
-                echohl Type
-                echon chan.mode
-                echohl None
-            endif
-            if has_key(chan, 'argv')
-                echon ' '
-                echohl Statement
-                echon chan.argv
-                echohl None
-            endif
-        endfor
-    endfunction
-    command! JobStatus call <SID>chk_job_status()
-endif
+command! JobStatus call meflib#tools#chk_job_status()
 " }}}
+"vimでbinary fileを閲覧，編集 "{{{
+command! BinMode call meflib#tools#BinaryMode()
+" }}}
+" 開いているfile一覧 {{{
+nnoremap <silent> <leader>l <Cmd>call meflib#tools#file_list()<CR>
+" }}}
+" termonal commandを快適に使えるようにする {{{
+let s:term_opts = ['win', 'term']
+let s:term_win_opts = ['S', 'V', 'F', 'P']
+function! s:complete_term(arglead, cmdline, cursorpos) abort
+    ":h :command-completion-custom
+    let arglead = tolower(a:arglead)
+    let cmdline = tolower(a:cmdline)
+    let opt_idx = strridx(cmdline, '-')
+    let end_space_idx = strridx(cmdline, ' ')
+    " return ['-1-'.a:arglead, '-2-'.a:cmdline, '-3-'.a:cursorpos, '-4-'.a:cmdline[opt_idx:]]
+    if arglead[0] == '-'
+        " select option
+        let res = []
+        for opt in s:term_opts
+            let res += ['-'.opt]
+        endfor
+        return filter(res, '!stridx(tolower(v:val), arglead)')
+    elseif cmdline[opt_idx:end_space_idx-1] == '-win'
+        return s:term_win_opts
+    elseif cmdline[opt_idx:end_space_idx-1] == '-term'
+        if exists('*term_list')
+            let term_names = filter(map(term_list(), 'bufname(v:val)'), '!stridx(tolower(v:val), arglead)')
+        else
+            if has('nvim')
+                let st_idx = 6
+                let term_head = 'term://'
+            else
+                let st_idx = 0
+                let term_head = '!'
+            endif
+            let term_list = []
+            for i in range(1, tabpagenr('$'))
+                for j in tabpagebuflist(i)
+                    let bname = bufname(j)
+                    if bname[:st_idx] == term_head
+                        let term_list += [bname]
+                    endif
+                endfor
+            endfor
+            let term_names = filter(term_list, '!stridx(tolower(v:val), arglead)')
+        endif
+        return term_names
+    else
+        " shell コマンド一覧が得られたら嬉しい
+        " $PATHでfor文を回す手もあるが，時間が掛かりそう...
+        return []
+    endif
+endfunction
+command! -nargs=? -complete=customlist,s:complete_term  Terminal call meflib#tools#Terminal(<f-args>)
+" }}}
+" ファイルの存在チェック {{{
+nnoremap <leader>f <Cmd>call meflib#tools#Jump_path()<CR>
+" }}}
+" 行単位で差分を取る {{{
+command! -nargs=+ -complete=file DiffLine call meflib#tools#diff_line(<f-args>)
+" }}}
+" 自作grep {{{
+function! <SID>grep_comp(arglead, cmdline, cursorpos) abort
+    let arglead = tolower(a:arglead)
+    let cmdline = tolower(a:cmdline)
+    let cur_opt = split(cmdline, ' ', 1)[-1]
+    if (match(cur_opt, '=') == -1)
+        let opts = ['wd', 'dir', 'ex']
+        return filter(map(opts, 'v:val."="'), '!stridx(tolower(v:val), arglead) && match(cmdline, v:val)==-1')
+    elseif cur_opt =~ 'dir='
+        let arg = split(cur_opt, '=', 1)[1]
+        let files = split(glob(arg..'*'), '\n')
+        return map(files+['opened'], "'dir='..v:val")
+    else
+        return []
+    endif
+endfunction
 
+command! -nargs=? -complete=customlist,<SID>grep_comp Gregrep call meflib#tools#Mygrep(<f-args>)
+command! -nargs=? -complete=customlist,<SID>grep_comp GREgrep Gregrep
+" }}}
+" XPM test function {{{
+command! XPMLoader call meflib#tools#xpm_loader()
+" }}}
