@@ -8,7 +8,7 @@ let g:loaded_matchparen = 1
 let g:loaded_parenmatch = 1
 " 画面外の対応はひとまず良いかな...
 let g:matchup_matchparen_offscreen = {}
-nnoremap <leader>c <Cmd>MatchupWhereAmI?<CR>
+nnoremap <leader>c <Cmd>MatchupWhereAmI\?<CR>
 " }}}
 
 " 色々な言語のtemplate
