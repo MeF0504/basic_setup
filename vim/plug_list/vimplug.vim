@@ -16,12 +16,6 @@ Plug 'MeF0504/sl.vim', PlugCond(1, {'on': 'SL'})
 " Syntax 情報をpopupで表示
 Plug 'MeF0504/vim-popsyntax', PlugCond(1, {'on': 'PopSyntaxToggle'})
 
-" 単語に色を付ける
-" Plug 'MeF0504/vim-wordcolor'
-"" wordcolor {{{
-let g:word_color_mapping = '//'
-" }}}
-
 " ctagsを使ってhighlightを設定 (mftags 分割 その1)
 Plug 'MeF0504/highlightag.vim'
 "" highlightag {{{
@@ -104,11 +98,11 @@ endfunction
 " }}}
 autocmd PlugLocal User outliner.vim call s:outliner_hook()
 
-" neosnippet用のsnipets
-Plug 'Shougo/neosnippet-snippets'
-
 " git log 表示用plugin
 Plug 'MeF0504/gitewer.vim', PlugCond(1, {'on': 'Gitewer'})
+
+" neosnippet用のsnipets
+Plug 'Shougo/neosnippet-snippets'
 
 " コード実行plugin
 Plug 'thinca/vim-quickrun', PlugCond(1, {'on': 'QuickRun'})

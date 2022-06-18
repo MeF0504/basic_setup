@@ -1,7 +1,7 @@
 "vim script encording setting
 scriptencoding utf-8
 
-function! s:md_template()
+function! s:marp_template()
     " {{{
     append
 ---
@@ -24,7 +24,7 @@ theme: gaia
 .
     " }}}
 endfunction
-command! -buffer Template :call s:md_template()
+command! -buffer MarpTemplate call s:marp_template()
 
 highlight markdownItalic cterm=None gui=NONE
 
