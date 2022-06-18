@@ -40,7 +40,7 @@ command! Spell if &spell!=1 | setlocal spell | echo 'spell: on' | else | setloca
 " }}}
 " 要らない？user関数を消す {{{
 function! s:del_comds()
-    let del_commands = meflib#get_local_var('del_commands', [])
+    let del_commands = meflib#get('del_commands', [])
     for dc in del_commands
         if exists(':'.dc) == 2
             execute 'delcommand '.dc

@@ -17,7 +17,7 @@ set errorformat=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 " pydocとかいう便利ツールがあるじゃん
 function! s:python_help(module) abort
     " {{{
-    let pydoc_cmd = meflib#get_local_var('pydoc_cmd', 'pydoc3')
+    let pydoc_cmd = meflib#get('pydoc_cmd', 'pydoc3')
     if !executable(pydoc_cmd)
         echohl ErrorMsg
         echo printf('this command requires %s.', pydoc_cmd)

@@ -113,7 +113,7 @@ function! meflib#tools#exec_ctags(...) abort
         return
     endif
 
-    let ctags_opt = meflib#get_local_var('ctags_opt', '')
+    let ctags_opt = meflib#get('ctags_opt', '')
     let out_file_name = printf('%s/.%s_tags', cwd, &filetype)
     let ctags_out = '-f '..out_file_name
     if &filetype == 'cpp'
@@ -374,7 +374,7 @@ function! s:open_term_win(opts)
     " term_startでgit for windowsのbashを実行する
     let cmd = a:opts
     if empty(cmd)
-        let cmd = meflib#get_local_var('win_term_cmd', ['bash.exe', '-l'])
+        let cmd = meflib#get('win_term_cmd', ['bash.exe', '-l'])
         let term_fin = 'close'
     else
         let term_fin = 'open'
@@ -405,7 +405,7 @@ function! s:open_term_float(opts) abort
     let cmd = a:opts
     if empty(cmd)
         if has('win32') || has('win64')
-            let cmd = meflib#get_local_var('win_term_cmd', ['bash.exe', '-l'])
+            let cmd = meflib#get('win_term_cmd', ['bash.exe', '-l'])
         else
             let cmd = [&shell]
         endif
@@ -452,8 +452,8 @@ function! meflib#tools#Terminal(...) abort
 
     if has_key(opts, 'win')
         let win_opt = opts['win'][0]
-    elseif !empty(meflib#get_local_var('term_default', ''))
-        let win_opt = meflib#get_local_var('term_default', 'S')
+    elseif !empty(meflib#get('term_default', ''))
+        let win_opt = meflib#get('term_default', 'S')
     else
         let win_opt = 'S'
     endif
@@ -744,7 +744,7 @@ endfunction
 
 function! meflib#tools#Mygrep(...)
     let def_dir = '.'
-    if meflib#get_local_var('get_top_dir', 0) == 1
+    if meflib#get('get_top_dir', 0) == 1
         let top_dir = meflib#basic#get_top_dir(expand('%:h'))
         if !empty(top_dir)
             let def_dir = top_dir

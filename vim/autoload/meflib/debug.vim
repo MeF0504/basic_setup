@@ -8,7 +8,7 @@ function! meflib#debug#debug_log(dbgmsg, tag) abort
     " tag:    tag string (used to idnetify type of debug message),
 
     " set file name to write debug message,
-    let debug_log_file = meflib#get_local_var('log_file', getcwd()..'/debug_log.txt')
+    let debug_log_file = meflib#get('log_file', getcwd()..'/debug_log.txt')
 
     if s:init
         let flag = ''

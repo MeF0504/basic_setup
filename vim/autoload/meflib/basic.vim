@@ -37,8 +37,8 @@ function! meflib#basic#set_local_var(var_name, val, ...) abort
 endfunction
 
 function! meflib#basic#add_local_var(var_name, var) abort
-    if has_key(a:var_name, s:local_var_dict)
-        call add(s:local_var_dict[var_name], a:var)
+    if has_key(s:local_var_dict, a:var_name)
+        call add(s:local_var_dict[a:var_name], a:var)
     else
         let s:local_var_dict[a:var_name] = [a:var]
     endif
@@ -221,7 +221,7 @@ function! meflib#basic#get_term_color() abort
                  \ '#000000', '#870000', '#008700', '#878700', '#000087', '#870087', '#008787', '#b2b2b2',
                  \ '#4c4c4c', '#ff0000', '#00ff00', '#ffff00', '#0000ff', '#ff00ff', '#00ffff', '#ffffff']
 
-     let col_name = meflib#get_local_var('term_col_name', 'default')
+     let col_name = meflib#get('term_col_name', 'default')
      if match(keys(colors), col_name) == -1
          let col_name = 'default'
      endif
