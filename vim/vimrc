@@ -1,9 +1,9 @@
 " encoding setting
 " encoding setting for vim system
 set encoding=utf-8
-" encoding setting for current buffer
+" encoding setting for current buffer (when make a new file?)
 set fileencoding=utf-8
-" encoding setting for all buffer
+" available encoding settings for all buffer
 set fileencodings=utf-8
 " encoding setting for vim script
 scriptencoding utf-8
