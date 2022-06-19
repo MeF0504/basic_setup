@@ -323,7 +323,7 @@ function timeout_local() {
 }
 
 function echoenv() {
-    echo -ne "${1//:/\\n}"
+    echo -ne "${*//:/\\n}"
     echo ''
 }
 
