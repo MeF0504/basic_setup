@@ -150,3 +150,6 @@ command! -nargs=? -complete=customlist,<SID>grep_comp GREgrep Gregrep
 " XPM test function {{{
 command! XPMLoader call meflib#tools#xpm_loader()
 " }}}
+" meflib#set された変数を表示 {{{
+command! MefShowVar call meflib#get('', '')
+" }}}
