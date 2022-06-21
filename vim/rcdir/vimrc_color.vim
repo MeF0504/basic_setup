@@ -34,9 +34,12 @@ function! s:isdark(r, g, b)
 endfunction
 
 function! Chk_isdark() abort
-    if has('gui_running')
-        echo 'gui is not supported'
-        return
+    if has('gui_running') || &termguicolors
+        let gui = 1
+        let term = 'gui'
+    else
+        let gui = 0
+        let term = 'cterm'
     endif
 
     echo "\n"
@@ -45,12 +48,13 @@ function! Chk_isdark() abort
             for b in range(6)
                 let i = 36*r+6*g+b+16
                 if s:isdark(r, g, b)
-                    let fg = 255
+                    let fg = gui ? '#ffffff' : '255'
                 else
-                    let fg = 234
+                    let fg = gui ? '#000000' : '234'
                 endif
-                " echo 'highlight tmpHl'..i..' ctermfg='..fg..' ctermbg='..i
-                execute 'highlight tmpHl'..i..' ctermfg='..fg..' ctermbg='..i
+                let bg = s:get_colorid(r, g, b, gui)
+                " echo printf('highlight tmpHl%d %sfg=%s %sbg=%s', i, term, fg, term, bg)
+                execute printf('highlight tmpHl%d %sfg=%s %sbg=%s', i, term, fg, term, bg)
                 execute 'echohl tmpHl'..i
                 echon printf('%02x', i)
             endfor
