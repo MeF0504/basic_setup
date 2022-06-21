@@ -5,6 +5,7 @@ Plug 'MeF0504/vim-shiki'
 Plug 'altercation/vim-colors-solarized'
 
 Plug 'NLKNguyen/papercolor-theme'
+" PaperColor {{{
 let g:PaperColor_Theme_Options = {
             \ 'theme': {
                 \ 'default': {
@@ -17,6 +18,7 @@ let g:PaperColor_Theme_Options = {
                 \ },
             \ },
         \ }
+" }}}
 
 Plug 'google/vim-colorscheme-primary'
 
@@ -27,4 +29,6 @@ Plug 'MeF0504/inkpotter.vim'
 Plug 'ulwlu/elly.vim'
 
 Plug 'chasinglogic/modus-themes-vim'
+
+Plug 'sainnhe/everforest'
 
