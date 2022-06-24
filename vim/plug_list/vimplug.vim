@@ -192,7 +192,7 @@ function! <SID>quickrun_wrapper()
         return
     endif
     cclose
-    let qrun_conf = findfile('.qrun_conf.vim', expand('%:p:h')..';')
+    let qrun_conf = findfile('.qrun_conf.vim', fnameescape(expand('%:p:h'))..';')
     if !empty(qrun_conf)
         echomsg printf('[qrun-wrapper] configure file is found ... %s', qrun_conf)
         call meflib#set('qrun_finished', 0)
