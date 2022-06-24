@@ -12,6 +12,8 @@ else
     let s:sid = expand('<SID>')
 endif
 
+let s:debug = 0
+
 " Set tabline.
 function! s:get_title(tabnr)
     let bufnrs = tabpagebuflist(a:tabnr)
@@ -64,6 +66,9 @@ function! s:set_tabline()
     else
         let cdir = ''
     endif
+    if s:debug
+        cal meflib#debug#debug_log('tab setting start! ===============', 'tab')
+    endif
 
     " count listed & loaded buffers
     for bn in range(1, bufnr('$'))
@@ -78,6 +83,9 @@ function! s:set_tabline()
     for i in range(1, tabpagenr('$'))
         " left side of current tab page (include current tab page).
         let ctn_l = cur_tab_no - (i-1)
+        if s:debug
+            cal meflib#debug#debug_log(ctn_l.'<='.cur_tab_no, 'tab')
+        endif
         if ctn_l > 0
             " count windows
             let all_wins += tabpagewinnr(ctn_l, '$')
@@ -85,10 +93,16 @@ function! s:set_tabline()
             if tab_fin_l == 0
                 if tab_len+1 < width || ctn_l == cur_tab_no
                     let title = s:get_title(ctn_l)
+                    if s:debug
+                        call meflib#debug#debug_log(printf('width: %d, tab_len: %d->%d', width, tab_len, tab_len+(title)+1), 'tab')
+                    endif
                     if tab_len+len(title)+1 > width
                         " cut the title if it is long.
                         let title = title[len(title)-(width-tab_len-1):]
                         let tab_fin_l = 1
+                        if s:debug
+                            cal meflib#debug#debug_log('cut: '.(tab_len+len(title)+1), 'tab')
+                        endif
                     endif
                     let tab_len += len(title)+1
                     let tmp_s = '%'.ctn_l.'T'
@@ -112,16 +126,25 @@ function! s:set_tabline()
 
         " right side of current tab page.
         let ctn_r = cur_tab_no + i
+        if s:debug
+            cal meflib#debug#debug_log(cur_tab_no.'<'.ctn_r, 'tab')
+        endif
         if ctn_r <= tabpagenr('$')
             " count windows
             let all_wins += tabpagewinnr(ctn_r, '$')
             " add title to tabline if possible
             if tab_fin_r == 0
-                if tab_len+1 < width
+                if tab_len+1+2 < width   " 2 = '..'
                     let title = s:get_title(ctn_r)
-                    if tab_len+len(title)+1 > width
+                    if s:debug
+                        call meflib#debug#debug_log(printf('width: %d, tab_len: %d->%d', width, tab_len, tab_len+(title)+1), 'tab')
+                    endif
+                    if tab_len+len(title)+1+2 > width
                         " cut the title if it is long.
                         let title = title[:width-tab_len-3].'..'
+                        if s:debug
+                            cal meflib#debug#debug_log('cut: '.(tab_len+len(title)+1), 'tab')
+                        endif
                         let tab_fin_r = 1
                     endif
                     let tab_len += len(title)+1
@@ -149,6 +172,9 @@ function! s:set_tabline()
     " 右寄せしてディレクトリ表示
     let rtabline = '%=%#TabLineDir#'.cdir.'%#TabLineFill#'
     let s = header.s.footer.rtabline
+    if s:debug
+        cal meflib#debug#debug_log('tab setting end! ===============', 'tab')
+    endif
     return s
 endfunction
 
