@@ -101,6 +101,9 @@ autocmd PlugLocal User outliner.vim call s:outliner_hook()
 " git log 表示用plugin
 Plug 'MeF0504/gitewer.vim', PlugCond(1, {'on': 'Gitewer'})
 
+" vim上でpetを飼う
+Plug 'MeF0504/vim-pets', PlugCond(1, {'on': 'Pets'})
+
 " neosnippet用のsnipets
 Plug 'Shougo/neosnippet-snippets'
 
