@@ -19,5 +19,9 @@ if [[ -e $HOME/.vim/swp ]]; then
     ls $HOME/.vim/swp/
 fi
 
+if [[ -n "${TERM_PROGRAM}" ]]; then
+    echo "terminal: ${TERM_PROGRAM}"
+fi
+
 [ -f $HOME/.zsh/zlogin.mine ] && source $HOME/.zsh/zlogin.mine
 
