@@ -37,6 +37,17 @@ else
     export SHELL_INFO="${SHELL_INFO}-${SHLVL}"
 fi
 
+# teminal で何を使っているのか判別する方法を忘れないように
+if [[ -n "${ITERM_SESSION_ID}" ]]; then
+    export TERM_APP_NAME='iTerm.app'
+elif [[ -n "${TERMINATOR_UUID}" ]]; then
+    export TERM_APP_NAME='Terminator'
+elif [[ -n "${TERMINOLOGY}" ]]; then
+    export TERM_APP_NAME='Terminology'
+elif [[ -n "${TERM_PROGRAM}" ]]; then
+    export TERM_APP_NAME="${TERM_PROGRAM}"
+fi
+
 #}}}
 
 ##{{{ Alias configuration
