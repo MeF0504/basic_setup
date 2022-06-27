@@ -36,13 +36,15 @@ function! s:python_help(module) abort
     setlocal buftype=nofile
     " setlocal nowrap
     setlocal nobuflisted
+    setlocal nolist
     setlocal previewwindow
     setlocal modifiable
     silent %delete _
     call append(0, res)
-    if has('win32') || has('win64')
-        %s///g
-    endif
+    " need to check ↓
+    " if has('win32') || has('win64')
+    "     %s///g
+    " endif
     setlocal nomodifiable
     normal! gg
     " }}}
