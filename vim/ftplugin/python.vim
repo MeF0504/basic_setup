@@ -1,6 +1,10 @@
 "vim script encording setting
 scriptencoding utf-8
 
+augroup PythonLocal
+    autocmd!
+augroup END
+
 "gfの検索にPYTHON PATHを追加
 if exists("$PYTHONPATH")
     execute 'set path+=' . substitute(substitute(expand($PYTHONPATH), ':', ',', 'g'), ' ', '\\ ', 'g')
@@ -15,6 +19,7 @@ set errorformat=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 
 " help 確認用コマンド
 " pydocとかいう便利ツールがあるじゃん
+let s:pyhelp_id = -1
 function! s:python_help(module) abort
     " {{{
     let pydoc_cmd = meflib#get('pydoc_cmd', 'pydoc3')
@@ -28,7 +33,9 @@ function! s:python_help(module) abort
     let cmd = printf('%s %s', pydoc_cmd, a:module)
     let res = systemlist(cmd)
 
-    pclose
+    if s:pyhelp_id != -1
+        call win_execute(s:pyhelp_id, 'quit')
+    endif
     silent split PythonHelp
     setlocal noswapfile
     setlocal nobackup
@@ -37,7 +44,6 @@ function! s:python_help(module) abort
     " setlocal nowrap
     setlocal nobuflisted
     setlocal nolist
-    setlocal previewwindow
     setlocal modifiable
     silent %delete _
     call append(0, res)
@@ -47,6 +53,8 @@ function! s:python_help(module) abort
     " endif
     setlocal nomodifiable
     normal! gg
+    let s:pyhelp_id = win_getid()
+    execute printf("autocmd PythonLocal WinClosed %d ++once let s:pyhelp_id = -1", s:pyhelp_id)
     " }}}
 endfunction
 
