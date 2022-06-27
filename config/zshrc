@@ -357,9 +357,8 @@ function chpwd() {
     if [[ -n $OLD_PROMPT ]]; then
         pwd
     fi
-    if [[ -e .git ]]; then
-        #echo "%{${fg[yellow]}%}check git repo is up-to-date%{${reset_color}%}"
-        #echo "\033[33mcheck git repo is up-to-date  (---> git fetch) \033[0m"
+    # auto-fetch (VSCode だと別でauto-fetchしている気がするし，runの度に移動するので無視)
+    if [[ -e .git && "$TERM_PROGRAM" != "vscode" ]]; then
         # don't execute git fetch if dir name is in $IGNORE_FETCH.
         if [[ -z $(echo $IGNORE_FETCH | grep -e $(basename $(pwd))) ]]; then
             echo "fetching..."
