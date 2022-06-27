@@ -96,8 +96,6 @@ call s:source_file('rcdir/vimrc_autocmds.vim', !exists('g:vscode'))
 call s:source_file('rcdir/vimrc_statusline.vim', !exists('g:vscode'))
 " tab line setting
 call s:source_file('rcdir/vimrc_tabline.vim', !exists('g:vscode'))
-" (almost) self-made functions
-call s:source_file('rcdir/vimrc_plugin.vim', !exists('g:vscode'))
 " vim dein (plugin manager) setting
 " call s:source_file('rcdir/vimrc_dein.vim', !exists('g:vscode'))
 " vimPlug (plugin manager) setting
