@@ -28,10 +28,12 @@ command! Terminal call VSCodeNotify('workbench.action.terminal.new')
 command! QuickRun call VSCodeNotify('workbench.action.debug.start')
 function! <SID>quickrun_wrapper() abort
     if &filetype == 'markdown'
+        " https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one
         let cmd = 'markdown.showPreviewToSide'
     elseif &filetype == 'tex'
         " 細かい設定はlatex-workshop.latex.recipesとtoolsをいじってくれなのだ
         " https://texwiki.texjp.org/?Visual%20Studio%20Code%2FLaTeX
+        " https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop
         let cmd = 'latex-workshop.build'
     else
         let cmd = 'workbench.action.debug.start'
@@ -46,5 +48,11 @@ command! Replace call VSCodeNotify('editor.action.startFindReplaceAction')
 " commentary-like map {{{
 nnoremap gcc <Cmd>call VSCodeNotify('editor.action.commentLine')<CR>
 vnoremap gc <Cmd>call VSCodeNotifyVisual('editor.action.commentLine', 0)<CR>
+" }}}
+
+" highlighter {{{
+" https://marketplace.visualstudio.com/items?itemName=ryu1kn.text-marker
+nnoremap // <Cmd>call VSCodeNotify('textmarker.toggleHighlight')<CR>
+vnoremap // <Cmd>call VSCodeNotifyVisual('textmarker.toggleHighlight', 0)<CR>
 " }}}
 
