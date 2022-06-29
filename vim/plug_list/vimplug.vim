@@ -215,13 +215,19 @@ endfunction
 " if !empty(make_file)
 "     let q_config = {
 "                 \ 'command': 'make',
-"                 \ 'exec' : ['%c']
-"     }
+"                 \ 'exec' : '%c',
+"                 \ }
 "     call quickrun#run(q_config)
 "     call meflib#set('qrun_finished', 1)
 " else
 "     call meflib#set('qrun_finished', 0)
 " endif
+
+" hope to read .vscpde/launch.json...
+" h json_decode()
+" https://code.visualstudio.com/docs/editor/debugging#_launch-configurations
+" https://code.visualstudio.com/docs/editor/debugging#_launchjson-attributes
+" https://code.visualstudio.com/docs/editor/variables-reference
 " }}}
 
 nnoremap <silent> <Leader>q <Cmd>call <SID>quickrun_wrapper()<CR>
