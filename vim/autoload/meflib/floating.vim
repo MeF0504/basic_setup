@@ -220,5 +220,6 @@ endfunction
 
 function! meflib#floating#close_all() abort
     call meflib#floating#close(s:pop_ids)
+    let s:pop_ids = []
 endfunction
 
