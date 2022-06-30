@@ -890,11 +890,15 @@ function! <SID>chk_lsp_running(echo)
 endfunction
 " lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
 " <c-p>でhelp hover, definition, type definition を選択
-function! <SID>chk_tab_jump()
-    echo 'open in new tab? [y]/n: '
+function! <SID>chk_jump()
+    echo 'open in; [t]ab/[s]plit/[v]ertical/cur_win '
     let yn = nr2char(getchar())
-    if yn != 'n'
-        return ":tab LspDefinition\<CR>"
+    if yn == 't'
+        return "\<Cmd>tab LspDefinition\<CR>"
+    elseif yn == 's'
+        return "\<Cmd>aboveleft LspDefinition\<CR>"
+    elseif yn == 'v'
+        return "\<Cmd>vertical LspDefinition\<CR>"
     else
         return "\<Plug>(lsp-definition)"
     endif
@@ -937,7 +941,7 @@ function! s:vim_lsp_hook() abort
         let lsp_map3 = '<c-p>'
     endif
     " やっぱりVSCodeと一致させるためにc-jはreferencesにする
-    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? <SID>chk_tab_jump() : '"..lsp_map1."'"
+    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? <SID>chk_jump() : '"..lsp_map1."'"
     execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-references)' : '".lsp_map2."'"
     execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1)==1 ? <SID>select_float() : '".lsp_map3."'"
     " help file でバグる？
