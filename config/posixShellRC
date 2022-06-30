@@ -36,20 +36,6 @@ if [[ -n $VIM ]]; then
 else
     export SHELL_INFO="${SHELL_INFO}-${SHLVL}"
 fi
-
-# teminal で何を使っているのか判別する方法を忘れないように
-if [[ -n "${ITERM_SESSION_ID}" ]]; then
-    export TERM_APP_NAME='iTerm.app'
-elif [[ -n "${TERMINATOR_UUID}" ]]; then
-    export TERM_APP_NAME='Terminator'
-elif [[ -n "${TERMINOLOGY}" ]]; then
-    export TERM_APP_NAME='Terminology'
-elif [[ -n "${WT_SESSION}" ]]; then
-    export TERM_APP_NAME='Windows_Terminal'
-elif [[ -n "${TERM_PROGRAM}" ]]; then
-    export TERM_APP_NAME="${TERM_PROGRAM}"
-fi
-
 #}}}
 
 ##{{{ Alias configuration
@@ -286,7 +272,7 @@ weather() {
 # }}}
 }
 
-function del_func() {
+del_func() {
     # {{{
     del_trash=${del_trash:-$HOME/.Trash}
     # https://qiita.com/tdrk/items/cc2995fd74e659ea948f
@@ -312,7 +298,7 @@ function del_func() {
 # I recommend using mv_Trash.py if possible.
 # alias del=del_func
 
-function mkcd() {
+mkcd() {
     # {{{
     if [[ ! -d "$1" ]]; then
         echo mkdir "$1"
@@ -322,7 +308,7 @@ function mkcd() {
     # }}}
 }
 
-function timeout_local() {
+timeout_local() {
     # {{{
     # https://qiita.com/yohm/items/db6aea3cbc71ab2d55bd
     time=$1
@@ -335,10 +321,27 @@ function timeout_local() {
     # }}}
 }
 
-function echoenv() {
+echoenv() {
+    # {{{
     echo -ne "${*//:/\\n}"
     echo ''
+    # }}}
 }
 
+get_term_name() {
+    # teminal で何を使っているのか判別する方法を忘れないように {{{
+    if [[ -n "${ITERM_SESSION_ID}" ]]; then
+        echo 'iTerm.app'
+    elif [[ -n "${TERMINATOR_UUID}" ]]; then
+        echo 'Terminator'
+    elif [[ -n "${TERMINOLOGY}" ]]; then
+        echo 'Terminology'
+    elif [[ -n "${WT_SESSION}" ]]; then
+        echo 'Windows_Terminal'
+    elif [[ -n "${TERM_PROGRAM}" ]]; then
+        echo "${TERM_PROGRAM}"
+    fi
+    # }}}
+}
 #}}}
 
