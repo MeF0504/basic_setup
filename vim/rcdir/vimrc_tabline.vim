@@ -51,12 +51,10 @@ function! s:set_tabline()
     let width = &columns
     let s = ''
     let cur_tab_no = tabpagenr()
-    let header = '..'
-    let footer = '>'..tabpagenr('$')
     let all_files = 0
-    let all_wins = 0
     let is_edit = 0
-    let tab_len = 17 " max(header + footer) = 12+2+3
+    let all_tabs = 0
+    let tab_len = 0
     let tab_fin_l = 0
     let tab_fin_r = 0
 
@@ -67,7 +65,7 @@ function! s:set_tabline()
         let cdir = ''
     endif
     if s:debug
-        cal meflib#debug#debug_log('tab setting start! ===============', 'tab')
+        let str = ''
     endif
 
     " count listed & loaded buffers
@@ -79,29 +77,32 @@ function! s:set_tabline()
             endif
         endif
     endfor
+    let all_tabs = tabpagenr('$')
+    let header = printf('_%d/%d(%d)_ ', is_edit, all_files, all_tabs)
+    let tab_len += len(header)
 
     for i in range(1, tabpagenr('$'))
         " left side of current tab page (include current tab page).
         let ctn_l = cur_tab_no - (i-1)
         if s:debug
-            cal meflib#debug#debug_log(ctn_l.'<='.cur_tab_no, 'tab')
+            let str .= printf("\n%d<=%d", ctn_l, cur_tab_no)
         endif
         if ctn_l > 0
-            " count windows
-            let all_wins += tabpagewinnr(ctn_l, '$')
             " add title to tabline if possible
             if tab_fin_l == 0
-                if tab_len+1 < width || ctn_l == cur_tab_no
+                if tab_len+2+2 < width || ctn_l == cur_tab_no " 2 .. '..'
                     let title = s:get_title(ctn_l)
                     if s:debug
-                        call meflib#debug#debug_log(printf('width: %d, tab_len: %d->%d', width, tab_len, tab_len+(title)+1), 'tab')
+                        let str .= printf('  width: %d, tab_len: %d->%d', width, tab_len, tab_len+len(title)+1)
                     endif
-                    if tab_len+len(title)+1 > width
+                    if tab_len+len(title)+2+2 > width
                         " cut the title if it is long.
-                        let title = title[len(title)-(width-tab_len-1):]
+                        let cut_length = len(title)-(width-tab_len-2-2-2) " -2 ... ?
+                        let cut_length = cut_length<0 ? 0 : cut_length
+                        let title = '..'.title[cut_length:]
                         let tab_fin_l = 1
                         if s:debug
-                            cal meflib#debug#debug_log('cut: '.(tab_len+len(title)+1), 'tab')
+                            let str .= '  cut: '.(tab_len+len(title)+1).'; '.title
                         endif
                     endif
                     let tab_len += len(title)+1
@@ -110,15 +111,10 @@ function! s:set_tabline()
                     let tmp_s .= title
                     let tmp_s .= '%#TabLineFill# '
                     let s = tmp_s.s
-                    " set header & footer
-                    if ctn_l == 1
-                        let header = ''
-                    endif
-                    if ctn_l == tabpagenr('$')
-                        let footer = ''
-                    endif
                 else
                     " finish to add the left side.
+                    let s = '..'.s
+                    let tab_len += 2
                     let tab_fin_l = 1
                 endif
             endif
@@ -127,25 +123,25 @@ function! s:set_tabline()
         " right side of current tab page.
         let ctn_r = cur_tab_no + i
         if s:debug
-            cal meflib#debug#debug_log(cur_tab_no.'<'.ctn_r, 'tab')
+            let str .= printf("\n%d>%d", ctn_r, cur_tab_no)
         endif
         if ctn_r <= tabpagenr('$')
-            " count windows
-            let all_wins += tabpagewinnr(ctn_r, '$')
             " add title to tabline if possible
             if tab_fin_r == 0
-                if tab_len+1+2 < width   " 2 = '..'
+                if tab_len+2+2 < width " 2 .. '..'
                     let title = s:get_title(ctn_r)
                     if s:debug
-                        call meflib#debug#debug_log(printf('width: %d, tab_len: %d->%d', width, tab_len, tab_len+(title)+1), 'tab')
+                        let str .= printf('  width: %d, tab_len: %d->%d', width, tab_len, tab_len+len(title)+1)
                     endif
-                    if tab_len+len(title)+1+2 > width
+                    if tab_len+len(title)+2+2 > width
                         " cut the title if it is long.
-                        let title = title[:width-tab_len-3].'..'
-                        if s:debug
-                            cal meflib#debug#debug_log('cut: '.(tab_len+len(title)+1), 'tab')
-                        endif
+                        let cut_length = width-tab_len-2-2-2 " -2 ... ?
+                        let cut_length = cut_length<0 ? 0 : cut_length
+                        let title = title[:cut_length].'..'
                         let tab_fin_r = 1
+                        if s:debug
+                            let str .= '  cut: '.(tab_len+len(title)+1).'; '.title
+                        endif
                     endif
                     let tab_len += len(title)+1
                     let tmp_s = '%'.ctn_r.'T'
@@ -153,27 +149,22 @@ function! s:set_tabline()
                     let tmp_s .= title
                     let tmp_s .= '%#TabLineFill# '
                     let s .= tmp_s
-                    " set footer
-                    if ctn_r == tabpagenr('$')
-                        let footer = ''
-                    endif
                 else
                     " finish to add the right side.
+                    let s .= '..'
+                    let tab_len += 2
                     let tab_fin_r = 1
                 endif
             endif
         endif
     endfor
-    let header = '_'.is_edit.'/'.all_files.'('.all_wins.')_ ' . header
     " color setting
     let header = '%#TabLineFill#'.header.'%#TabLineFill#'
-    " color setting
-    let footer = '%#TabLineFill#'.footer.'%#TabLineFill#'
     " 右寄せしてディレクトリ表示
-    let rtabline = '%=%#TabLineDir#'.cdir.'%#TabLineFill#'
-    let s = header.s.footer.rtabline
+    let footer = '%=%#TabLineDir#'.cdir.'%#TabLineFill#'
+    let s = header.s.footer
     if s:debug
-        cal meflib#debug#debug_log('tab setting end! ===============', 'tab')
+        call meflib#set('tabinfo', str)
     endif
     return s
 endfunction
