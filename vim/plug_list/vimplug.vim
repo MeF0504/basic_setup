@@ -103,6 +103,12 @@ Plug 'MeF0504/gitewer.vim', PlugCond(1, {'on': 'Gitewer'})
 
 " vim上でpetを飼う
 Plug 'MeF0504/vim-pets', PlugCond(1, {'on': 'Pets'})
+" {{{ vim-pets
+function! s:pets_hook() abort
+    let g:pets_garden_pos = [&lines-&cmdheight-2, &columns, 'botright']
+endfunction
+autocmd PlugLocal User vim-pets call s:pets_hook()
+" }}}
 Plug 'MeF0504/vim-pets-ocean', PlugCond(1, {'on': 'Pets'})
 
 " neosnippet用のsnipets
