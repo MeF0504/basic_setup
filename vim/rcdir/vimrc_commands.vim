@@ -25,10 +25,15 @@ command! -nargs=1 Echopand echo expand(<f-args>)
 " }}}
 " ipython を呼ぶ用 {{{
 let s:ipythons = {'ipython':'Ipython', 'ipython2':'Ipython2', 'ipython3':'Ipython3'}
+let s:ipy_ac = 1
 for s:ipy in keys(s:ipythons)
     if executable(s:ipy)
         if has('nvim')
             execute printf('command! %s botright new | setlocal nonumber | terminal %s', s:ipythons[s:ipy], s:ipy)
+            if s:ipy_ac
+                autocmd cmdLocal TermOpen *ipython* startinsert
+                let s:ipy_ac = 0
+            endif
         else
             execute printf('command! %s botright terminal %s', s:ipythons[s:ipy], s:ipy)
         endif
