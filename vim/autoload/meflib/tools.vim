@@ -300,16 +300,17 @@ endfunction
 
 " termonal commandを快適に使えるようにする {{{
 "" http://koturn.hatenablog.com/entry/2018/02/12/140000
+let s:term_cnt = 1
 function! s:open_term(bufname) abort
     let bufn = bufnr(a:bufname)
     if bufn == -1
         " throw 'E94: No matching buffer for ' . a:bufname
         echoerr 'No matching buffer for "' . a:bufname . '"'
-        return 1        " 以上終了ということにしよう
+        return 1        " 異常終了ということにしよう
     elseif exists('*term_list') && index(term_list(), bufn) == -1
         " throw a:bufname . 'is not a terminal buffer'
         echoerr '"' . a:bufname . '"is not a terminal buffer'
-        return 1        " 以上終了ということにしよう
+        return 1        " 異常終了ということにしよう
     endif
     let winids = win_findbuf(bufn)
     if empty(winids)
@@ -361,15 +362,16 @@ function! s:set_term_opt(is_float, name, finish) abort
         endif
         call extend(term_opt, {
                     \ 'term_finish': a:finish,
+                    \ 'term_name': a:name.'_'.s:term_cnt,
                     \ 'ansi_colors': meflib#basic#get_term_color(),
                     \ })
+        let s:term_cnt += 1
     endif
 
     let term_opt.env = env
     return term_opt
 endfunction
 
-let s:term_cnt = 1
 function! s:open_term_win(opts)
     " term_startでgit for windowsのbashを実行する
     let cmd = a:opts
@@ -521,7 +523,6 @@ function! meflib#tools#Terminal(...) abort
             startinsert
 
         else
-            let term_header = ''
             if has_key(opts, 'term')
                 let res = s:open_term(opts['term'][0])
                 if res != 0
@@ -535,12 +536,11 @@ function! meflib#tools#Terminal(...) abort
                 return
             else
                 if win_opt == 'S'
-                    let term_header = 'botright '
+                    botright new
                 elseif win_opt == 'V'
-                    let term_header = 'botright vertical '
+                    botright vertical new
                 elseif win_opt == 'F'
                     tabnew
-                    let term_opt = ' ++curwin'.term_opt
                 elseif win_opt == 'P'
                     call s:open_term_float(opts['no_opt'])
                     return
@@ -549,10 +549,17 @@ function! meflib#tools#Terminal(...) abort
                     return
                 endif
             endif
-            let term_opt .= ' '.join(opts['no_opt'])
-            execute term_header.'terminal '.term_opt
-            " rename buffer
-            execute "silent file ".substitute(expand('%'), ' ', '', 'g')
+            if empty(opts['no_opt'])
+                let cmd = [&shell]
+                let term_finish = 'close'
+            else
+                let cmd = opts['no_opt']
+                let term_finish = 'open'
+            endif
+            let term_opt = s:set_term_opt(0, '!'.cmd[0], term_finish)
+            call term_start(cmd, term_opt)
+            " rename buffer (no need?)
+            " execute "silent file ".substitute(expand('%'), ' ', '', 'g')
         endif
     endif
 
