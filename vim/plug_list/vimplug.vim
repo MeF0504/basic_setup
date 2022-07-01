@@ -875,18 +875,18 @@ function! <SID>chk_lsp_running(echo)
         if a:echo
             echomsg 'no Language server'
         endif
-        return 0
+        return v:false
     endif
     for active_server in active_servers
         let lsp_status = lsp#get_server_status(active_server)
         if lsp_status == 'running'
-            return 1
+            return v:true
         elseif a:echo
             echomsg lsp_status
             sleep 300ms
         endif
     endfor
-    return 0
+    return v:false
 endfunction
 " lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
 " <c-p>でhelp hover, definition, type definition を選択
@@ -899,6 +899,8 @@ function! <SID>chk_jump()
         return "\<Cmd>aboveleft LspDefinition\<CR>"
     elseif yn == 'v'
         return "\<Cmd>vertical LspDefinition\<CR>"
+    elseif yn == "\<esc>"
+        return ''
     else
         return "\<Plug>(lsp-definition)"
     endif
@@ -941,9 +943,9 @@ function! s:vim_lsp_hook() abort
         let lsp_map3 = '<c-p>'
     endif
     " やっぱりVSCodeと一致させるためにc-jはreferencesにする
-    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1)==1 ? <SID>chk_jump() : '"..lsp_map1."'"
-    execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1)==1 ? '<Plug>(lsp-references)' : '".lsp_map2."'"
-    execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1)==1 ? <SID>select_float() : '".lsp_map3."'"
+    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1) ? <SID>chk_jump() : '"..lsp_map1."'"
+    execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1) ? '<Plug>(lsp-references)' : '".lsp_map2."'"
+    execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1) ? <SID>select_float() : '".lsp_map3."'"
     " help file でバグる？
     autocmd PlugLocal FileType help nnoremap <buffer> <c-]> <c-]>
 
