@@ -319,7 +319,7 @@ function! <SID>my_color_set()
 endfunction
 
 function! <SID>Day_by_Day_StatusLine()
-    let month = str2nr(strftime("%b"))
+    let month = str2nr(strftime("%m"))
     let day = str2nr(strftime("%d"))
     let dow = str2nr(strftime("%w"))
     let s:stl_br = (dow==6 ? 0 : dow)       " 土日は0
