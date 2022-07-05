@@ -15,6 +15,9 @@ Plug 'MeF0504/sl.vim', PlugCond(1, {'on': 'SL'})
 
 " Syntax 情報をpopupで表示
 Plug 'MeF0504/vim-popsyntax', PlugCond(1, {'on': 'PopSyntaxToggle'})
+" popsyntax {{{
+let g:popsyntax_match_enable = 1
+" }}}
 
 " ctagsを使ってhighlightを設定 (mftags 分割 その1)
 Plug 'MeF0504/highlightag.vim'
@@ -91,6 +94,14 @@ function! s:outliner_hook() abort
                     \},
                 \ 'class': {
                     \ 'pattern': '^\s*class\s',
+                    \ 'line': 0,
+                    \},
+                \}, 'keep')
+
+    let g:outliner_settings.markdown = get(g:outliner_settings, 'markdown', {})
+    call extend(g:outliner_settings.markdown, {
+                \ 'title': {
+                    \ 'pattern': '^\s*#\+\s',
                     \ 'line': 0,
                     \},
                 \}, 'keep')
