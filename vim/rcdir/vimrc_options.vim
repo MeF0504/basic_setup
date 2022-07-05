@@ -86,7 +86,7 @@ set foldcolumn=2
 " grepコマンドで内部grep(vimgrep)を使う
 " set grepprg=internal
 " 外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
-set grepprg=grep\ -nriI
+set grepprg=grep\ -nriI\ --exclude-dir\ .git
 " 最終行にmodeを表示する
 set showmode
 " 右下に検索のカウント数を表示 if needed
