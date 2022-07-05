@@ -53,6 +53,11 @@ syntax enable
 " :h map-cmd
 " 使用できるのは ver. 8.2 && patch-1978 以降
 
+" コマンド補完の結果を取得するには
+" :h getcompletion()
+" これは？
+" :h complete()
+
 "" }}}
 if exists('$VIM_TERMINAL')
     echoerr 'Warning!! vim is already opened!!'
