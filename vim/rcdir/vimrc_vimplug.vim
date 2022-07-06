@@ -74,19 +74,19 @@ let g:parenmatch_highlight = 0
 " }}}
 
 " color schemes
-let s:colorscheme_file = expand('<sfile>:h:h').'/plug_list/colorscheme.vim'
+let s:colorscheme_file = expand('<sfile>:h:h').'/plug_conf/colorscheme.vim'
 if !exists('g:vscode') && filereadable(s:colorscheme_file)
     execute 'source '..s:colorscheme_file
 endif
 
 " usual (somewhat heavy) plugins
-let s:plug_file = expand('<sfile>:h:h').'/plug_list/vimplug.vim'
+let s:plug_file = expand('<sfile>:h:h').'/plug_conf/vimplug.vim'
 if !exists('g:vscode') && filereadable(s:plug_file)
     execute 'source '..s:plug_file
 endif
 
 " plugins that also works in VS Code
-let s:vscode_file = expand('<sfile>:h:h').'/plug_list/vs_code.vim'
+let s:vscode_file = expand('<sfile>:h:h').'/plug_conf/vs_code.vim'
 if filereadable(s:vscode_file)
     execute 'source '..s:vscode_file
 endif

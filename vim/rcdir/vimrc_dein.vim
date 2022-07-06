@@ -13,10 +13,10 @@ augroup END
 let s:vim_dir = meflib#basic#get_conf_dir()
 let s:dein_dir = s:vim_dir. 'dein/'
 
-let s:light_file = s:vim_dir . 'plug_list/dein_min.toml'
-let s:toml_file  = s:vim_dir . 'plug_list/dein.toml'
-let s:color_file = s:vim_dir . 'plug_list/dein_colorscheme.toml'
-let s:lazy_file  = s:vim_dir . 'plug_list/dein_lazy.toml'
+let s:light_file = s:vim_dir . 'plug_conf/dein_min.toml'
+let s:toml_file  = s:vim_dir . 'plug_conf/dein.toml'
+let s:color_file = s:vim_dir . 'plug_conf/dein_colorscheme.toml'
+let s:lazy_file  = s:vim_dir . 'plug_conf/dein_lazy.toml'
 
 " condition check of loading plugins. {{{
 call meflib#set('load_plugin', {})
