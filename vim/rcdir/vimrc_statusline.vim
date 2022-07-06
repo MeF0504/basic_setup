@@ -17,10 +17,10 @@ else
     let s:sid = expand('<SID>')
 endif
 
-let s:show_ft_ff = 1
+" let s:show_ft_ff = 1
 " file format 設定
 function! <SID>get_fileformat(short) abort
-    if !s:show_ft_ff
+    if !(line('.')%2)
         return ''
     endif
 
@@ -43,7 +43,7 @@ endfunction
 
 " file type 設定
 function! s:get_filetype() abort
-    if s:show_ft_ff
+    if line('.')%2
         return printf(' %s ', &filetype)
     else
         return ''
@@ -160,9 +160,9 @@ augroup slLocal
     " on/off 設定
     autocmd WinEnter * if &buftype != 'quickfix' | let &statusline='%!'..s:sid..'Set_statusline(1)' | endif
     autocmd WinLeave * if &buftype != 'quickfix' | execute 'setlocal statusline=%!'..s:sid..'Set_statusline(0)' | endif
-    autocmd CursorMoved * let s:show_ft_ff = 0
-    autocmd CursorMovedI * let s:show_ft_ff = 0
-    autocmd CursorHold * let s:show_ft_ff = 1
-    autocmd CursorHoldI * let s:show_ft_ff = 1
+    " autocmd CursorMoved * let s:show_ft_ff = 0
+    " autocmd CursorMovedI * let s:show_ft_ff = 0
+    " autocmd CursorHold * let s:show_ft_ff = 1
+    " autocmd CursorHoldI * let s:show_ft_ff = 1
 augroup END
 
