@@ -1113,3 +1113,11 @@ let g:HiClear = '\\'
 nnoremap // :<c-u>Hi + 
 " }}}
 
+" git の現在行のコミット履歴を辿る
+Plug 'rhysd/git-messenger.vim', PlugCond(1, {'on': 'GitMessenger'})
+" git messenger {{{
+let g:git_messenger_no_default_mappings = v:true
+let g:git_messenger_floating_win_opts = {'border': 'single'}
+nnoremap <leader>g <Cmd>GitMessenger<CR>
+" }}}
+
