@@ -20,6 +20,10 @@ nnoremap u <Cmd>call VSCodeNotify('undo')<CR>
 nnoremap <c-r> <Cmd>call VSCodeNotify('redo')<CR>
 " }}}
 
+" filer {{{
+nnoremap <leader>n <Cmd>call VSCodeNotify('workbench.view.explorer')<CR>
+" }}}
+
 " user defined commands {{{
 command! -nargs=0 Gregrep call VSCodeNotify('workbench.action.findInFiles')
 
