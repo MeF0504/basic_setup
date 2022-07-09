@@ -136,14 +136,14 @@ nnoremap dp ddp
 nnoremap dP ddkP
 
 " preview , nofile, quickfix window, help windowはqで閉じる
-function! <SID>close_con()
+function! <SID>special_win(winid)
     return
-            \ (&previewwindow==1)
-            \ || (&buftype=='nofile')
-            \ || (&filetype=='qf')
-            \ || (&filetype=='help')
+            \ getwinvar(a:winid, '&previewwindow')
+            \ || (getwinvar(a:winid, '&buftype')=='nofile')
+            \ || (getwinvar(a:winid, '&filetype')=='qf')
+            \ || (getwinvar(a:winid, '&filetype')=='help')
 endfunction
-nnoremap <silent> <expr> q <SID>close_con()==1 ? '<Cmd>quit<CR>' : 'q'
+nnoremap <silent> <expr> q <SID>special_win(win_getid()) ? '<Cmd>quit<CR>' : 'q'
 
 " terminal mode設定
 if has('terminal') || has('nvim')
@@ -172,5 +172,16 @@ elseif has('nvim')
     tnoremap s<Down> <c-\><c-n><c-w>j
     tnoremap s<Right> <c-\><c-n><c-w>l
     tnoremap s<Left> <c-\><c-n><c-w>h
+endif
+
+" VS Code を見習って，<c-b> で左端のwindowを閉じる
+if !exists('g:vscode')
+    function! <SID>close_sidebar() abort
+        let winid = win_getid(1)
+        if <SID>special_win(winid)
+            call win_execute(winid, 'quit')
+        endif
+    endfunction
+    nnoremap <silent> <c-b> <Cmd>call <SID>close_sidebar()<CR>
 endif
 
