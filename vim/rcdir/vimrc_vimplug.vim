@@ -47,9 +47,6 @@ Plug 'junegunn/vim-plug'
 " Project Sekai inspired plugin
 Plug 'MeF0504/untitled.vim', PlugCond(!exists('g:vscode'), {'on': 'Untitled'})
 
-" vim plugin like chrome://dino
-Plug 'MeF0504/dino.vim', PlugCond(!exists('g:vscode'), {'on': 'Dino'})
-
 " colorscheme
 Plug 'MeF0504/vim-monoTone', PlugCond(!exists('g:vscode'))
 
