@@ -37,11 +37,12 @@ set showcmd
 " バックスペースのノーマルモード、(改行、)オートインデントへの有効化
 set backspace=start,indent
 " set backspace=start,eol,indent
-" 挿入モードでのマウスの有効化
-set mouse=i
 if !exists('$SSH_CONNECTION')   " localのときのみ
     " 全モードでのマウスの有効化
     set mouse=a
+else
+    " 挿入モードでのマウスの有効化
+    set mouse=i
 endif
 " 大文字、小文字を区別しない
 set ignorecase
@@ -85,7 +86,7 @@ set tags+=tags;,./tags;
 set foldcolumn=2
 " grepコマンドで内部grep(vimgrep)を使う
 " set grepprg=internal
-" 外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
+" 外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視, .git dir無視で使う
 set grepprg=grep\ -nriI\ --exclude-dir\ .git
 " 最終行にmodeを表示する
 set showmode
@@ -114,7 +115,7 @@ if has('win32') || has('win64')
     set shell=cmd.exe
 endif
 " CursorHoldの時間
-set updatetime=2000
+set updatetime=4000 " (default)
 
 " directory 設定系
 " doc directoryを追加
