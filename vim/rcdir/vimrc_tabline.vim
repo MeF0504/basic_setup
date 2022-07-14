@@ -82,7 +82,7 @@ function! s:set_tabline()
     let tab_len += len(header)
 
     " set footer
-    let footer = meflib#get('tabline_footer', [])
+    let footer = meflib#get('tabline_footer', '')
     if !empty(footer)
         let [footer, len] = call(footer, [])
         let tab_len += len
