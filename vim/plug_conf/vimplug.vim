@@ -481,16 +481,16 @@ function! s:cfi_hook() abort
             return
         endif
         if has('nvim')
-            let line = 0
-        else
             let line = 1
+        else
+            let line = 2
         endif
         " let cfi = cfi#get_func_name()
         let cfi = cfi#format("%s()", "Top")
         let config = {
-            \ 'relative': 'win',
-            \ 'line': line,
-            \ 'col': winwidth(0),
+            \ 'relative': 'editor',
+            \ 'line': line+1,
+            \ 'col': &columns,
             \ 'pos': 'topright',
             \ 'highlight': 'CFIPopup',
             \ }
@@ -889,24 +889,32 @@ let g:lsp_signature_help_enabled = 1
 let g:lsp_document_code_action_signs_enabled = 0
 
 " reference: lsp_settings#profile#status()
-function! <SID>chk_lsp_running(echo)
+function! <SID>chk_lsp_running(map_pop)
     let active_servers = lsp#get_allowed_servers()
     if empty(active_servers)
-        if a:echo
-            echomsg 'no Language server'
+        if a:map_pop == 'map'
+            echomsg 'No Language server'
+            sleep 300ms
+            return v:false
+        else
+            return 'No Language Server'
         endif
-        return v:false
     endif
     for active_server in active_servers
         let lsp_status = lsp#get_server_status(active_server)
         if lsp_status == 'running'
-            return v:true
-        elseif a:echo
-            echomsg lsp_status
-            sleep 300ms
+            if a:map_pop == 'popup'
+                return printf('%s:%s', active_server, lsp_status)
+            else
+                return v:true
+            endif
         endif
     endfor
-    return v:false
+    if a:map_pop == 'map'
+        return v:false
+    else
+        return printf('%s: %s', active_server, lsp_status)
+    endif
 endfunction
 " lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
 " <c-p>でhelp hover, definition, type definition を選択
@@ -946,6 +954,30 @@ function! <SID>select_float()
     return res
 endfunction
 
+let s:lsp_popid = -1
+let s:lsp_bufid = -1
+function! s:show_lsp_server_status(tid) abort
+    let lsp_status = <SID>chk_lsp_running('popup')
+    if has('nvim')
+        let line = 1
+    else
+        let line = 2
+    endif
+    if lsp_status[match(lsp_status, ':')+1:] == 'running'
+        let highlight = 'LSP_Running'
+    else
+        let highlight = 'Lsp_NotRunning'
+    endif
+    let config = {
+                \ 'relative': 'editor',
+                \ 'line': line,
+                \ 'col': &columns,
+                \ 'pos': 'topright',
+                \ 'highlight': highlight,
+                \ }
+    let [s:lsp_bufid, s:lsp_popid] = meflib#floating#open(s:lsp_bufid, s:lsp_popid, [lsp_status], config)
+endfunction
+
 function! s:vim_lsp_hook() abort
     if !exists('g:lsp_loaded')
         return
@@ -963,9 +995,9 @@ function! s:vim_lsp_hook() abort
         let lsp_map3 = '<c-p>'
     endif
     " やっぱりVSCodeと一致させるためにc-jはreferencesにする
-    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1) ? <SID>chk_jump() : '"..lsp_map1."'"
-    execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1) ? '<Plug>(lsp-references)' : '".lsp_map2."'"
-    execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1) ? <SID>select_float() : '".lsp_map3."'"
+    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running('map') ? <SID>chk_jump() : '"..lsp_map1."'"
+    execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running('map') ? '<Plug>(lsp-references)' : '".lsp_map2."'"
+    execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running('map') ? <SID>select_float() : '".lsp_map3."'"
     " help file でバグる？
     autocmd PlugLocal FileType help nnoremap <buffer> <c-]> <c-]>
 
@@ -984,6 +1016,9 @@ function! s:vim_lsp_hook() abort
     if !has('nvim')
         autocmd PlugLocal User lsp_float_opened nunmap <buffer> <esc>   " tentative
     endif
+
+    call timer_start(1000, s:sid.'show_lsp_server_status', {'repeat':-1})
+    autocmd PlugLocal WinLeave * call meflib#floating#close(s:lsp_popid) | let s:lsp_popid = -1
 endfunction
 " autocmd PlugLocal User vim-lsp call s:vim_lsp_hook()
 autocmd PlugLocal VimEnter * call s:vim_lsp_hook()

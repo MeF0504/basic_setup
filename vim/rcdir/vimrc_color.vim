@@ -308,6 +308,11 @@ function! <SID>my_color_set()
     endif
     " }}}
 
+    " vim-lsp {{{
+    highlight Lsp_Running ctermfg=233 ctermbg=183 guifg=#000000 guibg=#c8a0ef
+    highlight Lsp_NotRunning ctermfg=255 ctermbg=52 guifg=#eeeeee guibg=#702030
+    " }}}
+
     " colorscheme specified setings
     let colname = substitute(g:colors_name, "-", "_", "g")
     let local_scheme_func = s:sid..'my_color_set_'..colname
