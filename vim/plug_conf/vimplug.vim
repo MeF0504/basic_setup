@@ -884,7 +884,7 @@ let g:lsp_document_highlight_enabled = 0
 " LspPeekDefinition で表示する位置
 let g:lsp_peek_alignment = 'top'
 " 文字入力中にhelpを非表示（なんか不安定なため）
-let g:lsp_signature_help_enabled = 1
+let g:lsp_signature_help_enabled = 0
 " cとかjsでcode actionを無効化
 let g:lsp_document_code_action_signs_enabled = 0
 
