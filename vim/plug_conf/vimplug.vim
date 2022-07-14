@@ -489,7 +489,7 @@ function! s:cfi_hook() abort
         let cfi = cfi#format("%s()", "Top")
         let config = {
             \ 'relative': 'editor',
-            \ 'line': line+1,
+            \ 'line': line+0,
             \ 'col': &columns,
             \ 'pos': 'topright',
             \ 'highlight': 'CFIPopup',
@@ -978,6 +978,18 @@ function! s:show_lsp_server_status(tid) abort
     let [s:lsp_bufid, s:lsp_popid] = meflib#floating#open(s:lsp_bufid, s:lsp_popid, [lsp_status], config)
 endfunction
 
+function! <SID>lsp_status_tab() abort
+    let lsp_status = <SID>chk_lsp_running('popup')
+    if lsp_status[match(lsp_status, ':')+1:] == 'running'
+        let highlight = 'LSP_Running'
+    else
+        let highlight = 'Lsp_NotRunning'
+    endif
+    let footer = printf('%%#%s# %s%%#%s#', highlight, lsp_status, 'TabLineFill')
+    let len = len(lsp_status)+1
+    return [footer, len]
+endfunction
+
 function! s:vim_lsp_hook() abort
     if !exists('g:lsp_loaded')
         return
@@ -1017,8 +1029,9 @@ function! s:vim_lsp_hook() abort
         autocmd PlugLocal User lsp_float_opened nunmap <buffer> <esc>   " tentative
     endif
 
-    call timer_start(1000, s:sid.'show_lsp_server_status', {'repeat':-1})
-    autocmd PlugLocal WinLeave * call meflib#floating#close(s:lsp_popid) | let s:lsp_popid = -1
+    " call timer_start(1000, s:sid.'show_lsp_server_status', {'repeat':-1})
+    " autocmd PlugLocal WinLeave * call meflib#floating#close(s:lsp_popid) | let s:lsp_popid = -1
+    call meflib#set('tabline_footer', s:sid.'lsp_status_tab')
 endfunction
 " autocmd PlugLocal User vim-lsp call s:vim_lsp_hook()
 autocmd PlugLocal VimEnter * call s:vim_lsp_hook()

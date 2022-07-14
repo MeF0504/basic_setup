@@ -81,6 +81,13 @@ function! s:set_tabline()
     let header = printf('_%d/%d(%d)_ ', is_edit, all_files, all_tabs)
     let tab_len += len(header)
 
+    " set footer
+    let footer = meflib#get('tabline_footer', [])
+    if !empty(footer)
+        let [footer, len] = call(footer, [])
+        let tab_len += len
+    endif
+
     for i in range(1, tabpagenr('$'))
         " left side of current tab page (include current tab page).
         let ctn_l = cur_tab_no - (i-1)
@@ -161,7 +168,7 @@ function! s:set_tabline()
     " color setting
     let header = '%#TabLineFill#'.header.'%#TabLineFill#'
     " 右寄せしてディレクトリ表示
-    let footer = '%=%#TabLineDir#'.cdir.'%#TabLineFill#'
+    let footer = '%=%#TabLineDir#'.cdir.'%#TabLineFill#'.footer
     let s = header.s.footer
     if s:debug
         call meflib#set('tabinfo', str)
