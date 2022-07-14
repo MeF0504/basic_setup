@@ -79,6 +79,12 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
                 let [hshift, wshift] = win_screenpos(0)
                 let v_config.line = a:config.line+hshift-1
                 let v_config.col = a:config.col+wshift-1
+            elseif a:config.relative == 'editor'
+                " need to do nothing.
+            else
+                echohl ErrorMsg
+                echo "incorrect setting of relative: ".a:config.relative
+                echohl None
             endif
         endif
         if a:bufid < 0

@@ -147,9 +147,9 @@ function! s:quickrun_hook() abort
         \ 'keep')
     if has('job')
         let g:quickrun_config._.runner = 'job'
-        let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
-        let s:cur_status = meflib#get('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
-        call meflib#set('statusline', s:cur_status..s:quickrun_status, '_')
+        let quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
+        let cur_status = meflib#get('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
+        call meflib#set('statusline', cur_status..quickrun_status, '_')
     endif
 
     " python
@@ -261,9 +261,9 @@ function! s:quickrun_nvim_job_hook() abort
     let g:quickrun_config = get(g:, 'quickrun_config', {})
     let g:quickrun_config._ = get(g:quickrun_config, '_', {})
     let g:quickrun_config._.runner = 'neovim_job'
-    let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
-    let s:cur_status = meflib#get('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
-    call meflib#set('statusline', s:cur_status..s:quickrun_status, '_')
+    let quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
+    let cur_status = meflib#get('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
+    call meflib#set('statusline', cur_status..quickrun_status, '_')
 endfunction
 " plugin directoryが無いとlazy loadはされないらしい。それもそうか。
 autocmd PlugLocal User vim-quickrun if has('nvim') | call s:quickrun_nvim_job_hook() | endif
@@ -883,7 +883,7 @@ let g:lsp_diagnostics_virtual_text_enabled = 0
 let g:lsp_document_highlight_enabled = 0
 " LspPeekDefinition で表示する位置
 let g:lsp_peek_alignment = 'top'
-" 文字入力中にhelpを表示
+" 文字入力中にhelpを非表示（なんか不安定なため）
 let g:lsp_signature_help_enabled = 1
 " cとかjsでcode actionを無効化
 let g:lsp_document_code_action_signs_enabled = 0
