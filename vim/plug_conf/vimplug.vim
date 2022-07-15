@@ -889,7 +889,7 @@ let g:lsp_signature_help_enabled = 0
 let g:lsp_document_code_action_signs_enabled = 0
 
 " reference: lsp_settings#profile#status()
-function! <SID>chk_lsp_running(map_pop)
+function! <SID>chk_lsp_running(map_pop) " {{{
     let active_servers = lsp#get_allowed_servers()
     if empty(active_servers)
         if a:map_pop == 'map'
@@ -913,14 +913,15 @@ function! <SID>chk_lsp_running(map_pop)
     if a:map_pop == 'map'
         return v:false
     else
-        return printf('%s: %s', active_server, lsp_status)
+        return printf('%s:%s', active_server, lsp_status)
     endif
 endfunction
+" }}}
 " lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
 " <c-p>でhelp hover, definition, type definition を選択
-function! <SID>chk_jump()
+function! <SID>chk_jump() abort " {{{
     echo 'open in; [t]ab/[s]plit/[v]ertical/cur_win '
-    let yn = nr2char(getchar())
+    let yn = nr2char(getchar()) " getcharstr()?
     if yn == 't'
         return "\<Cmd>tab LspDefinition\<CR>"
     elseif yn == 's'
@@ -928,13 +929,14 @@ function! <SID>chk_jump()
     elseif yn == 'v'
         return "\<Cmd>vertical LspDefinition\<CR>"
     elseif yn == "\<esc>"
+        echo 'canceled'
         return ''
     else
         return "\<Plug>(lsp-definition)"
     endif
 endfunction
-
-function! <SID>select_float()
+" }}}
+function! <SID>select_float() abort " {{{
     let res = ""
     let old_cmdheight = &cmdheight
     set cmdheight=4
@@ -953,10 +955,8 @@ function! <SID>select_float()
     redraw!
     return res
 endfunction
-
-let s:lsp_popid = -1
-let s:lsp_bufid = -1
-function! s:show_lsp_server_status(tid) abort
+" }}}
+function! s:show_lsp_server_status(tid) abort " {{{
     let lsp_status = <SID>chk_lsp_running('popup')
     if has('nvim')
         let line = 1
@@ -977,8 +977,10 @@ function! s:show_lsp_server_status(tid) abort
                 \ }
     let [s:lsp_bufid, s:lsp_popid] = meflib#floating#open(s:lsp_bufid, s:lsp_popid, [lsp_status], config)
 endfunction
-
-function! <SID>lsp_status_tab() abort
+let s:lsp_popid = -1
+let s:lsp_bufid = -1
+" }}}
+function! <SID>lsp_status_tab() abort " {{{
     let lsp_status = <SID>chk_lsp_running('popup')
     if lsp_status[match(lsp_status, ':')+1:] == 'running'
         let highlight = 'LSP_Running'
@@ -989,7 +991,7 @@ function! <SID>lsp_status_tab() abort
     let len = len(lsp_status)+1
     return [footer, len]
 endfunction
-
+" }}}
 function! s:vim_lsp_hook() abort
     if !exists('g:lsp_loaded')
         return
