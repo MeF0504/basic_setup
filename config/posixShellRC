@@ -36,6 +36,9 @@ if [[ -n $VIM ]]; then
 else
     export SHELL_INFO="${SHELL_INFO}-${SHLVL}"
 fi
+
+# man をvimで開く -> https://rcmdnk.com/blog/2014/07/20/computer-vim/
+export MANPAGER="col -b -x|vim -R -c 'set ft=man nolist nomod noma' -"
 #}}}
 
 ##{{{ Alias configuration
