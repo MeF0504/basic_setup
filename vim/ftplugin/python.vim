@@ -73,9 +73,9 @@ let g:pyindent_continue = shiftwidth()
 setlocal textwidth=79
 setlocal formatoptions-=tc
 
+let s:hit_str = split('def class if else elif for with while try except', ' ')
 " {{{ 今自分がどの関数/class/for/if内にいるのか表示する
 function! <SID>chk_current_position_python()
-    let hit_str = split('def class if else elif for with while', ' ')
 
     let res = []
     let tablevel = match(getline('.'), '\S')
@@ -85,7 +85,7 @@ function! <SID>chk_current_position_python()
         let tmp_tablevel = match(ln, '\S')
         " echo tmp_tablevel . '-' . tablevel
         if tmp_tablevel < tablevel
-            for hs in hit_str
+            for hs in s:hit_str
                 let match_level = match(ln, '\<'.hs.'\>')
                 if (match_level != -1) && (match_level == tmp_tablevel)
                     " echo ln
@@ -104,5 +104,25 @@ function! <SID>chk_current_position_python()
 endfunction
 " MatchupWhereAmI は python だと動かないっぽいので自作を復元
 nnoremap <buffer> <leader>c <Cmd>call <SID>chk_current_position_python()<CR>
+" }}}
+
+" match-upはpython 非対応らしいので，自作 {{{
+function! <SID>next_identifer_python() abort
+    if match(s:hit_str, expand('<cword>')) != -1
+        let keyword = expand('<cword>')
+        let ind_level = match(getline('.'), keyword)
+    else
+        return '%'
+    endif
+
+    for lnum in range(line('.')+1, line('$'))
+        let match = match(getline(lnum), '\S')
+        if match!=-1 && match<=ind_level
+            return lnum.'gg'
+        endif
+    endfor
+    return '%'
+endfunction
+nnoremap <buffer><silent><expr> % <SID>next_identifer_python()
 " }}}
 
