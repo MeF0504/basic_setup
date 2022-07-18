@@ -1041,8 +1041,8 @@ function! s:vim_lsp_hook() abort
     " autocmd PlugLocal WinLeave * call meflib#floating#close(s:lsp_popid) | let s:lsp_popid = -1
     call meflib#set('tabline_footer', s:sid.'lsp_status_tab')
 endfunction
-" autocmd PlugLocal User vim-lsp call s:vim_lsp_hook()
-autocmd PlugLocal VimEnter * call s:vim_lsp_hook()
+autocmd PlugLocal User vim-lsp call s:vim_lsp_hook()
+" autocmd PlugLocal VimEnter * call s:vim_lsp_hook()
 "" }}}
 " vim-lspの設定用plugin
 Plug 'mattn/vim-lsp-settings', PlugCond(0, {})
