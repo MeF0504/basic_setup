@@ -120,6 +120,8 @@ Plug 'MeF0504/vim-pets', PlugCond(1, {'on': 'Pets'})
 " {{{ vim-pets
 function! s:pets_hook() abort
     let g:pets_garden_pos = [&lines-&cmdheight-2, &columns, 'botright']
+    let g:pets_lifetime_enable = 0
+    let g:pets_birth_enable = 1
 endfunction
 autocmd PlugLocal User vim-pets call s:pets_hook()
 " }}}
