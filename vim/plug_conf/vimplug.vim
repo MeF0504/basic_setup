@@ -872,8 +872,11 @@ nnoremap <silent> <Leader>u <Cmd>GundoToggle<CR>
 " }}}
 
 " vimでLSP (Language Server Protocol)を扱うためのplugin
-Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/vim-lsp', PlugCond(0, {})
+call meflib#add('lazy_plugins', 'vim-lsp')
 "" vim-lsp {{{
+" lazy load
+let g:lsp_auto_enable = 0
 " https://qiita.com/kitagry/items/216c2cf0066ff046d200
 " doc diagは欲しいので，とりあえずsignだけ有効にしてみる。
 let g:lsp_diagnostics_enabled = 1
@@ -998,6 +1001,7 @@ function! s:vim_lsp_hook() abort
     if !exists('g:lsp_loaded')
         return
     endif
+    call lsp#enable()
     let lsp_map1 =  maparg('<c-]>', 'n')
     if empty(lsp_map1)
         let lsp_map1 = '<c-]>'
@@ -1041,7 +1045,8 @@ endfunction
 autocmd PlugLocal VimEnter * call s:vim_lsp_hook()
 "" }}}
 " vim-lspの設定用plugin
-Plug 'mattn/vim-lsp-settings'
+Plug 'mattn/vim-lsp-settings', PlugCond(0, {})
+call meflib#add('lazy_plugins', 'vim-lsp-settings')
 
 " 新世代(2021) dark deno-powered completion framework
 let g:l_ddc = meflib#get('load_plugin',0,'denops')
