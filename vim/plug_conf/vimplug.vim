@@ -917,6 +917,42 @@ function! <SID>chk_lsp_running(map_pop) " {{{
     endif
 endfunction
 " }}}
+function! s:show_lsp_server_status(tid) abort " {{{
+    let lsp_status = <SID>chk_lsp_running('popup')
+    if has('nvim')
+        let line = 1
+    else
+        let line = 2
+    endif
+    if lsp_status[match(lsp_status, ':')+1:] == 'running'
+        let highlight = 'LSP_Running'
+    else
+        let highlight = 'Lsp_NotRunning'
+    endif
+    let config = {
+                \ 'relative': 'editor',
+                \ 'line': line,
+                \ 'col': &columns,
+                \ 'pos': 'topright',
+                \ 'highlight': highlight,
+                \ }
+    let [s:lsp_bufid, s:lsp_popid] = meflib#floating#open(s:lsp_bufid, s:lsp_popid, [lsp_status], config)
+endfunction
+let s:lsp_popid = -1
+let s:lsp_bufid = -1
+" }}}
+function! <SID>lsp_status_tab() abort " {{{
+    let lsp_status = <SID>chk_lsp_running('popup')
+    if lsp_status[match(lsp_status, ':')+1:] == 'running'
+        let highlight = 'LSP_Running'
+    else
+        let highlight = 'Lsp_NotRunning'
+    endif
+    let footer = printf(' %%#%s#%s%%#%s#', highlight, lsp_status, 'TabLineFill')
+    let len = len(lsp_status)+1
+    return [footer, len]
+endfunction
+" }}}
 " lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
 " <c-p>でhelp hover, definition, type definition を選択
 function! <SID>chk_jump() abort " {{{
@@ -954,42 +990,6 @@ function! <SID>select_float() abort " {{{
     let &cmdheight = old_cmdheight
     redraw!
     return res
-endfunction
-" }}}
-function! s:show_lsp_server_status(tid) abort " {{{
-    let lsp_status = <SID>chk_lsp_running('popup')
-    if has('nvim')
-        let line = 1
-    else
-        let line = 2
-    endif
-    if lsp_status[match(lsp_status, ':')+1:] == 'running'
-        let highlight = 'LSP_Running'
-    else
-        let highlight = 'Lsp_NotRunning'
-    endif
-    let config = {
-                \ 'relative': 'editor',
-                \ 'line': line,
-                \ 'col': &columns,
-                \ 'pos': 'topright',
-                \ 'highlight': highlight,
-                \ }
-    let [s:lsp_bufid, s:lsp_popid] = meflib#floating#open(s:lsp_bufid, s:lsp_popid, [lsp_status], config)
-endfunction
-let s:lsp_popid = -1
-let s:lsp_bufid = -1
-" }}}
-function! <SID>lsp_status_tab() abort " {{{
-    let lsp_status = <SID>chk_lsp_running('popup')
-    if lsp_status[match(lsp_status, ':')+1:] == 'running'
-        let highlight = 'LSP_Running'
-    else
-        let highlight = 'Lsp_NotRunning'
-    endif
-    let footer = printf('%%#%s# %s%%#%s#', highlight, lsp_status, 'TabLineFill')
-    let len = len(lsp_status)+1
-    return [footer, len]
 endfunction
 " }}}
 function! s:vim_lsp_hook() abort
