@@ -89,7 +89,7 @@ function! <SID>chk_current_position_python()
                 let match_level = match(ln, '\<'.hs.'\>')
                 if (match_level != -1) && (match_level == tmp_tablevel)
                     " echo ln
-                    call insert(res, printf('%0'.len(line('$')).'d: %s', clnnr-lnnr-1, ln))
+                    call insert(res, printf('%0'.len(line('.')).'d| %s', clnnr-lnnr-1, ln))
                     if match('elif else', '\<'.hs.'\>') == -1
                         let tablevel = tmp_tablevel
                     endif
