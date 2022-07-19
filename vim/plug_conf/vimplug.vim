@@ -108,6 +108,18 @@ function! s:outliner_hook() abort
                     \ 'line': 0,
                     \},
                 \}, 'keep')
+
+    let g:outliner_settings.tex = get(g:outliner_settings, 'tex', {})
+    call extend(g:outliner_settings.tex, {
+                \ 'section': {
+                    \ 'pattern': '^\s*\\.*section{.*}',
+                    \ 'line': 0,
+                    \},
+                \ 'label': {
+                    \ 'pattern': '^\s*\\label{.*}',
+                    \ 'line': 0,
+                    \},
+                \ }, 'keep')
 endfunction
 " }}}
 autocmd PlugLocal User outliner.vim call s:outliner_hook()
