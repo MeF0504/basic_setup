@@ -123,6 +123,11 @@ function! <SID>next_identifer_python() abort
     endfor
     return '%'
 endfunction
-nnoremap <buffer><silent><expr> % <SID>next_identifer_python()
+" match-up より前に%をmapするとmatch-upが多言語でもmapされないっぽいので。
+if exists('g:loaded_matchup')
+    nnoremap <buffer><silent><expr> % <SID>next_identifer_python()
+else
+    autocmd PythonLocal VimEnter * ++once nnoremap <buffer><silent><expr> % <SID>next_identifer_python()
+endif
 " }}}
 
