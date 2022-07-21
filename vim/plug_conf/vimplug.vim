@@ -37,6 +37,9 @@ else
     \ silent call highlightag#run_hitag_job() |
     \ endif
 endif
+" highlights
+call meflib#add('plugin_his', {'name':'HiTagClasses', 'ctermfg':171, 'guifg':'#d75fff'})
+call meflib#add('plugin_his', {'name':'HiTagMembers', 'ctermfg':69, 'guifg':'#5f87ff'})
 " }}}
 
 " vim plugin like chrome://dino
@@ -479,6 +482,10 @@ Plug 'tyru/current-func-info.vim'
 " autocmd PlugLocal User current-func-info.vim call s:cfi_hook()
 autocmd PlugLocal VimEnter * call s:cfi_hook()
 "" current-func-info.vim {{{
+" highlights
+call meflib#add('plugin_his', {'name':'CFIPopup',
+            \ 'ctermbg':11, 'ctermfg':233, 'cterm':'bold',
+            \ 'guibg':'Yellow', 'guifg':'#121212', 'gui':'Bold'})
 function! s:cfi_hook() abort
     if !exists('g:loaded_cfi')
         return
@@ -520,6 +527,9 @@ endfunction
 Plug 'osyo-manga/vim-anzu', PlugCond(!meflib#get('load_plugin', 0, 'hitspop'), {'on':[]})
 "" vim-anzu {{{
 if !meflib#get('load_plugin', 0, 'hitspop')
+    " highlights
+    call meflib#add('plugin_his', {'name':'AnzuPopup',
+                    \ 'ctermfg': 224, 'ctermbg': 238, 'guifg':'#ffd7d7', 'guibg': '#444444'})
     call meflib#add('lazy_plugins', 'vim-anzu')
     " max search count
     let g:anzu_search_limit = 3000
@@ -656,6 +666,11 @@ if meflib#get('load_plugin', 0, 'hitspop')
     " 右下に表示
     let g:hitspop_line = 'winbot'
     let g:hitspop_column = 'winright'
+    " highlights
+    call meflib#add('plugin_his', {'name':'hitspopNormal',
+                \ 'ctermfg': 224, 'ctermbg': 238, 'guifg':'#ffd7d7', 'guibg': '#444444'})
+    call meflib#add('plugin_his', {'name':'hitspopErrorMsg',
+                \ 'ctermfg': 9, 'ctermbg': 238, 'guifg':'Red', 'guibg': '#444444'}) 
 endif
 " }}}
 
@@ -673,6 +688,9 @@ Plug 'itchyny/vim-cursorword'
 " {{{
 " デフォルトのhighlightをoff
 let g:cursorword_highlight = 0
+" highlights
+call meflib#add('plugin_his', {'name':'CursorWord0', 'cterm':'underline', 'gui':'Underline'})
+call meflib#add('plugin_his', {'name':'CursorWord1'})
 " }}}
 
 " An ecosystem of Vim/Neovim which allows developers to write plugins in Deno. だそうです
@@ -767,7 +785,17 @@ autocmd PlugLocal FileType fern call s:set_fern_map()
 " host map
 nnoremap <silent> <leader>n <Cmd>Fern . -drawer -toggle -reveal=%<CR>
 
-" 色設定は他のと同様に vimrc_color に移動
+" 色設定
+call meflib#add('plugin_his', {'name':'FernMarkedText', 'ctermfg':196, 'guifg':'#ff0000'})
+call meflib#add('plugin_his', {'name':'FernRootSymbol', 'ctermfg':11, 'guifg':'#ffff00'})
+call meflib#add('plugin_his', {'name':'FernBranchSymbol', 'ctermfg':10, 'guifg':'#00ff00'})
+call meflib#add('plugin_his', {'name':'FernBranchText', 'ctermfg':2, 'guifg':'#008000'})
+call meflib#add('plugin_his', {'name':'FernLeafSymbol', 'ctermfg':43, 'guifg':'#00af5f'})
+if &background == 'dark'
+    call meflib#add('plugin_his', {'name':'FernRootText', 'ctermfg':220, 'guifg':'#d0d000'})
+else
+    call meflib#add('plugin_his', {'name':'FernRootText', 'ctermfg':100, 'guifg':'#9a9a00'})
+endif
 "" }}}
 
 " indent のlevelを見やすくする
@@ -783,6 +811,22 @@ let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
 " mapは無し
 let g:indent_guides_default_mapping = 0
+" highlights
+if &background == 'dark'
+    call meflib#add('plugin_his', {'name':'IndentGuidesOdd',
+                \ 'ctermfg':17, 'ctermbg':17,
+                \ 'guifg':'#003851', 'guibg':'#003851'})
+    call meflib#add('plugin_his', {'name':'IndentGuidesEven',
+                \ 'ctermfg':54, 'ctermbg':54,
+                \ 'guifg':'#3f0057', 'guibg':'#3f0057'})
+else
+    call meflib#add('plugin_his', {'name':'IndentGuidesOdd',
+                \ 'ctermfg':147, 'ctermbg':147,
+                \ 'guifg':'#a0f8f8', 'guibg':'#a0f8f8'})
+    call meflib#add('plugin_his', {'name':'IndentGuidesEven',
+                \ 'ctermfg':219, 'ctermbg':219,
+                \ 'guifg':'#f8a0f8', 'guibg':'#f8a0f8'})
+endif
 " }}}
 
 " vim 新機能用pluginっぽい
@@ -904,6 +948,11 @@ let g:lsp_peek_alignment = 'top'
 let g:lsp_signature_help_enabled = 0
 " cとかjsでcode actionを無効化
 let g:lsp_document_code_action_signs_enabled = 0
+" highlights
+call meflib#add('plugin_his', {'name':'Lsp_Running',
+            \ 'ctermfg':233, 'ctermbg':183, 'guifg':'#000000', 'guibg':'#c8a0ef'})
+call meflib#add('plugin_his', {'name':'Lsp_NotRunning',
+            \ 'ctermfg':255, 'ctermbg':52,  'guifg':'#eeeeee', 'guibg':'#702030'})
 
 " reference: lsp_settings#profile#status()
 function! <SID>chk_lsp_running(map_pop) " {{{

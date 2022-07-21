@@ -235,14 +235,30 @@ function! <SID>my_color_set()
     " }}}
 
     """ plugin highlights
-    " hitspop {{{
-    highlight hitspopNormal ctermfg=224 ctermbg=238 guifg=#ffd7d7 guibg=#444444
-    highlight hitspopErrorMsg ctermfg=9 ctermbg=238 guifg=Red guibg=#444444
-    " }}}
-
-    " ParenMatch {{{
-    highlight link ParenMatch MatchParen
-    " }}}
+    for phi in meflib#get('plugin_his', [])
+        if !has_key(phi, 'name')
+            echo 'err!: '
+            echon phi
+            continue
+        endif
+        if has_key(phi, 'link')
+            execute printf('highlight link %s %s', phi.name, phi.link)
+        else
+            let cterm = has_key(phi, 'cterm') ? phi.cterm : 'None'
+            let ctermfg = has_key(phi, 'ctermfg') ? phi.ctermfg : 'None'
+            let ctermbg = has_key(phi, 'ctermbg') ? phi.ctermbg : 'None'
+            let gui = has_key(phi, 'gui') ? phi.gui : 'NONE'
+            let guifg = has_key(phi, 'guifg') ? phi.guifg : 'NONE'
+            let guibg = has_key(phi, 'guibg') ? phi.guibg : 'NONE'
+            execute printf('highlight %s '.
+                        \ 'cterm=%s ctermfg=%s ctermbg=%s '.
+                        \ 'gui=%s guifg=%s guibg=%s',
+                        \ phi.name,
+                        \ cterm, ctermfg, ctermbg,
+                        \ gui, guifg, guibg,
+                        \ )
+        endif
+    endfor
 
     " Untitled {{{
     if g:colors_name =~ 'pjsekai_*'
@@ -250,67 +266,6 @@ function! <SID>my_color_set()
             SeiyaDisable
         endif
     endif
-    " }}}
-
-    " CursorWord {{{
-    highlight CursorWord1 ctermfg=None ctermbg=None cterm=None guifg=NONE guifg=NONE gui=NONE
-    highlight CursorWord0 ctermfg=None ctermbg=None cterm=underline guifg=NONE guifg=NONE gui=Underline
-    " }}}
-
-    " current-func-info {{{
-    highlight CFIPopup ctermbg=11 ctermfg=233 cterm=bold guibg=Yellow guifg=#121212 gui=Bold
-    " }}}
-
-    " highlightag {{{
-    highlight HiTagClasses ctermfg=171 guifg=#d75fff
-    highlight HiTagMembers ctermfg=69 guifg=#5f87ff
-    " }}}
-
-    " indent-guides {{{
-    if &background == 'dark'
-        highlight IndentGuidesOdd ctermfg=17 ctermbg=17 guifg=#003851 guibg=#003851
-        highlight IndentGuidesEven ctermfg=54 ctermbg=54 guifg=#3f0057 guibg=#3f0057
-    else
-        highlight IndentGuidesOdd ctermfg=147 ctermbg=147 guifg=#a0f8f8 guibg=#a0f8f8
-        highlight IndentGuidesEven ctermfg=219 ctermbg=219 guifg=#f8a0f8 guibg=#f8a0f8
-    endif
-    " }}}
-
-    " anzu {{{
-    highlight link AnzuPopup hitspopNormal
-    " }}}
-
-    " Gitewer {{{
-    if &background == 'light'
-        highlight GitewerDate ctermfg=135 guifg=#af8700
-        highlight GitewerCommit ctermfg=243 guifg=#767676
-    endif
-    " }}}
-
-    " Fern {{{
-    highlight FernMarkedText ctermfg=196 guifg=#ff0000
-    highlight FernRootSymbol ctermfg=11 guifg=#ffff00
-    highlight FernBranchSymbol ctermfg=10 guifg=#00ff00
-    highlight FernBranchText ctermfg=2 guifg=#008000
-    highlight FernLeafSymbol ctermfg=43 guifg=#00af5f
-    if &background == 'dark'
-        highlight FernRootText ctermfg=220 guifg=#d0d000
-    else
-        highlight FernRootText ctermfg=100 guifg=#9a9a00
-    endif
-    " }}}
-
-    " Match up {{{
-    if &background == 'dark'
-        highlight MatchWord ctermfg=None ctermbg=233 guifg=NONE guibg=#003030
-    else
-        highlight MatchWord ctermfg=None ctermbg=253 guifg=NONE guibg=#dadaff
-    endif
-    " }}}
-
-    " vim-lsp {{{
-    highlight Lsp_Running ctermfg=233 ctermbg=183 guifg=#000000 guibg=#c8a0ef
-    highlight Lsp_NotRunning ctermfg=255 ctermbg=52 guifg=#eeeeee guibg=#702030
     " }}}
 
     " colorscheme specified setings
