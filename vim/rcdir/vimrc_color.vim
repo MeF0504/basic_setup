@@ -235,14 +235,11 @@ function! <SID>my_color_set()
     " }}}
 
     """ plugin highlights
-    for phi in meflib#get('plugin_his', [])
-        if !has_key(phi, 'name')
-            echo 'err!: '
-            echon phi
-            continue
-        endif
+    let plugin_his = meflib#get('plugin_his', {})
+    for name in keys(plugin_his)
+        let phi = plugin_his[name]
         if has_key(phi, 'link')
-            execute printf('highlight link %s %s', phi.name, phi.link)
+            execute printf('highlight link %s %s', name, phi.link)
         else
             let cterm = has_key(phi, 'cterm') ? phi.cterm : 'None'
             let ctermfg = has_key(phi, 'ctermfg') ? phi.ctermfg : 'None'
@@ -253,7 +250,7 @@ function! <SID>my_color_set()
             execute printf('highlight %s '.
                         \ 'cterm=%s ctermfg=%s ctermbg=%s '.
                         \ 'gui=%s guifg=%s guibg=%s',
-                        \ phi.name,
+                        \ name,
                         \ cterm, ctermfg, ctermbg,
                         \ gui, guifg, guibg,
                         \ )

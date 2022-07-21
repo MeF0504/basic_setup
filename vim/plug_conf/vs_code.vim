@@ -11,9 +11,9 @@ let g:matchup_matchparen_offscreen = {}
 nnoremap <leader>c <Cmd>MatchupWhereAmI\?<CR>
 " highlights
 if &background == 'dark'
-    call meflib#add('plugin_his', {'name':'MatchWord', 'ctermbg':233, 'guibg':'#003030'})
+    call meflib#set('plugin_his', {'ctermbg':233, 'guibg':'#003030'}, 'MatchWord')
 else
-    call meflib#add('plugin_his', {'name':'MatchWord', 'ctermbg':253, 'guibg':'#dadaff'})
+    call meflib#set('plugin_his', {'ctermbg':253, 'guibg':'#dadaff'}, 'MatchWord')
 endif
 " }}}
 

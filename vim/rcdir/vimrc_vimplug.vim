@@ -89,7 +89,7 @@ let g:loaded_matchparen = 1
 " デフォルトのhighlightをoff
 let g:parenmatch_highlight = 0
 " highlights
-call meflib#add('plugin_his', {'name':'ParenMatch', 'link':'MatchParen'})
+call meflib#set('plugin_his', {'link':'MatchParen'}, 'ParenMatch')
 " }}}
 
 " color schemes
