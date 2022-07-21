@@ -57,6 +57,11 @@ function! s:show_vars(var_dict) abort
                 echohl None
                 echon var[key]
             endfor
+        elseif type(var) == type([])
+            for val in var
+                echo printf('   ')
+                echon val
+            endfor
         else
             echon var
         endif
