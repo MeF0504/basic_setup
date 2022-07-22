@@ -59,7 +59,7 @@ syntax enable
 " :h complete()
 
 "" }}}
-if exists('$VIM_TERMINAL')
+if exists('$VIM_TERMINAL') || $SHELL_INFO[-1:]=='v'
     echoerr 'Warning!! vim is already opened!!'
 endif
 
