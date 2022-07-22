@@ -10,11 +10,14 @@ let g:loaded_parenmatch = 1
 let g:matchup_matchparen_offscreen = {}
 nnoremap <leader>c <Cmd>MatchupWhereAmI\?<CR>
 " highlights
-if &background == 'dark'
-    call meflib#set('plugin_his', {'ctermbg':233, 'guibg':'#003030'}, 'MatchWord')
-else
-    call meflib#set('plugin_his', {'ctermbg':253, 'guibg':'#dadaff'}, 'MatchWord')
-endif
+function! <SID>matchup_his() abort
+    if &background == 'dark'
+        highlight MatchWord ctermfg=None ctermbg=233 guifg=NONE guibg=#003030
+    else
+        highlight MatchWord ctermfg=None ctermbg=253 guifg=NONE guibg=#dadaff
+    endif
+endfunction
+call meflib#add('plugin_his', expand('<SID>').'matchup_his')
 " }}}
 
 " 色々な言語のtemplate

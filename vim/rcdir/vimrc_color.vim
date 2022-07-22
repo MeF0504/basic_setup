@@ -84,36 +84,7 @@ function! <SID>my_color_set_inkpot()
     highlight CursorWord1 ctermbg=235 cterm=None guibg=#262626 gui=NONE
     highlight Quote ctermfg=183 ctermbg=None guifg=#d7afff guibg=NONE
 endfunction
-
-function! <SID>my_color_set_shiki()
-    highlight Directory ctermfg=34 guifg=#00af00
-endfunction
-
-function! <SID>my_color_set_primary()
-    highlight Normal ctermfg=254 guifg=#e4e4e4
-    highlight Identifier ctermbg=None guibg=NONE
-    " highlight String ctermbg=None
-    highlight PreProc ctermbg=None guibg=NONE
-    highlight Function ctermbg=None guibg=NONE
-    highlight Statement ctermbg=None guibg=NONE
-    highlight Number ctermbg=None guibg=NONE
-    highlight Comment ctermbg=None guibg=NONE
-    highlight Keyword ctermbg=None guibg=NONE
-    highlight Conditional ctermbg=None guibg=NONE
-    highlight Operator ctermbg=None guibg=NONE
-    highlight Repeat ctermbg=None guibg=NONE
-    highlight Exception ctermbg=None guibg=NONE
-    highlight Type ctermbg=None guibg=NONE
-    highlight Structure ctermbg=None guibg=NONE
-    highlight Macro ctermbg=None guibg=NONE
-    highlight SpecialKey ctermfg=242 ctermbg=None guifg=#6c6c6c guibg=NONE
-    highlight CursorWord1 ctermbg=239 cterm=None guibg=#4e4e4e gui=NONE
-endfunction
-
-function! <SID>my_color_set_PaperColor()
-    highlight Search ctermbg=36 guibg=#00af87
-    highlight SpecialKey cterm=Underline ctermfg=245 ctermbg=233 gui=Underline guifg=#8a8a8a guibg=#121212
-endfunction
+call meflib#set('my_color_set', s:sid.'my_color_set_inkpot', 'inkpot')
 
 function! <SID>my_color_set_evening()
     highlight Normal ctermbg=233 guibg=#121212
@@ -122,35 +93,8 @@ function! <SID>my_color_set_evening()
         highlight DiffDelete ctermfg=15 ctermbg=6 guifg=White guibg=DarkCyan
         highlight DiffText ctermfg=15 ctermbg=9 guifg=White guibg=Red
 endfunction
-
-function! <SID>my_color_set_night_owl()
-    highlight Pmenu ctermfg=7
-    highlight Quote ctermfg=37 guifg=#00d7d7
-    highlight Comment ctermfg=243 ctermbg=233 guifg=#637777 guibg=#011627 cterm=NONE
-    highlight shComment ctermfg=243 ctermbg=233 guifg=#637777 guibg=#011627 cterm=NONE
-    highlight SpecialKey ctermbg=235 guibg=#202020
-    highlight Number ctermfg=162 guifg=#c02a8f
-    highlight Todo ctermfg=17 ctermbg=228 cterm=BOLD guifg=#101060 guibg=#f8fa6a gui=BOLD
-    highlight LineNr ctermfg=240 guifg=#535353
-
-    highlight HiTagImports ctermfg=227 guifg=#f0e860
-endfunction
-
-function! <SID>my_color_set_inkpotter()
-    highlight CursorWord1 ctermbg=235 cterm=None guibg=#262626 gui=NONE
-    highlight Quote ctermfg=183 ctermbg=None guifg=#d7afff guibg=NONE
-
-    highlight HiTagImports ctermfg=225 guifg=#f0b7f0
-endfunction
-
-function! <SID>my_color_set_modus_operandi() abort
-    " ctermがない？
-    highlight DiffDelete gui=Bold guifg=#939393 guibg=#e0ffff
-    highlight SpecialKey gui=None guifg=#101010 guibg=#cacaca
-    highlight ErrorMsg gui=Bold guifg=#000000 guibg=#a80000
-    highlight WarningMsg gui=Bold guifg=#000000 guibg=#909000
-    highlight Folded gui=None guifg=#3d3d3d guibg=#f5dad0
-endfunction
+" ['my_color_set', func_name, colors_name]
+call meflib#set('my_color_set', s:sid.'my_color_set_evening', 'evening')
 
 function! <SID>my_color_set()
     """ general settings
@@ -235,41 +179,15 @@ function! <SID>my_color_set()
     " }}}
 
     """ plugin highlights
-    let plugin_his = meflib#get('plugin_his', {})
-    for name in keys(plugin_his)
-        let phi = plugin_his[name]
-        if has_key(phi, 'link')
-            execute printf('highlight link %s %s', name, phi.link)
-        else
-            let cterm = has_key(phi, 'cterm') ? phi.cterm : 'None'
-            let ctermfg = has_key(phi, 'ctermfg') ? phi.ctermfg : 'None'
-            let ctermbg = has_key(phi, 'ctermbg') ? phi.ctermbg : 'None'
-            let gui = has_key(phi, 'gui') ? phi.gui : 'NONE'
-            let guifg = has_key(phi, 'guifg') ? phi.guifg : 'NONE'
-            let guibg = has_key(phi, 'guibg') ? phi.guibg : 'NONE'
-            execute printf('highlight %s '.
-                        \ 'cterm=%s ctermfg=%s ctermbg=%s '.
-                        \ 'gui=%s guifg=%s guibg=%s',
-                        \ name,
-                        \ cterm, ctermfg, ctermbg,
-                        \ gui, guifg, guibg,
-                        \ )
-        endif
+    for hi_func in meflib#get('plugin_his', [])
+        call call(hi_func, [])
     endfor
-
-    " Untitled {{{
-    if g:colors_name =~ 'pjsekai_*'
-        if exists(':SeiyaDisable')
-            SeiyaDisable
-        endif
-    endif
-    " }}}
 
     " colorscheme specified setings
     let colname = substitute(g:colors_name, "-", "_", "g")
-    let local_scheme_func = s:sid..'my_color_set_'..colname
-    if exists('*'.local_scheme_func)
-        execute "call ".local_scheme_func.'()'
+    let local_scheme_funcs = meflib#get('my_color_set', {})
+    if has_key(local_scheme_funcs, colname)
+        call call(local_scheme_funcs[colname], [])
     else
         " echo "color scheme: " . g:colors_name
     endif

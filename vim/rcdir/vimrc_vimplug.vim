@@ -66,6 +66,15 @@ Plug 'junegunn/vim-plug'
 
 " Project Sekai inspired plugin
 Plug 'MeF0504/untitled.vim', PlugCond(!exists('g:vscode'), {'on': 'Untitled'})
+" Untitled {{{
+function! <SID>untitled_his() abort
+    if g:colors_name =~ 'pjsekai_*'
+        if exists(':SeiyaDisable')
+            SeiyaDisable
+        endif
+    endif
+endfunction
+" }}}
 
 " colorscheme
 Plug 'MeF0504/vim-monoTone', PlugCond(!exists('g:vscode'))
@@ -89,7 +98,10 @@ let g:loaded_matchparen = 1
 " デフォルトのhighlightをoff
 let g:parenmatch_highlight = 0
 " highlights
-call meflib#set('plugin_his', {'link':'MatchParen'}, 'ParenMatch')
+function! <SID>parenmatch_his() abort
+    highlight link ParenMatch MatchParen
+endfunction
+call meflib#add('plugin_his', expand('<SID>').'parenmatch_his')
 " }}}
 
 " color schemes
