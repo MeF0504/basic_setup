@@ -324,7 +324,7 @@ else
     let g:Tlist_Inc_Winwidth = 0
 endif
 
-function! Open_taglist() abort
+function! <SID>Open_taglist() abort
     " {{{
     if exists('g:Tlist_Use_Right_Window')
         let l:tlist_right_old = g:Tlist_Use_Right_Window
@@ -366,7 +366,7 @@ function! Open_taglist() abort
     let g:Tlist_Use_Right_Window = l:tlist_right_old
     " }}}
 endfunction
-nnoremap <silent> <Leader>t <Cmd>call Open_taglist()<CR>
+nnoremap <silent> <Leader>t <Cmd>call <SID>Open_taglist()<CR>
 
 function! s:tlist_all_comp(arglead, cmdline, cursorpos) abort
     " {{{
@@ -386,6 +386,9 @@ endfunction
 
 function! s:tlist_all(...) abort
     " {{{
+    if !exists('g:loaded_taglist')
+        call plug#load('taglist')
+    endif
     let cwd = meflib#basic#get_top_dir(expand('%:h'))
     if empty(cwd)
         let cwd = '.'
