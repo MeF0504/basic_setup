@@ -34,6 +34,8 @@ which pip3
 # pip3 install opencv-python  # Open CV package for python
 # pip3 install pyinstaller    # python scriptから実行ファイルを作るライブラリ
 # pip3 install 'python-lsp-server[all]'     # python用 Language Server
+# pip3 install pip_search     # pipを検索するためのライブラリ
+# pip3 install numpy-stl      # stlを読み込む／書き込むためのライブラリ
 echo
 # }}}
 
