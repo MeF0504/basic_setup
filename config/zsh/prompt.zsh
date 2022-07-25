@@ -192,6 +192,8 @@ set_prompt() {
             get_ip 3
             # path
             local _PS_PATH="%F{255}%K{19}%d%f%k"
+            # count files/directories
+            local _PS_COUNTFILE='($(ls -U1 | wc -l | sed -e "s/ //g"))'
             # exec time
             local _PS_EXTIME=' $(ret_cmd_exec_time)'
             # new line
@@ -213,7 +215,7 @@ set_prompt() {
         # ip_color for IPv6
         local _PS_IPCOLOR2='$(ip_color2 $_GLOBAL_IP)'
 
-        export PROMPT="${_PS_IPCOLOR}${_PS_HOST}${_PS_PATH}${_PS_EXTIME}${_PS_NEWLINE}${_PS_IPCOLOR2}${_PS_TIME}${_PS_USER}${_PS_END}"
+        export PROMPT="${_PS_IPCOLOR}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}${_PS_EXTIME}${_PS_NEWLINE}${_PS_IPCOLOR2}${_PS_TIME}${_PS_USER}${_PS_END}"
 
         PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
 
