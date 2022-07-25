@@ -171,9 +171,6 @@ function! <SID>my_color_set()
 
     " その他 {{{
     " highlight ToCkeys ctermfg=10 guifg=Lime
-    if (&background == 'light') && exists(':SeiyaDisable')
-        silent SeiyaDisable
-    endif
     highlight default link Quote String
     highlight qfLineNr ctermfg=22 ctermbg=252 guifg=#205020 guibg=#d0d0d0
     " }}}

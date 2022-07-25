@@ -299,12 +299,20 @@ autocmd PlugLocal User vim-quickrun if has('nvim') | call meflib#set('quickrun_n
 " 背景透過
 Plug 'miyakogi/seiya.vim', PlugCond(1, {'on': 'SeiyaEnable'})
 "" seiya.vim "{{{
-"vimの背景を透過
 let g:seiya_auto_enable=0
 if has('termguicolors') && !has('gui_running')
     let g:seiya_target_groups = ['ctermbg', 'guibg']
 endif
-autocmd PlugLocal VimEnter * ++once if &background=='dark' | execute 'SeiyaEnable' | endif
+function! <SID>seiya_his() abort
+    if &background == 'light'
+        silent SeiyaDisable
+    elseif g:colors_name =~ 'pjsekai_*'
+        silent SeiyaDisable
+    else
+        SeiyaEnable
+    endif
+endfunction
+call meflib#add('plugin_his', s:sid.'seiya_his')
 "}}}
 
 " 関数一覧を表示

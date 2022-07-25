@@ -66,15 +66,6 @@ Plug 'junegunn/vim-plug'
 
 " Project Sekai inspired plugin
 Plug 'MeF0504/untitled.vim', PlugCond(!exists('g:vscode'), {'on': 'Untitled'})
-" Untitled {{{
-function! <SID>untitled_his() abort
-    if g:colors_name =~ 'pjsekai_*'
-        if exists(':SeiyaDisable')
-            SeiyaDisable
-        endif
-    endif
-endfunction
-" }}}
 
 " colorscheme
 Plug 'MeF0504/vim-monoTone', PlugCond(!exists('g:vscode'))
