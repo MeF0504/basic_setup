@@ -75,7 +75,7 @@ setlocal formatoptions-=tc
 
 let s:hit_str = split('def class if else elif for with while try except', ' ')
 " {{{ 今自分がどの関数/class/for/if内にいるのか表示する
-function! <SID>chk_current_position_python()
+function! <SID>chk_current_position_python() abort
 
     let res = []
     let tablevel = match(getline('.'), '\S')
@@ -98,9 +98,42 @@ function! <SID>chk_current_position_python()
         endif
     endfor
 
-    for tmp_ln in res
-        echo tmp_ln
-    endfor
+    if empty(res)
+        return
+    endif
+    let num = 0
+    while 1
+        for i in range(len(res))
+            if i == num
+                echohl Special
+            endif
+            echo res[i]
+            if i == num
+                echohl None
+            endif
+        endfor
+        echo 'select; j/k, go to; <enter>, cancel; q/<esc> :'
+        let key = getcharstr()
+        if key == 'q'
+            break
+        elseif key == "\<esc>"
+            break
+        elseif key == 'j'
+            if num < len(res)-1
+                let num += 1
+            endif
+        elseif key == 'k'
+            if num > 0
+                let num -= 1
+            endif
+        elseif key == "\<enter>"
+            let sel_res = res[num]
+            let lnum = sel_res[:match(sel_res, '|')-1]
+            execute 'normal! '..lnum..'gg'
+            break
+        endif
+        redraw
+    endwhile
 endfunction
 " MatchupWhereAmI は python だと動かないっぽいので自作を復元
 nnoremap <buffer> <leader>c <Cmd>call <SID>chk_current_position_python()<CR>
