@@ -301,6 +301,51 @@ endfunction
 " termonal commandを快適に使えるようにする {{{
 "" http://koturn.hatenablog.com/entry/2018/02/12/140000
 let s:term_cnt = 1
+let s:term_opts = ['win', 'term']
+let s:term_win_opts = ['S', 'V', 'F', 'P']
+function! meflib#tools#term_comp(arglead, cmdline, cursorpos) abort
+    ":h :command-completion-custom
+    let opt_idx = strridx(a:cmdline, '-')
+    let end_space_idx = strridx(a:cmdline, ' ')
+    " return ['-1-'.a:arglead, '-2-'.a:cmdline, '-3-'.a:cursorpos, '-4-'.a:cmdline[opt_idx:]]
+    if a:arglead[0] == '-'
+        " select option
+        let res = []
+        for opt in s:term_opts
+            let res += ['-'.opt]
+        endfor
+        return filter(res, '!stridx(tolower(v:val), a:arglead)')
+    elseif a:cmdline[opt_idx:end_space_idx-1] == '-win'
+        return s:term_win_opts
+    elseif a:cmdline[opt_idx:end_space_idx-1] == '-term'
+        if exists('*term_list')
+            let term_names = filter(map(term_list(), 'bufname(v:val)'), '!stridx(tolower(v:val), a:arglead)')
+        else
+            if has('nvim')
+                let st_idx = 6
+                let term_head = 'term://'
+            else
+                let st_idx = 0
+                let term_head = '!'
+            endif
+            let term_list = []
+            for i in range(1, tabpagenr('$'))
+                for j in tabpagebuflist(i)
+                    let bname = bufname(j)
+                    if bname[:st_idx] == term_head
+                        let term_list += [bname]
+                    endif
+                endfor
+            endfor
+            let term_names = filter(term_list, '!stridx(tolower(v:val), a:arglead)')
+        endif
+        return term_names
+    else
+        " shell コマンド一覧が得られたら嬉しい
+        " $PATHでfor文を回す手もあるが，時間が掛かりそう...
+        return []
+    endif
+endfunction
 function! s:open_term(bufname) abort
     let bufn = bufnr(a:bufname)
     if bufn == -1
@@ -736,6 +781,25 @@ endfunction
 " }}}
 
 " 自作grep {{{
+" 補完
+function! meflib#tools#grep_comp(arglead, cmdline, cursorpos) abort
+    let cur_opt = split(a:cmdline, ' ', 1)[-1]
+    if (match(cur_opt, '=') == -1)
+        let opts = ['wd', 'dir', 'ex']
+        return filter(map(opts, 'v:val."="'), '!stridx(v:val, a:arglead) && match(a:cmdline, v:val)==-1')
+    elseif cur_opt =~ 'dir='
+        let arg = split(cur_opt, '=', 1)[1]
+        let files = split(glob(arg..'*'), '\n')
+        if !empty(files)
+            return map(files+['opened'], "'dir='..v:val")
+        else
+            return []
+        endif
+    else
+        return []
+    endif
+endfunction
+
 function! <SID>echo_gregrep_help()
     echo "usage..."
     echo ":GREgrep [wd=word] [dir=dir_path] [ex=extention]"

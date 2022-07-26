@@ -77,54 +77,7 @@ command! BinMode call meflib#tools#BinaryMode()
 nnoremap <silent> <leader>l <Cmd>call meflib#tools#file_list()<CR>
 " }}}
 " termonal commandを快適に使えるようにする {{{
-let s:term_opts = ['win', 'term']
-let s:term_win_opts = ['S', 'V', 'F', 'P']
-function! s:complete_term(arglead, cmdline, cursorpos) abort
-    ":h :command-completion-custom
-    let arglead = tolower(a:arglead)
-    let cmdline = tolower(a:cmdline)
-    let opt_idx = strridx(cmdline, '-')
-    let end_space_idx = strridx(cmdline, ' ')
-    " return ['-1-'.a:arglead, '-2-'.a:cmdline, '-3-'.a:cursorpos, '-4-'.a:cmdline[opt_idx:]]
-    if arglead[0] == '-'
-        " select option
-        let res = []
-        for opt in s:term_opts
-            let res += ['-'.opt]
-        endfor
-        return filter(res, '!stridx(tolower(v:val), arglead)')
-    elseif cmdline[opt_idx:end_space_idx-1] == '-win'
-        return s:term_win_opts
-    elseif cmdline[opt_idx:end_space_idx-1] == '-term'
-        if exists('*term_list')
-            let term_names = filter(map(term_list(), 'bufname(v:val)'), '!stridx(tolower(v:val), arglead)')
-        else
-            if has('nvim')
-                let st_idx = 6
-                let term_head = 'term://'
-            else
-                let st_idx = 0
-                let term_head = '!'
-            endif
-            let term_list = []
-            for i in range(1, tabpagenr('$'))
-                for j in tabpagebuflist(i)
-                    let bname = bufname(j)
-                    if bname[:st_idx] == term_head
-                        let term_list += [bname]
-                    endif
-                endfor
-            endfor
-            let term_names = filter(term_list, '!stridx(tolower(v:val), arglead)')
-        endif
-        return term_names
-    else
-        " shell コマンド一覧が得られたら嬉しい
-        " $PATHでfor文を回す手もあるが，時間が掛かりそう...
-        return []
-    endif
-endfunction
-command! -nargs=? -complete=customlist,s:complete_term  Terminal call meflib#tools#Terminal(<f-args>)
+command! -nargs=? -complete=customlist,meflib#tools#term_comp  Terminal call meflib#tools#Terminal(<f-args>)
 " }}}
 " ファイルの存在チェック {{{
 nnoremap <leader>f <Cmd>call meflib#tools#Jump_path()<CR>
@@ -133,24 +86,8 @@ nnoremap <leader>f <Cmd>call meflib#tools#Jump_path()<CR>
 command! -nargs=+ -complete=file DiffLine call meflib#tools#diff_line(<f-args>)
 " }}}
 " 自作grep {{{
-function! <SID>grep_comp(arglead, cmdline, cursorpos) abort
-    let arglead = tolower(a:arglead)
-    let cmdline = tolower(a:cmdline)
-    let cur_opt = split(cmdline, ' ', 1)[-1]
-    if (match(cur_opt, '=') == -1)
-        let opts = ['wd', 'dir', 'ex']
-        return filter(map(opts, 'v:val."="'), '!stridx(tolower(v:val), arglead) && match(cmdline, v:val)==-1')
-    elseif cur_opt =~ 'dir='
-        let arg = split(cur_opt, '=', 1)[1]
-        let files = split(glob(arg..'*'), '\n')
-        return map(files+['opened'], "'dir='..v:val")
-    else
-        return []
-    endif
-endfunction
-
-command! -nargs=? -complete=customlist,<SID>grep_comp Gregrep call meflib#tools#Mygrep(<f-args>)
-command! -nargs=? -complete=customlist,<SID>grep_comp GREgrep Gregrep
+command! -nargs=? -complete=customlist,meflib#tools#grep_comp Gregrep call meflib#tools#Mygrep(<f-args>)
+command! -nargs=? -complete=customlist,meflib#tools#grep_comp GREgrep Gregrep
 " }}}
 " XPM test function {{{
 command! XPMLoader call meflib#tools#xpm_loader()
