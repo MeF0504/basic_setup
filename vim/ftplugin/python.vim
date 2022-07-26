@@ -98,6 +98,13 @@ function! <SID>chk_current_position_python() abort
         endif
     endfor
 
+    if exists('g:vscode')
+        for l in res
+            echo l
+        endfor
+        return
+    endif
+
     if empty(res)
         return
     endif
