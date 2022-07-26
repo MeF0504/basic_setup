@@ -824,6 +824,7 @@ function! meflib#tools#Mygrep(...)
     let is_word = 0
     if a:0 == '0'
         let l:word = expand('<cword>')
+        let is_word = 1
         let l:ft = '.' . expand('%:e')
         let l:dir = def_dir
     else
