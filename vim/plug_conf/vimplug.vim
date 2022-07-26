@@ -297,7 +297,7 @@ autocmd PlugLocal User vim-quickrun if has('nvim') | call meflib#set('quickrun_n
 " }}}
 
 " 背景透過
-Plug 'miyakogi/seiya.vim', PlugCond(1, {'on': 'SeiyaEnable'})
+Plug 'miyakogi/seiya.vim', PlugCond(1, {'on': ['SeiyaEnable', 'SeiyaDisable']})
 "" seiya.vim "{{{
 let g:seiya_auto_enable=0
 if has('termguicolors') && !has('gui_running')
