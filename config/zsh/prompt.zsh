@@ -170,9 +170,10 @@ ret_cmd_exec_time() {
 set_prompt() {
     case ${UID} in
     0)
+        # ROOT
         PROMPT="%{${fg[yellow]}%}ROOT@%{${fg[cyan]}%}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]') %B%{${fg[red]}%}%/#%{${reset_color}%}%b "
         PROMPT2="%B%{${fg[red]}%}%_#%{${reset_color}%}%b "
-        SPROMPT="%B%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
+        SPROMPT="%B%{${fg[yellow]}%}%r is correct? [n(o),y(es),a(bort),e(dit)]:%{${reset_color}%}%b "
         ;;
     *)
         if [[ -n "$OLD_PROMPT" ]]; then
@@ -219,7 +220,8 @@ set_prompt() {
 
         PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
 
-        SPROMPT="%{${fg[yellow]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
+        SPROMPT="%B%{${fg[yellow]}%}%r is correct? [n(o),y(es),a(bort),e(dit)]:%{${reset_color}%}%b "
+        # ↑ %R は修正前のコマンドらしい
         ;;
     esac
 }
