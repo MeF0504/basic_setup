@@ -145,6 +145,9 @@ autocmd PlugLocal User vim-pets call s:pets_hook()
 " }}}
 Plug 'MeF0504/vim-pets-ocean', PlugCond(1, {'on': 'Pets'})
 
+" paste時に履歴から選ぶ
+Plug 'MeF0504/RegistPaste.vim'
+
 " neosnippet用のsnipets
 Plug 'Shougo/neosnippet-snippets'
 
