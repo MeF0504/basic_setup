@@ -121,15 +121,13 @@ function! <SID>chk_current_position_python() abort
         endfor
         echo 'select; j/k, go to; <enter>, cancel; q/<esc> :'
         let key = getcharstr()
-        if key == 'q'
+        if key == 'q' || key == "\<esc>"
             break
-        elseif key == "\<esc>"
-            break
-        elseif key == 'j'
+        elseif key == 'j' || key == "\<Down>"
             if num < len(res)-1
                 let num += 1
             endif
-        elseif key == 'k'
+        elseif key == 'k' || key == "\<Up>"
             if num > 0
                 let num -= 1
             endif
