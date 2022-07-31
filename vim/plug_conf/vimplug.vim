@@ -1266,3 +1266,6 @@ let g:git_messenger_floating_win_opts = {'border': 'single'}
 nnoremap <leader>g <Cmd>GitMessenger<CR>
 " }}}
 
+" plugin のdot repeatをサポート (RegistPasteで使用)
+Plug 'tpope/vim-repeat'
+
