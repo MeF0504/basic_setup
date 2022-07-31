@@ -844,6 +844,7 @@ function! meflib#tools#Mygrep(...)
             endif
         else
             let l:word = expand('<cword>')
+            let is_word = 1
         endif
         let l:ft =  has_key(arg,  "ex") ? arg["ex"] : expand('%:e')
         let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : '.'
