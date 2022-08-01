@@ -1038,7 +1038,7 @@ function! <SID>lsp_status_tab() abort " {{{
     else
         let highlight = 'Lsp_NotRunning'
     endif
-    let footer = printf(' %%#%s#%s%%#%s#', highlight, lsp_status, 'TabLineFill')
+    let footer = printf('%%#%s#|%s%%#%s#', highlight, lsp_status, 'TabLineFill')
     let len = len(lsp_status)+1
     return [footer, len]
 endfunction
