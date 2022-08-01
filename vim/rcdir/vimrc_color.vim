@@ -143,7 +143,9 @@ function! <SID>my_color_set()
         endif
     endif
 
-    highlight StatusLineNC cterm=underline ctermfg=244 ctermbg=232 gui=Underline guifg=#808080 guibg=#080808
+    " test setting
+    highlight StatusLineNC cterm=underline ctermfg=244 ctermbg=None gui=Underline guifg=#808080 guibg=NONE
+    " highlight StatusLineNC cterm=underline ctermfg=244 ctermbg=232 gui=Underline guifg=#808080 guibg=#080808
     if !has('nvim')
         highlight StatusLineTermNC cterm=None ctermfg=233 ctermbg=249 gui=NONE guifg=#121212 guibg=#b2b2b2
     endif
