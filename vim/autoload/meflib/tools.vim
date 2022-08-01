@@ -943,3 +943,15 @@ EOL
 endfunction
 " }}}
 
+" runtimepath check {{{
+function! meflib#tools#runtimepath() abort
+    for rp in split(copy(&runtimepath), ',', 'g')
+        if !isdirectory(rp)
+            echohl ErrorMsg
+        endif
+        echo rp
+        echohl None
+    endfor
+endfunction
+" }}}
+
