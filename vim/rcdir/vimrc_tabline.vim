@@ -97,14 +97,14 @@ function! s:set_tabline()
         if ctn_l > 0
             " add title to tabline if possible
             if tab_fin_l == 0
-                if tab_len+2+2 < width || ctn_l == cur_tab_no " 2 .. '..'
+                if tab_len+1 < width || ctn_l == cur_tab_no " +1 .. ~
                     let title = s:get_title(ctn_l)
                     if s:debug
                         let str .= printf('  width: %d, tab_len: %d->%d', width, tab_len, tab_len+len(title)+1)
                     endif
-                    if tab_len+len(title)+2+2 > width
+                    if tab_len+len(title)+1 > width
                         " cut the title if it is long.
-                        let cut_length = len(title)-(width-tab_len-2-2-2) " -2 ... ?
+                        let cut_length = len(title)-(width-tab_len-1-2) " -2 = ..?
                         let cut_length = cut_length<0 ? 0 : cut_length
                         let title = '..'.title[cut_length:]
                         let tab_fin_l = 1
@@ -120,8 +120,6 @@ function! s:set_tabline()
                     let s = tmp_s.s
                 else
                     " finish to add the left side.
-                    let s = '..'.s
-                    let tab_len += 2
                     let tab_fin_l = 1
                 endif
             endif
@@ -135,14 +133,14 @@ function! s:set_tabline()
         if ctn_r <= tabpagenr('$')
             " add title to tabline if possible
             if tab_fin_r == 0
-                if tab_len+2+2 < width " 2 .. '..'
+                if tab_len+1 < width " +1 .. ~
                     let title = s:get_title(ctn_r)
                     if s:debug
                         let str .= printf('  width: %d, tab_len: %d->%d', width, tab_len, tab_len+len(title)+1)
                     endif
-                    if tab_len+len(title)+2+2 > width
+                    if tab_len+len(title)+1 > width
                         " cut the title if it is long.
-                        let cut_length = width-tab_len-2-2-2 " -2 ... ?
+                        let cut_length = width-tab_len-1-2 " -2 = ..?
                         let cut_length = cut_length<0 ? 0 : cut_length
                         let title = title[:cut_length].'..'
                         let tab_fin_r = 1
@@ -158,8 +156,8 @@ function! s:set_tabline()
                     let s .= tmp_s
                 else
                     " finish to add the right side.
-                    let s .= '..'
-                    let tab_len += 2
+                    let s .= '~'
+                    let tab_len += 1
                     let tab_fin_r = 1
                 endif
             endif
