@@ -117,7 +117,7 @@ else
 endif
 
 " パスを除くファイル名 修正フラグ 読込専用 ヘルプ preview_window
-let s:st_off = "%t %m%{&readonly?'[RO]':''}%h%w"
+let s:st_off = "%#StatusLine_OFF#%t%#StatusLineNC# %m%{&readonly?'[RO]':''}%h%w"
 
 """ the variable to administer statusline
 " '_': basic statusline
