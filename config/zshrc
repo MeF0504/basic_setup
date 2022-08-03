@@ -199,6 +199,8 @@ zshaddhistory() {
     && ! ${line} == \;
     # vimからterminalを開いてるときによく打っちゃう
     && ! ${line} == :q
+    # .command の履歴
+    && ! ${line} =~ ".*\.command; exit"
     ]]
 }
 # }}}
