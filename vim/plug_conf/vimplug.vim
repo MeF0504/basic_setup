@@ -548,7 +548,7 @@ Plug 'osyo-manga/vim-anzu', PlugCond(!meflib#get('load_plugin', 0, 'hitspop'), {
 if !meflib#get('load_plugin', 0, 'hitspop')
     " highlights
     function! <SID>anzu_his() abort
-        highlight link AnzuPopup hitspopNormal
+        highlight AnzuPopup ctermfg=224 ctermbg=238 guifg=#ffd7d7 guibg=#444444
     endfunction
     call meflib#add('plugin_his', s:sid.'anzu_his')
     call meflib#add('lazy_plugins', 'vim-anzu')
