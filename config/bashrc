@@ -86,6 +86,23 @@ export HISTIGNORE=pwd:history:ls
 
 # }}}
 
+# {{{ cd時の自動関数を作る {{{
+# https://zenn.dev/hasu_83/articles/make-custom-cd
+autocd() {
+    # ||: fail safe
+    builtin cd "$@" || return
+
+    if [ -d "${PWD}/.git" ]; then
+        read -p "execute fetch? ([y]/n) " -r yn
+        if [ -z "$yn" ] || [ "$yn" = 'y' ]; then
+            echo "fetching..."
+            git fetch
+        fi
+    fi
+}
+alias cd="autocd"
+# }}}
+
 # load fzf settings {{{
 [[ -f ${HOME}/.fzf.bash ]] && source ${HOME}/.fzf.bash
 # }}}
