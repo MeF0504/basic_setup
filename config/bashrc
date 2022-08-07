@@ -52,7 +52,8 @@ export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}\n${_PS_TIME}${_P
 if [[ "$(uname)" = "MINGW*" ]]; then
     echo -ne "\033]0;Git Bash @ $HOSTNAME\a"
 else
-    echo -ne "\033]0;${USERNAME} @ ${HOSTNAME}\a"
+    echo -ne "\033]0;${USER} @ ${HOSTNAME}\a"
+fi
 # }}}
 
 ##{{{ key bind
