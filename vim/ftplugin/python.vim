@@ -108,7 +108,7 @@ function! <SID>chk_current_position_python() abort
     if empty(res)
         return
     endif
-    let num = 0
+    let num = -1
     while 1
         for i in range(len(res))
             if i == num
@@ -132,9 +132,11 @@ function! <SID>chk_current_position_python() abort
                 let num -= 1
             endif
         elseif key == "\<enter>"
-            let sel_res = res[num]
-            let lnum = sel_res[:match(sel_res, '|')-1]
-            execute 'normal! '..lnum..'gg'
+            if 0 <= num && num < len(res)
+                let sel_res = res[num]
+                let lnum = sel_res[:match(sel_res, '|')-1]
+                execute 'normal! '..lnum..'gg'
+            endif
             break
         endif
         redraw
