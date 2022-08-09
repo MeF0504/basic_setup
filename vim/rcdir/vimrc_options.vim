@@ -156,8 +156,8 @@ if has('terminal')
     "terminal-job modeでのwindow移動short cutを変更
     set termwinkey=<c-l>
 endif
+
 " 環境変数
-let $MANPAGER=''
 
 " neovim specified config
 if has('nvim')

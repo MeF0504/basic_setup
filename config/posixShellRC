@@ -36,11 +36,6 @@ if [[ -n $VIM ]]; then
 else
     export SHELL_INFO="${SHELL_INFO}-${SHLVL}"
 fi
-
-# man をvimで開く -> https://rcmdnk.com/blog/2014/07/20/computer-vim/
-if [[ -z $VIM ]]; then
-    export MANPAGER="col -b -x|vim -R -c 'set ft=man nolist nomod noma' -"
-fi
 #}}}
 
 ##{{{ Alias configuration
@@ -85,6 +80,7 @@ alias grep="grep --color"
 # vim
 alias vi='vim -p'
 
+# move files to trash.
 alias del="mv_Trash.py"
 
 ## if use terminology [https://www.enlightenment.org/about-terminology.md]
@@ -348,5 +344,12 @@ get_term_name() {
     fi
     # }}}
 }
+
+# open manual in vim
+manvim() {
+    # https://rcmdnk.com/blog/2014/07/20/computer-vim/
+    man $@ 2>&1 | col -bx | vim -R -c 'set ft=man nolist nomod noma' -
+}
+
 #}}}
 
