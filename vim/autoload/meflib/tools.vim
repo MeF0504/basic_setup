@@ -617,7 +617,8 @@ endfunction
 " ファイルの存在チェック {{{
 function! meflib#tools#Jump_path() abort
     let line = getline('.')
-    let fname = fnamemodify(expand('<cfile>'), ':p')
+    "           ↓full path  ↓expand var ↓expand cfile
+    let fname = fnamemodify(expand(expand('<cfile>')), ':p')
     let lnum = 1
     let yn = 'y'
 
