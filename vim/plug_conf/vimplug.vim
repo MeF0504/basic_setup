@@ -963,6 +963,8 @@ let g:lsp_diagnostics_highlights_enabled = 0
 let g:lsp_diagnostics_signs_enabled = 1
 let g:lsp_diagnostics_signs_insert_mode_enabled = 1
 let g:lsp_diagnostics_virtual_text_enabled = 0
+" cursor上にwarningとかあったらechoしてくれる
+let g:lsp_diagnostics_echo_cursor = 1
 " highlightはvim-cursorwordで表示しているので使わない
 let g:lsp_document_highlight_enabled = 0
 " LspPeekDefinition で表示する位置
