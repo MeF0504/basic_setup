@@ -95,11 +95,12 @@ nnoremap <expr> <CR> pumvisible() != 0 ? '<c-m>' :
             \ foldlevel('.') != 0 ? 'za' : '<CR>'
 
 " shiftは逆動作だと思ってるので、単語移動をremap
-noremap W b
-noremap gw W
-noremap gW B
-noremap E ge
-noremap ge E
+" noremap W b
+" noremap gw W
+" noremap gW B
+" noremap E ge
+" noremap ge E
+" 一旦矯正する。大文字 -> WORD, w:word, b:before, e:end
 
 " 今の行を画面のtopにする。ctrl-lはterminalの感覚
 nmap <c-l> z<CR>
