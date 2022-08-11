@@ -1047,67 +1047,62 @@ endfunction
 " }}}
 " lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
 " <c-p>でhelp hover, definition, type definition を選択
-function! <SID>chk_jump() abort " {{{
-    echo 'open in; [t]ab/[s]plit/[v]ertical/cur_win '
-    let yn = nr2char(getchar()) " getcharstr()?
-    if yn == 't'
-        return "\<Cmd>tab LspDefinition\<CR>"
-    elseif yn == 's'
-        return "\<Cmd>aboveleft LspDefinition\<CR>"
-    elseif yn == 'v'
-        return "\<Cmd>vertical LspDefinition\<CR>"
-    elseif yn == "\<esc>"
-        echo 'canceled'
-        return ''
-    else
-        return "\<Plug>(lsp-definition)"
+function! s:lsp_mapping(map) abort " {{{
+    if a:map == 1
+        echo 'open in; [t]ab/[s]plit/[v]ertical/cur_win '
+        let yn = getcharstr()
+        if yn == 't'
+            return "\<Cmd>tab LspDefinition\<CR>"
+        elseif yn == 's'
+            return "\<Cmd>aboveleft LspDefinition\<CR>"
+        elseif yn == 'v'
+            return "\<Cmd>vertical LspDefinition\<CR>"
+        elseif yn == "\<esc>"
+            echo 'canceled'
+            return ''
+        else
+            return "\<Plug>(lsp-definition)"
+        endif
+    elseif a:map == 2
+        return "\<Plug>(lsp-references)"
+    elseif a:map == 3
+        let res = ""
+        let old_cmdheight = &cmdheight
+        set cmdheight=4
+        echo  " 1: help\n"..
+            \ " 2: definition\n"..
+            \ " 3: type definition: "
+        let num = getcharstr()
+        if num == '1'
+            let res = "\<Plug>(lsp-hover)"
+        elseif num == '2'
+            let res = "\<Plug>(lsp-peek-definition)"
+        elseif num == '3'
+            let res = "\<Plug>(lsp-peek-type-definition)"
+        endif
+        let &cmdheight = old_cmdheight
+        redraw!
+        return res
     endif
 endfunction
 " }}}
-function! <SID>select_float() abort " {{{
-    let res = ""
-    let old_cmdheight = &cmdheight
-    set cmdheight=4
-    echo  " 1: help\n"..
-        \ " 2: definition\n"..
-        \ " 3: type definition: "
-    let num = nr2char(getchar())
-    if num == '1'
-        let res = "\<Plug>(lsp-hover)"
-    elseif num == '2'
-        let res = "\<Plug>(lsp-peek-definition)"
-    elseif num == '3'
-        let res = "\<Plug>(lsp-peek-type-definition)"
-    endif
-    let &cmdheight = old_cmdheight
-    redraw!
-    return res
-endfunction
-" }}}
+let s:lsp_map = {}
 function! s:vim_lsp_hook() abort
     if !exists('g:lsp_loaded')
         return
     endif
     call lsp#enable()
-    let lsp_map1 =  maparg('<c-]>', 'n')
-    if empty(lsp_map1)
-        let lsp_map1 = '<c-]>'
-    endif
-    let lsp_map2 =  maparg('<c-j>', 'n')
-    if empty(lsp_map2)
-        let lsp_map2 = '<c-j>'
-    endif
-    let lsp_map3 =  maparg('<c-p>', 'n')
-    if empty(lsp_map3)
-        let lsp_map3 = '<c-p>'
-    endif
-    " やっぱりVSCodeと一致させるためにc-jはreferencesにする
-    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running('map') ? <SID>chk_jump() : '"..lsp_map1."'"
-    execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running('map') ? '<Plug>(lsp-references)' : '".lsp_map2."'"
-    execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running('map') ? <SID>select_float() : '".lsp_map3."'"
+    " mapping {{{
+    let s:lsp_map[1] = empty(maparg('<c-]>', 'n')) ? '<c-]>' : maparg('<c-]>', 'n')
+    let s:lsp_map[2] = empty(maparg('<c-j>', 'n')) ? '<c-j>' : maparg('<c-j>', 'n')
+    let s:lsp_map[3] = empty(maparg('<c-p>', 'n')) ? '<c-p>' : maparg('<c-p>', 'n')
+    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running('map') ? <SID>lsp_mapping(1) : '"..s:lsp_map[1]."'"
+    execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running('map') ? <SID>lsp_mapping(2) : '"..s:lsp_map[2]."'"
+    execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running('map') ? <SID>lsp_mapping(3) : '"..s:lsp_map[3]."'"
     " help file でバグる？
     autocmd PlugLocal FileType help nnoremap <buffer> <c-]> <c-]>
-
+    " }}}
+    " autocmd {{{
     " normal modeでmouseが使えないとscroll出来ないので，とりあえず対処。
     " lsp_float_closed がvimだとpopupがcursor moveで閉じても叩かれない？ので，qで閉じるようにする
     autocmd PlugLocal User lsp_float_opened nnoremap <buffer> <expr> <c-d> lsp#scroll(+5)
@@ -1123,10 +1118,12 @@ function! s:vim_lsp_hook() abort
     if !has('nvim')
         autocmd PlugLocal User lsp_float_opened nunmap <buffer> <esc>   " tentative
     endif
-
+    " }}}
+    " show status {{{
     " call timer_start(1000, s:sid.'show_lsp_server_status', {'repeat':-1})
     " autocmd PlugLocal WinLeave * call meflib#floating#close(s:lsp_popid) | let s:lsp_popid = -1
     call meflib#set('tabline_footer', s:sid.'lsp_status_tab')
+    " }}}
 endfunction
 autocmd PlugLocal User vim-lsp call s:vim_lsp_hook()
 " autocmd PlugLocal VimEnter * call s:vim_lsp_hook()
