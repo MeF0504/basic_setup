@@ -60,3 +60,11 @@ nnoremap // <Cmd>call VSCodeNotify('textmarker.toggleHighlight')<CR>
 vnoremap // <Cmd>call VSCodeNotifyVisual('textmarker.toggleHighlight', 0)<CR>
 " }}}
 
+" fold {{{
+nnoremap zc <Cmd>call VSCodeNotify('editor.fold')<CR>
+nnoremap zC <Cmd>call VSCodeNotify('editor.foldAll')<CR>
+nnoremap zo <Cmd>call VSCodeNotify('editor.unfold')<CR>
+nnoremap zO <Cmd>call VSCodeNotify('editor.unfoldAll')<CR>
+nnoremap za <Cmd>call VSCodeNotify('editor.toggleFold')<CR>
+" }}}
+
