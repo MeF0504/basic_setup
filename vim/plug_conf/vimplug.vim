@@ -989,7 +989,7 @@ function! <SID>chk_lsp_running(map_pop) " {{{
             sleep 300ms
             return v:false
         else
-            return 'No Language Server'
+            return 'No Lang Server'
         endif
     endif
     for active_server in active_servers
@@ -1034,14 +1034,27 @@ let s:lsp_popid = -1
 let s:lsp_bufid = -1
 " }}}
 function! <SID>lsp_status_tab() abort " {{{
+    let name_max = 8
     let lsp_status = <SID>chk_lsp_running('popup')
-    if lsp_status[match(lsp_status, ':')+1:] == 'running'
-        let highlight = 'LSP_Running'
-    else
+    let idx = strridx(lsp_status, ':')
+    if idx == -1
+        let name = lsp_status
+        let status = ''
         let highlight = 'Lsp_NotRunning'
+    else
+        let name = lsp_status[:idx-1]
+        if len(name) > name_max
+            let name = name[:name_max-1]
+        endif
+        let status = lsp_status[idx+1:]
+        if status == 'running'
+            let highlight = 'LSP_Running'
+        else
+            let highlight = 'Lsp_NotRunning'
+        endif
     endif
-    let footer = printf('%%#%s#|%s%%#%s#', highlight, lsp_status, 'TabLineFill')
-    let len = len(lsp_status)+1
+    let footer = printf('%%#%s#|%s:%s%%#%s#', highlight, name, status, 'TabLineFill')
+    let len = len(name..':'..status)+1
     return [footer, len]
 endfunction
 " }}}
