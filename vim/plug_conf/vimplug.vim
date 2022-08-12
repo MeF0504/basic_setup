@@ -491,7 +491,17 @@ function! <SID>show_ctrlp_help()
         \ }
     let [s:ctrlp_help_bufid, s:ctrlp_help_popid] = meflib#floating#open(s:ctrlp_help_bufid, s:ctrlp_help_popid, s:ctrlp_help, config)
 endfunction
-autocmd PlugLocal FileType ctrlp ++once nnoremap <buffer> <silent> ? <Cmd>call <SID>show_ctrlp_help()<CR>
+function! <SID>echo_ctrlp_help() abort
+    for str in s:ctrlp_help
+        echo str
+    endfor
+endfunction
+if has('nvim')
+    " なんかfloating windowがコケる
+    autocmd PlugLocal FileType ctrlp ++once nnoremap <buffer> <silent> ? <Cmd>call <SID>echo_ctrlp_help()<CR>
+else
+    autocmd PlugLocal FileType ctrlp ++once nnoremap <buffer> <silent> ? <Cmd>call <SID>show_ctrlp_help()<CR>
+endif
 "}}}
 
 " current lineの関数表示用plugin (StatusLine用)
