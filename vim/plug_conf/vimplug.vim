@@ -1091,7 +1091,7 @@ function! s:lsp_mapping(map) abort " {{{
     elseif a:map == 3
         let res = ""
         let old_cmdheight = &cmdheight
-        set cmdheight=4
+        let &cmdheight += 3
         echo  " 1: help\n"..
             \ " 2: definition\n"..
             \ " 3: type definition: "
@@ -1105,6 +1105,9 @@ function! s:lsp_mapping(map) abort " {{{
         endif
         let &cmdheight = old_cmdheight
         redraw!
+        if empty(res)
+            echo 'canceled'
+        endif
         return res
     endif
 endfunction
