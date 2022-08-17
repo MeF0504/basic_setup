@@ -349,6 +349,8 @@ def main_conf(args):
         else:
             print('{} does not exist, do not copy {}.'.format(fy_dir, fy))
 
+    bash_read = 'read -p "update? (y/[n]) " YN'
+    zsh_read = 'read "YN?update? (y/[n]) "'
     pyopt = '--prefix ' + args.prefix
     pyopt += ' --type ' + args.type
     if args.setup_file is not None:
@@ -360,13 +362,13 @@ def main_conf(args):
     if args.vim_prefix is not None:
         pyopt += ' --vim_prefix '+args.vim_prefix
     up_stup = \
-        "alias update_setup='cd {}".format(args.fpath.replace('\\', '\\\\').replace(' ', '\ ')) +\
+        "alias update_setup='builtin cd {}".format(
+                args.fpath.replace('\\', '\\\\').replace(' ', '\ ')) +\
         " && git pull" +\
-        " && echo \"update? (y/[n])\"" +\
-        " && read YN" +\
+        " && {}" +\
         " && [[ $YN = \"y\" ]]" +\
         " && python3 setup.py {}".format(pyopt) +\
-        " ; cd -'"
+        " ; builtin cd -'"
     mine_exist = True
 
     if 'zshrc' in files:
@@ -381,7 +383,7 @@ def main_conf(args):
                 f.write('\n')
                 f.write('export PYTHONPATH=\\\n' + libpath + ':\\\n$PYTHONPATH')
                 f.write('\n\n')
-                f.write(up_stup)
+                f.write(up_stup.format(zsh_read))
                 f.write('\n\n')
             print('made zshrc.mine')
             mine_exist = False
@@ -398,13 +400,16 @@ def main_conf(args):
                 f.write('\n')
                 f.write('export PYTHONPATH=\\\n' + libpath + ':\\\n$PYTHONPATH')
                 f.write('\n\n')
-                f.write(up_stup)
+                f.write(up_stup.format(bash_read))
                 f.write('\n\n')
             print('made bashrc.mine')
             mine_exist = False
 
     if mine_exist:
-        print('  update alias is\n{}'.format(up_stup))
+        if 'zsh' in os.environ['SHELL']:
+            print('  update alias is\n{}'.format(up_stup.format(zsh_read)))
+        elif 'bash' in os.environ['SHELL']:
+            print('  update alias is\n{}'.format(up_stup.format(bash_read)))
 
 
 def main_vim(args):
