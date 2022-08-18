@@ -96,6 +96,7 @@ function! <SID>my_color_set_modus_operandi() abort
     highlight WarningMsg gui=Bold guifg=#000000 guibg=#909000
     highlight Folded gui=None guifg=#3d3d3d guibg=#f5dad0
     highlight HiTagImports guifg=#006a00
+    highlight Special gui=None guifg=#000000 guibg=#c590ff
 endfunction
 call meflib#set('my_color_set', expand('<SID>').'my_color_set_modus_operandi', 'modus_operandi')
 " }}}
