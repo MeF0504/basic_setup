@@ -51,7 +51,7 @@ command! Replace call VSCodeNotify('editor.action.startFindReplaceAction')
 
 " commentary-like map {{{
 nnoremap gcc <Cmd>call VSCodeNotify('editor.action.commentLine')<CR>
-vnoremap gc <Cmd>call VSCodeNotifyVisual('editor.action.commentLine', 0)<CR>
+vnoremap gc <Cmd>call VSCodeNotifyVisual('editor.action.commentLine', 0)<CR><ESC>
 " }}}
 
 " highlighter {{{
