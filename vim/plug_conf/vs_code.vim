@@ -22,4 +22,7 @@ call meflib#add('plugin_his', expand('<SID>').'matchup_his')
 
 " 色々な言語のtemplate
 Plug 'mattn/vim-sonictemplate', PlugCond(1, {'on': 'Template'})
+" {{{
+let g:sonictemplate_vim_template_dir = meflib#basic#get_conf_dir()..'plug_conf/templates'
+" }}}
 
