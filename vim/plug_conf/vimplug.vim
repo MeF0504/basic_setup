@@ -83,7 +83,7 @@ function! s:outliner_hook() abort
     let g:outliner_settings.bib = get(g:outliner_settings, 'bib', {})
     call extend(g:outliner_settings.bib, {
                 \ 'article': {
-                    \ 'pattern': '^@article',
+                    \ 'pattern': '^@',
                     \ 'line': 0,
                     \},
                 \ }, 'keep')
