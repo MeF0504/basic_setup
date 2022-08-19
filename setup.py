@@ -2,24 +2,23 @@
 from __future__ import print_function
 
 import os
-import os.path as op
 import sys
 import argparse
 import shutil
 import subprocess
-import glob
 import filecmp
 import difflib
 import datetime
 import json
 import tempfile
 import platform
-if sys.version_info.major < 3:
-    import urllib as urlreq
-else:
-    import urllib.request as urlreq
+import urllib.request as urlreq
+from pathlib import Path
+if sys.version_info.major < 3 or sys.version_info.minor < 6:
+    print('Version > 3.6 required')
+    sys.exit()
 
-sys.path.append(op.join(op.dirname(__file__), 'opt/lib'))
+sys.path.append(Path(__file__).parent/'opt/lib')
 from local_lib import mkdir, chk_cmd
 try:
     from local_lib_color import FG256, END
@@ -31,22 +30,30 @@ uname = platform.system()
 
 
 # copy func {{{
-# copy file1 -> file2
-def fcopy(file1, file2, link=False, force=False, **kwargs):
-    def fcopy_main(cmd, comment, test):
+def fcopy(src, dst, link=False, force=False, **kwargs):
+    def fcopy_main(src, dst, link, comment, test):  # {{{
         if is_color:
             fg = FG256(11)
             end = END
         else:
             fg = ''
             end = ''
-        if not test:
-            eval(cmd)
-            print(fg+comment+end)
+        if link:
+            if test:
+                print('{}cmd check:: link {} -> {}{}'.format(fg, src, dst, end))
+                return
+            else:
+                os.symlink(src, dst)
         else:
-            print('{}cmd check:: {}{}'.format(fg, cmd, end))
+            if test:
+                print('{}cmd check:: copy {} -> {}{}'.format(fg, src, dst, end))
+                return
+            else:
+                shutil.copy(src, dst)
+        print('{}{}{}'.format(fg, comment, end))
+        # }}}
 
-    def fcopy_diff(file1, file2):
+    def fcopy_diff(file1, file2):  # {{{
         # https://it-ojisan.tokyo/python-difflib/#keni_toc_2
         dt1 = datetime.datetime.fromtimestamp(os.stat(file1).st_mtime)
         dt2 = datetime.datetime.fromtimestamp(os.stat(file2).st_mtime)
@@ -72,22 +79,19 @@ def fcopy(file1, file2, link=False, force=False, **kwargs):
                 col = ''
                 end = ''
             print(shift+col+line+end)
+        # }}}
 
-    def get_input(input_str):
-        if sys.version_info[0] == 2:
-            yn = raw_input(input_str)
-        else:
-            yn = input(input_str)
-        return yn
-
-    file1 = op.expanduser(file1)
-    file2 = op.expanduser(file2)
-    if not op.exists(file1):
-        print("No such file: {}".format(file1))
+    src = Path(src).expanduser()
+    dst = Path(dst).expanduser()
+    if src.is_file():
+        slist = [src]
+        assert dst.is_file() or not dst.exists()
+    elif src.is_dir():
+        slist = src.glob("**/*")
+        assert dst.is_dir() or not dst.exists()
+    else:
+        print("No such file or directory: {}".format(src))
         return
-    name1 = op.basename(file1)
-    name2 = op.basename(file2)
-    cpdir = op.dirname(file2)
 
     if 'test' in kwargs:
         test = kwargs['test']
@@ -99,104 +103,118 @@ def fcopy(file1, file2, link=False, force=False, **kwargs):
     else:
         condition = True
 
-    if not test:
-        mkdir(cpdir)
-    else:
-        if not os.path.exists(cpdir):
-            print('process check:: mkdir {}'.format(cpdir))
+    for file1 in slist:
+        if file1.is_dir():
+            continue
+        name1 = file1.name
+        if src.is_dir():
+            cpdir = dst/file1.parent.relative_to(src)
+            file2 = cpdir/name1
+        else:
+            cpdir = dst.parent
+            file2 = dst
+        name2 = file2.name
+        if not test:
+            mkdir(cpdir)
+        else:
+            if not cpdir.exists():
+                print('process check:: mkdir {}'.format(cpdir))
 
-    if op.lexists(file2):
-        exist = True
-        if op.islink(file2):
-            islink = True
-            linkpath = op.join(cpdir, os.readlink(file2))
-            if not op.exists(linkpath):
-                # broken link
-                os.unlink(file2)
-                print('{} -> {} is a broken link. unlink this.'.format(
-                    home_cut(file2), home_cut(linkpath)))
-                exist = False
+        if file2.exists():
+            exist = True
+            if file2.is_symlink():
+                islink = True
+                linkpath = cpdir.joinpath(file2.readlink())
+                if not linkpath.exists():
+                    # broken link
+                    os.unlink(file2)
+                    print('{} -> {} is a broken link. unlink this.'.format(
+                        home_cut(file2), home_cut(linkpath)))
+                    exist = False
+                    islink = False
+            else:
                 islink = False
         else:
+            exist = False
             islink = False
-    else:
-        exist = False
-        islink = False
 
-    shift = '  '
-    if link:    # link
-        cmd = 'os.symlink("{}", "{}")'.format(file1, file2)
-        cmd = cmd.replace('\\', '\\\\')
-        comment = 'linked {} --> {}'.format(name1, home_cut(file2))
+        shift = '  '
+        if link:    # link
+            comment = 'linked {} --> {}'.format(name1, home_cut(file2))
 
-        if not condition:
-            print(shift+"condition doesn't match")
-        elif exist:
-            if islink and filecmp.cmp(file1, file2):
-                print(shift+'[ {} ] is already linked.'.format(home_cut(file2)))
+            if not condition:
+                print(shift+"condition doesn't match")
+            elif exist:
+                if islink and filecmp.cmp(file1, file2):
+                    print(shift+'[ {} ] is already linked.'
+                          .format(home_cut(file2)))
+                else:
+                    print(shift+'[ {} ] is already exist, cannot link!'
+                          .format(home_cut(file2)))
             else:
-                print(shift+'[ {} ] is already exist, cannot link!'.format(home_cut(file2)))
-        else:
-            fcopy_main(cmd, comment, test)
+                fcopy_main(file1, file2, link, comment, test)
 
-    else:       # copy
-        cmd = 'shutil.copy("{}", "{}")'.format(file1, file2)
-        cmd = cmd.replace('\\', '\\\\')
-        comment = 'copy {} --> {}'.format(name1, home_cut(file2))
+        else:       # copy
+            comment = 'copy {} --> {}'.format(name1, home_cut(file2))
 
-        if not condition:
-            print(shift+"condition doesn't match")
-        elif exist:
-            if filecmp.cmp(file1, file2) and islink:
-                print(shift+'[ {} ] is linked.'.format(home_cut(file2)))
-            elif filecmp.cmp(file1, file2):
-                print(shift+'[ {} ] is already copied.'.format(home_cut(file2)))
-            elif islink:
-                print(shift+'[ {} ] is a link file, cannot copy!'.format(home_cut(file2)))
-            elif force:
-                fcopy_main(cmd, comment, test)
+            if not condition:
+                print(shift+"condition doesn't match")
+            elif exist:
+                if filecmp.cmp(file1, file2) and islink:
+                    print(shift+'[ {} ] is linked.'.format(home_cut(file2)))
+                elif filecmp.cmp(file1, file2):
+                    print(shift+'[ {} ] is already copied.'
+                          .format(home_cut(file2)))
+                elif islink:
+                    print(shift+'[ {} ] is a link file, cannot copy!'
+                          .format(home_cut(file2)))
+                elif force:
+                    fcopy_main(file1, file2, link, comment, test)
+                else:
+                    is_diff = False
+                    while True:
+                        if is_diff:
+                            input_str = shift +\
+                                'are you really overwrite? [y(yes), n(no)] '
+                        else:
+                            input_str = shift +'[ {} ] is already exist, are you really overwrite? [y(yes), n(no), d(diff)] '.format(home_cut(file2))
+                        yn = input(input_str)
+                        if (yn == 'y') or (yn == 'yes'):
+                            fcopy_main(file1, file2, link, comment, test)
+                            break
+                        elif ((yn == 'd') or (yn == 'diff')) and not is_diff:
+                            print('')
+                            fcopy_diff(file2, file1)
+                            print('')
+                            is_diff = True
+                        elif (yn == 'n') or (yn == 'no'):
+                            print('Do not copy '+name2)
+                            break
             else:
-                is_diff = False
-                while True:
-                    if is_diff:
-                        input_str = shift+'are you realy overwrite? [y(yes), n(no)] '
-                    else:
-                        input_str = shift+'[ {} ] is already exist, are you realy overwrite? [y(yes), n(no), d(diff)] '.format(home_cut(file2))
-                    yn = get_input(input_str)
-                    if (yn == 'y') or (yn == 'yes'):
-                        fcopy_main(cmd, comment, test)
-                        break
-                    elif ((yn == 'd') or (yn == 'diff')) and not is_diff:
-                        print('')
-                        fcopy_diff(file2, file1)
-                        print('')
-                        is_diff = True
-                    elif (yn == 'n') or (yn == 'no'):
-                        print('Do not copy '+name2)
-                        break
-        else:
-            fcopy_main(cmd, comment, test)
+                fcopy_main(file1, file2, link, comment, test)
 # }}}
 
 
 def home_cut(path):
-    home = op.expandvars('$HOME')
-    home2 = op.realpath(home)   # if home is symbolic link.
-    if home2 in path:
-        path = path.replace(home2, '~')
-    elif home in path:
-        path = path.replace(home, '~')
-    return path
+    path = Path(path)
+    home = Path.home()
+    home2 = home.resolve()  # if home is symbolic link.
+    if path.is_relative_to(home2):
+        return '~/{}'.format(path.relative_to(home2))
+    elif path.is_relative_to(home):
+        return '~/{}'.format(path.relative_to(home))
+    else:
+        return str(path)
 
 
 def get_files(fpath, args_type, prefix):
     if fpath is None:
         return None
 
-    fpath = op.expanduser(fpath)
-    fpath = op.expandvars(fpath)
-    if not op.exists(fpath):
-        print("setup_file {} doesn't find. use default settings.".format(fpath))
+    fpath = Path(fpath).expanduser()
+    if not fpath.exists():
+        print("setup_file {} doesn't find. use default settings."
+              .format(fpath))
         return None
 
     with open(fpath, 'r') as f:
@@ -210,7 +228,8 @@ def get_files(fpath, args_type, prefix):
             res_files[src] = dest
         return res_files
     else:
-        print("{} is not in {}. use default settings.".format(args_type, fpath))
+        print("{} is not in {}. use default settings."
+              .format(args_type, fpath))
         return None
 
 
@@ -221,65 +240,69 @@ def show_target_files(file_dict):
     else:
         fg = ''
         end = ''
+    print('{}target files{}'.format(fg, end))
 
-    print(fg+'target files'+end)
     for key in sorted(file_dict.keys()):
-        print('{} => {}'.format(op.relpath(key), home_cut(file_dict[key])))
+        if Path(key).is_relative_to(Path.cwd()):
+            src = Path(key).relative_to(Path.cwd())
+        else:
+            src = key
+        print('{} => {}'.format(src, home_cut(file_dict[key])))
     print(fg+'=~=~=~=~=~=~=~=~=~='+end)
 
 
 def main_opt(args):
-    binpath = op.join(args.prefix, 'bin')
-    libpath = op.join(args.prefix, 'lib')
-    optdir = op.join(args.fpath, 'opt')
-    bindir = op.join(optdir, 'bin')
-    libdir = op.join(optdir,  'lib')
+    bin_dst = Path(args.prefix)/'bin'
+    lib_dst = Path(args.prefix)/'lib'
+    opt_src = Path(args.fpath)/'opt'
+    bin_src = opt_src/'bin'
+    lib_src = opt_src/'lib'
     if is_color:
         fg = FG256(10)
         end = END
     else:
         fg = ''
         end = ''
-    print('\n'+fg+'@ '+optdir+end+'\n')
+    print('\n{}@ {}{}\n'.format(fg, opt_src, end))
 
     files = get_files(args.setup_file, 'opt', args.prefix)
     if files is None:
         files = {}
 
         if args.type != 'min':
-            for bfy in glob.glob(op.join(bindir, '*')):
+            for bfy in bin_src.glob('*'):
                 if os.access(bfy, os.X_OK):
-                    fname = op.basename(bfy)
+                    fname = bfy.name
                     if (fname == 'pdf2jpg'):
                         if (uname == 'Darwin'):
-                            files[bfy] = op.join(binpath, fname)
+                            files[bfy] = bin_dst/fname
                     else:
-                        files[bfy] = op.join(binpath, fname)
+                        files[bfy] = bin_dst/fname
 
-            for lfy in glob.glob(op.join(libdir, '*')):
-                fname = op.basename(lfy)
+            for lfy in lib_src.glob('*'):
+                fname = lfy.name
                 if fname == '__pycache__':
                     continue
                 if not fname.endswith('pyc'):
-                    files[lfy] = op.join(libpath, fname)
+                    files[lfy] = lib_dst/fname
 
     show_target_files(files)
     for fy in sorted(files.keys()):
-        optpath = op.join(optdir, fy)
-        fcopy(optpath, files[fy], link=args.link, force=args.force, test=args.test)
+        fcopy(opt_src.joinpath(fy), files[fy],
+              link=args.link, force=args.force, test=args.test)
 
 
 def main_conf(args):
-    binpath = op.join(args.prefix, 'bin')
-    libpath = op.join(args.prefix, 'lib')
-    setdir = op.join(args.fpath, 'config')
+    bin_dst = Path(args.prefix)/'bin'
+    lib_dst = Path(args.prefix)/'lib'
+    set_src = Path(args.fpath)/'config'
     if is_color:
         fg = FG256(10)
         end = END
     else:
         fg = ''
         end = ''
-    print('\n'+fg+'@ '+setdir+end+'\n')
+    print('\n{}@ {}{}\n'.format(fg, set_src, end))
 
     files_mac = {
                 'zshrc': '~/.zshrc',
@@ -306,9 +329,9 @@ def main_conf(args):
                   'zsh/prompt.zsh': '~/.zsh/prompt.zsh',
                   'posixShellRC': '~/.posixShellRC',
                   'bashrc': '~/.bashrc',
-                  'terminator_config': op.join(args.conf_home, 'terminator/config'),
-                  'terminology_base.cfg': op.join(args.conf_home, 'terminology/config/standard/base.cfg'),
-                  'matplotlibrc': op.join(args.conf_home, 'matplotlib/matplotlibrc'),
+                  'terminator_config': Path(args.conf_home)/'terminator/config',
+                  'terminology_base.cfg': Path(args.conf_home)/'terminology/config/standard/base.cfg',
+                  'matplotlibrc': Path(args.conf_home)/'matplotlib/matplotlibrc',
                   'gitignore_global': '~/.gitignore_global',
                   'screenrc': '~/.screenrc',
                 }
@@ -336,16 +359,16 @@ def main_conf(args):
 
     if args.download:
         print('download git-prompt for bash')
-        bashdir = op.expandvars('$HOME/.bash')
+        bashdir = Path('~/.bash').expanduser()
         mkdir(bashdir)
-        urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', op.join(bashdir, 'git-prompt.sh'))
+        urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', bashdir/'git-prompt.sh')
 
     show_target_files(files)
     for fy in sorted(files.keys()):
-        spath = op.join(setdir, fy)
-        fy_dir = op.dirname(op.expanduser(files[fy]))
-        if op.exists(fy_dir):
-            fcopy(spath, files[fy], link=bool(args.link), force=args.force, test=args.test)
+        fy_dir = Path(files[fy]).expanduser().parent
+        if fy_dir.is_dir():
+            fcopy(set_src.joinpath(fy), files[fy],
+                  link=bool(args.link), force=args.force, test=args.test)
         else:
             print('{} does not exist, do not copy {}.'.format(fy_dir, fy))
 
@@ -362,8 +385,7 @@ def main_conf(args):
     if args.vim_prefix is not None:
         pyopt += ' --vim_prefix '+args.vim_prefix
     up_stup = \
-        "alias update_setup='builtin cd {}".format(
-                args.fpath.replace('\\', '\\\\').replace(' ', '\ ')) +\
+        "alias update_setup='builtin cd {}".format(args.fpath) +\
         " && git pull" +\
         " && {}" +\
         " && [[ $YN = \"y\" ]]" +\
@@ -372,16 +394,16 @@ def main_conf(args):
     mine_exist = True
 
     if 'zshrc' in files:
-        zshrc_mine = op.expandvars('$HOME/.zsh/zshrc.mine')
-        if not op.exists(zshrc_mine):
+        zshrc_mine = Path('~/.zsh/zshrc.mine').expanduser()
+        if not zshrc_mine.is_file():
             mkdir('~/.zsh')
             with open(zshrc_mine, 'a') as f:
                 f.write('## PC dependent zshrc\n')
                 f.write('#\n')
                 f.write('\n')
-                f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
+                f.write('export PATH=\\\n'+bin_dst+':\\\n$PATH')
                 f.write('\n')
-                f.write('export PYTHONPATH=\\\n' + libpath + ':\\\n$PYTHONPATH')
+                f.write('export PYTHONPATH=\\\n'+lib_dst+':\\\n$PYTHONPATH')
                 f.write('\n\n')
                 f.write(up_stup.format(zsh_read))
                 f.write('\n\n')
@@ -389,16 +411,16 @@ def main_conf(args):
             mine_exist = False
 
     if 'bashrc' in files:
-        bashrc_mine = op.expanduser('~/.bash/bashrc.mine')
-        if not op.exists(bashrc_mine):
+        bashrc_mine = Path('~/.bash/bashrc.mine').expanduser()
+        if not bashrc_mine.is_file():
             mkdir('~/.bash')
             with open(bashrc_mine, 'a') as f:
                 f.write('## PC dependent bashrc\n')
                 f.write('#\n')
                 f.write('\n')
-                f.write('export PATH=\\\n' + binpath + ':\\\n$PATH')
+                f.write('export PATH=\\\n'+bin_dst+':\\\n$PATH')
                 f.write('\n')
-                f.write('export PYTHONPATH=\\\n' + libpath + ':\\\n$PYTHONPATH')
+                f.write('export PYTHONPATH=\\\n'+lib_dst+':\\\n$PYTHONPATH')
                 f.write('\n\n')
                 f.write(up_stup.format(bash_read))
                 f.write('\n\n')
@@ -413,67 +435,54 @@ def main_conf(args):
 
 
 def main_vim(args):
-    vimdir = op.join(args.fpath, 'vim')
+    vim_src = Path(args.fpath)/'vim'
     if is_color:
         fg = FG256(10)
         end = END
     else:
         fg = ''
         end = ''
-    print('\n'+fg+'@ '+vimdir+end+'\n')
+    print('\n{}@ {}{}\n'.format(fg, vim_src, end))
 
     if args.vim_prefix is not None:
-        vim_config_path = args.vim_prefix
-        vimrc = op.join(vim_config_path, 'init.vim')
+        vim_config_path = Path(args.vim_prefix)
+        vimrc = vim_config_path/'init.vim'
     elif uname == 'Windows':
-        vim_config_path = op.expanduser('~/vimfiles')
-        vimrc = op.expanduser('~/_vimrc')
+        vim_config_path = Path('~/vimfiles').expanduser()
+        vimrc = Path('~/_vimrc').expanduser()
     else:
-        vim_config_path = op.join(args.conf_home, 'nvim')
-        vimrc = op.join(vim_config_path, 'init.vim')
-    rcpath = op.join(vim_config_path, 'rcdir')
-    ftpath = op.join(vim_config_path, 'ftplugin')
-    plgpath = op.join(vim_config_path, 'plug_conf')
-    alpath = op.join(vim_config_path, 'autoload')
-    libpath = op.join(vim_config_path, 'autoload/meflib')
-    mkdir(op.join(vim_config_path, "swp"))
+        vim_config_path = Path(args.conf_home)/'nvim'
+        vimrc = vim_config_path/'init.vim'
+    rc_dst = vim_config_path/'rcdir'
+    ft_dst = vim_config_path/'ftplugin'
+    plg_dst = vim_config_path/'plug_conf'
+    al_dst = vim_config_path/'autoload'
+    mkdir(vim_config_path/'swp')
 
     files = get_files(args.setup_file, 'vim', args.prefix)
     if files is None:
         if args.type == 'min':
             files = {'vimrc': vimrc,
-                     'rcdir/vimrc_options.vim': op.join(rcpath, 'vimrc_options.vim'),
-                     'rcdir/vimrc_maps.vim': op.join(rcpath, 'vimrc_maps.vim'),
-                     'autoload/meflib.vim': op.join(alpath, 'meflib.vim'),
-                     'autoload/meflib/basic.vim': op.join(libpath, 'basic.vim'),
+                     'rcdir/vimrc_options.vim': rc_dst/'vimrc_options.vim',
+                     'rcdir/vimrc_maps.vim': rc_dst/'vimrc_maps.vim',
+                     'autoload/meflib.vim': al_dst/'meflib.vim',
+                     'autoload/meflib/basic.vim': al_dst/'meflib'/'basic.vim',
                      }
         else:
             files = {'vimrc': vimrc}
-            for fy in glob.glob(op.join(vimdir, 'rcdir', "*")):
-                fname = op.basename(fy)
-                files[fy] = op.join(rcpath, fname)
-            for fy in glob.glob(op.join(vimdir, 'ftplugin', "*")):
-                fname = op.basename(fy)
-                files[fy] = op.join(ftpath, fname)
-            for fy in glob.glob(op.join(vimdir, 'plug_conf', "*")):
-                fname = op.basename(fy)
-                files[fy] = op.join(plgpath, fname)
-            for fy in glob.glob(op.join(vimdir, 'autoload', "*")):
-                if op.isfile(fy):
-                    fname = op.basename(fy)
-                    files[fy] = op.join(alpath, fname)
-            for fy in glob.glob(op.join(vimdir, 'autoload/meflib', "*")):
-                fname = op.basename(fy)
-                files[fy] = op.join(libpath, fname)
+            files[str(vim_src/'rcdir')] = rc_dst
+            files[str(vim_src/'ftplugin')] = ft_dst
+            files[str(vim_src/'plug_conf')] = plg_dst
+            files[str(vim_src/'autoload')] = al_dst
 
     if args.download:
         print('\ndownload vimPlug')
-        mkdir(alpath)
-        urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim', op.join(alpath, 'plug.vim'))
+        mkdir(al_dst)
+        urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim', al_dst/'plug.vim')
 
-    if (args.type != 'min') and args.download and chk_cmd('sh', True):
+    if False:  # (args.type != 'min') and args.download and chk_cmd('sh', True):
         print('\nclone dein')
-        dein_path = op.join(vim_config_path, 'dein')
+        dein_path = vim_config_path/'dein'
         mkdir(dein_path)
 
         if hasattr(tempfile, 'TemporaryDirectory'):
@@ -494,20 +503,20 @@ def main_vim(args):
 
     show_target_files(files)
     for fy in sorted(files.keys()):
-        vimpath = op.join(vimdir, fy)
-        fcopy(vimpath, files[fy], link=args.link, force=args.force, test=args.test)
+        fcopy(vim_src.joinpath(fy), files[fy],
+              link=args.link, force=args.force, test=args.test)
 
     if not uname == 'Windows':
         src = vimrc
-        dst = op.expanduser('~/.vimrc')
-        if not op.exists(dst):
+        dst = Path('~/.vimrc').expanduser()
+        if not dst.is_file():
             if not args.test:
                 print("link " + src + " -> " + dst)
                 os.symlink(src, dst)
 
         src = vim_config_path
-        dst = op.expanduser("~/.vim")
-        if not op.exists(dst):
+        dst = Path('~/.vim').expanduser()
+        if not dst.is_dir():
             if not args.test:
                 print("link " + src + " -> " + dst)
                 os.symlink(src, dst)
@@ -515,7 +524,7 @@ def main_vim(args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--prefix', help='install directory', default=op.expanduser('~/opt'))
+    parser.add_argument('--prefix', help='install directory', default=Path('~/opt').expanduser())
     parser.add_argument('--vim_prefix', help='Vim configuration directory', default=None)
     parser.add_argument('--download', help='download some files (from git)', action='store_true')
     parser.add_argument('--link', help="link files instead of copy", action='store_true')
@@ -525,18 +534,18 @@ def main():
     parser.add_argument('-s', '--setup_file', help='specify the copy files by json format setting file. please see "opt/test/setup_file_template.json" as an example.')
     args = parser.parse_args()
 
-    if not op.exists(args.prefix):
+    if not Path(args.prefix).is_dir():
         print("install path {} does not exit".format(args.prefix))
         exit()
 
-    fpath = op.dirname(op.abspath(__file__))
+    fpath = Path(__file__).resolve().parent
     args.fpath = fpath
     os.chdir(fpath)
 
     if 'XDG_CONFIG_HOME' in os.environ:
         conf_home = os.environ['XDG_CONFIG_HOME']
     else:
-        conf_home = op.expanduser('~/.config')
+        conf_home = Path('~/.config').expanduser()
     args.conf_home = conf_home
 
     if args.type in 'all opt min'.split():
