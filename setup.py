@@ -378,18 +378,18 @@ def main_conf(args):
 
     bash_read = 'read -p "update? (y/[n]) " YN'
     zsh_read = 'read "YN?update? (y/[n]) "'
-    pyopt = '--prefix ' + args.prefix
+    pyopt = '--prefix "{}"'.format(args.prefix)
     pyopt += ' --type ' + args.type
     if args.setup_file is not None:
-        pyopt += ' --setup_file '+args.setup_file
+        pyopt += ' --setup_file "{}"'.format(args.setup_file)
     if args.link:
         pyopt += ' --link'
     if args.force:
         pyopt += ' --force'
     if args.vim_prefix is not None:
-        pyopt += ' --vim_prefix '+args.vim_prefix
+        pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
     up_stup = \
-        "alias update_setup='builtin cd {}".format(args.fpath) +\
+        "alias update_setup='builtin cd \"{}\"".format(args.fpath) +\
         " && git pull" +\
         " && {}" +\
         " && [[ $YN = \"y\" ]]" +\
@@ -397,7 +397,7 @@ def main_conf(args):
         " ; builtin cd -'"
     mine_exist = True
 
-    if 'zshrc' in files:
+    if not args.test and 'zshrc' in files:
         zshrc_mine = Path('~/.zsh/zshrc.mine').expanduser()
         if not zshrc_mine.is_file():
             mkdir('~/.zsh')
@@ -405,16 +405,16 @@ def main_conf(args):
                 f.write('## PC dependent zshrc\n')
                 f.write('#\n')
                 f.write('\n')
-                f.write('export PATH=\\\n'+bin_dst+':\\\n$PATH')
+                f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
                 f.write('\n')
-                f.write('export PYTHONPATH=\\\n'+lib_dst+':\\\n$PYTHONPATH')
+                f.write('export PYTHONPATH=\\\n"{}":\\\n$PYTHONPATH'.format(lib_dst))
                 f.write('\n\n')
                 f.write(up_stup.format(zsh_read))
                 f.write('\n\n')
             print('made zshrc.mine')
             mine_exist = False
 
-    if 'bashrc' in files:
+    if not args.test and 'bashrc' in files:
         bashrc_mine = Path('~/.bash/bashrc.mine').expanduser()
         if not bashrc_mine.is_file():
             mkdir('~/.bash')
@@ -422,9 +422,9 @@ def main_conf(args):
                 f.write('## PC dependent bashrc\n')
                 f.write('#\n')
                 f.write('\n')
-                f.write('export PATH=\\\n'+bin_dst+':\\\n$PATH')
+                f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
                 f.write('\n')
-                f.write('export PYTHONPATH=\\\n'+lib_dst+':\\\n$PYTHONPATH')
+                f.write('export PYTHONPATH=\\\n"{}":\\\n$PYTHONPATH'.format(lib_dst))
                 f.write('\n\n')
                 f.write(up_stup.format(bash_read))
                 f.write('\n\n')
