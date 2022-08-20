@@ -24,9 +24,9 @@ except ImportError:
 
 uname = platform.system()
 
-py_version = sys.version_info.major + \
-             sys.version_info.minor*0.1
-if py_version < 3.6:
+py_version = sys.version_info.major*1000 + \
+             sys.version_info.minor
+if py_version < 3006:
     print('Version >= 3.6 required')
     sys.exit()
 
@@ -201,7 +201,7 @@ def home_cut(path):
     path = Path(path)
     home = Path.home()
     home2 = home.resolve()  # if home is symbolic link.
-    if py_version < 3.9:
+    if py_version < 3009:
         return str(path)
     elif path.is_relative_to(home2):
         return '~/{}'.format(path.relative_to(home2))
@@ -247,7 +247,7 @@ def show_target_files(file_dict):
     print('{}target files{}'.format(fg, end))
 
     for key in sorted(file_dict.keys()):
-        if py_version >= 3.9 and Path(key).is_relative_to(Path.cwd()):
+        if py_version >= 3009 and Path(key).is_relative_to(Path.cwd()):
             src = Path(key).relative_to(Path.cwd())
         else:
             src = key
