@@ -14,7 +14,7 @@ import tempfile
 import platform
 import urllib.request as urlreq
 from pathlib import Path
-sys.path.append(Path(__file__).parent/'opt/lib')
+sys.path.append(Path(__file__).parent/'opt'/'lib')
 from local_lib import mkdir, chk_cmd
 try:
     from local_lib_color import FG256, END
@@ -23,6 +23,10 @@ except ImportError:
     is_color = False
 
 uname = platform.system()
+if uname == 'Windows':
+    psep = ';'
+else:
+    psep = ':'
 
 py_version = sys.version_info.major*1000 + \
              sys.version_info.minor
@@ -407,7 +411,7 @@ def main_conf(args):
                 f.write('\n')
                 f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
                 f.write('\n')
-                f.write('export PYTHONPATH=\\\n"{}":\\\n$PYTHONPATH'.format(lib_dst))
+                f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
                 f.write('\n\n')
                 f.write(up_stup.format(zsh_read))
                 f.write('\n\n')
@@ -424,7 +428,7 @@ def main_conf(args):
                 f.write('\n')
                 f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
                 f.write('\n')
-                f.write('export PYTHONPATH=\\\n"{}":\\\n$PYTHONPATH'.format(lib_dst))
+                f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
                 f.write('\n\n')
                 f.write(up_stup.format(bash_read))
                 f.write('\n\n')
