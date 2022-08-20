@@ -14,10 +14,6 @@ import tempfile
 import platform
 import urllib.request as urlreq
 from pathlib import Path
-if sys.version_info.major < 3 or sys.version_info.minor < 6:
-    print('Version > 3.6 required')
-    sys.exit()
-
 sys.path.append(Path(__file__).parent/'opt/lib')
 from local_lib import mkdir, chk_cmd
 try:
@@ -27,6 +23,12 @@ except ImportError:
     is_color = False
 
 uname = platform.system()
+
+py_version = sys.version_info.major + \
+             sys.version_info.minor*0.1
+if py_version < 3.6:
+    print('Version >= 3.6 required')
+    sys.exit()
 
 
 # copy func {{{
@@ -199,7 +201,9 @@ def home_cut(path):
     path = Path(path)
     home = Path.home()
     home2 = home.resolve()  # if home is symbolic link.
-    if path.is_relative_to(home2):
+    if py_version < 3.9:
+        return str(path)
+    elif path.is_relative_to(home2):
         return '~/{}'.format(path.relative_to(home2))
     elif path.is_relative_to(home):
         return '~/{}'.format(path.relative_to(home))
@@ -243,7 +247,7 @@ def show_target_files(file_dict):
     print('{}target files{}'.format(fg, end))
 
     for key in sorted(file_dict.keys()):
-        if Path(key).is_relative_to(Path.cwd()):
+        if py_version >= 3.9 and Path(key).is_relative_to(Path.cwd()):
             src = Path(key).relative_to(Path.cwd())
         else:
             src = key
