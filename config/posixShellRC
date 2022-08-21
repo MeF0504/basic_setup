@@ -337,5 +337,9 @@ manvim() { # {{{
     man $@ 2>&1 | col -bx | vim -R -c 'set ft=man nolist nomod noma' -
 }
 # }}}
+echoenvall(){ # {{{
+    python -c 'import os;[print("{} :\t{}".format(k, v)) for k,v in os.environ.items()]'
+}
+# }}}
 #}}}
 
