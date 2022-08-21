@@ -150,9 +150,7 @@ esac
 #}}}
 
 ## {{{added functions
-
-add_env() {
-    # {{{
+add_env() { # {{{
     local echo_usage="
     usage: add_env [-h] [-dv] dir
 
@@ -254,11 +252,9 @@ add_env() {
             export MANPATH=$basedir/share/man:$MANPATH
         fi
     done
-# }}}
 }
-
-weather() {
-    # {{{
+# }}}
+weather() { # {{{
     # Tokyo, Sapporo, SanFrancisco, moon, etc..
     if [[ "$1" =~ "-h" ]]; then
         echo "usage: weather city"
@@ -270,11 +266,9 @@ weather() {
         city=$city+$x
     done
     curl wttr.in/"$city"
-# }}}
 }
-
-del_func() {
-    # {{{
+# }}}
+del_func() { # {{{
     del_trash=${del_trash:-$HOME/.Trash}
     # https://qiita.com/tdrk/items/cc2995fd74e659ea948f
     if [[ ! -d "${del_trash}" ]]; then
@@ -294,23 +288,19 @@ del_func() {
             \mv "$fp" "${del_trash}"
         fi
     done
-# }}}
 }
 # I recommend using mv_Trash.py if possible.
 # alias del=del_func
-
-mkcd() {
-    # {{{
+# }}}
+mkcd() { # {{{
     if [[ ! -d "$1" ]]; then
         echo mkdir "$1"
         mkdir -p "$1"
     fi
     \cd "$1"
-    # }}}
 }
-
-timeout_local() {
-    # {{{
+# }}}
+timeout_local() { # {{{
     # https://qiita.com/yohm/items/db6aea3cbc71ab2d55bd
     time=$1
 
@@ -319,18 +309,15 @@ timeout_local() {
     command="/bin/sh -c \"${@:2}\""
 
     /usr/bin/expect -c "set timeout $time; spawn -noecho $command; expect timeout { exit 124 } eof; catch wait result; exit [lindex \$result 3];"
-    # }}}
 }
-
-echoenv() {
-    # {{{
+# }}}
+echoenv() { # {{{
     echo -ne "${*//:/\\n}"
     echo ''
-    # }}}
 }
-
-get_term_name() {
-    # teminal で何を使っているのか判別する方法を忘れないように {{{
+# }}}
+get_term_name() { # {{{
+    # teminal で何を使っているのか判別する方法を忘れないように
     if [[ -n "${ITERM_SESSION_ID}" ]]; then
         echo 'iTerm.app'
     elif [[ -n "${TERMINATOR_UUID}" ]]; then
@@ -342,14 +329,13 @@ get_term_name() {
     elif [[ -n "${TERM_PROGRAM}" ]]; then
         echo "${TERM_PROGRAM}"
     fi
-    # }}}
 }
-
-# open manual in vim
-manvim() {
+# }}}
+manvim() { # {{{
+    # open manual in vim
     # https://rcmdnk.com/blog/2014/07/20/computer-vim/
     man $@ 2>&1 | col -bx | vim -R -c 'set ft=man nolist nomod noma' -
 }
-
+# }}}
 #}}}
 
