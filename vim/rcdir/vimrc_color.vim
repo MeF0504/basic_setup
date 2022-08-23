@@ -99,7 +99,7 @@ call meflib#set('my_color_set', s:sid.'my_color_set_evening', 'evening')
 function! <SID>my_color_set()
     """ general settings
     " link {{{
-    highlight link VimFunction Identifier
+    highlight link VimFunction Function
     highlight link vimIsCommand SpecialChar
     highlight link keepend Special
     if has('nvim')
@@ -108,9 +108,7 @@ function! <SID>my_color_set()
     " }}}
 
     " corsor line {{{
-    if g:colors_name !~ 'pjsekai_*'
-        highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15 gui=Underline guifg=#00005f guibg=White
-    endif
+    highlight default CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15 gui=Underline guifg=#00005f guibg=White
     highlight CursorLine cterm=underline ctermfg=None ctermbg=None gui=Underline guifg=NONE guibg=NONE
     " }}}
 

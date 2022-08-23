@@ -103,3 +103,13 @@ call meflib#set('my_color_set', expand('<SID>').'my_color_set_modus_operandi', '
 
 Plug 'sainnhe/everforest'
 
+Plug 'thedenisnikulin/vim-cyberpunk'
+" silverhand {{{
+function! <SID>my_color_set_silverhand() abort
+    highlight link HiTagFunctions Function
+    highlight Visual guifg=#c500e5 guibg=#19213b
+    highlight HiTagImports guifg=#a0eaff
+endfunction
+call meflib#set('my_color_set', expand('<SID>').'my_color_set_silverhand', 'silverhand')
+" }}}
+
