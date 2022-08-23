@@ -20,7 +20,7 @@ endif
 " let s:show_ft_ff = 1
 " file format 設定
 function! <SID>get_fileformat(short) abort
-    if !(line('.')%2)
+    if !(line('.')%5==1)
         return ''
     endif
 
@@ -43,7 +43,7 @@ endfunction
 
 " file type 設定
 function! s:get_filetype() abort
-    if line('.')%2
+    if line('.')%5==1
         return printf(' %s ', &filetype)
     else
         return ''
