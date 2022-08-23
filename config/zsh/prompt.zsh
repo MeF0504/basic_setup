@@ -207,6 +207,10 @@ set_prompt() {
             local _PS_TIME="%F{42}%D{%H:%M}%f%k"
             # user name (bold username non-bold)
             local _PS_USER=" %F{160}%B%n%b%f%k"
+            # background job number (shown if num>=1)
+            # also refer ↓
+            # https://stackoverflow.com/questions/10194094/zsh-prompt-checking-if-there-are-any-background-jobs
+            local _PS_BGJOB="%(1j. %K{5}(J:%j)%f%k.)"
             # change the color to magenta if the previous command was failed.
             # https://blog.8-p.info/2009/01/red-prompt
             local _PS_END=" %(?.>>.%F{125}>>%f%k) "
@@ -216,7 +220,7 @@ set_prompt() {
         # ip_color for IPv6
         local _PS_IPCOLOR2='$(ip_color2 $_GLOBAL_IP)'
 
-        export PROMPT="${_PS_IPCOLOR}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}${_PS_EXTIME}${_PS_NEWLINE}${_PS_IPCOLOR2}${_PS_TIME}${_PS_USER}${_PS_END}"
+        export PROMPT="${_PS_IPCOLOR}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}${_PS_EXTIME}${_PS_NEWLINE}${_PS_IPCOLOR2}${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_END}"
 
         PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
 
