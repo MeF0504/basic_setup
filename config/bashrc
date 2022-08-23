@@ -23,7 +23,7 @@ _PS_TIME='\[\e[92m\]\D{%H:%M}\[\e[0m\]'
 # user name (bold)
 _PS_USER=' \[\e[1m\e[31m\]\u\[\e[0m\]'
 # background job number
-_PS_BGJOB=' \[\e[105m(J:\j)\[\e[0m\]'
+_PS_BGJOB=' \[\e[105m\](J:\j)\[\e[0m\]'
 
 # git information
 GITPROMPT="${HOME}/.bash/git-prompt.sh"
