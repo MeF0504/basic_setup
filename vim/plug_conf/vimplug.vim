@@ -845,7 +845,7 @@ let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_auto_colors = 0
 " 2個目のindentから色をつける
 let g:indent_guides_start_level = 2
-" 1も自分だけ色つけ
+" 1文字分だけ色つけ
 let g:indent_guides_guide_size = 1
 " mapは無し
 let g:indent_guides_default_mapping = 0
@@ -855,8 +855,8 @@ function! <SID>indentguide_his() abort
         highlight default IndentGuidesOdd ctermfg=17 ctermbg=17 guifg=#003851 guibg=#003851
         highlight default IndentGuidesEven ctermfg=54 ctermbg=54 guifg=#3f0057 guibg=#3f0057
     else
-        highlight default IndentGuidesOdd ctermfg=147 ctermbg=147 guifg=#a0f8f8 guibg=#a0f8f8
-        highlight default IndentGuidesEven ctermfg=219 ctermbg=219 guifg=#f8a0f8 guibg=#f8a0f8
+        highlight default IndentGuidesOdd ctermfg=159 ctermbg=159 guifg=#e0f8ff guibg=#e0f8ff
+        highlight default IndentGuidesEven ctermfg=225 ctermbg=225 guifg=#ffe0fd guibg=#ffe0fd
     endif
 endfunction
 call meflib#add('plugin_his', s:sid.'indentguide_his')
