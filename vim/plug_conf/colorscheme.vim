@@ -67,7 +67,7 @@ function! <SID>my_color_set_night_owl()
     highlight Number ctermfg=162 guifg=#c02a8f
     highlight Todo ctermfg=17 ctermbg=228 cterm=BOLD guifg=#101060 guibg=#f8fa6a gui=BOLD
     highlight LineNr ctermfg=240 guifg=#535353
-    highlight EndOfBuffer cterm=Underline ctermbg=None gui=Underline guibg=NONE
+    highlight EndOfBuffer ctermbg=bg guibg=bg
 
     highlight HiTagImports ctermfg=227 guifg=#f0e860
 endfunction
