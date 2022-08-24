@@ -91,6 +91,7 @@ Plug 'chasinglogic/modus-themes-vim'
 " modus {{{
 function! <SID>my_color_set_modus_operandi() abort
     " ctermがない？
+    set background=light
     highlight DiffDelete gui=Bold guifg=#939393 guibg=#e0ffff
     highlight SpecialKey gui=None guifg=#101010 guibg=#cacaca
     highlight ErrorMsg gui=Bold guifg=#000000 guibg=#a80000

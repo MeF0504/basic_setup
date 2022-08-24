@@ -177,11 +177,6 @@ function! <SID>my_color_set()
     highlight qfLineNr ctermfg=22 ctermbg=252 guifg=#205020 guibg=#d0d0d0
     " }}}
 
-    """ plugin highlights
-    for hi_func in meflib#get('plugin_his', [])
-        call call(hi_func, [])
-    endfor
-
     " colorscheme specified setings
     let colname = substitute(g:colors_name, "-", "_", "g")
     let local_scheme_funcs = meflib#get('my_color_set', {})
@@ -190,6 +185,11 @@ function! <SID>my_color_set()
     else
         " echo "color scheme: " . g:colors_name
     endif
+
+    """ plugin highlights
+    for hi_func in meflib#get('plugin_his', [])
+        call call(hi_func, [])
+    endfor
 endfunction
 
 function! <SID>Day_by_Day_StatusLine()
