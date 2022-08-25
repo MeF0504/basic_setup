@@ -27,7 +27,7 @@ let g:PaperColor_Theme_Options = {
 function! <SID>my_color_set_PaperColor()
     highlight Search ctermbg=36 guibg=#00af87
     highlight SpecialKey cterm=Underline ctermfg=245 ctermbg=233 gui=Underline guifg=#8a8a8a guibg=#121212
-    # overwrite
+    " overwrite
     if &background == 'dark'
         highlight IndentGuidesOdd ctermfg=17 ctermbg=17 guifg=#003851 guibg=#003851
         highlight IndentGuidesEven ctermfg=54 ctermbg=54 guifg=#3f0057 guibg=#3f0057
