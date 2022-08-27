@@ -23,7 +23,14 @@ _PS_TIME='\[\e[92m\]\D{%H:%M}\[\e[0m\]'
 # user name (bold)
 _PS_USER=' \[\e[1m\e[31m\]\u\[\e[0m\]'
 # background job number
-_PS_BGJOB=' \[\e[105m\](J:\j)\[\e[0m\]'
+# _PS_BGJOB=' \[\e[105m\](J:\j)\[\e[0m\]'
+_PS_BGJOB='`
+if [ -z "$(jobs)" ]; then
+    echo "";
+else
+    echo " \[\e[105m\](J:\j)\[\e[0m\]";
+fi
+`'
 
 # git information
 GITPROMPT="${HOME}/.bash/git-prompt.sh"
@@ -36,15 +43,15 @@ fi
 
 # change red if the previous command was failed.
 # https://qiita.com/rtakasuke/items/4b50e156ab82b0824676
-_PS_END=" \`
-if [ \$? = 0 ]; then
-    echo '\$';
-else
-    echo \[\e[35m\]\$\[\e[0m\];
-fi
-\` "
+_PS_END=" $ "
 
-_PS_SHINFO="\[\e[33m\][${SHELL_INFO}]\[\e[0m\] "
+_PS_SHINFO="\`
+if [ \$? = 0 ]; then
+    echo '\[\e[33m\][${SHELL_INFO}]\[\e[0m\] ';
+else
+    echo '\[\e[35m\][${SHELL_INFO}]\[\e[0m\] ';
+fi
+\`"
 
 export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}\n${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_GIT}${_PS_END}"
 
