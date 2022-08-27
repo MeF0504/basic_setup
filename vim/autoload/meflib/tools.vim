@@ -705,22 +705,26 @@ function! meflib#tools#diff_line(...) abort
     " echo file1.' '.st1.' '.end1.' '.file2.' '.st2.' '.end2
 
     " file check
-     if !filereadable(expand(file1))
-         echo "unable to read ".file1."\n".help_str
-         return
-     endif
-     if (bufname(file1)=='')
-         echo file1." is not in buffer. please open that.\n".help_str
-         return
-     endif
-     if !filereadable(expand(file2))
-         echo "unable to read ".file2."\n".help_str
-         return
-     endif
-     if (bufname(file2)=='')
-         echo file2." is not in buffer. please open that.\n".help_str
-         return
-     endif
+    if file1 != '%'
+        if !filereadable(expand(file1))
+            echo "unable to read ".file1."\n".help_str
+            return
+        endif
+        if (bufname(file1)=='')
+            echo file1." is not in buffer. please open that.\n".help_str
+            return
+        endif
+    endif
+    if file2 != '%'
+        if !filereadable(expand(file2))
+            echo "unable to read ".file2."\n".help_str
+            return
+        endif
+        if (bufname(file2)=='')
+            echo file2." is not in buffer. please open that.\n".help_str
+            return
+        endif
+    endif
 
     " set python command
     if has('python3')
