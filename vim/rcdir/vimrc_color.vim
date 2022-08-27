@@ -97,6 +97,15 @@ endfunction
 call meflib#set('my_color_set', s:sid.'my_color_set_evening', 'evening')
 
 function! <SID>my_color_set()
+    " colorscheme specified setings
+    let colname = substitute(g:colors_name, "-", "_", "g")
+    let local_scheme_funcs = meflib#get('my_color_set', {})
+    if has_key(local_scheme_funcs, colname)
+        call call(local_scheme_funcs[colname], [])
+    else
+        " echo "color scheme: " . g:colors_name
+    endif
+
     """ general settings
     " link {{{
     highlight link VimFunction Function
@@ -176,15 +185,6 @@ function! <SID>my_color_set()
     highlight default link Quote String
     highlight qfLineNr ctermfg=22 ctermbg=252 guifg=#205020 guibg=#d0d0d0
     " }}}
-
-    " colorscheme specified setings
-    let colname = substitute(g:colors_name, "-", "_", "g")
-    let local_scheme_funcs = meflib#get('my_color_set', {})
-    if has_key(local_scheme_funcs, colname)
-        call call(local_scheme_funcs[colname], [])
-    else
-        " echo "color scheme: " . g:colors_name
-    endif
 
     """ plugin highlights
     for hi_func in meflib#get('plugin_his', [])
