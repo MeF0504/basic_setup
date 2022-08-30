@@ -326,6 +326,7 @@ def main_conf(args):
                 'screenrc': '~/.screenrc',
                 'marp/marp_MeFtheme.css': '~/.marp/marp_MeFtheme.css',
                 'tigrc':  '~/.tigrc',
+                'fish': Path(args.conf_home)/'fish',
                 }
 
     files_linux = {
@@ -342,6 +343,7 @@ def main_conf(args):
                   'matplotlibrc': Path(args.conf_home)/'matplotlib/matplotlibrc',
                   'gitignore_global': '~/.gitignore_global',
                   'screenrc': '~/.screenrc',
+                    'fish': Path(args.conf_home)/'fish',
                 }
 
     files_win = {}
