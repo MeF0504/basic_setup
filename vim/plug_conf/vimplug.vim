@@ -1294,3 +1294,6 @@ nnoremap <leader>g <Cmd>GitMessenger<CR>
 " plugin のdot repeatをサポート (RegistPasteで使用)
 Plug 'tpope/vim-repeat'
 
+" syntax file etc. for fish script
+Plug 'dag/vim-fish', PlugCond(1, {'for': 'fish'})
+
