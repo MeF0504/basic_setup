@@ -1,6 +1,6 @@
 " vim script encoding setting
 scriptencoding utf-8
-"" simple commands and short functions
+"" simple commands and aliases
 
 augroup cmdLocal
     autocmd!
@@ -94,4 +94,7 @@ command! XPMLoader call meflib#tools#xpm_loader()
 " }}}
 " meflib#set された変数を表示 {{{
 command! MefShowVar call meflib#get('', '')
+" }}}
+" 環境変数を見やすくする {{{
+command! -nargs=1 EchoEnv call meflib#tools#echoenv(<args>)
 " }}}

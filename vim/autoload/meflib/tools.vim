@@ -960,3 +960,20 @@ function! meflib#tools#runtimepath() abort
 endfunction
 " }}}
 
+" 環境変数を見やすくする {{{
+function! meflib#tools#echoenv(env) abort
+    if match(a:env, ':') != -1
+        let sep = ':'
+    elseif match(a:env, ',') != -1
+        let sep = ','
+    else
+        echo a:env
+        return
+    endif
+
+    for e in split(a:env, sep)
+        echo e
+    endfor
+endfunction
+" }}}
+
