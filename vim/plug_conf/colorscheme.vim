@@ -108,6 +108,7 @@ function! <SID>my_color_set_modus_operandi() abort
     highlight HiTagImports guifg=#006a00
     highlight Special gui=None guifg=#252525 guibg=#dfc4ff
     highlight CursorLineNr guifg=#a00060
+    highlight CursorWord1 guibg=#e5fce5
 endfunction
 call meflib#set('my_color_set', expand('<SID>').'my_color_set_modus_operandi', 'modus_operandi')
 " }}}
