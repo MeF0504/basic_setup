@@ -194,3 +194,6 @@ autocmd local FileType * execute printf('setlocal tags^=.%s_tags;', &filetype)
 " .<ft>_tags をtagsにする
 autocmd local BufEnter .*_tags set filetype=tags
 
+" markdownとgit commit messageでspell on
+autocmd local Filetype markdown,gitcommit setlocal spell
+
