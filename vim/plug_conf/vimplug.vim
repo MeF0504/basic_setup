@@ -773,6 +773,23 @@ Plug 'MeF0504/fern-mapping-search-ctrlp.vim', PlugCond(1, {'on': 'Fern'})
 let g:fern_search_ctrlp_root = 1
 let g:fern_search_ctrlp_open_file = 1
 " }}}
+
+Plug 'lambdalisue/fern-renderer-nerdfont.vim',
+            \ PlugCond(meflib#get('load_plugin', 0, 'nerdfont'), {'on': 'Fern'})
+" fern-nerd-font {{{
+let g:fern#renderer = "nerdfont"
+" }}}
+
+Plug 'lambdalisue/fern-git-status.vim', PlugCond(1, {'on': 'Fern'})
+" fern git status {{{
+" 遅延loadするので
+let g:fern_git_status_disable_startup = 0
+let g:fern_git_status#disable_directories = 1
+function! s:fern_git_status_hook() abort
+    call fern_git_status#init()
+endfunction
+autocmd PlugLocal User fern-git-status.vim cal s:fern_git_status_hook()
+" }}}
 " }}}
 
 Plug 'lambdalisue/fern.vim', PlugCond(1, {'on': 'Fern'})
@@ -1296,4 +1313,8 @@ Plug 'tpope/vim-repeat'
 
 " syntax file etc. for fish script
 Plug 'dag/vim-fish', PlugCond(1, {'for': 'fish'})
+
+" a fundemental plugin to handle Nerd Fonts from Vim. (for Fern)
+Plug 'lambdalisue/nerdfont.vim',
+            \ PlugCond(meflib#get('load_plugin', 0, 'nerdfont'))
 
