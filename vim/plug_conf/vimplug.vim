@@ -774,10 +774,16 @@ let g:fern_search_ctrlp_root = 1
 let g:fern_search_ctrlp_open_file = 1
 " }}}
 
-Plug 'lambdalisue/fern-renderer-nerdfont.vim',
-            \ PlugCond(meflib#get('load_plugin', 0, 'nerdfont'), {'on': 'Fern'})
+Plug 'lambdalisue/fern-renderer-nerdfont.vim', PlugCond(1, {'on': 'Fern'})
 " fern-nerd-font {{{
-let g:fern#renderer = "nerdfont"
+function! s:fern_renderer_nerdfont() abort
+    if meflib#get('load_plugin', 0, 'nerdfont')
+        let g:fern#renderer = "nerdfont"
+    else
+        let g:fern#renderer = "default"
+    endif
+endfunction
+autocmd PlugLocal User fern-renderer-nerdfont.vim cal s:fern_renderer_nerdfont()
 " }}}
 
 Plug 'lambdalisue/fern-git-status.vim', PlugCond(1, {'on': 'Fern'})
@@ -1315,6 +1321,5 @@ Plug 'tpope/vim-repeat'
 Plug 'dag/vim-fish', PlugCond(1, {'for': 'fish'})
 
 " a fundemental plugin to handle Nerd Fonts from Vim. (for Fern)
-Plug 'lambdalisue/nerdfont.vim',
-            \ PlugCond(meflib#get('load_plugin', 0, 'nerdfont'))
+Plug 'lambdalisue/nerdfont.vim'
 
