@@ -31,7 +31,7 @@ function _prompt_user
 end
 
 function _prompt_pwd
-    printf '%s%s%s ' (set_color brblue) $PWD (set_color normal)
+    printf '%s%s%s ' (set_color -b 004090) $PWD (set_color normal)
 end
 
 function _prompt_end
@@ -52,7 +52,7 @@ end
 
 function _prompt_jobs
     if string length -q -- (jobs)
-        printf '%s(J:%s)%s ' (set_color magenta) (jobs|wc -l|sed -e "s/ //g") (set_color normal)
+        printf '%s(J:%s)%s ' (set_color -b magenta) (jobs|wc -l|sed -e "s/ //g") (set_color normal)
     end
 end
 
