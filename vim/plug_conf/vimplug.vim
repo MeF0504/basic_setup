@@ -854,7 +854,9 @@ function! s:set_fern_map()
     " <c-s> でsystemで開く
     nmap <buffer> <c-s> <Plug>(fern-action-open:system)
     " <c-f> で検索
-    nmap <buffer> <c-f> <Plug>(fern-action-search-ctrlp:cursor)
+    nmap <buffer> <c-f> <Plug>(fern-action-search-ctrlp:root)
+    " <c-r> でreload
+    nmap <buffer> <c-r> <Plug>(fern-action-reload)
 endfunction
 autocmd PlugLocal FileType fern call s:set_fern_map()
 
