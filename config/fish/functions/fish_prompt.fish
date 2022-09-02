@@ -6,8 +6,22 @@ function _root_prompt
 end
 
 function _prompt_fish
-    printf '%s-%s ' \U1f41f $SHLVL
+    switch (echo (random) % 6 | bc)
+        case 0
+            printf '%s-%s ' \U1f41f $SHLVL
+        case 1
+            printf '%s-%s ' \U1f420 $SHLVL
+        case 2
+            printf '%s-%s ' \U1f421 $SHLVL
+        case 3
+            printf '%s-%s ' \U1f42c $SHLVL
+        case 4
+            printf '%s-%s ' \U1f433 $SHLVL
+        case 5
+            printf '%s-%s ' \U1f988 $SHLVL
+    end
 end
+
 function _prompt_time
     printf '%s%s%s ' (set_color brgreen) (date "+%H:%M") (set_color normal)
 end
