@@ -36,6 +36,12 @@ function _prompt_cnt_file
     printf '(%s)' (ls -U1 | wc -l | sed -e "s/ //g")
 end
 
+function _prompt_jobs
+    if string length -q -- (jobs)
+        printf '%s(J:%s)%s ' (set_color magenta) (jobs|wc -l|sed -e "s/ //g") (set_color normal)
+    end
+end
+
 
 function fish_prompt --description 'Informative prompt'
     #Save the return status of the previous command
@@ -57,6 +63,7 @@ function fish_prompt --description 'Informative prompt'
         printf '\n'
         _prompt_time
         _prompt_user
+        _prompt_jobs
         _prompt_end
     end
 end
