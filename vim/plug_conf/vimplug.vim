@@ -126,9 +126,26 @@ function! s:outliner_hook() abort
                     \ 'line': 0,
                     \},
                 \ }, 'keep')
+
+    let g:outliner_settings.fish = get(g:outliner_settings, 'fish', {})
+    call extend(g:outliner_settings.fish, {
+                \ 'function': {
+                    \ 'pattern': '^\s*function\s',
+                    \ 'line': 0,
+                    \},
+                \ 'var': {
+                    \ 'pattern': '^\s*set\s',
+                    \ 'line': 0,
+                    \},
+                \ 'alias': {
+                    \ 'pattern': '^\s*alias\s',
+                    \ 'line': 0,
+                    \},
+                \}, 'keep')
 endfunction
-" }}}
 autocmd PlugLocal User outliner.vim call s:outliner_hook()
+nnoremap <silent> <Leader>o <Cmd>OutLiner<CR>
+" }}}
 
 " git log 表示用plugin
 Plug 'MeF0504/gitewer.vim', PlugCond(1, {'on': 'Gitewer'})
