@@ -1,4 +1,5 @@
 # https://natsukium.github.io/fish-docs-jp/index.html
+# http://fish.rubikitch.com/
 if status is-interactive
     # Commands to run in interactive sessions can go here
 end
@@ -76,6 +77,22 @@ set __fish_git_prompt_char_untrackedfiles '?'
 set __fish_git_prompt_char_stashstate '↩'
 set __fish_git_prompt_char_upstream_ahead '↑'
 set __fish_git_prompt_char_upstream_behind '↓'
+# }}}
+
+# cdした際の自動関数 {{{
+# https://blog.matzryo.com/entry/2018/09/02/cd-then-ls-with-fish-shell
+functions --copy cd standard_cd
+function cd
+    standard_cd $argv; or return
+
+    if [ -d "$PWD/.git" ]
+        read -p 'echo "execute fetch? ([y]/n) "' yn
+        if [ -z "$yn" -o "$yn" = 'y' ]
+            echo "fetching..."
+            git fetch
+        end
+    end
+end
 # }}}
 
 [ -f $HOME/.config/fish/fish.mine ] && source $HOME/.config/fish/fish.mine
