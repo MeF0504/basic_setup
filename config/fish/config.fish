@@ -47,7 +47,7 @@ alias vi='vim -p'
 # move files to trash.
 alias del="mv_Trash.py"
 
-if string length -q -- $SSH_CLIENT
+if [ -n "$SSH_CLIENT" ]
     alias su='echo "su is not available in remote host"'
     alias sudo='echo "sudo is not available in remote host"&&'
 end
