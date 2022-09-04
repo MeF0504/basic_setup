@@ -1,4 +1,4 @@
-function fish_title
+function fish_title --description 'set titme'
     if [ $PWD = $HOME ]
         set curdir 'home'
     else
