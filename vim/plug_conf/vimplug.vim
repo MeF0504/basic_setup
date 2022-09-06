@@ -1343,3 +1343,14 @@ Plug 'dag/vim-fish', PlugCond(1, {'for': 'fish'})
 " a fundemental plugin to handle Nerd Fonts from Vim. (for Fern)
 Plug 'lambdalisue/nerdfont.vim'
 
+" vim bookmark
+Plug 'MattesGroeger/vim-bookmarks', PlugCond(1, {'on': ['BookmarkToggle', 'BookmarkAnnotate']})
+" bookmarks {{{
+let g:bookmark_no_default_key_mappings = 1
+let g:bookmark_auto_save = 0
+let g:bookmark_disable_ctrlp = 1
+let g:bookmark_display_annotation = 0
+nnoremap <leader>mm <Cmd>BookmarkToggle<CR>
+nnoremap <leader>mi <Cmd>BookmarkAnnotate<CR>
+nnoremap <leader>ma <Cmd>BookmarkShowAll<CR>
+" }}}
