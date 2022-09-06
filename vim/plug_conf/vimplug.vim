@@ -1353,4 +1353,9 @@ let g:bookmark_display_annotation = 0
 nnoremap <leader>mm <Cmd>BookmarkToggle<CR>
 nnoremap <leader>mi <Cmd>BookmarkAnnotate<CR>
 nnoremap <leader>ma <Cmd>BookmarkShowAll<CR>
+function! s:bookmarks_his() abort
+    highlight BookmarkSign ctermfg=105 ctermbg=NONE guifg=#8787ff guibg=NONE
+    highlight BookmarkAnnotationSign ctermfg=51 ctermbg=NONE guifg=#30ffe8 guibg=NONE
+endfunction
+call meflib#add('plugin_his', s:sid.'bookmarks_his')
 " }}}
