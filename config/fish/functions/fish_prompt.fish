@@ -56,6 +56,37 @@ function _prompt_jobs
     end
 end
 
+# calculate execute time {{{
+set -g _prompt_show_time 10
+function _prompt_cnt_time_pre --on-event fish_preexec
+    echo $argv
+    set -g __pre_time (date '+%s')
+end
+
+function _prompt_cnt_time_post --on-event fish_postexec
+    echo 'post'
+    set post_time (date '+%s')
+    set -g __exec_time (math $post_time - $__pre_time)
+end
+
+function _prompt_cnt_time
+    set res ''
+    if [ $__exec_time -gt $_prompt_show_time ]
+        set d (math $__exec_time / 60 / 60 / 24)
+        set h (math $__exec_time / 60 / 60  % 24)
+        set m (math $__exec_time / 60  % 60)
+        set s (math $__exec_time % 60)
+        [ $d -gt 1 ]; and set res $res$d'd '
+        [ $h -gt 1 ]; and set res $res$h'h '
+        [ $m -gt 1 ]; and set res $res$m'm '
+        [ $s -gt 1 ]; and set res $res$s's '
+    end
+    set --erase -g __pre_time
+    set --erase -g __exec_time
+    printf ' %s' $res
+end
+# }}}
+
 
 function fish_prompt --description 'Informative prompt'
     #Save the return status of the previous command
@@ -73,6 +104,7 @@ function fish_prompt --description 'Informative prompt'
         _prompt_host
         _prompt_pwd
         _prompt_cnt_file
+        _prompt_cnt_time
         printf '%s ' $pipestatus_string
         printf '\n'
         _prompt_time
