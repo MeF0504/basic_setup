@@ -80,10 +80,11 @@ set __fish_git_prompt_char_upstream_behind '↓'
 # }}}
 
 # cdした際の自動関数 {{{
-# https://blog.matzryo.com/entry/2018/09/02/cd-then-ls-with-fish-shell
-functions --copy cd standard_cd
-function cd
-    standard_cd $argv; or return
+function _auto_cd --on-event fish_postexec
+    if [ -z (string match -r '^\s*cd\s' $argv) ]
+        # 引数なしでも弾かれるけど，今はまぁいいや
+        return
+    end
 
     if [ -d "$PWD/.git" ]
         read -p 'echo "execute fetch? ([y]/n) "' yn
