@@ -81,8 +81,13 @@ set __fish_git_prompt_char_upstream_behind '↓'
 
 # cdした際の自動関数 {{{
 function _auto_cd --on-event fish_postexec
+    set _last_status $status
     if [ -z (string match -r '^\s*cd\s' $argv) ]
         # 引数なしでも弾かれるけど，今はまぁいいや
+        return
+    end
+    if [ $_last_status -gt 0 ]
+        # エラーの場合は何もしない
         return
     end
 
