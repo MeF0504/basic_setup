@@ -101,5 +101,44 @@ function _auto_cd --on-event fish_postexec
 end
 # }}}
 
+# Terminal 関連 {{{
+if [ -n "$ITERM_SESSION_ID" ]
+    # 特定コマンドでitermのtab colorを変換 {{{
+    function tab_color
+        set RGB (string split ' ' $argv)
+        set R $RGB[1]
+        set G $RGB[2]
+        set B $RGB[3]
+        echo -ne "\033]6;1;bg;red;brightness;$R\a"
+        echo -ne "\033]6;1;bg;green;brightness;$G\a"
+        echo -ne "\033]6;1;bg;blue;brightness;$B\a"
+    end
+
+    function tab_reset
+        echo -ne "\033]6;1;bg;*;default\a"
+    end
+
+    function iterm2_tab_post --on-event fish_postexec
+        tab_reset
+    end
+
+    function iterm2_tab_pre --on-event fish_preexec
+        # sample set TABS '0 255 0 ^\s*ssh hoge' '128 128 0 ^\s*sleep'
+        for T in $TABS
+            set t (string split ' ' $T)
+            set R $t[1]
+            set G $t[2]
+            set B $t[3]
+            set ptn (string join ' ' $t[4..])
+            if string length -q -- (string match -r $ptn $argv)
+                tab_color $R $G $B
+            end
+            # printf 'R:%s G:%s B:%s ptn:%s\n' $R $G $B $ptn
+        end
+    end
+    # }}}
+end
+# }}}
+
 [ -f $HOME/.config/fish/fish.mine ] && source $HOME/.config/fish/fish.mine
 
