@@ -12,8 +12,6 @@ else
     let s:sid = expand('<SID>')
 endif
 
-let s:debug = 0
-
 " Set tabline.
 function! s:get_title(tabnr)
     let bufnrs = tabpagebuflist(a:tabnr)
@@ -64,7 +62,8 @@ function! s:set_tabline()
     else
         let cdir = ''
     endif
-    if s:debug
+    let debug = meflib#get('tab_debug', 0)
+    if debug
         let str = ''
     endif
 
@@ -91,7 +90,7 @@ function! s:set_tabline()
     for i in range(1, tabpagenr('$'))
         " left side of current tab page (include current tab page).
         let ctn_l = cur_tab_no - (i-1)
-        if s:debug
+        if debug
             let str .= printf("\n%d<=%d", ctn_l, cur_tab_no)
         endif
         if ctn_l > 0
@@ -99,16 +98,16 @@ function! s:set_tabline()
             if tab_fin_l == 0
                 if tab_len+1 < width || ctn_l == cur_tab_no " +1 .. ~
                     let title = s:get_title(ctn_l)
-                    if s:debug
+                    if debug
                         let str .= printf('  width: %d, tab_len: %d->%d', width, tab_len, tab_len+len(title)+1)
                     endif
-                    if tab_len+len(title)+1 > width
+                    if tab_len+len(title)+1+1 > width " +1=~
                         " cut the title if it is long.
-                        let cut_length = len(title)-(width-tab_len-1-2) " -2 = ..?
+                        let cut_length = len(title)-(width-tab_len-1-2-1) " -2=.., -1=~
                         let cut_length = cut_length<0 ? 0 : cut_length
                         let title = '..'.title[cut_length:]
                         let tab_fin_l = 1
-                        if s:debug
+                        if debug
                             let str .= '  cut: '.(tab_len+len(title)+1).'; '.title
                         endif
                     endif
@@ -127,7 +126,7 @@ function! s:set_tabline()
 
         " right side of current tab page.
         let ctn_r = cur_tab_no + i
-        if s:debug
+        if debug
             let str .= printf("\n%d>%d", ctn_r, cur_tab_no)
         endif
         if ctn_r <= tabpagenr('$')
@@ -135,18 +134,24 @@ function! s:set_tabline()
             if tab_fin_r == 0
                 if tab_len+1 < width " +1 .. ~
                     let title = s:get_title(ctn_r)
-                    if s:debug
+                    if debug
                         let str .= printf('  width: %d, tab_len: %d->%d', width, tab_len, tab_len+len(title)+1)
                     endif
-                    if tab_len+len(title)+1 > width
+                    if tab_len+len(title)+1+1 > width " +1=[:X]の余剰
                         " cut the title if it is long.
-                        let cut_length = width-tab_len-1-2 " -2 = ..?
-                        let cut_length = cut_length<0 ? 0 : cut_length
-                        let title = title[:cut_length].'..'
-                        let tab_fin_r = 1
-                        if s:debug
-                            let str .= '  cut: '.(tab_len+len(title)+1).'; '.title
+                        let cut_length = width-tab_len-1-1-2 " -1=余剰, -2=..
+                        if cut_length > 0
+                            let title = title[:cut_length].'..'
+                            if debug
+                                let str .= '  cut: '.(tab_len+len(title)+1).'; '.title
+                            endif 
+                        else
+                            let title = '..'
+                            if debug
+                                let str .= 'cut all: '.cut_length
+                            endif
                         endif
+                        let tab_fin_r = 1
                     endif
                     let tab_len += len(title)+1
                     let tmp_s = '%'.ctn_r.'T'
@@ -168,7 +173,7 @@ function! s:set_tabline()
     " 右寄せしてディレクトリ表示
     let footer = '%=%#TabLineDir#'.cdir.'%#TabLineFill#'.footer
     let s = header.s.footer
-    if s:debug
+    if debug
         call meflib#set('tabinfo', str)
     endif
     return s
