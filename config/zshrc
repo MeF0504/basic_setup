@@ -233,7 +233,7 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color|screen-256color)
             else
                 mypwd=$(basename $PWD)
             fi
-            echo -ne "\033]0;${USER}@$mypwd\007"
+            echo -ne "\033]0;\U1f386 ${USER}@$mypwd\007"
         }
     fi
     ;;
@@ -244,11 +244,7 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color|screen-256color)
 esac
 add-zsh-hook precmd tab_title_precmd
 
-# $TAB0-15にコマンドと引数を指定すると，色が変わる
-# 例：serverにsshすると色が変わる
-#       export TAB1=('ssh' 'server')
-# 例2：ipython
-#       export TAB2=('ipython.*' '')
+# $TABSにコマンドと引数を指定すると，色が変わる
 # https://gist.github.com/wadey/1140259
 if [[ -n $ITERM_SESSION_ID ]]; then
     tab_color() {
