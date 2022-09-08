@@ -52,6 +52,7 @@ else
     echo '\[\e[35m\][${SHELL_INFO}]\[\e[0m\] ';
 fi
 \`"
+# "
 
 export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}\n${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_GIT}${_PS_END}"
 
