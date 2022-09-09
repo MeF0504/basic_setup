@@ -224,7 +224,7 @@ case "${TERM}" in
 xterm|xterm-color|kterm|kterm-color|xterm-256color|screen-256color)
     if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
         tab_title_precmd() {
-            echo -ne "\033]0;${USER}@${MYHOST}\007"
+            echo -ne "\033]0;\U1f386 ${USER}@${MYHOST}\007"
         }
     else
         tab_title_precmd() {

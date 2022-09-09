@@ -1,5 +1,7 @@
 function fish_title --description 'set titme'
-    if [ $PWD = $HOME ]
+    if [ -n "$SSH_CLIENT$SSH_CONNECTION" ]
+        set curdir $hostname
+    else if [ $PWD = $HOME ]
         set curdir 'home'
     else
         set curdir (basename $PWD)
