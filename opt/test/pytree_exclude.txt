@@ -1,0 +1,10 @@
+.*\.pyc
+.*.swp
+legacy/.*
+.DS_Store
+tmp/.*
+tags
+.*tag_syntax.vim
+.*.mine
+
+
