@@ -977,3 +977,14 @@ function! meflib#tools#echoenv(env) abort
 endfunction
 " }}}
 
+" echo 拡張の補完 {{{
+function! meflib#tools#echo_comp(arglead, cmdline, cursorpos) abort
+    let comp_list = ['pand', 'env', 'runtime']
+    let opt_num = len(split(a:cmdline, ' ', 1))
+    if opt_num <= 2
+        return filter(comp_list, '!stridx(v:val, tolower(a:arglead))')
+    else
+        return []
+    endif
+endfunction
+" }}}

@@ -20,9 +20,6 @@ command! -nargs=1 -complete=file Diff vertical diffsplit <args>
 " conflict commentを検索 {{{
 command! SearchConf /<<<<<<<\|=======\|>>>>>>>
 " }}}
-" expandを打つのがめんどくさい {{{
-command! -nargs=1 Echopand echo expand(<f-args>)
-" }}}
 " ipython を呼ぶ用 {{{
 let s:ipythons = {'ipython':'Ipython', 'ipython2':'Ipython2', 'ipython3':'Ipython3'}
 let s:ipy_ac = 1
@@ -95,6 +92,17 @@ command! XPMLoader call meflib#tools#xpm_loader()
 " meflib#set された変数を表示 {{{
 command! MefShowVar call meflib#get('', '')
 " }}}
-" 環境変数を見やすくする {{{
-command! -nargs=1 EchoEnv call meflib#tools#echoenv(<args>)
+" echo 拡張 {{{
+function! s:echo_ex(cmd, args='') abort
+    if a:cmd ==# 'pand'  " expandを打つのがめんどくさい
+        echo expand(a:args)
+    elseif a:cmd ==# 'env'  " 環境変数を見やすくする
+        if !empty(a:args)
+            call meflib#tools#echoenv(eval(a:args))
+        endif
+    elseif a:cmd ==# 'runtime'  " runtime 確認
+        call meflib#tools#runtimepath()
+    endif
+endfunction
+command! -nargs=+ -complete=customlist,meflib#tools#echo_comp Echo call s:echo_ex(<f-args>)
 " }}}
