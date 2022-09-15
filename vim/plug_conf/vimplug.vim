@@ -166,6 +166,12 @@ Plug 'MeF0504/vim-pets-codes', PlugCond(1, {'on': 'Pets'})
 " paste時に履歴から選ぶ
 Plug 'MeF0504/RegistPaste.vim'
 
+" tab の一覧表示＆ジャンプ
+Plug 'MeF0504/vim-TabJumper', PlugCond(1, {'on': 'TabJump'})
+" TabJumper {{{
+nnoremap <leader>l <Cmd>TabJump<CR>
+" }}}
+
 " neosnippet用のsnipets
 Plug 'Shougo/neosnippet-snippets'
 
