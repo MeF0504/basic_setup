@@ -1,41 +1,49 @@
 [global_config]
   enabled_plugins = CustomCommandsMenu, TestPlugin, ActivityWatch, LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
+  title_use_system_font = False
+  title_font = HackGen Console NFJ 9
 [keybindings]
-  next_tab = <Primary>Right
-  split_horiz = <Primary><Shift>h
+  go_next = <Primary><Alt>n
   go_prev = <Primary><Alt>p
-  prev_tab = <Primary>Left
+  split_horiz = <Primary><Shift>h
+  split_vert = <Primary><Shift>d
   move_tab_right = None
   move_tab_left = None
-  split_vert = <Primary><Shift>d
+  next_tab = <Primary>Right
+  prev_tab = <Primary>Left
   new_terminator = <Primary><Shift>n
-  go_next = <Primary><Alt>n
 [profiles]
   [[default]]
-    scrollbar_position = hidden
-    use_system_font = False
+    allow_bold = False
+    background_color = "#0a0000"
     background_darkness = 0.74
     background_type = transparent
-    background_image = None
+    cursor_color = "#c1cac5"
+    font = agave Nerd Font Mono 14
     foreground_color = "#c1cac5"
-    font = Monospace 12
-    background_color = "#0a0000"
+    show_titlebar = False
+    scrollbar_position = hidden
+    use_system_font = False
+    background_image = None
   [[simple]]
-    use_system_font = False
+    cursor_color = "#aaaaaa"
     font = Monospace 12
-    background_image = None
     scroll_background = False
-  [[solarized]]
     use_system_font = False
-    background_type = transparent
     background_image = None
-    foreground_color = "#839496"
-    font = Monospace 12
+  [[solarized]]
     background_color = "#002b36"
-  [[light]]
+    background_type = transparent
+    cursor_color = "#839496"
+    font = Monospace 12
+    foreground_color = "#839496"
+    use_system_font = False
     background_image = None
+  [[light]]
     background_color = "#ffffdd"
+    cursor_color = "#000000"
     foreground_color = "#000000"
+    background_image = None
 [layouts]
   [[default]]
     [[[child1]]]
