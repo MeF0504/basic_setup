@@ -11,7 +11,7 @@
 For [vim-plug](https://github.com/junegunn/vim-plug) plugin manager:
 
 ```vim
-Plug 'Mef0504/{{_input_:plug}}'
+Plug 'MeF0504/{{_input_:plug}}'
 ```
 
 ## Options
