@@ -163,14 +163,14 @@ function! <SID>my_color_set()
         highlight StatusLine_FF cterm=bold ctermfg=253 ctermbg=88 gui=Bold guifg=#dadada guibg=#870000
         highlight StatusLine_LN cterm=bold ctermfg=253 ctermbg=29 gui=Bold guifg=#dadada guibg=#00875f
         highlight StatusLine_CHK cterm=bold ctermfg=233 ctermbg=190 gui=Bold guifg=#121212 guibg=#d7ff00
-        highlight StatusLine_OFF cterm=Underline ctermfg=244 ctermbg=232 gui=Underline guifg=#808080 guibg=#080808
+        highlight StatusLine_OFF cterm=Underline ctermfg=254 ctermbg=232 gui=Underline guifg=#eaeaea guibg=#080808
     else
         highlight StatusLine_ST cterm=None ctermfg=29 ctermbg=253 gui=NONE guifg=#008050 guibg=#dddddd
         highlight StatusLine_FT cterm=bold ctermfg=236 ctermbg=68 gui=Bold guifg=#303030 guibg=#73a9ff
         highlight StatusLine_FF cterm=bold ctermfg=236 ctermbg=210 gui=Bold guifg=#303030 guibg=#ffa0a0
         highlight StatusLine_LN cterm=bold ctermfg=236 ctermbg=119 gui=Bold guifg=#303030 guibg=#70ff80
         highlight StatusLine_CHK cterm=bold ctermfg=233 ctermbg=190 gui=Bold guifg=#121212 guibg=#d7ff00
-        highlight StatusLine_OFF cterm=Underline ctermfg=240 ctermbg=255 gui=Underline guifg=#606060 guibg=#eeeeee
+        highlight StatusLine_OFF cterm=Underline ctermfg=233 ctermbg=255 gui=Underline guifg=#101010 guibg=#eeeeee
     endif
     highlight Mode_N cterm=bold ctermfg=253 ctermbg=0 gui=Bold guifg=#dadada guibg=Black
     highlight Mode_I cterm=bold ctermfg=253 ctermbg=9 gui=Bold guifg=#dadada guibg=Red
