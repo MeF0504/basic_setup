@@ -13,6 +13,9 @@ nnoremap Q <Nop>
 nnoremap <c-w>q <Nop>
 " sをctrl-wにmapしているので...
 nnoremap sq <Nop>
+" ctrl-w cでもwindowを閉じるらしいな
+nnoremap <c-w>c <Nop>
+nnoremap sc <Nop>
 
 " 使いやすいようにmapping
 " window 移動
