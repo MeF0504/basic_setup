@@ -340,8 +340,6 @@ def main_conf(args):
                   'zsh/prompt.zsh': '~/.zsh/prompt.zsh',
                   'posixShellRC': '~/.posixShellRC',
                   'bashrc': '~/.bashrc',
-                  'terminator_config': Path(args.conf_home)/'terminator/config',
-                  'terminology_base.cfg': Path(args.conf_home)/'terminology/config/standard/base.cfg',
                   'matplotlibrc': Path(args.conf_home)/'matplotlib/matplotlibrc',
                   'gitignore_global': '~/.gitignore_global',
                   'screenrc': '~/.screenrc',
