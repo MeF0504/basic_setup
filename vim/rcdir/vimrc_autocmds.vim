@@ -136,10 +136,25 @@ endif
 " }}}
 
 " 最後に閉じたtab, windowを保存しておく
-autocmd local WinLeave * call meflib#set('last_file_win', expand("%:p"))
-autocmd local TabClosed * call meflib#set('last_file_tab', meflib#get('last_file_win', ''))
-command! LastTab execute "tabnew " . meflib#get('last_file_tab', '')
-command! LastWin execute "vsplit " . meflib#get('last_file_win', '')
+autocmd local WinLeave * call meflib#set('last_file_win',
+            \ [expand("%:p"), tabpagenr()])
+autocmd local TabClosed * call meflib#set('last_file_tab',
+            \ meflib#get('last_file_win', ['', '$']))
+function! s:open_last_tab() abort
+    let [tfile, tnum] = meflib#get('last_file_tab', ['', '$'])
+    if empty(tfile)
+        return
+    endif
+    if tnum =~ '[0-9]\+'
+        let tnum -= 1
+        if tnum > tabpagenr('$')
+            let tnum = '$'
+        endif
+    endif
+    execute printf('%stabnew %s', tnum, tfile)
+endfunction
+command! LastTab call <SID>open_last_tab()
+command! LastWin execute "vsplit " . meflib#get('last_file_win', '')[0]
 
 if !has('patch-8.2.2106')
     " toml fileのfiletypeをtomlにする
