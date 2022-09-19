@@ -5,9 +5,7 @@
 # memo:: https://qiita.com/richmikan@github/items/bd4b21cf1fe503ab2e5c
 
 ##{{{ Environment variable configuration
-#
 # LANG
-#
 export LANG=ja_JP.UTF-8
 case $(id -u) in
 0)
@@ -37,14 +35,11 @@ else
     export SHELL_INFO="${SHELL_INFO}-${SHLVL}"
 fi
 #}}}
-
 ##{{{ Alias configuration
-
 # search command
 alias where="command -v"
-
+# job
 alias j="jobs -l"
-
 # ls
 case "$(uname)" in
 FreeBSD*|Darwin*)
@@ -54,35 +49,27 @@ Linux*)
     alias ls="ls --color -F"
     ;;
 esac
-
 alias la="ls -a"
 alias lf="ls -F"
 alias ll="ls -l"
-
 # shortcut
 alias l="ls"
 alias c="cd"
-
 # check if already exists
 alias cp="cp -i"
 alias mv="mv -i"
-
 # make directory recursively
 alias mkdir="mkdir -p"
-
 # change the unit
 alias du="du -h"
 alias df="df -h"
-
+# useful options
 alias su="su -l"
 alias grep="grep --color"
-
 # vim
 alias vi='vim -p'
-
 # move files to trash.
 alias del="mv_Trash.py"
-
 ## if use terminology [https://www.enlightenment.org/about-terminology.md]
 if [ "$TERMINOLOGY" = 1 ]; then
     _ls_wrapper()
@@ -95,21 +82,19 @@ if [ "$TERMINOLOGY" = 1 ]; then
     }
     alias ls="_ls_wrapper"
 fi
-
 ## remote host
 if [ "$SSH_CLIENT" != "" ]; then
     alias su='echo "su is not available in remote host"'
     alias sudo='echo "sudo is not available in remote host"&&'
 fi
-
+# vim terminal
 if [ "${VIM_TERMINAL}"  != "" ]; then
     alias vim="echo 'already opened vim.'"
     alias vi="echo 'already opened vim.'"
 fi
-
+# others
 alias global_ip="curl ifconfig.io 2> /dev/null"
 alias iv='for iv in {4..1}; do; echo -n ${iv}..\ ;sleep 1;done; echo'
-
 # OS specified aliases
 if [ "$(uname)" = "Darwin" ]; then
     alias ldd="echo 'in macOS, ldd doesn't exist. && echo 'Use otool -L instead.' && echo '----------' &&  otool -L"
@@ -117,9 +102,7 @@ if [ "$(uname)" = "Darwin" ]; then
 elif [ "$(uname)" = "Linux" ]; then
     : # do nothing now.
 fi
-
 #}}}
-
 ##{{{ terminal configuration
 
 # https://gist.github.com/thomd/7667642
@@ -148,7 +131,6 @@ jfbterm-color)
 esac
 
 #}}}
-
 ## {{{added functions
 add_env() { # {{{
     local echo_usage="
@@ -298,8 +280,7 @@ mkcd() { # {{{
         mkdir -p "$1"
     fi
     \cd "$1"
-}
-# }}}
+} # }}}
 timeout_local() { # {{{
     # https://qiita.com/yohm/items/db6aea3cbc71ab2d55bd
     time=$1
@@ -309,13 +290,11 @@ timeout_local() { # {{{
     command="/bin/sh -c \"${@:2}\""
 
     /usr/bin/expect -c "set timeout $time; spawn -noecho $command; expect timeout { exit 124 } eof; catch wait result; exit [lindex \$result 3];"
-}
-# }}}
+} # }}}
 echoenv() { # {{{
     echo -ne "${*//:/\\n}"
     echo ''
-}
-# }}}
+} # }}}
 get_term_name() { # {{{
     # teminal で何を使っているのか判別する方法を忘れないように
     if [[ -n "${ITERM_SESSION_ID}" ]]; then
@@ -329,17 +308,14 @@ get_term_name() { # {{{
     elif [[ -n "${TERM_PROGRAM}" ]]; then
         echo "${TERM_PROGRAM}"
     fi
-}
-# }}}
+} # }}}
 manvim() { # {{{
     # open manual in vim
     # https://rcmdnk.com/blog/2014/07/20/computer-vim/
     man $@ 2>&1 | col -bx | vim -R -c 'set ft=man nolist nomod noma' -
-}
-# }}}
+} # }}}
 echoenvall(){ # {{{
     python -c 'import os;[print("{} :\t{}".format(k, v)) for k,v in os.environ.items()]'
-}
-# }}}
+} # }}}
 #}}}
 
