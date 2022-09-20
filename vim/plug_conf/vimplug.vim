@@ -234,6 +234,8 @@ function! s:quickrun_hook() abort
                     \ 'exec' : ['%c -l -u -ot "-synctex=1 -interaction=nonstopmode" %s -output-directory %s:h', s:open_tex_pdf.'%s:r.pdf']
                     \ }
     endif
+
+    autocmd PlugLocal FileType quickrun setlocal nolist
     " }}}
 endfunction
 autocmd PlugLocal User vim-quickrun call s:quickrun_hook()
