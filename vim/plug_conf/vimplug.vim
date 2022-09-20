@@ -557,16 +557,16 @@ function! s:cfi_hook() abort
             return
         endif
         if has('nvim')
-            let line = 1
+            let line = 0
         else
-            let line = 2
+            let line = 1
         endif
         " let cfi = cfi#get_func_name()
         let cfi = cfi#format("%s()", "Top")
         let config = {
-            \ 'relative': 'editor',
-            \ 'line': line+0,
-            \ 'col': &columns,
+            \ 'relative': 'win',
+            \ 'line': line,
+            \ 'col': winwidth(0),
             \ 'pos': 'topright',
             \ 'highlight': 'CFIPopup',
             \ }
