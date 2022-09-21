@@ -746,6 +746,7 @@ Plug 'itchyny/vim-cursorword'
 " {{{
 " デフォルトのhighlightをoff
 let g:cursorword_highlight = 0
+autocmd PlugLocal FileType txt,help,markdown let b:cursorword = 0
 " highlights
 function! <SID>cursorword_his() abort
     highlight default CursorWord1 ctermfg=None ctermbg=None cterm=None guifg=NONE guifg=NONE gui=NONE
