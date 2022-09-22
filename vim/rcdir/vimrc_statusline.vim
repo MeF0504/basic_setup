@@ -102,6 +102,18 @@ function! <SID>get_rel_filename(status) abort
     return "%."..width.."(%f "..a:status.."%)"
 endfunction
 
+function! s:get_percentage() abort
+    if !meflib#get('load_plugin', 0, 'nerdfont')
+        return '[%p%%]'
+    endif
+    let per = 10*line('.')/line('$')
+    if per >= 9
+        return nr2char(0xf578)
+    else
+        return nr2char(0xf579+per)
+    endif
+endfunction
+
 " 修正フラグ 読込専用 ヘルプ preview_window
 let s:st_status = "%#StatusLine_ST#%M%R%H%W%#StatusLine#"
 " ファイル名&file status (最大長 windowの2/3)
@@ -123,7 +135,12 @@ let s:st_ft = "%#StatusLine_FT#%{"..s:sid.."get_filetype()}"
 let s:st_ff1 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(0)}"
 let s:st_ff2 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(1)}"
 " 今の行/全体の行-今の列 [%表示]
-let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%p%%]"
+let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v %#StatusLine#"
+if has('patch-8.2.2854') || has('nvim-0.5.0')
+    let s:st_ln1 .= "%{%".s:sid.'get_percentage()%}'
+else
+    let s:st_ln1 .= '[%p%%]'
+endif
 " winwidthが60より短い時は列と%はなし
 let s:st_ln2 = "%#StatusLine_LN# %l/%L"
 " 可能ならstatus lineにmodeを表示
