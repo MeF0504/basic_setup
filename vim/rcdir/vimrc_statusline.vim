@@ -43,6 +43,11 @@ endfunction
 
 " file type 設定
 function! s:get_filetype() abort
+    if meflib#get('load_plugin', 0, 'nerdfont')
+        try
+            return printf('%s ', nerdfont#find())
+        endtry
+    endif
     if line('.')%5==1
         return printf(' %s ', &filetype)
     else
@@ -64,26 +69,37 @@ function! <SID>get_mode()
     " mode string setting
     let st_mode = has_key(st_modes, modec) ? st_modes[modec] : modec
     " color setting
-    let st_mode .= ' %#StatusLine#'
     if modec =~ 'i'
-        let st_mode = '%#Mode_I#' . st_mode
+        let mode_col = '%#Mode_I#'
+        let mode_sep = '%#Mode_Is#'..nr2char(0xe0b0)
     elseif modec =~ 'v' || modec == "\<C-V>"
-        let st_mode = '%#Mode_V#' . st_mode
+        let mode_col = '%#Mode_V#'
+        let mode_sep = '%#Mode_Vs#'..nr2char(0xe0b0)
     elseif modec =~ 'r'
-        let st_mode = '%#Mode_R#' . st_mode
+        let mode_col = '%#Mode_R#'
+        let mode_sep = '%#Mode_Rs#'..nr2char(0xe0b0)
     elseif modec =~ 't'
-        let st_mode = '%#Mode_T#' . st_mode
+        let mode_col = '%#Mode_T#'
+        let mode_sep = '%#Mode_Ts#'..nr2char(0xe0c4)..' '
     elseif modec =~ 'n'
-        let st_mode = '%#Mode_N#' . st_mode
+        let mode_col = '%#Mode_N#'
+        let mode_sep = '%#Mode_Ns#'..nr2char(0xe0b0)
     else
-        let st_mode = '%#Mode_ELSE#' . st_mode
+        let mode_col = '%#Mode_ELSE#'
+        let mode_sep = '%#Mode_ELSEs#'..nr2char(0xe0b0)
     endif
-    return st_mode
+    " separator
+    if meflib#get('load_plugin', 0, 'nerdfont')
+        let st_mode_split = mode_sep..'%#StatusLine#'
+    else
+        let st_mode_split = ' %#StatusLine# '
+    endif
+    return mode_col..st_mode..st_mode_split
 endfunction
 
 function! <SID>get_rel_filename(status) abort
     let width = winwidth(0)*2/3
-    return " %."..width.."(%f "..a:status.."%)"
+    return "%."..width.."(%f "..a:status.."%)"
 endfunction
 
 " 修正フラグ 読込専用 ヘルプ preview_window
@@ -93,7 +109,7 @@ if has('patch-8.2.2854') || has('nvim-0.5.0')
     let s:st_filename1 = "%{%"..s:sid.."get_rel_filename('"..s:st_status.."')%}"
 else
     " 古いとサポートしていないっぽい
-    let s:st_filename1 = " %f". s:st_status." "
+    let s:st_filename1 = "%f ". s:st_status." "
 endif
 " winwidthが60より短い場合はファイル名のみ
 let s:st_filename2 = " %t ".s:st_status." "
@@ -115,7 +131,7 @@ if has('patch-8.2.2854') || has('nvim-0.5.0')
     let s:st_mode = "%{%".s:sid."get_mode()%}"
     set noshowmode
 else
-    let s:st_mode = ''
+    let s:st_mode = ' '
 endif
 
 " パスを除くファイル名 修正フラグ 読込専用 ヘルプ preview_window

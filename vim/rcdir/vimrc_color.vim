@@ -173,11 +173,17 @@ function! <SID>my_color_set()
         highlight StatusLine_OFF cterm=Underline ctermfg=233 ctermbg=255 gui=Underline guifg=#101010 guibg=#eeeeee
     endif
     highlight Mode_N cterm=bold ctermfg=253 ctermbg=0 gui=Bold guifg=#dadada guibg=Black
+    highlight Mode_Ns cterm=None ctermfg=0 gui=None guifg=Black
     highlight Mode_I cterm=bold ctermfg=253 ctermbg=9 gui=Bold guifg=#dadada guibg=Red
+    highlight Mode_Is cterm=None ctermfg=9 gui=None guifg=Red
     highlight Mode_V cterm=bold ctermfg=253 ctermbg=13 gui=Bold guifg=#dadada guibg=Fuchsia
+    highlight Mode_Vs cterm=None ctermfg=13 gui=None guifg=Fuchsia
     highlight Mode_R cterm=bold ctermfg=234 ctermbg=3 gui=Bold guifg=#1c1c1c guibg=Olive
+    highlight Mode_Rs cterm=None ctermfg=3 gui=None guifg=Olive
     highlight Mode_T cterm=bold ctermfg=234 ctermbg=10 gui=Bold guifg=#1c1c1c guibg=Lime
+    highlight Mode_Ts cterm=None ctermfg=10 gui=None guifg=Lime
     highlight Mode_ELSE cterm=bold ctermfg=253 ctermbg=8 gui=Bold guifg=#dadada guibg=#404040
+    highlight Mode_ELSEs cterm=None ctermfg=8 gui=None guifg=#404040
     " }}}
 
     " その他 {{{
@@ -218,6 +224,9 @@ function! <SID>Day_by_Day_StatusLine()
         " echo 'color:'..s:stl_br..'='..s:stl_bg..'='..s:stl_bb..'='..cfg..'='..cbg..'='..gfg..'='..gbg
         execute printf('highlight StatusLine cterm=Bold ctermfg=%s ctermbg=%s gui=Bold guifg=%s guibg=%s', cfg, cbg, gfg, gbg)
         execute printf('highlight WildMenu cterm=Bold ctermfg=%s ctermbg=%s gui=Bold guifg=%s guibg=%s', cbg, cfg, gbg, gfg)
+        for st_mode in split('Mode_Ns Mode_Is Mode_Vs Mode_Rs Mode_Ts Mode_ELSEs', ' ')
+            execute printf('highlight %s ctermbg=%s guibg=%s', st_mode, cbg, gbg)
+        endfor
         if !has('nvim')
             highlight! link StatusLineTerm StatusLine
         endif
