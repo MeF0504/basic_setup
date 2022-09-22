@@ -43,14 +43,14 @@ endfunction
 
 " file type 設定
 function! s:get_filetype() abort
-    if meflib#get('load_plugin', 0, 'nerdfont')
-        try
-            return printf('%s ', nerdfont#find())
-        endtry
-    endif
     if line('.')%5==1
         return printf(' %s ', &filetype)
     else
+        if meflib#get('load_plugin', 0, 'nerdfont')
+            try
+                return printf('%s ', nerdfont#find())
+            endtry
+        endif
         return ''
     endif
 endfunction
