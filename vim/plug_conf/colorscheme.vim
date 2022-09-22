@@ -111,6 +111,7 @@ function! <SID>my_color_set_modus_operandi() abort
     highlight Comment guifg=#858585
     highlight CursorWord1 guibg=#e5fce5
     highlight IncSearch gui=NONE guifg=NONE guibg=#ae54fc
+    highlight TJSelect guibg=#c0e8ff guifg=#000000
 endfunction
 call meflib#set('my_color_set', expand('<SID>').'my_color_set_modus_operandi', 'modus_operandi')
 " }}}
