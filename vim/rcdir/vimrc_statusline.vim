@@ -110,8 +110,10 @@ let s:st_ff2 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(1)}"
 let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%p%%]"
 " winwidthが60より短い時は列と%はなし
 let s:st_ln2 = "%#StatusLine_LN# %l/%L"
+" 可能ならstatus lineにmodeを表示
 if has('patch-8.2.2854') || has('nvim-0.5.0')
     let s:st_mode = "%{%".s:sid."get_mode()%}"
+    set noshowmode
 else
     let s:st_mode = ''
 endif

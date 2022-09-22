@@ -106,9 +106,6 @@ endif
 "autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
 "See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
 
-" st_showmode != 0 なら(statuslineに表示されるので) showmode をoffにする
-autocmd local VimEnter * ++once if meflib#get('st_showmode', 1)!=0 | set noshowmode | endif
-
 " Insertを抜けるときに日本語入力をoff {{{
 if !exists('$SSH_CONNECTION') && meflib#get('auto_ime_off', 0)==1   " ※ssh先ではhostのを変えるので意味なし
     if has('win32') || has('win64')
