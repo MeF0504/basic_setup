@@ -70,9 +70,6 @@ command! JobStatus call meflib#tools#chk_job_status()
 "vimでbinary fileを閲覧，編集 "{{{
 command! BinMode call meflib#tools#BinaryMode()
 " }}}
-" 開いているfile一覧 {{{
-" nnoremap <silent> <leader>l <Cmd>call meflib#tools#file_list()<CR>
-" }}}
 " termonal commandを快適に使えるようにする {{{
 command! -nargs=? -complete=customlist,meflib#tools#term_comp  Terminal call meflib#tools#Terminal(<f-args>)
 " }}}
