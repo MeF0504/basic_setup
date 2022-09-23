@@ -124,7 +124,7 @@ else
     let s:st_filename1 = "%f ". s:st_status." "
 endif
 " winwidthが60より短い場合はファイル名のみ
-let s:st_filename2 = " %t ".s:st_status." "
+let s:st_filename2 = "%t ".s:st_status." "
 " 切り詰め位置
 let s:st_turn = "%<"
 " 右端に表示
