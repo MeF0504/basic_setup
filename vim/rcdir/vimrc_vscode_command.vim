@@ -68,3 +68,9 @@ nnoremap zO <Cmd>call VSCodeNotify('editor.unfoldAll')<CR>
 nnoremap za <Cmd>call VSCodeNotify('editor.toggleFold')<CR>
 " }}}
 
+" book marks {{{
+nnoremap <leader>mm <Cmd>call VSCodeNotify('bookmarks.toggle')<CR>
+nnoremap <leader>mi <Cmd>call VSCodeNotify('bookmarks.toggleLabeled')<CR>
+nnoremap <leader>ma <Cmd>call VSCodeNotify('bookmarks.list')<CR>
+" }}}
+
