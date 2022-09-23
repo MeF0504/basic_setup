@@ -326,7 +326,6 @@ def main_conf(args):
                 'screenrc': '~/.screenrc',
                 'marp/marp_MeFtheme.css': '~/.marp/marp_MeFtheme.css',
                 'tigrc':  '~/.tigrc',
-                'fish/fish_variables': Path(args.conf_home)/'fish/fish_variables',
                 'fish/config.fish': Path(args.conf_home)/'fish/config.fish',
                 'fish/functions': Path(args.conf_home)/'fish/functions',
                 }
@@ -343,7 +342,6 @@ def main_conf(args):
                   'matplotlibrc': Path(args.conf_home)/'matplotlib/matplotlibrc',
                   'gitignore_global': '~/.gitignore_global',
                   'screenrc': '~/.screenrc',
-                  'fish/fish_variables': Path(args.conf_home)/'fish/fish_variables',
                   'fish/config.fish': Path(args.conf_home)/'fish/config.fish',
                   'fish/functions': Path(args.conf_home)/'fish/functions',
                 }
