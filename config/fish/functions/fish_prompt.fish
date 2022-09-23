@@ -6,6 +6,7 @@ function _root_prompt
 end
 
 function _prompt_fish
+    printf '%s%s' (set_color -b black) (set_color white)
     switch (echo (random) % 6 | bc)
         case 0
             printf '%s-%s ' \U1f41f $SHLVL
@@ -20,18 +21,26 @@ function _prompt_fish
         case 5
             printf '%s-%s ' \U1f988 $SHLVL
     end
+    printf '%s' (set_color normal)
 end
 
 function _prompt_time
-    printf '%s%s%s ' (set_color brgreen) (date "+%H:%M") (set_color normal)
+    printf '%s%s%s%s%s%s' \
+    (set_color -b brgreen) (set_color black) \
+    (date "+%H:%M") \
+    (set_color brgreen) (set_color -b red) \Ue0b0
 end
 
 function _prompt_user
-    printf '%s%s%s ' (set_color red) $USER (set_color normal)
+    printf '%s%s%s%s%s%s%s ' (set_color -b red) (set_color black) \
+    $USER (set_color -b normal) (set_color red) \Ue0c6 \
+    (set_color normal)
 end
 
 function _prompt_pwd
-    printf '%s%s%s ' (set_color -b 004090) $PWD (set_color normal)
+    printf '%s%s%s%s%s' (set_color -b 004090) $PWD \
+    (set_color -b normal) (set_color 004090) \Ue0b4 \
+    (set_color normal)
 end
 
 function _prompt_end
@@ -52,7 +61,12 @@ end
 
 function _prompt_jobs
     if string length -q -- (jobs)
-        printf '%s(J:%s)%s ' (set_color -b magenta) (jobs|wc -l|sed -e "s/ //g") (set_color normal)
+        printf '%s%s%s%s(J:%s)%s%s%s%s  ' \
+        (set_color magenta) \Ue0c7 \
+        (set_color -b magenta) (set_color white)\
+        (jobs|wc -l|sed -e "s/ //g") \
+        (set_color -b normal) (set_color magenta) \Ue0c0 \
+        (set_color normal)
     end
 end
 
@@ -90,6 +104,7 @@ end
 # }}}
 
 
+# require Nerd Font.
 function fish_prompt --description 'Informative prompt'
     #Save the return status of the previous command
     set -l last_pipestatus $pipestatus
@@ -112,7 +127,7 @@ function fish_prompt --description 'Informative prompt'
         _prompt_time
         _prompt_user
         _prompt_jobs
-        _prompt_end
+        # _prompt_end
     end
 end
 
