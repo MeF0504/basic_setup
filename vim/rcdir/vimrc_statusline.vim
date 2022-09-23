@@ -20,11 +20,17 @@ endif
 " let s:show_ft_ff = 1
 " file format 設定
 function! <SID>get_fileformat(short) abort
+    let ff = &fileformat
     if !(line('.')%5==1)
+        if !a:short && meflib#get('load_plugin', 0, 'nerdfont')
+            let fa = {'unix': 0xf17c, 'mac': 0xf179, 'dos': 0xf17a}
+            if has_key(fa, ff)
+                return printf('%s ', nr2char(fa[ff]))
+            endif
+        endif
         return ''
     endif
 
-    let ff = &fileformat
     if a:short
         " do nothing
     elseif ff == 'unix'
@@ -106,12 +112,23 @@ function! s:get_percentage() abort
     if !meflib#get('load_plugin', 0, 'nerdfont')
         return '[%p%%]'
     endif
-    let per = 10*line('.')/line('$')
-    if per >= 9
-        return nr2char(0xf578)
+
+    " moon
+    let moon = range(27)
+    let per = 1.0*line('.')/line('$')
+    if per ==1 || per == 0
+        return nr2char(0xe3e3).' '
     else
-        return nr2char(0xf579+per)
+        let idx = float2nr(per*len(moon))
+        return nr2char(moon[idx]+0xe3c8).' '
     endif
+    " battery
+    " let per = 10*line('.')/line('$')
+    " if per >= 9
+    "     return nr2char(0xf578)
+    " else
+    "     return nr2char(0xf579+per)
+    " endif
 endfunction
 
 " 修正フラグ 読込専用 ヘルプ preview_window
