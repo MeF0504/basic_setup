@@ -17,11 +17,12 @@ else
     let s:sid = expand('<SID>')
 endif
 
+let s:per_line = 5
 " let s:show_ft_ff = 1
 " file format 設定
 function! <SID>get_fileformat(short) abort
     let ff = &fileformat
-    if !(line('.')%5==1)
+    if !(line('.')%s:per_line==1)
         if !a:short && meflib#get('load_plugin', 0, 'nerdfont')
             let fa = {'unix': 0xf17c, 'mac': 0xf179, 'dos': 0xf17a}
             if has_key(fa, ff)
@@ -49,7 +50,7 @@ endfunction
 
 " file type 設定
 function! s:get_filetype() abort
-    if line('.')%5==1
+    if line('.')%s:per_line==1
         return printf(' %s ', &filetype)
     else
         if meflib#get('load_plugin', 0, 'nerdfont')
@@ -109,7 +110,8 @@ function! <SID>get_rel_filename(status) abort
 endfunction
 
 function! s:get_percentage() abort
-    if !meflib#get('load_plugin', 0, 'nerdfont')
+    if !meflib#get('load_plugin', 0, 'nerdfont') ||
+                \ (line('.')%s:per_line==1)
         return '[%p%%]'
     endif
 
