@@ -218,13 +218,103 @@ fi
 #}}}
 
 # {{{ Terminal設定
+_get_zodiac() {
+    case "$(date '+%m')" in
+        01)
+            if [[ $(date '+%d') -lt 19 ]]; then
+                num=9
+            else
+                num=A
+            fi
+            ;;
+        02)
+            if [[ $(date '+%d') -lt 18 ]]; then
+                num=A
+            else
+                num=B
+            fi
+            ;;
+        03)
+            if [[ $(date '+%d') -lt 20 ]]; then
+                num=B
+            else
+                num=0
+            fi
+            ;;
+        04)
+            if [[ $(date '+%d') -lt 19 ]]; then
+                num=0
+            else
+                num=1
+            fi
+            ;;
+        05)
+            if [[ $(date '+%d') -lt 20 ]]; then
+                num=1
+            else
+                num=2
+            fi
+            ;;
+        06)
+            if [[ $(date '+%d') -lt 21 ]]; then
+                num=2
+            else
+                num=3
+            fi
+            ;;
+        07)
+            if [[ $(date '+%d') -lt 22 ]]; then
+                num=3
+            else
+                num=4
+            fi
+            ;;
+        08)
+            if [[ $(date '+%d') -lt 22 ]]; then
+                num=4
+            else
+                num=5
+            fi
+            ;;
+        09)
+            if [[ $(date '+%d') -lt 23 ]]; then
+                num=5
+            else
+                num=6
+            fi
+            ;;
+        10)
+            if [[ $(date '+%d') -lt 23 ]]; then
+                num=6
+            else
+                num=7
+            fi
+            ;;
+        11)
+            if [[ $(date '+%d') -lt 22 ]]; then
+                num=7
+            else
+                num=8
+            fi
+            ;;
+        12)
+            if [[ $(date '+%d') -lt 21 ]]; then
+                num=8
+            else
+                num=9
+            fi
+            ;;
+    esac
+    code=$(echo "obase=16; ibase=16; $num + 2648" | bc)
+    echo "\U$code"
+}
 ### terminal のtab nameをusername@場所 にする
 ### 場所はssh先ならhost name, localならカレントディレクトリ，$HOMEだとhomeになる
 case "${TERM}" in
 xterm|xterm-color|kterm|kterm-color|xterm-256color|screen-256color)
     if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
         tab_title_precmd() {
-            echo -ne "\033]0;\U1f386 ${USER}@${MYHOST}\007"
+            echo -ne "\033]0;$(_get_zodiac) ${USER}@${MYHOST}\007"
         }
     else
         tab_title_precmd() {
@@ -233,7 +323,7 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color|screen-256color)
             else
                 mypwd=$(basename $PWD)
             fi
-            echo -ne "\033]0;\U1f386 ${USER}@$mypwd\007"
+            echo -ne "\033]0;$(_get_zodiac) ${USER}@$mypwd\007"
         }
     fi
     ;;
