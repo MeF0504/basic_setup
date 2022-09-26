@@ -18,7 +18,6 @@ else
 endif
 
 let s:per_line = 5
-" let s:show_ft_ff = 1
 " file format 設定
 function! <SID>get_fileformat(short) abort
     let ff = &fileformat
@@ -213,10 +212,7 @@ augroup slLocal
     autocmd!
     " on/off 設定
     autocmd WinEnter * if &buftype != 'quickfix' | let &statusline='%!'..s:sid..'Set_statusline(1)' | endif
+    autocmd TabEnter * if &buftype != 'quickfix' | let &statusline='%!'..s:sid..'Set_statusline(1)' | endif
     autocmd WinLeave * if &buftype != 'quickfix' | execute 'setlocal statusline=%!'..s:sid..'Set_statusline(0)' | endif
-    " autocmd CursorMoved * let s:show_ft_ff = 0
-    " autocmd CursorMovedI * let s:show_ft_ff = 0
-    " autocmd CursorHold * let s:show_ft_ff = 1
-    " autocmd CursorHoldI * let s:show_ft_ff = 1
 augroup END
 
