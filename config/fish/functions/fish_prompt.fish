@@ -6,7 +6,7 @@ function _root_prompt
 end
 
 function _prompt_fish
-    printf '%s%s' (set_color -b black) (set_color white)
+    printf '%s%s' (set_color -b 002060) (set_color white)
     switch (echo (random) % 6 | bc)
         case 0
             printf '%s-%s ' \U1f41f $SHLVL
@@ -21,30 +21,37 @@ function _prompt_fish
         case 5
             printf '%s-%s ' \U1f988 $SHLVL
     end
-    printf '%s' (set_color normal)
+    printf '%s%s%s%s' (set_color -b normal) (set_color 002060) \Ue0c6 (set_color normal)
 end
 
 function _prompt_time
-    printf '%s%s%s%s%s%s' \
+    printf '%s%s%s%s' \
     (set_color -b brgreen) (set_color black) \
-    (date "+%H:%M") \
-    (set_color brgreen) (set_color -b red) \Ue0b0
+    (date "+%H:%M") (set_color normal)
 end
 
 function _prompt_user
-    printf '%s%s%s%s%s%s%s ' (set_color -b red) (set_color black) \
-    $USER (set_color -b normal) (set_color red) \Ue0c6 \
+    printf '%s%s%s%s%s%s%s' \
+    (set_color brgreen) (set_color -b red) \Ue0b0 \
+    (set_color -b red) (set_color black) $USER \
     (set_color normal)
 end
 
 function _prompt_pwd
-    printf '%s%s%s%s%s' (set_color -b 004090) $PWD \
-    (set_color -b normal) (set_color 004090) \Ue0b4 \
+    printf '%s%s%s%s%s%s%s%s%s' (set_color -b normal) (set_color 006090) \Ue0c7 \
+    (set_color -b 006090) (set_color white)  $PWD \
+    (set_color -b normal) (set_color 006090) \Ue0c8 \
     (set_color normal)
 end
 
 function _prompt_end
-    printf '> '
+    printf '%s' (set_color -b normal)
+    if string length -q -- (jobs)
+        printf '%s' (set_color magenta)
+    else
+        printf '%s' (set_color red)
+    end
+    printf '%s%s ' \Ue0b0 (set_color normal)
 end
 
 function _prompt_host
@@ -61,11 +68,10 @@ end
 
 function _prompt_jobs
     if string length -q -- (jobs)
-        printf '%s%s%s%s(J:%s)%s%s%s%s  ' \
-        (set_color magenta) \Ue0c7 \
-        (set_color -b magenta) (set_color white)\
+        printf '%s%s%s%s%s(J:%s)%s' \
+        (set_color red) (set_color -b magenta) \Ue0b0 \
+        (set_color -b magenta) (set_color white) \
         (jobs|wc -l|sed -e "s/ //g") \
-        (set_color -b normal) (set_color magenta) \Ue0c0 \
         (set_color normal)
     end
 end
@@ -127,7 +133,7 @@ function fish_prompt --description 'Informative prompt'
         _prompt_time
         _prompt_user
         _prompt_jobs
-        # _prompt_end
+        _prompt_end
     end
 end
 
