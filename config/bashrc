@@ -100,7 +100,7 @@ export HISTIGNORE=pwd:history:ls
 
 # }}}
 
-# {{{ cd時の自動関数を作る {{{
+# cd時の自動関数を作る {{{
 # https://zenn.dev/hasu_83/articles/make-custom-cd
 autocd() {
     # ||: fail safe
