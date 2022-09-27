@@ -360,6 +360,10 @@ else
     let s:Max_WinWidth = 35
     let g:Tlist_Inc_Winwidth = 0
 endif
+function! s:taglist_his()
+    highlight MyTagListTagName cterm=None ctermfg=0 ctermbg=111 gui=NONE guifg=#101010 guibg=#a0b5ff
+endfunction
+call meflib#add('plugin_his', s:sid.'taglist_his')
 
 function! <SID>Open_taglist() abort
     " {{{
