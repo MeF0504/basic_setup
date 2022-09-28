@@ -114,22 +114,33 @@ function! s:get_percentage() abort
         return '[%p%%]'
     endif
 
-    " moon
-    let moon = range(27)
-    let per = 1.0*line('.')/line('$')
-    if per ==1 || per == 0
-        return nr2char(0xe3e3).' '
+    let st_per_type = meflib#get('st_per_type', '')
+    if st_per_type == 'moon'
+        let moon = range(27)
+        let per = 1.0*line('.')/line('$')
+        if per ==1 || per == 0
+            return nr2char(0xe3e3).' '
+        else
+            let idx = float2nr(per*len(moon))
+            return nr2char(moon[idx]+0xe3c8).' '
+        endif
+    elseif st_per_type == 'battery'
+        let per = 10*line('.')/line('$')
+        if per >= 9
+            return nr2char(0xf578)
+        else
+            return nr2char(0xf579+per)
+        endif
+    elseif st_per_type == 'clock'
+        let per = 12*line('.')/line('$')
+        if per == 12
+            return nr2char(0xe381).' '
+        else
+            return nr2char(0xe381+per).' '
+        endif
     else
-        let idx = float2nr(per*len(moon))
-        return nr2char(moon[idx]+0xe3c8).' '
+        return '[%p%%]'
     endif
-    " battery
-    " let per = 10*line('.')/line('$')
-    " if per >= 9
-    "     return nr2char(0xf578)
-    " else
-    "     return nr2char(0xf579+per)
-    " endif
 endfunction
 
 " 修正フラグ 読込専用 ヘルプ preview_window
