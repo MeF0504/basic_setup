@@ -56,7 +56,7 @@ end
 
 function _prompt_host
     if [ -n "$SSH_CLIENT" ]
-        printf '%s%s%s ' (set_color cyan) (prompt_hostname) (set_color normal)
+        printf '%s%s%s' (set_color cyan) (prompt_hostname) (set_color normal)
     else
         printf ''
     end
