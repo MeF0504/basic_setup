@@ -99,6 +99,22 @@ function! s:echo_ex(cmd, args='') abort
         endif
     elseif a:cmd ==# 'runtime'  " runtime 確認
         call meflib#tools#runtimepath()
+    elseif a:cmd ==# 'conv10'  " 10進数に変換
+        if !empty(a:args)
+            call meflib#tools#convert(10, a:args)
+        endif
+    elseif a:cmd ==# 'conv8'  " 8進数に変換
+        if !empty(a:args)
+            call meflib#tools#convert(8, a:args)
+        endif
+    elseif a:cmd ==# 'conv16'  " 16進数に変換
+        if !empty(a:args)
+            call meflib#tools#convert(16, a:args)
+        endif
+    elseif a:cmd ==# 'conv2'  " 2進数に変換
+        if !empty(a:args)
+            call meflib#tools#convert(2, a:args)
+        endif
     endif
 endfunction
 command! -nargs=+ -complete=customlist,meflib#tools#echo_comp Echo call s:echo_ex(<f-args>)

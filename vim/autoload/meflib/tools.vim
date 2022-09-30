@@ -882,12 +882,26 @@ endfunction
 
 " echo 拡張の補完 {{{
 function! meflib#tools#echo_comp(arglead, cmdline, cursorpos) abort
-    let comp_list = ['pand', 'env', 'runtime']
+    let comp_list = ['pand', 'env', 'runtime', 'conv10', 'conv8', 'conv2', 'conv16']
     let opt_num = len(split(a:cmdline, ' ', 1))
     if opt_num <= 2
         return filter(comp_list, '!stridx(v:val, tolower(a:arglead))')
     else
         return []
+    endif
+endfunction
+" }}}
+
+" 進数変換 {{{
+function! meflib#tools#convert(base, nr) abort
+    if a:base == 10
+        echo printf('%d', a:nr)
+    elseif a:base == 8
+        echo printf('%o', a:nr)
+    elseif a:base == 16
+        echo printf('%x', a:nr)
+    elseif a:base == 2
+        echo printf('%b', a:nr)
     endif
 endfunction
 " }}}
