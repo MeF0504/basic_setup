@@ -109,6 +109,23 @@ function _prompt_cnt_time
 end
 # }}}
 
+function _prompt_image
+    if [ (which imgcat) ]
+        set -l main_gif "$HOME/.config/fish/prompt/main.gif"
+        set -l git_gif "$HOME/.config/fish/prompt/git.gif"
+        if string length -q -- (__fish_git_prompt)
+            and [ -f $git_gif ]
+            imgcat $git_gif
+        else if [ -f $main_gif ]
+            imgcat $main_gif
+        else
+            printf '\n'
+        end
+    else
+        printf '\n'
+    end
+end
+
 
 # require Nerd Font.
 function fish_prompt --description 'Informative prompt'
@@ -129,7 +146,8 @@ function fish_prompt --description 'Informative prompt'
         _prompt_cnt_file
         _prompt_cnt_time
         printf '%s ' $pipestatus_string
-        printf '\n'
+        _prompt_image
+        # printf '\n' # imgcatで改行されるので...
         _prompt_time
         _prompt_user
         _prompt_jobs
