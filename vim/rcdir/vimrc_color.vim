@@ -190,6 +190,7 @@ function! <SID>my_color_set()
     " highlight ToCkeys ctermfg=10 guifg=Lime
     highlight default link Quote String
     highlight qfLineNr ctermfg=22 ctermbg=252 guifg=#205020 guibg=#d0d0d0
+    highlight QuickFixLine ctermfg=242 ctermbg=209 guifg=#505050 guibg=#fea085
     " }}}
 
     """ plugin highlights
