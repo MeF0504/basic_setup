@@ -1,7 +1,8 @@
 function _root_prompt
-    printf '%s@%s %s%s%s# ' $USER (prompt_hostname) (set -q fish_color_cwd_root
-                                                     and set_color $fish_color_cwd_root
-                                                     or set_color $fish_color_cwd) \
+    printf '%s@%s %s%s%s # ' $USER (prompt_hostname) \
+        (set -q fish_color_cwd_root
+        and set_color $fish_color_cwd_root
+        or set_color $fish_color_cwd) \
         (prompt_pwd) (set_color normal)
 end
 
