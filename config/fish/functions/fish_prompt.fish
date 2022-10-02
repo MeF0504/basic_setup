@@ -112,8 +112,11 @@ end
 
 function _prompt_image
     if [ (which imgcat) ]
-        set -l main_gif "$HOME/.config/fish/prompt/main.gif"
-        set -l git_gif "$HOME/.config/fish/prompt/git.gif"
+        if [ -z "$_prompt_gifpath" ]
+            set _prompt_gifpath "$HOME/.config/fish/prompt"
+        end
+        set -l main_gif "$_prompt_gifpath/main.gif"
+        set -l git_gif "$_prompt_gifpath/git.gif"
         if string length -q -- (__fish_git_prompt)
             and [ -f $git_gif ]
             imgcat $git_gif
