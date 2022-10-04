@@ -104,19 +104,25 @@ function! s:set_tabline()
                     if tab_len+len(title)+1+1 > width " +1=~
                         " cut the title if it is long.
                         let cut_length = len(title)-(width-tab_len-1-2-1) " -2=.., -1=~
-                        let cut_length = cut_length<0 ? 0 : cut_length
-                        let title = '..'.title[cut_length:]
+                        " let cut_length = cut_length<0 ? 0 : cut_length
+                        if cut_length > len(title)
+                            let title = ''
+                        else
+                            let title = '..'.title[cut_length:]
+                        endif
                         let tab_fin_l = 1
                         if debug
-                            let str .= '  cut: '.(tab_len+len(title)+1).'; '.title
+                            let str .= '  cut: '.cut_length.'; '.title
                         endif
                     endif
-                    let tab_len += len(title)+1
-                    let tmp_s = '%'.ctn_l.'T'
-                    let tmp_s .= '%#' . (ctn_l == cur_tab_no ? 'TabLineSel' : 'TabLine') . '#'
-                    let tmp_s .= title
-                    let tmp_s .= '%#TabLineFill# '
-                    let s = tmp_s.s
+                    if !empty(title)
+                        let tab_len += len(title)+1
+                        let tmp_s = '%'.ctn_l.'T'
+                        let tmp_s .= '%#' . (ctn_l == cur_tab_no ? 'TabLineSel' : 'TabLine') . '#'
+                        let tmp_s .= title
+                        let tmp_s .= '%#TabLineFill# '
+                        let s = tmp_s.s
+                    endif
                 else
                     " finish to add the left side.
                     let tab_fin_l = 1
@@ -143,22 +149,26 @@ function! s:set_tabline()
                         if cut_length > 0
                             let title = title[:cut_length].'..'
                             if debug
-                                let str .= '  cut: '.(tab_len+len(title)+1).'; '.title
-                            endif 
+                                let str .= '  cut: '.cut_length.'; '.title
+                            endif
                         else
-                            let title = '..'
+                            let title = ''
+                            let s .= '~'
+                            let tab_len += 1
                             if debug
                                 let str .= 'cut all: '.cut_length
                             endif
                         endif
                         let tab_fin_r = 1
                     endif
-                    let tab_len += len(title)+1
-                    let tmp_s = '%'.ctn_r.'T'
-                    let tmp_s .= '%#TabLine#'
-                    let tmp_s .= title
-                    let tmp_s .= '%#TabLineFill# '
-                    let s .= tmp_s
+                    if !empty(title)
+                        let tab_len += len(title)+1
+                        let tmp_s = '%'.ctn_r.'T'
+                        let tmp_s .= '%#TabLine#'
+                        let tmp_s .= title
+                        let tmp_s .= '%#TabLineFill# '
+                        let s .= tmp_s
+                    endif
                 else
                     " finish to add the right side.
                     let s .= '~'
