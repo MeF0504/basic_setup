@@ -110,10 +110,10 @@ class CopyClass():
         with open(dst, 'r', encoding='utf-8') as f:
             dst_str = f.readlines()
 
-        for line in difflib.unified_diff(src_str, dst_str, n=1,
-                fromfile=self.home_cut(src), tofile=self.home_cut(dst),
-                fromfiledate=src_dt.strftime('%m %d (%Y) %H:%M:%S'),
-                tofiledate=dst_dt.strftime('%m %d (%Y) %H:%M:%S')):
+        for line in difflib.unified_diff(dst_str, src_str, n=1,
+                fromfile=self.home_cut(dst), tofile=self.home_cut(src),
+                fromfiledate=dst_dt.strftime('%m %d (%Y) %H:%M:%S'),
+                tofiledate=src_dt.strftime('%m %d (%Y) %H:%M:%S')):
             line = line.replace('\n', '')
             if is_color and (line[0] == '+'):
                 col = FG256(12)
