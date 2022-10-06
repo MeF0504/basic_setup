@@ -194,13 +194,14 @@ call meflib#set('statusline', {
             \ })
 
 let s:def_statusline = &statusline
-function! <SID>Set_statusline(cur_win)
+function! <SID>Set_statusline(winid)
     let st_config = meflib#get('statusline', {'_':s:def_statusline})
     if (type(st_config) != type({})) || !has_key(st_config, '_')
         let st_config = {'_':s:def_statusline}
     endif
 
-    if a:cur_win == 0 && has_key(st_config, 'off')
+    let cur_win = win_getid()==a:winid
+    if cur_win == 0 && has_key(st_config, 'off')
         let st_str = st_config['off']
     else
         let st_str = st_config['_']
@@ -217,13 +218,19 @@ function! <SID>Set_statusline(cur_win)
 
     return st_str
 endfunction
-let &statusline = '%!'..s:sid..'Set_statusline(1)'
+let &statusline = printf('%%!%sSet_statusline(%d)', s:sid, win_getid())
 
 augroup slLocal
     autocmd!
     " on/off 設定
-    autocmd WinEnter * if &buftype != 'quickfix' | let &statusline='%!'..s:sid..'Set_statusline(1)' | endif
-    autocmd TabEnter * if &buftype != 'quickfix' | let &statusline='%!'..s:sid..'Set_statusline(1)' | endif
-    autocmd WinLeave * if &buftype != 'quickfix' | execute 'setlocal statusline=%!'..s:sid..'Set_statusline(0)' | endif
+    autocmd WinEnter * if &buftype != 'quickfix' |
+                \ let &statusline =
+                \ printf('%%!%sSet_statusline(%d)', s:sid, win_getid()) |
+                \ endif
+    " autocmd TabEnter * if &buftype != 'quickfix' | let &statusline='%!'..s:sid..'Set_statusline(win_getid())' | endif
+    autocmd WinLeave * if &buftype != 'quickfix' |
+                \ execute printf('setlocal statusline=%%!%sSet_statusline(%d)',
+                \ s:sid, win_getid()) |
+                \ endif
 augroup END
 
