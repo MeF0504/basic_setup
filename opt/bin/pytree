@@ -98,6 +98,10 @@ def get_file_list(args):
 
 
 def get_file_info(fpath):
+    if not os.path.exists(fpath):
+        # bloken link
+        return '\tfile not exists.'
+
     stat = os.stat(fpath)
 
     # access
