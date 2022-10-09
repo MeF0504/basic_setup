@@ -373,15 +373,15 @@ fi
 # {{{ その他設定，関数
 #chpwd関数を定義しておくとzshがcd後に勝手に実行してくれる。
 #function chpwd() {pwd; echo -ne "\033]0;${USER}@${HOST}\007"}
-IGNORE_FETCH= 
 function chpwd() {
     if [[ -n $OLD_PROMPT ]]; then
         pwd
     fi
-    # auto-fetch (VSCode だと別でauto-fetchしている気がするし，runの度に移動するので無視)
+    # auto-fetch (bashでもfishでも聞いてるし聞くことにした)
+    # (VSCode だと別でauto-fetchしている気がするし，runの度に移動するので無視)
     if [[ -e .git && "$TERM_PROGRAM" != "vscode" ]]; then
-        # don't execute git fetch if dir name is in $IGNORE_FETCH.
-        if [[ -z $(echo $IGNORE_FETCH | grep -e $(basename $(pwd))) ]]; then
+        read "yn?execute fetch? ([y]/n) "
+        if [ -z "$yn" ] || [ "$yn" = 'y' ]; then
             echo "fetching..."
             git fetch
         else
