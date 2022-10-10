@@ -37,6 +37,12 @@ fi
 
 # 使うvimも指定したい
 export _USE_VIM="$(which vim)"
+
+# DISPLAYがない場合は設定したほうが良いの？
+if [ -z "$DISPLAY" ] || [ "$DISPLAY" == "needs-to-be-defined" ]; then
+    echo 'set DISPLAY'
+    export DISPLAY=localhost:0.0
+fi
 #}}}
 ##{{{ Alias configuration
 # search command
