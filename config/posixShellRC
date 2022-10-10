@@ -237,8 +237,7 @@ add_env() { # {{{
     done
 }
 # }}}
-vi() { # {{{
-    # vi/vim wrapper
+vim_wrapper() { # {{{
     if [ -n "$_USE_VIM" ]; then
         local use_vim=$_USE_VIM
     else
@@ -246,6 +245,7 @@ vi() { # {{{
     fi
     $use_vim -p "$@"
 }
+alias vi=vim_wrapper
 # }}}
 weather() { # {{{
     # Tokyo, Sapporo, SanFrancisco, moon, etc..
