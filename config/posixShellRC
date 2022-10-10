@@ -34,6 +34,9 @@ if [[ -n $VIM ]]; then
 else
     export SHELL_INFO="${SHELL_INFO}-${SHLVL}"
 fi
+
+# 使うvimも指定したい
+export _USE_VIM="$(which vim)"
 #}}}
 ##{{{ Alias configuration
 # search command
@@ -66,8 +69,6 @@ alias df="df -h"
 # useful options
 alias su="su -l"
 alias grep="grep --color"
-# vim
-alias vi='vim -p'
 # move files to trash.
 alias del="mv_Trash.py"
 ## if use terminology [https://www.enlightenment.org/about-terminology.md]
@@ -77,7 +78,7 @@ if [ "$TERMINOLOGY" = 1 ]; then
         if [ "$#" -eq 0 ]; then
             tyls -m
         else
-            ls $@
+            ls "$@"
         fi
     }
     alias ls="_ls_wrapper"
@@ -236,6 +237,16 @@ add_env() { # {{{
     done
 }
 # }}}
+vi() { # {{{
+    # vi/vim wrapper
+    if [ -n "$_USE_VIM" ]; then
+        local use_vim=$_USE_VIM
+    else
+        local use_vim="vim"
+    fi
+    $use_vim -p "$@"
+}
+# }}}
 weather() { # {{{
     # Tokyo, Sapporo, SanFrancisco, moon, etc..
     if [[ "$1" =~ "-h" ]]; then
@@ -312,7 +323,12 @@ get_term_name() { # {{{
 manvim() { # {{{
     # open manual in vim
     # https://rcmdnk.com/blog/2014/07/20/computer-vim/
-    man $@ 2>&1 | col -bx | vim -R -c 'set ft=man nolist nomod noma' -
+    if [ -n "$_USE_VIM" ]; then
+        local use_vim=$_USE_VIM
+    else
+        local use_vim="vim"
+    fi
+    man "$@" 2>&1 | col -bx | $use_vim -R -c 'set ft=man nolist nomod noma' -
 } # }}}
 echoenvall(){ # {{{
     python -c 'import os;[print("{} :\t{}".format(k, v)) for k,v in os.environ.items()]'
@@ -321,5 +337,15 @@ calc() { # {{{
     # here document?
     bc -l <<< "$@"
 } # }}}
+findvim() { # {{{
+    # find file and open it by vim
+    if [ -n "$_USE_VIM" ]; then
+        local use_vim=$_USE_VIM
+    else
+        local use_vim="vim"
+    fi
+    $use_vim -p $(find "$@")
+}
+# }}}
 #}}}
 
