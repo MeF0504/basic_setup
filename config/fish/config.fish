@@ -7,6 +7,8 @@ end
 # environmental variables {{{
 # ls
 set LSCOLORS Exfxcxdxbxegedabagbcbd
+
+set _USED_VIM vim
 # }}}
 
 # alias (copy from posixShellRC) {{{
@@ -40,9 +42,6 @@ alias df="df -h"
 
 alias su="su -l"
 alias grep="grep --color"
-
-# vim
-alias vi='vim -p'
 
 # move files to trash.
 alias del="mv_Trash.py"
