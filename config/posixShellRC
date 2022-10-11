@@ -39,7 +39,7 @@ fi
 export _USE_VIM="$(which vim)"
 
 # DISPLAYがない場合は設定したほうが良いの？
-if [ -z "$DISPLAY" ] || [ "$DISPLAY" = "needs-to-be-defined" ]; then
+if [[ -z "$DISPLAY" || "$DISPLAY" = "needs-to-be-defined" ]]; then
     echo 'set DISPLAY'
     export DISPLAY=localhost:0.0
 fi
@@ -90,12 +90,12 @@ if [ "$TERMINOLOGY" = 1 ]; then
     alias ls="_ls_wrapper"
 fi
 ## remote host
-if [ "$SSH_CLIENT" != "" ]; then
+if [ -n "$SSH_CLIENT" ]; then
     alias su='echo "su is not available in remote host"'
     alias sudo='echo "sudo is not available in remote host"&&'
 fi
 # vim terminal
-if [ "${VIM_TERMINAL}"  != "" ]; then
+if [ -n "${VIM_TERMINAL}" ]; then
     alias vim="echo 'already opened vim.'"
     alias vi="echo 'already opened vim.'"
 fi
