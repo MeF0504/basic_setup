@@ -52,7 +52,9 @@ function! s:get_filetype() abort
     if line('.')%s:per_line==1
         return printf(' %s ', &filetype)
     else
-        if meflib#get('load_plugin', 0, 'nerdfont')
+        if empty(&filetype)
+            return ''
+        elseif meflib#get('load_plugin', 0, 'nerdfont')
             try
                 return printf('%s ', nerdfont#find())
             endtry
