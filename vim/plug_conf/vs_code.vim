@@ -24,5 +24,7 @@ call meflib#add('plugin_his', expand('<SID>').'matchup_his')
 Plug 'mattn/vim-sonictemplate', PlugCond(1, {'on': 'Template'})
 " {{{
 let g:sonictemplate_vim_template_dir = meflib#basic#get_conf_dir()..'plug_conf/templates'
+let g:sonictemplate_key = "\<c-q>a"
+let g:sonictemplate_intelligent_key = "\<c-q>A"
 " }}}
 
