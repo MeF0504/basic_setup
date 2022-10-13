@@ -883,12 +883,19 @@ endfunction
 " echo 拡張の補完 {{{
 function! meflib#tools#echo_comp(arglead, cmdline, cursorpos) abort
     let comp_list = ['pand', 'env', 'runtime', 'conv10', 'conv8', 'conv2', 'conv16']
-    let opt_num = len(split(a:cmdline, ' ', 1))
-    if opt_num <= 2
+    let opt_num = len(split(a:cmdline, ' '))
+    if opt_num == 1
+        " :Echo <tab>
         return filter(comp_list, '!stridx(v:val, tolower(a:arglead))')
-    else
-        return []
+    elseif opt_num == 2
+        if !empty(a:arglead)
+            " :Echo p<tab>
+            return filter(comp_list, '!stridx(v:val, tolower(a:arglead))')
+        else
+            " :Echo pand <tab>
+        endif
     endif
+    return []
 endfunction
 " }}}
 
