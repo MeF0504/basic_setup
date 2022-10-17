@@ -1041,10 +1041,19 @@ let g:lsp_peek_alignment = 'top'
 let g:lsp_signature_help_enabled = 0
 " cとかjsでcode actionを無効化
 let g:lsp_document_code_action_signs_enabled = 0
+" Nerd font ならwarningとかも変えようか
+if meflib#get('load_plugin', 0, 'nerdfont')
+    let g:lsp_diagnostics_signs_warning = {'text': nr2char(0xea6c)}
+    let g:lsp_diagnostics_signs_error = {'text': nr2char(0xea87)}
+endif
 " highlights
 function! <SID>lsp_his() abort
     highlight default Lsp_Running ctermfg=233 ctermbg=183 guifg=#000000 guibg=#c8a0ef
     highlight default Lsp_NotRunning ctermfg=255 ctermbg=52 guifg=#eeeeee guibg=#702030
+    if meflib#get('load_plugin', 0, 'nerdfont')
+        highlight LspWarningText ctermfg=226 ctermbg=None guifg=#f0f000 guibg=NONE
+        highlight LspErrorText ctermfg=124 ctermbg=None guifg=#d00000 guibg=NONE
+    endif
 endfunction
 call meflib#add('plugin_his', s:sid.'lsp_his')
 
