@@ -20,7 +20,7 @@ function! PlugCond(cond, ...)
 endfunction
 
 " condition check of loading plugins. {{{
-call meflib#set('load_plugin', {})
+" call meflib#set('load_plugin', {})
 if exists('*searchcount') && exists('*popup_create')
     call meflib#set('load_plugin', 1, 'hitspop')
 endif
