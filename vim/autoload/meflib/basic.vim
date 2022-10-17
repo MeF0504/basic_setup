@@ -18,14 +18,16 @@ endfunction
 
 let s:local_var_dict = {}
 let s:local_var_def_dict = {}
-function! meflib#basic#set_local_var(var_name, val, key='') abort
-    if empty(a:key)
-        let s:local_var_dict[a:var_name] = a:val
+function! meflib#basic#set_local_var(var_name, args1, args2=v:null) abort
+    if type(a:args2) == type(v:null)
+        " args1 = val
+        let s:local_var_dict[a:var_name] = a:args1
     else
+        " args1 = key, args2 = val
         if !has_key(s:local_var_dict, a:var_name)
             let s:local_var_dict[a:var_name] = {}
         endif
-        let s:local_var_dict[a:var_name][a:key] = a:val
+        let s:local_var_dict[a:var_name][a:args1] = a:args2
     endif
     if has_key(s:local_var_def_dict, a:var_name)
         unlet s:local_var_def_dict[a:var_name]
@@ -59,7 +61,7 @@ function! s:show_vars(var_dict) abort
     endfor
 endfunction
 
-function! meflib#basic#get_local_var(var_name, default, key='') abort
+function! meflib#basic#get_local_var(var_name, args1, args2=v:null) abort
     if empty(a:var_name)
         call s:show_vars(s:local_var_dict)
         echohl Special
@@ -67,26 +69,30 @@ function! meflib#basic#get_local_var(var_name, default, key='') abort
         echohl None
         call s:show_vars(s:local_var_def_dict)
     elseif has_key(s:local_var_dict, a:var_name)
-        if empty(a:key)
+        if type(a:args2) == type(v:null)
             return s:local_var_dict[a:var_name]
         else
+            " args1 = key, args2 = default
             let local_var = s:local_var_dict[a:var_name]
-            if has_key(local_var, a:key)
-                return s:local_var_dict[a:var_name][a:key]
+            if has_key(local_var, a:args1)
+                return s:local_var_dict[a:var_name][a:args1]
             else
-                return a:default
+                return a:args2
             endif
         endif
     else
-        if empty(a:key)
-            let s:local_var_def_dict[a:var_name] = a:default
+        if type(a:args2) == type(v:null)
+            let default = a:args1
+            let s:local_var_def_dict[a:var_name] = default
         else
+            let key = a:args1
+            let default = a:args2
             if !has_key(s:local_var_def_dict, a:var_name)
                 let s:local_var_def_dict[a:var_name] = {}
             endif
-            let s:local_var_def_dict[a:var_name][a:key] = a:default
+            let s:local_var_def_dict[a:var_name][key] = default
         endif
-        return a:default
+        return default
     endif
 endfunction
 

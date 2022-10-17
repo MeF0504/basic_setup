@@ -22,7 +22,7 @@ let s:per_line = 5
 function! <SID>get_fileformat(short) abort
     let ff = &fileformat
     if !(line('.')%s:per_line==1)
-        if !a:short && meflib#get('load_plugin', 0, 'nerdfont')
+        if !a:short && meflib#get('load_plugin', 'nerdfont', 0)
             let fa = {'unix': 0xf17c, 'mac': 0xf179, 'dos': 0xf17a}
             if has_key(fa, ff)
                 return printf('%s ', nr2char(fa[ff]))
@@ -54,7 +54,7 @@ function! s:get_filetype() abort
     else
         if empty(&filetype)
             return ''
-        elseif meflib#get('load_plugin', 0, 'nerdfont')
+        elseif meflib#get('load_plugin', 'nerdfont', 0)
             try
                 return printf('%s ', nerdfont#find())
             endtry
@@ -97,7 +97,7 @@ function! <SID>get_mode()
         let mode_sep = '%#Mode_ELSEs#'..nr2char(0xe0b0)
     endif
     " separator
-    if meflib#get('load_plugin', 0, 'nerdfont')
+    if meflib#get('load_plugin', 'nerdfont', 0)
         let st_mode_split = mode_sep..'%#StatusLine#'
     else
         let st_mode_split = ' %#StatusLine# '
@@ -111,7 +111,7 @@ function! <SID>get_rel_filename(status) abort
 endfunction
 
 function! s:get_percentage() abort
-    if !meflib#get('load_plugin', 0, 'nerdfont') ||
+    if !meflib#get('load_plugin', 'nerdfont', 0) ||
                 \ (line('.')%s:per_line==1)
         return '[%p%%]'
     endif

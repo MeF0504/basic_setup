@@ -84,7 +84,7 @@ function! <SID>my_color_set_inkpot()
     highlight CursorWord1 ctermbg=235 cterm=None guibg=#262626 gui=NONE
     highlight Quote ctermfg=183 ctermbg=None guifg=#d7afff guibg=NONE
 endfunction
-call meflib#set('my_color_set', s:sid.'my_color_set_inkpot', 'inkpot')
+call meflib#set('my_color_set', 'inkpot', s:sid.'my_color_set_inkpot')
 
 function! <SID>my_color_set_evening()
     highlight Normal ctermbg=233 guibg=#121212
@@ -94,7 +94,7 @@ function! <SID>my_color_set_evening()
         highlight DiffText ctermfg=15 ctermbg=9 guifg=White guibg=Red
 endfunction
 " ['my_color_set', func_name, colors_name]
-call meflib#set('my_color_set', s:sid.'my_color_set_evening', 'evening')
+call meflib#set('my_color_set', 'evening', s:sid.'my_color_set_evening')
 
 function! <SID>my_color_set()
     " colorscheme specified setings

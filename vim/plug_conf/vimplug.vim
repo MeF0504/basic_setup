@@ -195,8 +195,8 @@ function! s:quickrun_hook() abort
     if has('job')
         let g:quickrun_config._.runner = 'job'
         let quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
-        let cur_status = meflib#get('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
-        call meflib#set('statusline', cur_status..quickrun_status, '_')
+        let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
+        call meflib#set('statusline', '_', cur_status..quickrun_status)
     endif
 
     " python
@@ -311,8 +311,8 @@ function! s:quickrun_nvim_job_hook() abort
     let g:quickrun_config._ = get(g:quickrun_config, '_', {})
     let g:quickrun_config._.runner = 'neovim_job'
     let quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
-    let cur_status = meflib#get('statusline', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]", '_')
-    call meflib#set('statusline', cur_status..quickrun_status, '_')
+    let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
+    call meflib#set('statusline', '_', cur_status..quickrun_status)
 endfunction
 " plugin directoryが無いとlazy loadはされないらしい。それもそうか。
 autocmd PlugLocal User vim-quickrun if has('nvim') | call s:quickrun_nvim_job_hook() | endif
@@ -583,9 +583,9 @@ endfunction
 " }}}
 
 " 検索時にhit数をcountしてくれるplugin
-Plug 'osyo-manga/vim-anzu', PlugCond(!meflib#get('load_plugin', 0, 'hitspop'), {'on':[]})
+Plug 'osyo-manga/vim-anzu', PlugCond(!meflib#get('load_plugin', 'hitspop', 0), {'on':[]})
 "" vim-anzu {{{
-if !meflib#get('load_plugin', 0, 'hitspop')
+if !meflib#get('load_plugin', 'hitspop', 0)
     " highlights
     function! <SID>anzu_his() abort
         highlight default AnzuPopup ctermfg=224 ctermbg=238 guifg=#ffd7d7 guibg=#444444
@@ -719,9 +719,9 @@ Plug 'roxma/vim-hug-neovim-rpc', PlugCond(!has('nvim'))
 Plug 'tpope/vim-commentary'
 
 " 検索のhit数をpopupで表示するplugin
-Plug 'obcat/vim-hitspop', PlugCond(meflib#get('load_plugin', 0, 'hitspop'))
+Plug 'obcat/vim-hitspop', PlugCond(meflib#get('load_plugin', 'hitspop', 0))
 " {{{
-if meflib#get('load_plugin', 0, 'hitspop')
+if meflib#get('load_plugin', 'hitspop', 0)
     " https://zenn.dev/obcat/articles/4ef6822de53b643bbd01
     " :nohlsearch で消える→ 自分は\で消える
     " 右下に表示
@@ -763,10 +763,10 @@ call meflib#add('plugin_his', s:sid.'cursorword_his')
 
 " An ecosystem of Vim/Neovim which allows developers to write plugins in Deno. だそうです
 " for ddc.vim
-Plug 'vim-denops/denops.vim', PlugCond(meflib#get('load_plugin', 0, 'denops'))
+Plug 'vim-denops/denops.vim', PlugCond(meflib#get('load_plugin', 'denops', 0))
 
 " denops test
-Plug 'vim-denops/denops-helloworld.vim', PlugCond(meflib#get('load_plugin', 0, 'denops'))
+Plug 'vim-denops/denops-helloworld.vim', PlugCond(meflib#get('load_plugin', 'denops', 0))
 
 " Filer
 " fern plugins {{{
@@ -810,7 +810,7 @@ let g:fern_search_ctrlp_open_file = 1
 Plug 'lambdalisue/fern-renderer-nerdfont.vim', PlugCond(1, {'on': 'Fern'})
 " fern-nerd-font {{{
 function! s:fern_renderer_nerdfont() abort
-    if meflib#get('load_plugin', 0, 'nerdfont')
+    if meflib#get('load_plugin', 'nerdfont', 0)
         let g:fern#renderer = "nerdfont"
     else
         let g:fern#renderer = "default"
@@ -975,7 +975,7 @@ Plug 'Shougo/neosnippet.vim'
 " vim script 用補完 plugin
 Plug 'Shougo/neco-vim', PlugCond(1, {'for': 'vim'})
 
-let g:l_deo = meflib#get('load_plugin', 0, 'deoplete')
+let g:l_deo = meflib#get('load_plugin', 'deoplete', 0)
 " dark powered 補完plugin
 Plug 'Shougo/deoplete.nvim', PlugCond(g:l_deo, {'on':[]})
 " {{{
@@ -1042,7 +1042,7 @@ let g:lsp_signature_help_enabled = 0
 " cとかjsでcode actionを無効化
 let g:lsp_document_code_action_signs_enabled = 0
 " Nerd font ならwarningとかも変えようか
-if meflib#get('load_plugin', 0, 'nerdfont')
+if meflib#get('load_plugin', 'nerdfont', 0)
     let g:lsp_diagnostics_signs_warning = {'text': nr2char(0xea6c)}
     let g:lsp_diagnostics_signs_error = {'text': nr2char(0xea87)}
 endif
@@ -1050,7 +1050,7 @@ endif
 function! <SID>lsp_his() abort
     highlight default Lsp_Running ctermfg=233 ctermbg=183 guifg=#000000 guibg=#c8a0ef
     highlight default Lsp_NotRunning ctermfg=255 ctermbg=52 guifg=#eeeeee guibg=#702030
-    if meflib#get('load_plugin', 0, 'nerdfont')
+    if meflib#get('load_plugin', 'nerdfont', 0)
         highlight LspWarningText ctermfg=226 ctermbg=None guifg=#f0f000 guibg=NONE
         highlight LspErrorText ctermfg=124 ctermbg=None guifg=#d00000 guibg=NONE
     endif
@@ -1226,7 +1226,7 @@ Plug 'mattn/vim-lsp-settings', PlugCond(0, {})
 call meflib#add('lazy_plugins', 'vim-lsp-settings')
 
 " 新世代(2021) dark deno-powered completion framework
-let g:l_ddc = meflib#get('load_plugin',0,'denops')
+let g:l_ddc = meflib#get('load_plugin', 'denops', 0)
 " plugins for ddc.vim {{{
 Plug 'Shougo/ddc-around', PlugCond(g:l_ddc)
 Plug 'Shougo/ddc-matcher_head', PlugCond(g:l_ddc)

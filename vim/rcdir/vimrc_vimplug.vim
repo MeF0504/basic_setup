@@ -22,17 +22,17 @@ endfunction
 " condition check of loading plugins. {{{
 " call meflib#set('load_plugin', {})
 if exists('*searchcount') && exists('*popup_create')
-    call meflib#set('load_plugin', 1, 'hitspop')
+    call meflib#set('load_plugin', 'hitspop', 1)
 endif
 if executable('deno')
     if has('patch-8.2.3452') || has('nvim-0.6.0')
-        call meflib#set('load_plugin', 1, 'denops')
+        call meflib#set('load_plugin', 'denops', 1)
     endif
 endif
-if !meflib#get('load_plugin', 0, 'denops')
+if !meflib#get('load_plugin', 'denops', 0)
     if has('python3')
         if v:version>=801 || has('nvim-0.3.0')
-            call meflib#set('load_plugin', 1, 'deoplete')
+            call meflib#set('load_plugin', 'deoplete', 1)
         endif
     endif
 endif

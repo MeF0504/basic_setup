@@ -5,7 +5,7 @@ Plug 'MeF0504/vim-shiki'
 function! <SID>my_color_set_shiki()
     highlight Directory ctermfg=34 guifg=#00af00
 endfunction
-call meflib#set('my_color_set', expand('<SID>').'my_color_set_shiki', 'shiki')
+call meflib#set('my_color_set', 'shiki', expand('<SID>').'my_color_set_shiki')
 " }}}
 
 Plug 'altercation/vim-colors-solarized'
@@ -36,7 +36,7 @@ function! <SID>my_color_set_PaperColor()
         highlight IndentGuidesEven ctermfg=225 ctermbg=225 guifg=#ffe0fd guibg=#ffe0fd
     endif
 endfunction
-call meflib#set('my_color_set', expand('<SID>').'my_color_set_PaperColor', 'PaperColor')
+call meflib#set('my_color_set', 'PaperColor', expand('<SID>').'my_color_set_PaperColor')
 " }}}
 
 Plug 'google/vim-colorscheme-primary'
@@ -61,7 +61,7 @@ function! <SID>my_color_set_primary()
     highlight SpecialKey ctermfg=242 ctermbg=None guifg=#6c6c6c guibg=NONE
     highlight CursorWord1 ctermbg=239 cterm=None guibg=#4e4e4e gui=NONE
 endfunction
-call meflib#set('my_color_set', expand('<SID>').'my_color_set_primary', 'primary')
+call meflib#set('my_color_set', 'primary', expand('<SID>').'my_color_set_primary')
 " }}}
 
 Plug 'haishanh/night-owl.vim'
@@ -79,7 +79,7 @@ function! <SID>my_color_set_night_owl()
 
     highlight HiTagImports ctermfg=227 guifg=#f0e860
 endfunction
-call meflib#set('my_color_set', expand('<SID>').'my_color_set_night_owl', 'night_owl')
+call meflib#set('my_color_set', 'night_owl', expand('<SID>').'my_color_set_night_owl')
 " }}}
 
 Plug 'MeF0504/inkpotter.vim'
@@ -90,7 +90,7 @@ function! <SID>my_color_set_inkpotter()
 
     highlight HiTagImports ctermfg=225 guifg=#f0b7f0
 endfunction
-call meflib#set('my_color_set', expand('<SID>').'my_color_set_inkpotter', 'inkpotter')
+call meflib#set('my_color_set', 'inkpotter', expand('<SID>').'my_color_set_inkpotter')
 " }}}
 
 Plug 'ulwlu/elly.vim'
@@ -114,7 +114,7 @@ function! <SID>my_color_set_modus_operandi() abort
     highlight TJSelect guibg=#c0e8ff guifg=#000000
     highlight Title gui=Bold guifg=#580030
 endfunction
-call meflib#set('my_color_set', expand('<SID>').'my_color_set_modus_operandi', 'modus_operandi')
+call meflib#set('my_color_set', 'modus_operandi', expand('<SID>').'my_color_set_modus_operandi')
 " }}}
 
 Plug 'sainnhe/everforest'
@@ -128,6 +128,6 @@ function! <SID>my_color_set_silverhand() abort
     highlight IndentGuidesEven guifg=#8a50bf guibg=#8a50bf
     highlight IndentGuidesOdd guifg=#00a5be guibg=#00a5be
 endfunction
-call meflib#set('my_color_set', expand('<SID>').'my_color_set_silverhand', 'silverhand')
+call meflib#set('my_color_set', 'silverhand', expand('<SID>').'my_color_set_silverhand')
 " }}}
 
