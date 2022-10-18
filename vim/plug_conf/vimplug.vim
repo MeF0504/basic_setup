@@ -1043,16 +1043,29 @@ let g:lsp_signature_help_enabled = 0
 let g:lsp_document_code_action_signs_enabled = 0
 " Nerd font ならwarningとかも変えようか
 if meflib#get('load_plugin', 'nerdfont', 0)
-    let g:lsp_diagnostics_signs_warning = {'text': nr2char(0xea6c)}
-    let g:lsp_diagnostics_signs_error = {'text': nr2char(0xea87)}
+    let g:lsp_diagnostics_signs_warning = {'text': nr2char(0xf071)}
+    let g:lsp_diagnostics_signs_error = {'text': nr2char(0xfb8a)}
 endif
 " highlights
 function! <SID>lsp_his() abort
     highlight default Lsp_Running ctermfg=233 ctermbg=183 guifg=#000000 guibg=#c8a0ef
     highlight default Lsp_NotRunning ctermfg=255 ctermbg=52 guifg=#eeeeee guibg=#702030
     if meflib#get('load_plugin', 'nerdfont', 0)
-        highlight LspWarningText ctermfg=226 ctermbg=None guifg=#f0f000 guibg=NONE
-        highlight LspErrorText ctermfg=124 ctermbg=None guifg=#d00000 guibg=NONE
+        " copy highlight of SignColumn
+        let hi_sc = execute('highlight SignColumn')->split(' ')
+        let cidx = match(hi_sc, 'ctermbg')
+        let ctermbg = cidx==-1 ? 'None' : hi_sc[cidx][8:]
+        let gidx = match(hi_sc, 'guibg')
+        let guibg = gidx==-1 ? 'NONE' : hi_sc[gidx][6:]
+        if &background == 'dark'
+            let cwarn = "226"
+            let gwarn = "#f0f000"
+        else
+            let cwarn = "136"
+            let gwarn = "#b0a000"
+        endif
+        execute printf("highlight LspWarningText ctermfg=%s ctermbg=%s guifg=%s guibg=%s", cwarn, ctermbg, gwarn, guibg)
+        execute printf("highlight LspErrorText ctermfg=124 ctermbg=%s guifg=#d00000 guibg=%s", ctermbg, guibg)
     endif
 endfunction
 call meflib#add('plugin_his', s:sid.'lsp_his')
