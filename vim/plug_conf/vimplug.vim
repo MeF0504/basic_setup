@@ -1064,8 +1064,8 @@ function! <SID>lsp_his() abort
             let cwarn = "136"
             let gwarn = "#b0a000"
         endif
-        execute printf("highlight LspWarningText ctermfg=%s ctermbg=%s guifg=%s guibg=%s", cwarn, ctermbg, gwarn, guibg)
-        execute printf("highlight LspErrorText ctermfg=124 ctermbg=%s guifg=#d00000 guibg=%s", ctermbg, guibg)
+        execute printf("highlight default LspWarningText ctermfg=%s ctermbg=%s guifg=%s guibg=%s", cwarn, ctermbg, gwarn, guibg)
+        execute printf("highlight default LspErrorText ctermfg=124 ctermbg=%s guifg=#d00000 guibg=%s", ctermbg, guibg)
     endif
 endfunction
 call meflib#add('plugin_his', s:sid.'lsp_his')

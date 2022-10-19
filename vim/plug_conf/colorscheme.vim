@@ -113,6 +113,7 @@ function! <SID>my_color_set_modus_operandi() abort
     highlight IncSearch cterm=None gui=NONE guifg=NONE guibg=#ae54fc
     highlight TJSelect guibg=#c0e8ff guifg=#000000
     highlight Title gui=Bold guifg=#580030
+    highlight LspWarningText guifg=#ffff00 guibg=Gray
 endfunction
 call meflib#set('my_color_set', 'modus_operandi', expand('<SID>').'my_color_set_modus_operandi')
 " }}}
