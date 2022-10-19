@@ -815,8 +815,9 @@ function! s:fern_renderer_nerdfont() abort
     else
         let g:fern#renderer = "default"
     endif
+    let g:fern#renderer#nerdfont#indent_markers = 1
 endfunction
-autocmd PlugLocal User fern-renderer-nerdfont.vim cal s:fern_renderer_nerdfont()
+autocmd PlugLocal User fern-renderer-nerdfont.vim call s:fern_renderer_nerdfont()
 " }}}
 
 Plug 'lambdalisue/fern-git-status.vim', PlugCond(1, {'on': 'Fern'})
