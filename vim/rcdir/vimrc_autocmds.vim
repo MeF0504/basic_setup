@@ -86,6 +86,12 @@ if has('nvim')
         endif
         return res
     endfunction
+    function! s:Term_enter(tid) abort
+        " to avoid working 'startinsert' in non-terminal window.
+        if has_key(s:term_on, win_getid()) && (s:term_on[win_getid()]==1)
+            startinsert
+        endif
+    endfunction
 
     nnoremap <expr> g<Right>    <SID>Term_pre().'gt'
     nnoremap <expr> g<Left>     <SID>Term_pre().'gT'
@@ -99,7 +105,7 @@ if has('nvim')
     tnoremap <expr> s<Down>     <SID>Term_pre().'<C-w>j'
     tnoremap <expr> s<Right>    <SID>Term_pre().'<C-w>l'
     tnoremap <expr> s<Left>     <SID>Term_pre().'<C-w>h'
-    autocmd local BufEnter term://* if has_key(s:term_on, win_getid()) && (s:term_on[win_getid()]==1) | startinsert | endif
+    autocmd local BufEnter term://* call timer_start(100, expand('<SID>')..'Term_enter')
 endif
 " }}}
 
