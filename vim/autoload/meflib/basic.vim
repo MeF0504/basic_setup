@@ -217,3 +217,22 @@ function! meflib#basic#get_term_color() abort
      return colors[col_name]
 endfunction
 
+function! meflib#basic#get_hi_info(group_name, keys) abort
+    let hi = execute(printf('highlight %s', a:group_name))->split(' ')
+    if type(a:keys) == type([])
+        let keys = a:keys
+    else
+        let keys = [a:keys]
+    endif
+    let res = []
+    for key in keys
+        let idx = match(hi, key)
+        if idx == -1
+            call add(res, 'NONE')
+        else
+            call add(res, hi[idx][len(key)+1:])
+        endif
+    endfor
+    return res
+endfunction
+

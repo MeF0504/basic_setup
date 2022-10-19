@@ -1052,11 +1052,7 @@ function! <SID>lsp_his() abort
     highlight default Lsp_NotRunning ctermfg=255 ctermbg=52 guifg=#eeeeee guibg=#702030
     if meflib#get('load_plugin', 'nerdfont', 0)
         " copy highlight of SignColumn
-        let hi_sc = execute('highlight SignColumn')->split(' ')
-        let cidx = match(hi_sc, 'ctermbg')
-        let ctermbg = cidx==-1 ? 'None' : hi_sc[cidx][8:]
-        let gidx = match(hi_sc, 'guibg')
-        let guibg = gidx==-1 ? 'NONE' : hi_sc[gidx][6:]
+        let [ctermbg, guibg] = meflib#basic#get_hi_info('SignColumn', ['ctermbg', 'guibg'])
         if &background == 'dark'
             let cwarn = "226"
             let gwarn = "#f0f000"
@@ -1391,8 +1387,9 @@ nnoremap <leader>mm <Cmd>BookmarkToggle<CR>
 nnoremap <leader>mi <Cmd>BookmarkAnnotate<CR>
 nnoremap <leader>ma <Cmd>BookmarkShowAll<CR>
 function! s:bookmarks_his() abort
-    highlight BookmarkSign ctermfg=105 ctermbg=NONE guifg=#8787ff guibg=NONE
-    highlight BookmarkAnnotationSign ctermfg=51 ctermbg=NONE guifg=#30ffe8 guibg=NONE
+    let [ctermbg, guibg] = meflib#basic#get_hi_info('SignColumn', ['ctermbg', 'guibg'])
+    execute printf("highlight default BookmarkSign ctermfg=105 ctermbg=%s guifg=#8787ff guibg=%s", ctermbg, guibg)
+    execute printf("highlight BookmarkAnnotationSign ctermfg=51 ctermbg=%s guifg=#30ffe8 guibg=%s", ctermbg, guibg)
 endfunction
 call meflib#add('plugin_his', s:sid.'bookmarks_his')
 " }}}
