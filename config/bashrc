@@ -45,11 +45,34 @@ fi
 # https://qiita.com/rtakasuke/items/4b50e156ab82b0824676
 _PS_END=" $ "
 
+case $(date "+%w") in
+0)
+    _PS_SHCOL="\e[100m"
+    ;;
+1)
+    _PS_SHCOL="\e[45m"
+    ;;
+2)
+    _PS_SHCOL="\e[101m"
+    ;;
+3)
+    _PS_SHCOL="\e[44m"
+    ;;
+4)
+    _PS_SHCOL="\e[42m"
+    ;;
+5)
+    _PS_SHCOL="\e[43m"
+    ;;
+6)
+    _PS_SHCOL="\e[40m"
+    ;;
+esac
 _PS_SHINFO="\`
 if [ \$? = 0 ]; then
-    echo '\[\e[33m\][${SHELL_INFO}]\[\e[0m\] ';
+    echo '\[\e[97m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
 else
-    echo '\[\e[35m\][${SHELL_INFO}]\[\e[0m\] ';
+    echo '\[\e[95m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
 fi
 \`"
 # "
