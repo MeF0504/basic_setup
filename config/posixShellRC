@@ -326,15 +326,10 @@ get_term_name() { # {{{
         echo "${TERM_PROGRAM}"
     fi
 } # }}}
-manvim() { # {{{
+vimman() { # {{{
     # open manual in vim
     # https://rcmdnk.com/blog/2014/07/20/computer-vim/
-    if [ -n "$_USE_VIM" ]; then
-        local use_vim=$_USE_VIM
-    else
-        local use_vim="vim"
-    fi
-    man "$@" 2>&1 | col -bx | $use_vim -R -c 'set ft=man nolist nomod noma' -
+    man "$@" 2>&1 | col -bx | vim_wrapper -R -c 'set ft=man nolist nomod noma' -
 } # }}}
 echoenvall(){ # {{{
     python -c 'import os;[print("{} :\t{}".format(k, v)) for k,v in os.environ.items()]'
@@ -343,14 +338,9 @@ calc() { # {{{
     # here document?
     bc -l <<< "$@"
 } # }}}
-findvim() { # {{{
+vimfind() { # {{{
     # find file and open it by vim
-    if [ -n "$_USE_VIM" ]; then
-        local use_vim=$_USE_VIM
-    else
-        local use_vim="vim"
-    fi
-    $use_vim -p $(find "$@")
+    find "$@" > /dev/null && vim_wrapper $(find "$@")
 }
 # }}}
 #}}}
