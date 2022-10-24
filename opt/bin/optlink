@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
 import os
-import sys
 import argparse
 from pathlib import Path
 import datetime
@@ -72,10 +71,10 @@ def main_link(args):
 
 
 def main_unlink(args):
-    sdir = os.path.abspath(args.source_dir)
+    tdir = os.path.abspath(args.target_dir)
     save_log("\nmake time : {}".format(tdy))
 
-    for cur, dirs, files in os.walk(sdir, topdown=False):
+    for cur, dirs, files in os.walk(tdir, topdown=False):
         for fy in files:
             t_file = Path(cur)/fy
             if not t_file.is_file():
@@ -89,25 +88,24 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""
 link files in the target directory to the source directory
 with keeping the tree structure.
+or unlink all broken links in the target directory.
     """)
-    parser.add_argument('source_dir', help='source directory')
-    parser.add_argument('-t', '--target_dir', help='target directory')
-    parser.add_argument('--log_name', help="log file name. This is saved in the target directory in the link mode, and current directory in the unlink mode.", default=None)
-    parser.add_argument('-u', '--unlink', help="unlink all broken links in target_dir. source_dir doesn't have a meaning with this option.", action='store_true')
+    parser.add_argument('-t', '--target_dir', help='target directory', required=True)
+    ex_group = parser.add_mutually_exclusive_group(required=True)
+    ex_group.add_argument('-s', '--source_dir', help='source directory')
+    ex_group.add_argument('-u', '--unlink', help="unlink all broken links in target_dir.", action='store_true')
+    parser.add_argument('--log_name', help="""
+log file name. The log file is saved in the target directory.
+If not specified, display log in stdout.""", default=None)
     args = parser.parse_args()
 
     if args.log_name is None:
         log_path = None
-    elif args.target_dir is None:
-        log_path = Path(args.log_name)
     else:
         log_path = Path(args.target_dir)/args.log_name
     print('log file: {}'.format(log_path))
 
     if not args.unlink:
-        if args.target_dir is None:
-            print('target_dir is required for link mode.')
-            sys.exit()
         main_link(args)
     else:
         main_unlink(args)
