@@ -901,14 +901,15 @@ endfunction
 
 " 進数変換 {{{
 function! meflib#tools#convert(base, nr) abort
+    let nr = eval(a:nr)
     if a:base == 10
-        echo printf('%d', a:nr)
+        echo printf('%d', nr)
     elseif a:base == 8
-        echo printf('%o', a:nr)
+        echo printf('%o', nr)
     elseif a:base == 16
-        echo printf('%x', a:nr)
+        echo printf('%x', nr)
     elseif a:base == 2
-        echo printf('%b', a:nr)
+        echo printf('%b', nr)
     endif
 endfunction
 " }}}
