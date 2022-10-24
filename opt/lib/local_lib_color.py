@@ -152,11 +152,11 @@ def convert_color_name(color_name, color_type, verbose=False):
     global col_list
     if col_list is None:
         color_set = os.path.dirname(__file__)+'/color_set.json'
-        print(color_set)
         if os.path.isfile(color_set):
             with open(color_set, 'r') as f:
                 col_list = json.load(f)
         else:
+            print('color set file is not found.')
             col_list = {}
 
         try:
