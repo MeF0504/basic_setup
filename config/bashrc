@@ -72,7 +72,7 @@ _PS_SHINFO="\`
 if [ \$? = 0 ]; then
     echo '\[\e[97m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
 else
-    echo '\[\e[95m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
+    echo '\[\e[90m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
 fi
 \`"
 # "
