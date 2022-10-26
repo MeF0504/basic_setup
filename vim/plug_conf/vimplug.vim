@@ -1238,19 +1238,27 @@ call meflib#add('lazy_plugins', 'vim-lsp-settings')
 " 新世代(2021) dark deno-powered completion framework
 let g:l_ddc = meflib#get('load_plugin', 'denops', 0)
 " plugins for ddc.vim {{{
+" source
 Plug 'Shougo/ddc-around', PlugCond(g:l_ddc)
-Plug 'Shougo/ddc-matcher_head', PlugCond(g:l_ddc)
-Plug 'Shougo/ddc-sorter_rank', PlugCond(g:l_ddc)
 Plug 'LumaKernel/ddc-file', PlugCond(g:l_ddc)
 Plug 'LumaKernel/ddc-tabnine', PlugCond(g:l_ddc)
 Plug 'shun/ddc-vim-lsp', PlugCond(g:l_ddc)
+" matcher
+Plug 'Shougo/ddc-matcher_head', PlugCond(g:l_ddc)
+" sorter
+Plug 'Shougo/ddc-sorter_rank', PlugCond(g:l_ddc)
+" converter
 Plug 'Shougo/ddc-converter_remove_overlap', PlugCond(g:l_ddc)
+" UI
+Plug 'Shougo/ddc-ui-native', PlugCond(g:l_ddc)
 " }}}
 
 Plug 'Shougo/ddc.vim', PlugCond(g:l_ddc)
 " {{{
 function! s:ddc_hook() abort
     echomsg 'ddc setting start'
+    " set UI
+    call ddc#custom#patch_global('ui', 'native')
     " add sources
     call ddc#custom#patch_global('sources', ['file', 'vim-lsp', 'around', 'neosnippet'])
     " set basic options
