@@ -72,6 +72,7 @@ let g:pyindent_continue = shiftwidth()
 " 最長文字をccで確認はしたいが，折返しはしたくない...
 setlocal textwidth=79
 setlocal formatoptions-=tc
+setlocal colorcolumn=+1
 
 let s:hit_str = split('def class if else elif for with while try except', ' ')
 " {{{ 今自分がどの関数/class/for/if内にいるのか表示する
