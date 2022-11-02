@@ -1260,7 +1260,7 @@ function! s:ddc_hook() abort
     " set UI
     call ddc#custom#patch_global('ui', 'native')
     " add sources
-    call ddc#custom#patch_global('sources', ['file', 'vim-lsp', 'around', 'neosnippet'])
+    call ddc#custom#patch_global('sources', ['file', 'vim-lsp', 'around'])
     " set basic options
     call ddc#custom#patch_global(
         \ 'sourceOptions', {
@@ -1281,10 +1281,6 @@ function! s:ddc_hook() abort
                 \ 'mark': 'F',
                 \ 'isVolatile': v:true,
                 \ 'forceCompletionPattern': '\S/\S*',
-            \ },
-            \ 'neosnippet': {
-                \ 'mark': 'ns',
-                \ 'dup': v:true,
             \ },
             \ 'tabnine': {
                 \ 'mark': 'TN',
