@@ -139,7 +139,8 @@ esac
 
 #}}}
 ## {{{added functions
-add_env() { # {{{
+add_env() # {{{
+{
     local echo_usage="
     usage: add_env [-h] [-dv] dir
 
@@ -243,7 +244,8 @@ add_env() { # {{{
     done
 }
 # }}}
-vim_wrapper() { # {{{
+vim_wrapper() # {{{
+{
     if [ -n "$_USE_VIM" ]; then
         local use_vim=$_USE_VIM
     else
@@ -253,7 +255,8 @@ vim_wrapper() { # {{{
 }
 alias vi=vim_wrapper
 # }}}
-weather() { # {{{
+weather() # {{{
+{
     # Tokyo, Sapporo, SanFrancisco, moon, etc..
     if [[ "$1" =~ "-h" ]]; then
         echo "usage: weather city"
@@ -267,7 +270,8 @@ weather() { # {{{
     curl wttr.in/"$city"
 }
 # }}}
-del_func() { # {{{
+del_func() # {{{
+{
     del_trash=${del_trash:-$HOME/.Trash}
     # https://qiita.com/tdrk/items/cc2995fd74e659ea948f
     if [[ ! -d "${del_trash}" ]]; then
@@ -291,14 +295,16 @@ del_func() { # {{{
 # I recommend using mv_Trash.py if possible.
 # alias del=del_func
 # }}}
-mkcd() { # {{{
+mkcd() # {{{
+{
     if [[ ! -d "$1" ]]; then
         echo mkdir "$1"
         mkdir -p "$1"
     fi
     \cd "$1"
 } # }}}
-timeout_local() { # {{{
+timeout_local() # {{{
+{
     # https://qiita.com/yohm/items/db6aea3cbc71ab2d55bd
     time=$1
 
@@ -308,11 +314,13 @@ timeout_local() { # {{{
 
     /usr/bin/expect -c "set timeout $time; spawn -noecho $command; expect timeout { exit 124 } eof; catch wait result; exit [lindex \$result 3];"
 } # }}}
-echoenv() { # {{{
+echoenv() # {{{
+{
     echo -ne "${*//:/\\n}"
     echo ''
 } # }}}
-get_term_name() { # {{{
+get_term_name() # {{{
+{
     # teminal で何を使っているのか判別する方法を忘れないように
     if [[ -n "${ITERM_SESSION_ID}" ]]; then
         echo 'iTerm.app'
@@ -326,19 +334,23 @@ get_term_name() { # {{{
         echo "${TERM_PROGRAM}"
     fi
 } # }}}
-vimman() { # {{{
+vimman() # {{{
+{
     # open manual in vim
     # https://rcmdnk.com/blog/2014/07/20/computer-vim/
     man "$@" 2>&1 | col -bx | vim_wrapper -R -c 'set ft=man nolist nomod noma' -
 } # }}}
-echoenvall(){ # {{{
+echoenvall() # {{{
+{
     python -c 'import os;[print("{} :\t{}".format(k, v)) for k,v in os.environ.items()]'
 } # }}}
-calc() { # {{{
+calc() # {{{
+{
     # here document?
     bc -l <<< "$@"
 } # }}}
-vimfind() { # {{{
+vimfind() # {{{
+{
     # find file and open it by vim
     find "$@" > /dev/null && vim_wrapper $(find "$@")
 }
