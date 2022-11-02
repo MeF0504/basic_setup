@@ -913,3 +913,33 @@ function! meflib#tools#convert(base, nr) abort
     endif
 endfunction
 " }}}
+
+" 複数行で順に加算／減算 {{{
+function! meflib#tools#addsub(ax, decrease) abort range
+    let st = getpos('v')
+    let end = getpos('.')
+    " echomsg getpos('.')
+    " echomsg getpos('v')
+    let firstline = st[1]
+    let lastline = end[1]
+    let col = end[2]
+    if a:ax ==# 'a'
+        let cmd = "\<c-a>"
+    else
+        let cmd = "\<c-x>"
+    endif
+    " echo firstline
+    " echo lastline
+    for lnum in range(firstline, lastline)
+        if a:decrease
+            let num = lastline-lnum+1
+        else
+            let num = lnum-firstline+1
+        endif
+        " echo num
+        call cursor(lnum, col)
+        execute printf("normal! %d%s", num, cmd)
+    endfor
+    call cursor(st[1:])
+endfunction
+" }}}

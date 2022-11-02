@@ -119,3 +119,9 @@ function! s:echo_ex(cmd, args='') abort
 endfunction
 command! -nargs=+ -complete=customlist,meflib#tools#echo_comp Echo call s:echo_ex(<f-args>)
 " }}}
+" 複数行で順に加算／減算 {{{
+vnoremap <c-a><c-a> <Cmd>call meflib#tools#addsub('a', 0)<CR>
+vnoremap <c-a><c-x> <Cmd>call meflib#tools#addsub('a', 1)<CR>
+vnoremap <c-x><c-a> <Cmd>call meflib#tools#addsub('x', 1)<CR>
+vnoremap <c-x><c-x> <Cmd>call meflib#tools#addsub('x', 0)<CR>
+" }}}
