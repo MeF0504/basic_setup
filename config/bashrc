@@ -68,13 +68,14 @@ case $(date "+%w") in
     _PS_SHCOL="\e[40m"
     ;;
 esac
-_PS_SHINFO="\$(
+_PS_SHINFO="\`
 if [ \$? = 0 ]; then
     echo '\[\e[97m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
 else
     echo '\[\e[90m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
 fi
-)"
+\`"
+# "
 
 export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}\n${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_GIT}${_PS_END}"
 
