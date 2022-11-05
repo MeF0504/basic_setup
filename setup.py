@@ -331,6 +331,7 @@ def main_conf(args):
                 'zsh/prompt.zsh': '~/.zsh/prompt.zsh',
                 'posixShellRC': '~/.posixShellRC',
                 'bashrc': '~/.bashrc',
+                'bash/prompt.bash': '~/.bash/prompt.bash',
                 'matplotlibrc': '~/.matplotlib/matplotlibrc',
                 'gitignore_global': '~/.gitignore_global',
                 'screenrc': '~/.screenrc',
@@ -349,6 +350,7 @@ def main_conf(args):
                   'zsh/prompt.zsh': '~/.zsh/prompt.zsh',
                   'posixShellRC': '~/.posixShellRC',
                   'bashrc': '~/.bashrc',
+                  'bash/prompt.bash': '~/.bash/prompt.bash',
                   'matplotlibrc': Path(args.conf_home)/'matplotlib/matplotlibrc',
                   'gitignore_global': '~/.gitignore_global',
                   'screenrc': '~/.screenrc',
@@ -361,6 +363,7 @@ def main_conf(args):
     files_min = {
                   'posixShellRC': '~/.posixShellRC',
                   'bashrc': '~/.bashrc',
+                  'bash/prompt.bash': '~/.bash/prompt.bash',
                   'gitignore_global': '~/.gitignore_global',
                 }
 
