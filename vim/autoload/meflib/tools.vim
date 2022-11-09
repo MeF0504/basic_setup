@@ -564,3 +564,28 @@ function! meflib#tools#addsub(ax, decrease) abort range
     call cursor(st[1:])
 endfunction
 " }}}
+
+" buffer を選んでtabで開く {{{
+function! s:open_buffer_cb(wid, res) abort
+    if a:res > 0
+        execute 'tabnew '..s:bufs[a:res-1]
+    endif
+    unlet s:bufs
+endfunction
+
+function! meflib#tools#open_buffer() abort
+    let s:bufs = []
+    for i in range(1, bufnr('$'))
+        if buflisted(i)
+            call add(s:bufs, bufname(i))
+        endif
+    endfor
+    let config = {
+                \ 'relative': 'editor',
+                \ 'line': &lines/3,
+                \ 'col': &columns/3,
+                \ 'nv_border': 'single',
+                \ }
+    call meflib#floating#select(s:bufs, config, expand('<SID>')..'open_buffer_cb')
+endfunction
+" }}}

@@ -125,3 +125,6 @@ vnoremap <c-a><c-x> <Cmd>call meflib#tools#addsub('a', 1)<CR>
 vnoremap <c-x><c-a> <Cmd>call meflib#tools#addsub('x', 1)<CR>
 vnoremap <c-x><c-x> <Cmd>call meflib#tools#addsub('x', 0)<CR>
 " }}}
+" buffer を選んでtabで開く {{{
+command! BufOpen call meflib#tools#open_buffer()
+" }}}
