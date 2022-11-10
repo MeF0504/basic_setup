@@ -1,4 +1,5 @@
 
+Plug 'MeF0504/ColorSchemePreview.vim'
 
 Plug 'MeF0504/vim-shiki'
 " shiki {{{
