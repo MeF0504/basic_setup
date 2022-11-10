@@ -218,6 +218,14 @@ function! meflib#tools#Jump_path() abort
         let idx_l = stridx(line, ', line ', idx_r)+7
         let idx_r = stridx(line, ', in', idx_l)-1
         let lnum = line[idx_l:idx_r]
+    elseif line =~# '^.*:[0-9]\+:.*$'
+        " grep results
+        echo "grep result"
+        let idx_r = stridx(line, ':')-1
+        let fname = line[:idx_r]
+        let idx_l = idx_r+2
+        let idx_r = stridx(line, ':', idx_l)-1
+        let lnum = line[idx_l:idx_r]
     elseif isdirectory(fname)
         " file
         let yn = input(printf('%s: directory. open in new tab? (y/[n]): ', fname))
@@ -502,7 +510,7 @@ endfunction
 " }}}
 
 " XPM test function {{{
-function meflib#tools#xpm_loader()
+function! meflib#tools#xpm_loader()
     let file = expand('%')
     if has('gui_running')
         let is_gui = 1
