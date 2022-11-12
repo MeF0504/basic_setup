@@ -50,6 +50,85 @@ Plug 'MeF0504/dino.vim', PlugCond(1, {'on': 'Dino'})
 
 " color codeに色を付ける
 Plug 'MeF0504/hicolcode.vim', PlugCond(1, {'on': 'ColCode'})
+" {{{ hicolcode.vim
+function! s:bash_syntax(line, idx) abort
+    if match(a:line, '\\e\[30m', a:idx) != -1
+        return [[0, 0, 0], '\\e\[30m']
+    elseif match(a:line, '\\e\[31m', a:idx) != -1
+        return [[150, 0, 0], '\\e\[31m']
+    elseif match(a:line, '\\e\[32m', a:idx) != -1
+        return [[0, 150, 0], '\\e\[32m']
+    elseif match(a:line, '\\e\[33m', a:idx) != -1
+        return [[150, 150, 0], '\\e\[33m']
+    elseif match(a:line, '\\e\[34m', a:idx) != -1
+        return [[0, 0, 150], '\\e\[34m']
+    elseif match(a:line, '\\e\[35m', a:idx) != -1
+        return [[150, 0, 150], '\\e\[35m']
+    elseif match(a:line, '\\e\[36m', a:idx) != -1
+        return [[0, 150, 150], '\\e\[36m']
+    elseif match(a:line, '\\e\[37m', a:idx) != -1
+        return [[200, 200, 200], '\\e\[37m']
+    elseif match(a:line, '\\e\[40m', a:idx) != -1
+        return [[0, 0, 0], '\\e\[40m']
+    elseif match(a:line, '\\e\[41m', a:idx) != -1
+        return [[150, 0, 0], '\\e\[41m']
+    elseif match(a:line, '\\e\[42m', a:idx) != -1
+        return [[0, 150, 0], '\\e\[42m']
+    elseif match(a:line, '\\e\[43m', a:idx) != -1
+        return [[150, 150, 0], '\\e\[43m']
+    elseif match(a:line, '\\e\[44m', a:idx) != -1
+        return [[0, 0, 150], '\\e\[44m']
+    elseif match(a:line, '\\e\[45m', a:idx) != -1
+        return [[150, 0, 150], '\\e\[45m']
+    elseif match(a:line, '\\e\[46m', a:idx) != -1
+        return [[0, 150, 150], '\\e\[46m']
+    elseif match(a:line, '\\e\[47m', a:idx) != -1
+        return [[200, 200, 200], '\\e\[47m']
+    elseif match(a:line, '\\e\[90m', a:idx) != -1
+        return [[150, 150, 150], '\\e\[90m']
+    elseif match(a:line, '\\e\[91m', a:idx) != -1
+        return [[255, 0, 0], '\\e\[91m']
+    elseif match(a:line, '\\e\[92m', a:idx) != -1
+        return [[0, 255, 0], '\\e\[92m']
+    elseif match(a:line, '\\e\[93m', a:idx) != -1
+        return [[255, 255, 0], '\\e\[93m']
+    elseif match(a:line, '\\e\[94m', a:idx) != -1
+        return [[0, 0, 255], '\\e\[94m']
+    elseif match(a:line, '\\e\[95m', a:idx) != -1
+        return [[255, 0, 255], '\\e\[95m']
+    elseif match(a:line, '\\e\[96m', a:idx) != -1
+        return [[0, 255, 255], '\\e\[96m']
+    elseif match(a:line, '\\e\[97m', a:idx) != -1
+        return [[255, 255, 255], '\\e\[97m']
+    elseif match(a:line, '\\e\[100m', a:idx) != -1
+        return [[150, 150, 150], '\\e\[100m']
+    elseif match(a:line, '\\e\[101m', a:idx) != -1
+        return [[255, 0, 0], '\\e\[101m']
+    elseif match(a:line, '\\e\[102m', a:idx) != -1
+        return [[0, 255, 0], '\\e\[102m']
+    elseif match(a:line, '\\e\[103m', a:idx) != -1
+        return [[255, 255, 0], '\\e\[103m']
+    elseif match(a:line, '\\e\[104m', a:idx) != -1
+        return [[0, 0, 255], '\\e\[104m']
+    elseif match(a:line, '\\e\[105m', a:idx) != -1
+        return [[255, 0, 255], '\\e\[105m']
+    elseif match(a:line, '\\e\[106m', a:idx) != -1
+        return [[0, 255, 255], '\\e\[106m']
+    elseif match(a:line, '\\e\[107m', a:idx) != -1
+        return [[255, 255, 255], '\\e\[107m']
+    else
+        return [[], '']
+    endif
+endfunction
+
+let g:hicolcode_config = get(g:, 'hicolcode_config', {})
+let g:hicolcode_config.sh = [
+            \ {
+                \ 'ptrn': '\\e\[[0-9]\+m',
+                \ 'func': expand('<SID>')..'bash_syntax',
+                \}
+            \]
+" }}}
 
 " 簡易，柔軟 outliner生成器
 Plug 'MeF0504/outliner.vim', PlugCond(1, {'on': 'OutLiner'})
