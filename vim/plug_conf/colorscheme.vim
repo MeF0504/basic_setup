@@ -94,7 +94,7 @@ endfunction
 call meflib#set('my_color_set', 'inkpotter', expand('<SID>').'my_color_set_inkpotter')
 " }}}
 
-Plug 'ulwlu/elly.vim'
+" Plug 'ulwlu/elly.vim'
 
 Plug 'chasinglogic/modus-themes-vim'
 " modus {{{
