@@ -88,10 +88,10 @@ function! s:bash_syntax(line, idx) abort
                 \}
     for [ptrn, rgb] in items(match_list)
         if match(a:line, ptrn, a:idx) != -1
-            return [rgb, ptrn]
+            return rgb+[ptrn]
         endif
     endfor
-    return [[], '']
+    return []
 endfunction
 function! s:vim_cterm_hi(line, idx) abort
     let num = str2nr(split(a:line[a:idx+8:])[0])
@@ -103,7 +103,7 @@ function! s:vim_cterm_hi(line, idx) abort
                     \ [150, 150, 150], [255, 0, 0], [0, 255, 0], [255, 255, 0],
                     \ [0, 0, 255], [0, 255, 255], [255, 0, 255], [255, 255, 255],
                     \ ]
-        return [rgb[num], ptrn]
+        return rgb[num]+[ptrn]
     elseif num < 232
         let r = (num-16)/36
         let g = (num-16-r*36)/6
@@ -111,12 +111,12 @@ function! s:vim_cterm_hi(line, idx) abort
         let r = r == 0 ? 0 : 55+40*r
         let g = g == 0 ? 0 : 55+40*g
         let b = b == 0 ? 0 : 55+40*b
-        return [[r, g, b], ptrn]
+        return [r, g, b, ptrn]
     elseif num < 256
         let wb = 8+10*(num-232)
-        return [[wb, wb, wb], ptrn]
+        return [wb, wb, wb, ptrn]
     else
-        return [[], '']
+        return []
     endif
 endfunction
 
