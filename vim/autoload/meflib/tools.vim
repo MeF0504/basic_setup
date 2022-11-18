@@ -581,13 +581,20 @@ function! s:open_buffer_cb(wid, res) abort
     unlet s:bufs
 endfunction
 
-function! meflib#tools#open_buffer() abort
+function! meflib#tools#open_buffer(bang) abort
     let s:bufs = []
     for i in range(1, bufnr('$'))
-        if buflisted(i)
-            call add(s:bufs, bufname(i))
+        if a:bang==#'!' || buflisted(i)
+            let bname = bufname(i)
+            if !empty(bname)
+                call add(s:bufs, bname)
+            endif
         endif
     endfor
+    if empty(bname)
+        echo 'No buffer'
+        return
+    endif
     let config = {
                 \ 'relative': 'editor',
                 \ 'line': &lines/3,
