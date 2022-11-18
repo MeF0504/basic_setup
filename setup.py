@@ -163,7 +163,6 @@ class CopyClass():
 
     def diff_check(self, index):
         src = self.src[index]
-        dst = self.dst[index]
         is_diff = False
         while True:
             if is_diff:
@@ -171,8 +170,7 @@ class CopyClass():
                  'are you really overwrite? [y(yes), n(no)] '
             else:
                 input_str = self.shift +\
-                 '[ {} ] is already exist,'.format(self.home_cut(dst)) +\
-                 ' are you really overwrite? [y(yes), n(no), d(diff)] '
+                 'are you really overwrite? [y(yes), n(no), d(diff)] '
             yn = input(input_str)
             if yn in ['y', 'yes']:
                 return True
