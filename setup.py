@@ -171,7 +171,7 @@ class CopyClass():
                  'are you really overwrite? [y(yes), n(no)] '
             else:
                 input_str = self.shift +\
-                 '[ {} ] is already exist,'.format(self.home_cut(src)) +\
+                 '[ {} ] is already exist,'.format(self.home_cut(dst)) +\
                  ' are you really overwrite? [y(yes), n(no), d(diff)] '
             yn = input(input_str)
             if yn in ['y', 'yes']:
@@ -182,7 +182,7 @@ class CopyClass():
                 print('')
                 is_diff = True
             elif yn in ['n', 'no']:
-                print('Do not copy '+dst.name)
+                print('Do not copy '+src.name)
                 return False
 
     def show_files(self):
