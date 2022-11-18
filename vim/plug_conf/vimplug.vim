@@ -841,6 +841,9 @@ autocmd PlugLocal FileType txt,help,markdown,taglist,outliner
 function! <SID>cursorword_his() abort
     highlight default CursorWord1 ctermfg=None ctermbg=None cterm=None guifg=NONE guifg=NONE gui=NONE
     highlight default CursorWord0 ctermfg=None ctermbg=None cterm=underline guifg=NONE guifg=NONE gui=Underline
+    " CursorWord[01] is not supported? or CursorWord is required?
+    highlight default CursorWord ctermfg=None ctermbg=None cterm=underline guifg=NONE guifg=NONE gui=Underline
+
 endfunction
 call meflib#add('plugin_his', s:sid.'cursorword_his')
 " }}}
