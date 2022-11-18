@@ -101,7 +101,7 @@ if [ -n "${VIM_TERMINAL}" ]; then
 fi
 # others
 alias global_ip="curl ifconfig.io 2> /dev/null"
-alias iv='for iv in {4..1}; do; echo -n ${iv}..\ ;sleep 1;done; echo'
+alias iv='for iv in {4..1}; do; echo -n ${iv}..\ ;sleep 1;done; echo; vim_wrapper '
 # OS specified aliases
 if [ "$(uname)" = "Darwin" ]; then
     alias ldd="echo 'in macOS, ldd doesn't exist. && echo 'Use otool -L instead.' && echo '----------' &&  otool -L"
