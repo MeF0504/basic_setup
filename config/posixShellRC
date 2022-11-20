@@ -74,7 +74,7 @@ alias du="du -h"
 alias df="df -h"
 # useful options
 alias su="su -l"
-alias grep="grep --color"
+alias grep="grep --color --exclude-dir=.git"
 # move files to trash.
 alias del="mv_Trash.py"
 ## if use terminology [https://www.enlightenment.org/about-terminology.md]
