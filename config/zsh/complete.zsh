@@ -10,27 +10,16 @@ _envar() {
 
 compdef _envar envar
 
-_pip() {
-    _values -w \
-        'Commands' \
-        "install" \
-        "download" \
-        "uninstall" \
-        "freeze" \
-        "list" \
-        "show" \
-        "check" \
-        "config" \
-        "search" \
-        "cache" \
-        "wheel" \
-        "hash" \
-        "completion" \
-        "debug" \
-        "help" \
+# pip zsh completion start
+# https://pip.pypa.io/en/stable/user_guide/#command-completion
+function _pip_completion {
+  local words cword
+  read -Ac words
+  read -cn cword
+  reply=( $( COMP_WORDS="$words[*]" \
+             COMP_CWORD=$(( cword-1 )) \
+             PIP_AUTO_COMPLETE=1 $words[1] 2>/dev/null ))
 }
-
-compdef _pip pip
-compdef _pip pip2
-compdef _pip pip3
+compctl -K _pip_completion pip3
+# pip zsh completion end
 

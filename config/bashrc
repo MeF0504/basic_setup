@@ -74,6 +74,7 @@ alias cd="autocd"
 
 ##{{{ load other .bashrc configuration file
 [[ -f "$HOME/.bash/prompt.bash" ]] && source "$HOME/.bash/prompt.bash"
+[[ -f "$HOME/.bash/complete.bash" ]] && source "$HOME/.bash/complete.bash"
 
 [[ -f "$HOME/.bash/bashrc.mine" ]] && source "$HOME/.bash/bashrc.mine"
 # }}}

@@ -323,13 +323,10 @@ def main_conf(args):
     files_mac = {
                 'zshrc': '~/.zshrc',
                 'zlogin': '~/.zlogin',
-                'zsh/alias.zsh': '~/.zsh/alias.zsh',
-                'zsh/complete.zsh': '~/.zsh/complete.zsh',
-                'zsh/functions.zsh': '~/.zsh/functions.zsh',
-                'zsh/prompt.zsh': '~/.zsh/prompt.zsh',
+                'zsh': '~/.zsh',
                 'posixShellRC': '~/.posixShellRC',
                 'bashrc': '~/.bashrc',
-                'bash/prompt.bash': '~/.bash/prompt.bash',
+                'bash': '~/.bash',
                 'matplotlibrc': '~/.matplotlib/matplotlibrc',
                 'gitignore_global': '~/.gitignore_global',
                 'screenrc': '~/.screenrc',
@@ -342,13 +339,10 @@ def main_conf(args):
     files_linux = {
                   'zshrc': '~/.zshrc',
                   'zlogin': '~/.zlogin',
-                  'zsh/alias.zsh': '~/.zsh/alias.zsh',
-                  'zsh/complete.zsh': '~/.zsh/complete.zsh',
-                  'zsh/functions.zsh': '~/.zsh/functions.zsh',
-                  'zsh/prompt.zsh': '~/.zsh/prompt.zsh',
+                  'zsh': '~/.zsh',
                   'posixShellRC': '~/.posixShellRC',
                   'bashrc': '~/.bashrc',
-                  'bash/prompt.bash': '~/.bash/prompt.bash',
+                  'bash': '~/.bash',
                   'matplotlibrc': Path(args.conf_home)/'matplotlib/matplotlibrc',
                   'gitignore_global': '~/.gitignore_global',
                   'screenrc': '~/.screenrc',
@@ -361,7 +355,7 @@ def main_conf(args):
     files_min = {
                   'posixShellRC': '~/.posixShellRC',
                   'bashrc': '~/.bashrc',
-                  'bash/prompt.bash': '~/.bash/prompt.bash',
+                  'bash': '~/.bash',
                   'gitignore_global': '~/.gitignore_global',
                 }
 
