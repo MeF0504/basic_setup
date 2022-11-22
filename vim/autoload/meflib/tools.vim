@@ -574,14 +574,14 @@ endfunction
 " }}}
 
 " buffer を選んでtabで開く {{{
-function! s:open_buffer_cb(wid, res) abort
+function! s:open_buffer_cb(mod, wid, res) abort
     if a:res > 0
-        execute 'tabnew '..s:bufs[a:res-1]
+        execute printf('%s new %s', a:mod, s:bufs[a:res-1])
     endif
     unlet s:bufs
 endfunction
 
-function! meflib#tools#open_buffer(bang) abort
+function! meflib#tools#open_buffer(mod, bang) abort
     let s:bufs = []
     for i in range(1, bufnr('$'))
         if a:bang==#'!' || buflisted(i)
@@ -601,6 +601,7 @@ function! meflib#tools#open_buffer(bang) abort
                 \ 'col': &columns/3,
                 \ 'nv_border': 'single',
                 \ }
-    call meflib#floating#select(s:bufs, config, expand('<SID>')..'open_buffer_cb')
+    call meflib#floating#select(s:bufs, config,
+                \ function(expand('<SID>')..'open_buffer_cb', [a:mod]))
 endfunction
 " }}}
