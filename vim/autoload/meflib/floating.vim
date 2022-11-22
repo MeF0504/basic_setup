@@ -270,7 +270,14 @@ function! meflib#floating#select(str_list, config, callback) abort
         call win_execute(wid, 'normal! gg')
         while 1
             redraw
-            let key = getcharstr()
+            try
+                let key = getcharstr()
+            catch /^Vim:Interrupt$/
+                " ctrl-c (interrupt)
+                call nvim_win_close(wid, v:false)
+                call call(a:callback, [wid, -1])
+                break
+            endtry
             if key == "j" || key == "\<Down>"
                 call win_execute(wid, 'normal! j')
             elseif key == "k" || key == "\<Up>"
