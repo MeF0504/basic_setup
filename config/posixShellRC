@@ -36,7 +36,7 @@ else
 fi
 
 # 使うvimも指定したい
-export _USE_VIM="$(which vim)"
+export _USE_VIM=""
 
 # DISPLAYがない場合は設定したほうが良いの？
 if [[ -z "$DISPLAY" || "$DISPLAY" = "needs-to-be-defined" ]]; then
