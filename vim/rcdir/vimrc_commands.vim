@@ -26,13 +26,13 @@ let s:ipy_ac = 1
 for s:ipy in keys(s:ipythons)
     if executable(s:ipy)
         if has('nvim')
-            execute printf('command! %s botright new | setlocal nonumber | terminal %s', s:ipythons[s:ipy], s:ipy)
+            execute printf('command! %s botright <mods> new | setlocal nonumber | terminal %s', s:ipythons[s:ipy], s:ipy)
             if s:ipy_ac
                 autocmd cmdLocal TermOpen *ipython* startinsert
                 let s:ipy_ac = 0
             endif
         else
-            execute printf('command! %s botright terminal %s', s:ipythons[s:ipy], s:ipy)
+            execute printf('command! %s botright <mods> terminal %s', s:ipythons[s:ipy], s:ipy)
         endif
     endif
 endfor
