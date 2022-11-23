@@ -60,6 +60,11 @@ def mac_mem():
     subprocess.call('system_profiler SPHardwareDataType', shell=True)
 
 
+def win_info():
+    subprocess.call('systeminfo')
+    # subprocess.call('msinfo32')
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='show version etc. information of this computer.')
     parser.add_argument('-v', '--version', help='display version.',
@@ -72,7 +77,10 @@ if __name__ == "__main__":
                         action='store_true')
     args = parser.parse_args()
 
-    uname = os.uname()[0]
+    if os.name == 'nt':
+        uname = 'Windows'
+    else:
+        uname = os.uname()[0]
     show_contents = []
     if args.version:
         show_contents += ['v']
@@ -103,5 +111,7 @@ if __name__ == "__main__":
         if 'm' in show_contents:
             print("{}----------memory information----------{}".format(bg, END))
             linux_mem()
+    elif uname == 'Windows':
+        win_info()
     else:
         print('Sorry, this OS is not supported.')
