@@ -138,7 +138,8 @@ bindkey "^f" forward-word
 # Enter key bind
 # key bind:: https://qiita.com/yuku_t/items/e58cbecf13407446bd50
 # Enter key bind:: https://qiita.com/yut-kt/items/267ce4648b801c1c1bca
-function do_enter() {
+function do_enter()
+{
     if [ -n "$BUFFER" ]; then
         zle accept-line   # 処理で表示がないとこっち?
         return 0
@@ -188,7 +189,8 @@ bindkey "\\en" history-beginning-search-forward-end
 
 # 特定のコマンドを保存しない
 # https://mollifier.hatenablog.com/entry/20090728/p1
-zshaddhistory() {
+zshaddhistory()
+{
     local line=${1%%$'\n'}
     [[ ${line} != (l|l[sal])
     # && ${line} != (c|cd)
@@ -218,7 +220,9 @@ fi
 #}}}
 
 # {{{ Terminal設定
-_get_zodiac() {
+_get_zodiac_whgm()
+{
+    # 星座 - 和風月名
     case "$(date '+%m')" in
         01)
             if [[ $(date '+%d') -lt 19 ]]; then
@@ -226,6 +230,7 @@ _get_zodiac() {
             else
                 num=A
             fi
+            whgm=睦月
             ;;
         02)
             if [[ $(date '+%d') -lt 18 ]]; then
@@ -233,6 +238,7 @@ _get_zodiac() {
             else
                 num=B
             fi
+            whgm=如月
             ;;
         03)
             if [[ $(date '+%d') -lt 20 ]]; then
@@ -240,6 +246,7 @@ _get_zodiac() {
             else
                 num=0
             fi
+            whgm=弥生
             ;;
         04)
             if [[ $(date '+%d') -lt 19 ]]; then
@@ -247,6 +254,7 @@ _get_zodiac() {
             else
                 num=1
             fi
+            whgm=卯月
             ;;
         05)
             if [[ $(date '+%d') -lt 20 ]]; then
@@ -254,6 +262,7 @@ _get_zodiac() {
             else
                 num=2
             fi
+            whgm=皐月
             ;;
         06)
             if [[ $(date '+%d') -lt 21 ]]; then
@@ -261,6 +270,7 @@ _get_zodiac() {
             else
                 num=3
             fi
+            whgm=水無月
             ;;
         07)
             if [[ $(date '+%d') -lt 22 ]]; then
@@ -268,6 +278,7 @@ _get_zodiac() {
             else
                 num=4
             fi
+            whgm=文月
             ;;
         08)
             if [[ $(date '+%d') -lt 22 ]]; then
@@ -275,6 +286,7 @@ _get_zodiac() {
             else
                 num=5
             fi
+            whgm=葉月
             ;;
         09)
             if [[ $(date '+%d') -lt 23 ]]; then
@@ -282,6 +294,7 @@ _get_zodiac() {
             else
                 num=6
             fi
+            whgm=長月
             ;;
         10)
             if [[ $(date '+%d') -lt 23 ]]; then
@@ -289,6 +302,7 @@ _get_zodiac() {
             else
                 num=7
             fi
+            whgm=神無月
             ;;
         11)
             if [[ $(date '+%d') -lt 22 ]]; then
@@ -296,6 +310,7 @@ _get_zodiac() {
             else
                 num=8
             fi
+            whgm=霜月
             ;;
         12)
             if [[ $(date '+%d') -lt 21 ]]; then
@@ -303,10 +318,11 @@ _get_zodiac() {
             else
                 num=9
             fi
+            whgm=師走
             ;;
     esac
     code=$(echo "obase=16; ibase=16; $num + 2648" | bc)
-    echo "\U$code"
+    echo "\U${code}[${whgm}]"
 }
 ### terminal のtab nameをusername@場所 にする
 ### 場所はssh先ならhost name, localならカレントディレクトリ，$HOMEだとhomeになる
@@ -314,7 +330,7 @@ case "${TERM}" in
 xterm|xterm-color|kterm|kterm-color|xterm-256color|screen-256color)
     if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
         tab_title_precmd() {
-            echo -ne "\033]0;$(_get_zodiac) ${USER}@${MYHOST}\007"
+            echo -ne "\033]0;$(_get_zodiac_whgm) ${USER}@${MYHOST}\007"
         }
     else
         tab_title_precmd() {
@@ -323,7 +339,7 @@ xterm|xterm-color|kterm|kterm-color|xterm-256color|screen-256color)
             else
                 mypwd=$(basename $PWD)
             fi
-            echo -ne "\033]0;$(_get_zodiac) ${USER}@$mypwd\007"
+            echo -ne "\033]0;$(_get_zodiac_whgm) ${USER}@$mypwd\007"
         }
     fi
     ;;
@@ -373,7 +389,8 @@ fi
 # {{{ その他設定，関数
 #chpwd関数を定義しておくとzshがcd後に勝手に実行してくれる。
 #function chpwd() {pwd; echo -ne "\033]0;${USER}@${HOST}\007"}
-function chpwd() {
+function chpwd()
+{
     if [[ -n $OLD_PROMPT ]]; then
         pwd
     fi
