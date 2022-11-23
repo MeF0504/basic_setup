@@ -82,6 +82,8 @@ if __name__ == "__main__":
         show_contents += ['m']
     if args.all:
         show_contents = ['v', 'c', 'm']
+    if len(show_contents) == 0:
+        show_contents = ['v']
 
     if uname == 'Darwin':
         if 'v' in show_contents:
