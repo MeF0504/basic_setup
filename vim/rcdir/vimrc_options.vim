@@ -68,6 +68,7 @@ set scrolloff=2
 " http://boscono.hatenablog.com/entry/2013/11/17/230740
 set wildmenu
 set wildmode=longest,full
+" 折りたたみ
 set foldenable
 set foldmethod=marker
 " 縦分割時に右に出る
@@ -84,10 +85,14 @@ set cursorline
 set tags+=tags;,./tags;
 " 左端にfoldの表示を追加
 set foldcolumn=2
-" grepコマンドで内部grep(vimgrep)を使う
-" set grepprg=internal
-" 外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視, .git dir無視で使う
-set grepprg=grep\ -nriI\ --exclude-dir\ .git
+" grep
+if executable('grep')
+    " 外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視, .git dir無視で使う
+    set grepprg=grep\ -nriI\ --exclude-dir\ .git
+else
+    " grepコマンドで内部grep(vimgrep)を使う
+    set grepprg=internal
+endif
 " 最終行にmodeを表示する
 set showmode
 " 右下に検索のカウント数を表示 if needed
