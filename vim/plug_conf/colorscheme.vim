@@ -79,6 +79,7 @@ function! <SID>my_color_set_night_owl()
     highlight EndOfBuffer ctermbg=bg guibg=bg
 
     highlight HiTagImports ctermfg=227 guifg=#f0e860
+    highlight FernIndentMarkers ctermfg=246 guifg=#a9a9a9
 endfunction
 call meflib#set('my_color_set', 'night_owl', expand('<SID>').'my_color_set_night_owl')
 " }}}
