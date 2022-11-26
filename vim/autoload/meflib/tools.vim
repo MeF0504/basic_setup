@@ -591,7 +591,7 @@ function! meflib#tools#open_buffer(mod, bang) abort
             endif
         endif
     endfor
-    if empty(bname)
+    if empty(s:bufs)
         echo 'No buffer'
         return
     endif
