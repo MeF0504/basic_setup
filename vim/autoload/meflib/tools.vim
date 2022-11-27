@@ -583,6 +583,10 @@ function! s:open_buffer_cb(mod, bang, wid, res) abort
         endif
         if a:bang ==# '!'
             let bufnr = a:res
+            if getbufvar(bufnr, '&buftype') == 'popup'
+                echo 'unable to open popup window'
+                return
+            endif
         else
             let bufnr = bufnr(s:bufs[a:res-1])
             if s:bufs[a:res-1] ==# '[No Name]' || bufnr <= 0
@@ -601,8 +605,13 @@ function! meflib#tools#open_buffer(mod, bang) abort
         if a:bang==#'!' || buflisted(i)
             let bname = bufname(i)
             if empty(bname)
-                if getbufvar(i, '&buftype') == 'nofile'
+                let buftype = getbufvar(i, '&buftype')
+                if buftype == 'nofile'
                     let bname = '[Scratch]'
+                elseif buftype == 'popup'
+                    let bname = '[Popup]'
+                elseif buftype == 'prompt'
+                    let bname = '[Prompt]'
                 else
                     let bname = '[No Name]'
                 endif
