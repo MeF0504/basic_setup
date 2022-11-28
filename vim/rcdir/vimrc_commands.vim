@@ -115,6 +115,10 @@ function! s:echo_ex(cmd, args='') abort
         if !empty(a:args)
             call meflib#echo#convert(2, a:args)
         endif
+    elseif a:cmd ==# 'time'  " 時刻表示
+        if !empty(a:args)
+            call meflib#echo#time(eval(a:args))
+        endif
     endif
 endfunction
 command! -nargs=+ -complete=customlist,meflib#echo#comp Echo call s:echo_ex(<f-args>)

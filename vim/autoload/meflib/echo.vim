@@ -1,17 +1,20 @@
 
 " echo 拡張の補完 {{{
 function! meflib#echo#comp(arglead, cmdline, cursorpos) abort
-    let comp_list = ['pand', 'env', 'runtime', 'conv10', 'conv8', 'conv2', 'conv16']
-    let opt_num = len(split(a:cmdline, ' '))
-    if opt_num == 1
+    let comp_list = split('pand env runtime conv10 conv8 conv2 conv16 time')
+    let cmdlines = split(a:cmdline, ' ')
+    if len(cmdlines) == 1
         " :Echo <tab>
         return filter(comp_list, '!stridx(v:val, tolower(a:arglead))')
-    elseif opt_num == 2
+    elseif len(cmdlines) == 2
         if !empty(a:arglead)
             " :Echo p<tab>
             return filter(comp_list, '!stridx(v:val, tolower(a:arglead))')
         else
             " :Echo pand <tab>
+            if cmdlines[1] == 'time'
+                return [printf('%d', localtime())]
+            endif
         endif
     endif
     return []
@@ -62,3 +65,26 @@ function! meflib#echo#convert(base, nr) abort
 endfunction
 " }}}
 
+" str[pf]time {{{
+function! meflib#echo#time(time) abort
+    if type(a:time) == type(0)
+        if exists('*strftime')
+            echo strftime('%Y/%m/%d %H-%M-%S', a:time)
+        else
+            echo 'strftime is not supported.'
+        endif
+    elseif type(a:time) == type('')
+        if exists('*strptime')
+            if len(a:time) == 10
+                echo strptime('%Y/%m/%d', a:time)
+            elseif len(a:time) == 19
+                echo strptime('%Y/%m/%d:%H-%M-%S', a:time)
+            else
+                echo 'format: "%Y/%m/%d" or "%Y-%m-%d:%H-&M-%S"'
+            endif
+        endif
+    else
+        echo 'incorrect format.'
+    endif
+endfunction
+" }}}
