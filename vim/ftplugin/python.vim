@@ -76,9 +76,17 @@ setlocal colorcolumn=+1
 
 let s:hit_str = split('def class if else elif for with while try except', ' ')
 " {{{ 今自分がどの関数/class/for/if内にいるのか表示する
+function! <SID>ccpp_cb(wid, idx) abort
+    let sel_res = s:res[a:idx-1]
+    let lnum = sel_res[:match(sel_res, '|')-1]
+    unlet s:res
+    echomsg lnum
+    call cursor(lnum, 1)
+endfunction
+
 function! <SID>chk_current_position_python() abort
 
-    let res = []
+    let s:res = []
     let tablevel = match(getline('.'), '\S')
     let clnnr = line('.')
     for lnnr in range(clnnr)
@@ -90,7 +98,7 @@ function! <SID>chk_current_position_python() abort
                 let match_level = match(ln, '\<'.hs.'\>')
                 if (match_level != -1) && (match_level == tmp_tablevel)
                     " echo ln
-                    call insert(res, printf('%0'.len(line('.')).'d| %s', clnnr-lnnr-1, ln))
+                    call insert(s:res, printf('%0'.len(line('.')).'d| %s', clnnr-lnnr-1, ln))
                     if match('elif else except', '\<'.hs.'\>') == -1
                         let tablevel = tmp_tablevel
                     endif
@@ -100,48 +108,26 @@ function! <SID>chk_current_position_python() abort
     endfor
 
     if exists('g:vscode')
-        for l in res
+        for l in s:res
             echo l
         endfor
+        unlet s:res
         return
     endif
 
-    if empty(res)
+    if empty(s:res)
+        unlet s:res
         return
     endif
-    let num = -1
-    while 1
-        for i in range(len(res))
-            if i == num
-                echohl Special
-            endif
-            echo res[i]
-            if i == num
-                echohl None
-            endif
-        endfor
-        echo 'select; j/k, go to; <enter>, cancel; q/<esc> :'
-        let key = getcharstr()
-        if key == 'q' || key == "\<esc>"
-            break
-        elseif key == 'j' || key == "\<Down>"
-            if num < len(res)-1
-                let num += 1
-            endif
-        elseif key == 'k' || key == "\<Up>"
-            if num > 0
-                let num -= 1
-            endif
-        elseif key == "\<enter>"
-            if 0 <= num && num < len(res)
-                let sel_res = res[num]
-                let lnum = sel_res[:match(sel_res, '|')-1]
-                execute 'normal! '..lnum..'gg'
-            endif
-            break
-        endif
-        redraw
-    endwhile
+    let config = {
+                \ 'relative': 'editor',
+                \ 'line': &lines-&cmdheight-1,
+                \ 'col': &numberwidth+&signcolumn+2,
+                \ 'pos': 'botleft',
+                \ 'nv_border': 'single',
+                \ }
+
+    call meflib#floating#select(s:res, config, expand('<SID>')..'ccpp_cb')
 endfunction
 " MatchupWhereAmI は python だと動かないっぽいので自作を復元
 nnoremap <buffer> <leader>c <Cmd>call <SID>chk_current_position_python()<CR>
@@ -164,7 +150,7 @@ function! <SID>next_identifer_python() abort
     endfor
     return '%'
 endfunction
-" match-up より前に%をmapするとmatch-upが多言語でもmapされないっぽいので。
+" match-up より前に%をmapするとmatch-upが他言語でもmapされないっぽいので。
 if exists('g:loaded_matchup')
     nnoremap <buffer><silent><expr> % <SID>next_identifer_python()
 else
