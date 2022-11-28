@@ -80,7 +80,8 @@ function! <SID>ccpp_cb(wid, idx) abort
     let sel_res = s:res[a:idx-1]
     let lnum = sel_res[:match(sel_res, '|')-1]
     unlet s:res
-    echomsg lnum
+    " save position. :h jumplist
+    normal! m'
     call cursor(lnum, 1)
 endfunction
 
