@@ -8,7 +8,6 @@ let g:loaded_matchparen = 1
 let g:loaded_parenmatch = 1
 " 画面外の対応はひとまず良いかな...
 let g:matchup_matchparen_offscreen = {}
-nnoremap <leader>c <Cmd>MatchupWhereAmI\?<CR>
 " highlights
 function! <SID>matchup_his() abort
     if &background == 'dark'
@@ -18,6 +17,55 @@ function! <SID>matchup_his() abort
     endif
 endfunction
 call meflib#add('plugin_his', expand('<SID>').'matchup_his')
+
+function! s:pcp_cb(adjs, wid, idx) abort
+    if a:idx > 0
+        normal! m'
+        call cursor(a:adjs[a:idx-1], 1)
+    endif
+endfunction
+function! s:print_current_pos()
+    echohl Title | echon 'match-up-local:' | echohl None
+    echon ' loading...'
+    let trail = matchup#where#get(500)
+    redraw!
+    if empty(trail)
+        echohl Title | echon 'match-up-local:' | echohl None
+        echon ' no context found'
+        return
+    endif
+    let last = -1
+    let res = []
+    let adjs = []
+    for t in trail
+        let opts = {
+              \ 'noshowdir': 1,
+              \ 'width': &columns - 1,
+              \}
+        let [str, adj] = matchup#matchparen#status_str(t[2], opts)
+        echomsg str
+        if adj == last
+            continue
+        endif
+        let pat = '\%(%\(<\)\|%#\(\w*\)#\)'
+        let str = substitute(str, pat, '', 'g')
+        call add(res, str)
+        call add(adjs, adj)
+        let last = adj
+    endfor
+
+    let config = {
+                \ 'relative': 'editor',
+                \ 'line': &lines-&cmdheight-1,
+                \ 'col': &numberwidth+&signcolumn+2,
+                \ 'pos': 'botleft',
+                \ 'nv_border': 'single',
+                \ }
+
+    call meflib#floating#select(res, config, function(expand('<SID>')..'pcp_cb', [adjs]))
+endfunction
+" nnoremap <leader>c <Cmd>MatchupWhereAmI\?<CR>
+nnoremap <leader>c <Cmd>call <SID>print_current_pos()<CR>
 " }}}
 
 " 色々な言語のtemplate
