@@ -76,18 +76,19 @@ setlocal colorcolumn=+1
 
 let s:hit_str = split('def class if else elif for with while try except', ' ')
 " {{{ 今自分がどの関数/class/for/if内にいるのか表示する
-function! <SID>ccpp_cb(wid, idx) abort
-    let sel_res = s:res[a:idx-1]
-    let lnum = sel_res[:match(sel_res, '|')-1]
-    unlet s:res
-    " save position. :h jumplist
-    normal! m'
-    call cursor(lnum, 1)
+function! <SID>ccpp_cb(res, wid, idx) abort
+    if a:idx > 0
+        let sel_res = a:res[a:idx-1]
+        let lnum = sel_res[:match(sel_res, '|')-1]
+        " save position. :h jumplist
+        normal! m'
+        call cursor(lnum, 1)
+    endif
 endfunction
 
 function! <SID>chk_current_position_python() abort
 
-    let s:res = []
+    let res = []
     let tablevel = match(getline('.'), '\S')
     let clnnr = line('.')
     for lnnr in range(clnnr)
@@ -99,7 +100,7 @@ function! <SID>chk_current_position_python() abort
                 let match_level = match(ln, '\<'.hs.'\>')
                 if (match_level != -1) && (match_level == tmp_tablevel)
                     " echo ln
-                    call insert(s:res, printf('%0'.len(line('.')).'d| %s', clnnr-lnnr-1, ln))
+                    call insert(res, printf('%0'.len(line('.')).'d| %s', clnnr-lnnr-1, ln))
                     if match('elif else except', '\<'.hs.'\>') == -1
                         let tablevel = tmp_tablevel
                     endif
@@ -109,15 +110,13 @@ function! <SID>chk_current_position_python() abort
     endfor
 
     if exists('g:vscode')
-        for l in s:res
+        for l in res
             echo l
         endfor
-        unlet s:res
         return
     endif
 
-    if empty(s:res)
-        unlet s:res
+    if empty(res)
         return
     endif
     let config = {
@@ -128,7 +127,7 @@ function! <SID>chk_current_position_python() abort
                 \ 'nv_border': 'single',
                 \ }
 
-    call meflib#floating#select(s:res, config, expand('<SID>')..'ccpp_cb')
+    call meflib#floating#select(res, config, function(expand('<SID>')..'ccpp_cb', [res]))
 endfunction
 " MatchupWhereAmI は python だと動かないっぽいので自作を復元
 nnoremap <buffer> <leader>c <Cmd>call <SID>chk_current_position_python()<CR>
