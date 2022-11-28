@@ -254,6 +254,7 @@ Plug 'MeF0504/RegistPaste.vim'
 Plug 'MeF0504/vim-TabJumper', PlugCond(1, {'on': 'TabJump'})
 " TabJumper {{{
 nnoremap <leader>l <Cmd>TabJump<CR>
+tnoremap <c-l><c-l> <Cmd>TabJump<CR>
 " }}}
 
 " neosnippet用のsnipets
