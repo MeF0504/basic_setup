@@ -43,7 +43,6 @@ function! s:print_current_pos()
               \ 'width': &columns - 1,
               \}
         let [str, adj] = matchup#matchparen#status_str(t[2], opts)
-        echomsg str
         if adj == last
             continue
         endif
@@ -64,8 +63,11 @@ function! s:print_current_pos()
 
     call meflib#floating#select(res, config, function(expand('<SID>')..'pcp_cb', [adjs]))
 endfunction
-" nnoremap <leader>c <Cmd>MatchupWhereAmI\?<CR>
-nnoremap <leader>c <Cmd>call <SID>print_current_pos()<CR>
+if exists('g:vscode')
+    nnoremap <leader>c <Cmd>MatchupWhereAmI\?<CR>
+else
+    nnoremap <leader>c <Cmd>call <SID>print_current_pos()<CR>
+endif
 " }}}
 
 " 色々な言語のtemplate
