@@ -823,9 +823,10 @@ endif
 
 " 英語翻訳プラグイン
 " https://qiita.com/gorilla0513/items/37c80569ff8f3a1c721c
-Plug 'skanehira/translate.vim', PlugCond(1, {'on': 'Translate'})
+" translate.vim はarchive された模様。new oneに移行
+Plug 'skanehira/denops-translate.vim' ", PlugCond(1, {'on': 'Translate'})
 " {{{
-let g:translate_popup_window = 0
+" let g:translate_popup_window = 0
 let g:translate_source = 'en'
 let g:translate_target = 'ja'
 " }}}
