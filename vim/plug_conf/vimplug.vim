@@ -1257,17 +1257,20 @@ function! s:lsp_mapping(map) abort " {{{
     elseif a:map == 3
         let res = ""
         let old_cmdheight = &cmdheight
-        let &cmdheight += 3
-        echo  " 1: help\n"..
+        let &cmdheight = 5
+        echo  " 1: help (float)\n"..
             \ " 2: definition\n"..
-            \ " 3: type definition: "
+            \ " 3: type definition\n"..
+            \ " 4: help (preview): "
         let num = getcharstr()
         if num == '1'
-            let res = "\<Plug>(lsp-hover)"
+            let res = "\<Cmd>LspHover --ui=float\<CR>"
         elseif num == '2'
             let res = "\<Plug>(lsp-peek-definition)"
         elseif num == '3'
             let res = "\<Plug>(lsp-peek-type-definition)"
+        elseif num == '4'
+            let res = "\<Cmd>LspHover --ui=preview\<CR>"
         endif
         let &cmdheight = old_cmdheight
         redraw!
@@ -1310,6 +1313,7 @@ function! s:vim_lsp_hook() abort
     if !has('nvim')
         autocmd PlugLocal User lsp_float_opened nunmap <buffer> <esc>   " tentative
     endif
+    autocmd PlugLocal BufEnter LspHoverPreview setlocal nolist
     " }}}
     " show status {{{
     " call timer_start(1000, s:sid.'show_lsp_server_status', {'repeat':-1})
