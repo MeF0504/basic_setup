@@ -1,0 +1,136 @@
+*meflib.txt*    local library of vim script.
+
+==============================================================================
+CONTENTS						*meflib-contents*
+
+Introduction    |meflib-introduction|
+Commands    |meflib-commands|
+Functions    |meflib-functions|
+Options        |meflib-options|
+Samples    |meflib-samples|
+License        |meflib-license|
+
+==============================================================================
+INTRODUCTION						*meflib-introduction*
+
+local library of vim scripts for Mef0504 (https://github.com/MeF0504)
+
+==============================================================================
+COMMANDS						*meflib-commands*
+
+DiffOrig						*:DiffOrig*
+
+See |diff-original-file|
+
+Diff {filename}						*:Diff*
+
+Check the difference between current file and {filename}.
+
+SearchConf						*:SearchConf*
+
+Search the conflict strings.
+Conflict strings means; >
+	<<<<<<<
+	=======
+	>>>>>>>
+<
+
+Spell							*:Spell*
+
+Toggle 'spell'.
+
+FileInfo						*:FileInfo*
+
+Show the information of current file.
+Python support is required.
+
+EijiroWeb {word}					*:EijiroWeb*
+
+Search the {word} in the eijiro web page (https://eowf.alc.co.jp/).
+
+Ctags							*:Ctags*
+
+Execute ctags command.
+Also see |meflib-opt-ctags_opt|.
+
+JobStatus						*:JobStatus*
+
+Show the job status.
+
+BinMode							*:BinMode*
+
+Set the current file as a bin file and move to bin mode.
+Also refer |using-xxd|.
+
+Terminal [-win X] [-term term_name] [commands]		*:Terminal*
+
+Wrapper of terminal command.
+
+	[-win] take a character;
+		S: open the terminal window in a horizontal split window.
+		V: open the terminal window in a vertical split window.
+		F: open the terminal window in a new tab window.
+		P: open the terminal window in a popup/floating split window.
+	[-term] is specified, focus the specified buffer.
+
+Also see |meflib-opt-term_default|.
+
+DiffLine {args1} {args2}				*:DiffLine*
+
+Show the difference between {args1} and {args2}.
+The format of each args is >
+	[filename:]start_line[-end_line]
+<
+filename should be in buffer.
+start_line and end_line are number, start_line < end_line.
+
+Gregrep [-wd=WORD] [-dir=DIR] [ex=EXT]			*:Gregrep*
+
+Wrapper of grep command.
+	-wd: set searching strings (default: current word).
+		<word> searches as word.
+	-dir: set the parent directory. (default: top directory of the project of
+		the current file or parent directory of
+		the current file.)
+	-ex: set the file extension (default: extension of current file).
+		if -ex=None, no file is excluded.
+
+XPMLoader						*:XPMLoader*
+
+Test command to set highlights of xpm file.
+
+MefShowVar						*:MefShowVar*
+
+Show all local variables. See |meflib-options|.
+
+Echo {option}						*:Echo*
+
+Expand echo command. Available options are;
+	- pand str
+		wrapper of :echo expand("str")
+	- env ENV
+		echo the environmental variable with easy to seeing format.
+	- runtime
+		echo the runtime path.
+	- conv10 number
+		convert the number to decimal number.
+	- conv8 number
+		convert the number to octal number.
+	- conv2 number
+		convert the number to binary number.
+	- conv16 number
+		convert the number to hexadecimal number.
+	- time time
+		convert a integer <-> a date format.
+		acceptable date formats are "YYYY/MM/DD" or 
+		"YYYY/MM/DD:hh-mm-ss".
+
+BufOpen[!]                                                       *:BufOpen*
+
+Select and open a buffer.
+
+==============================================================================
+FUNCTIONS                                                *meflib-functions*
+
+
+vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:
