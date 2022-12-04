@@ -145,7 +145,7 @@ function! <SID>special_win(winid)
             \ getwinvar(a:winid, '&previewwindow')
             \ || (getwinvar(a:winid, '&buftype')=='nofile')
             \ || (getwinvar(a:winid, '&filetype')=='qf')
-            \ || (getwinvar(a:winid, '&filetype')=='help')
+            \ || (getwinvar(a:winid, '&buftype')=='help')
 endfunction
 nnoremap <silent> <expr> q <SID>special_win(win_getid()) ? '<Cmd>quit<CR>' : 'q'
 
