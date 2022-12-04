@@ -3,12 +3,12 @@
 ==============================================================================
 CONTENTS						*meflib-contents*
 
-Introduction    |meflib-introduction|
-Commands    |meflib-commands|
-Functions    |meflib-functions|
-Options        |meflib-options|
-Samples    |meflib-samples|
-License        |meflib-license|
+Introduction	|meflib-introduction|
+Commands	|meflib-commands|
+Functions	|meflib-functions|
+Options		|meflib-options|
+Samples		|meflib-samples|
+License		|meflib-license|
 
 ==============================================================================
 INTRODUCTION						*meflib-introduction*
@@ -29,7 +29,7 @@ Check the difference between current file and {filename}.
 SearchConf						*:SearchConf*
 
 Search the conflict strings.
-Conflict strings means; >
+Conflict strings are following; >
 	<<<<<<<
 	=======
 	>>>>>>>
@@ -89,8 +89,8 @@ Gregrep [-wd=WORD] [-dir=DIR] [ex=EXT]			*:Gregrep*
 Wrapper of grep command.
 	-wd: set searching strings (default: current word).
 		<word> searches as word.
-	-dir: set the parent directory. (default: top directory of the project of
-		the current file or parent directory of
+	-dir: set the parent directory. (default: top directory of the project
+	of the current file or parent directory of
 		the current file.)
 	-ex: set the file extension (default: extension of current file).
 		if -ex=None, no file is excluded.
@@ -125,12 +125,148 @@ Expand echo command. Available options are;
 		acceptable date formats are "YYYY/MM/DD" or 
 		"YYYY/MM/DD:hh-mm-ss".
 
-BufOpen[!]                                                       *:BufOpen*
+BufOpen[!]						*:BufOpen*
 
 Select and open a buffer.
 
 ==============================================================================
-FUNCTIONS                                                *meflib-functions*
+FUNCTIONS						*meflib-functions*
+
+meflib#set({opt_name}, [sub_opt_name], {value})		*meflib#set()*
+
+Set the {value} of {opt_name}. If {sub_opt_name} is specified, the
+{value} of the {sub_opt_name} key in the {opt_name} is set.
+See |meflib-options| for available options.
+
+meflib#get({opt_name}, [sub_opt_name], {default})	*meflib#get()*
+
+Return the item of {opt_name}. If {sub_opt_name} is specified, Get the item if
+{opt_name}[{sub_opt_name}]. 
+If {opt_name} or {sub_opt_name} does not exist, return {default}.
+
+meflib#add({opt_name}, {value})				*meflib#add()*
+
+Add {value} to |list|{opt_name}. If {opt_name} does not exist, make the list.
+
+meflib#basic#get_conf_dir()			*meflib#basic#get_conf_dir()*
+
+Return the user local configuration directory.
+
+meflib#basic#analythis_args_eq({args})	*meflib#basic#analythis_args_eq()*
+
+A function to analyze the arguments of a command. This function analyze the
+arguments like >
+	:Command key1=val2 key2=val2
+<
+{args} is the string of argument of the command, that is gotten by |<f-args>|.
+Return value is the |dict| which keys are key1, key2, ... and item of each key
+is val1, val2, ...
+
+					*meflib#basic#analythis_args_hyp()*
+meflib#basic#analythis_args_hyp({args}, {config})
+
+A function to analyze the arguments of a command. This function analyze the
+arguments like >
+	:Command -key1 val2 -key2 val2
+<
+{args} is the string of argument of the command, that is gotten by |<f-args>|.
+{config} is used to set the number of arguments as following. >
+	let config = {'key1': 1, 'key2': 3}
+<
+Return value is the |dict| keys are key1, key2, ... and item of each key is
+|list| of values. "no_opt" key is also returned, which contains arguments with
+no key.
+
+meflib#basic#get_top_dir({directory})		*meflib#basic#get_top_dir()*
+
+Return the project-top directory relative to the {directory}. "project-top
+directory" means the directory containing .git/.svn directory.
+
+meflib#basic#get_exe_cmd([{command}])		*meflib#basic#get_exe_cmd()*
+
+If called with no arguments, return system commands; "start" for Windows,
+"open" for macOS, and "xdg-open" for Linux. If {command} is specified, return
+the command path if {command} is executable. Otherwise return empty string.
+
+meflib#basic#get_hi_info({group_name}, {keys})	*meflib#basic#get_hi_info()*
+
+Return the highlight setting of {group_name}. {keys} is a string or list of
+strings to return the setting. e.g. >
+	echo meflib#basic#get_hi_info('Comment', 'gui')
+	" ['italic']
+	echo meflib#basic#get_hi_info('Number', ['ctermfg', 'guifg'])
+	" ['9', 'Red']
+<
+						*meflib#floating#open()*
+meflib#floating#open({bufid}, {winid}, {str_list}, {config})
+
+Wrapper function to create and open floating/popup window. For initialization,
+set {bufid}=-1 and {winid}=-1. This function return the list of {bufid} and
+{winid}. To update the strings of the window, you recall this function with
+these returned values.
+See |meflib-floating-config| for available configuration items.
+
+meflib#floating#close({winids})			*meflib#floating#close()*
+
+Wrapper function to close floating/popup window.
+
+meflib#floating#close_all()			*meflib#floating#close_all()*
+Close all floating/popup windows opened by |meflib#floating#open()|.
+
+						*meflib#floating#select()*
+meflib#floating#select({str_list}, {config}, {callback})
+
+Wrapper function to create and open floating/popup select menu. This works
+almost same as |popup_menu| of vim.
+{config} is same as |meflib#floating#open()|. See |meflib-floating-config| for
+available configuration items.
+
+ShowStatusLineBG()					*ShowStatusLineBG()*
+
+Show the color configuration of |status-line|.
+
+==============================================================================
+OPTIONS							*meflib-options*
+
+auto_ime_off						*meflib-auto_ime_off*
+
+birthday						*meflib-birthday*
+
+cfi_on							*meflib-cfi_on*
+
+colorscheme						*meflib-colorscheme*
+
+ctags_opt						*meflib-ctags_opt*
+
+del_commands						*meflib-del_commands*
+
+get_top_dir						*meflib-get_top_dir*
+
+insert_plugins						*meflib-insert_plugins*
+
+lazy_plugins						*meflib-lazy_plugins*
+
+load_plugin						*meflib-load_plugin*
+
+my_color_set						*meflib-my_color_set*
+
+plugin_his						*meflib-plugin_his*
+
+qrun_finished						*meflib-qrun_finished*
+
+quickrun_nvimterm				*meflib-quickrun_nvimterm*
+
+show_cwd_tab						*meflib-show_cwd_tab*
+
+st_per_type						*meflib-st_per_type*
+
+statusline						*meflib-statusline*
+
+tab_debug						*meflib-tab_debug*
+
+tabinfo							meflib-tabinfo
+
+tabline_footer						*meflib-tabline_footer*
 
 
 vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:
