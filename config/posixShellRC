@@ -246,7 +246,7 @@ add_env() # {{{
 # }}}
 vim_wrapper() # {{{
 {
-    if [ -n "$_USE_VIM" ]; then
+    if [[ -x $(which "$_USE_VIM") ]]; then
         local use_vim=$_USE_VIM
     else
         local use_vim="vim"
