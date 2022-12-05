@@ -456,7 +456,7 @@ _get_zodiac_whgm() # {{{
             whgm=師走
             ;;
     esac
-    code=$(echo "obase=16; ibase=16; $num + 2648" | bc)
+    code=$(printf "%X\n" $((num+9800)))
     echo "\U${code}[${whgm}]"
 }
 # }}}
