@@ -9,6 +9,7 @@ else
     let s:sid = expand('<SID>')
 endif
 
+call meflib#set('deno_on', meflib#get('load_plugin', 'denops', 0))
 
 " joke command
 Plug 'MeF0504/sl.vim', PlugCond(1, {'on': 'SL'})
@@ -802,6 +803,7 @@ Plug 'roxma/vim-hug-neovim-rpc', PlugCond(!has('nvim'))
 
 " visual modeで選択した範囲をgcでコメントアウトしてくれるplugin
 Plug 'tpope/vim-commentary'
+call meflib#add('del_commands', 'Commentary')
 
 " 検索のhit数をpopupで表示するplugin
 Plug 'obcat/vim-hitspop', PlugCond(meflib#get('load_plugin', 'hitspop', 0))
@@ -824,7 +826,7 @@ endif
 " 英語翻訳プラグイン
 " https://qiita.com/gorilla0513/items/37c80569ff8f3a1c721c
 " translate.vim はarchive された模様。new oneに移行
-Plug 'skanehira/denops-translate.vim' ", PlugCond(1, {'on': 'Translate'})
+Plug 'skanehira/denops-translate.vim', PlugCond(meflib#get('deno_on', 0))
 " {{{
 " let g:translate_popup_window = 0
 let g:translate_source = 'en'
@@ -851,7 +853,7 @@ call meflib#add('plugin_his', s:sid.'cursorword_his')
 " }}}
 
 " An ecosystem of Vim/Neovim which allows developers to write plugins in Deno. だそうです
-" for ddc.vim
+" for ddc.vim and translate.vim
 Plug 'vim-denops/denops.vim', PlugCond(meflib#get('load_plugin', 'denops', 0))
 
 " denops test
@@ -1329,24 +1331,23 @@ Plug 'mattn/vim-lsp-settings', PlugCond(0, {})
 call meflib#add('lazy_plugins', 'vim-lsp-settings')
 
 " 新世代(2021) dark deno-powered completion framework
-let g:l_ddc = meflib#get('load_plugin', 'denops', 0)
 " plugins for ddc.vim {{{
 " source
-Plug 'Shougo/ddc-around', PlugCond(g:l_ddc)
-Plug 'LumaKernel/ddc-file', PlugCond(g:l_ddc)
-Plug 'LumaKernel/ddc-tabnine', PlugCond(g:l_ddc)
-Plug 'shun/ddc-vim-lsp', PlugCond(g:l_ddc)
+Plug 'Shougo/ddc-around', PlugCond(meflib#get('deno_on', 0))
+Plug 'LumaKernel/ddc-file', PlugCond(meflib#get('deno_on', 0))
+Plug 'LumaKernel/ddc-tabnine', PlugCond(meflib#get('deno_on', 0))
+Plug 'shun/ddc-vim-lsp', PlugCond(meflib#get('deno_on', 0))
 " matcher
-Plug 'Shougo/ddc-matcher_head', PlugCond(g:l_ddc)
+Plug 'Shougo/ddc-matcher_head', PlugCond(meflib#get('deno_on', 0))
 " sorter
-Plug 'Shougo/ddc-sorter_rank', PlugCond(g:l_ddc)
+Plug 'Shougo/ddc-sorter_rank', PlugCond(meflib#get('deno_on', 0))
 " converter
-Plug 'Shougo/ddc-converter_remove_overlap', PlugCond(g:l_ddc)
+Plug 'Shougo/ddc-converter_remove_overlap', PlugCond(meflib#get('deno_on', 0))
 " UI
-Plug 'Shougo/ddc-ui-native', PlugCond(g:l_ddc)
+Plug 'Shougo/ddc-ui-native', PlugCond(meflib#get('deno_on', 0))
 " }}}
 
-Plug 'Shougo/ddc.vim', PlugCond(g:l_ddc)
+Plug 'Shougo/ddc.vim', PlugCond(meflib#get('deno_on', 0))
 " {{{
 function! s:ddc_hook() abort
     echomsg 'ddc setting start'
@@ -1436,12 +1437,11 @@ function! s:ddc_hook() abort
 
     echomsg 'ddc setting finish'
 endfunction
-if g:l_ddc
+if meflib#get('deno_on', 0)
     " autocmd PlugLocal User ddc.vim call s:ddc_hook()
     autocmd PlugLocal InsertEnter * ++once call s:ddc_hook()
 endif
 " }}}
-unlet g:l_ddc
 
 " readme をhelpとして見れるようにする
 let g:readme_viewer#plugin_manager = 'vim-plug'

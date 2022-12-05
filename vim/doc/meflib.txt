@@ -240,6 +240,8 @@ ctags_opt						*meflib-ctags_opt*
 
 del_commands						*meflib-del_commands*
 
+deno_on							*meflib-deno_on*
+
 get_top_dir						*meflib-get_top_dir*
 
 insert_plugins						*meflib-insert_plugins*
@@ -264,7 +266,7 @@ statusline						*meflib-statusline*
 
 tab_debug						*meflib-tab_debug*
 
-tabinfo							meflib-tabinfo
+tabinfo							*meflib-tabinfo*
 
 tabline_footer						*meflib-tabline_footer*
 
