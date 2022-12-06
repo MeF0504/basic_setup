@@ -212,7 +212,7 @@ function! <SID>Set_statusline(winid)
     else
         let st_str = st_config['_']
         for len in sort(keys(st_config))
-            if len=='_' || len=='off'
+            if len=='_' || len=='off' || len=='qf'
                 continue
             else
                 if winwidth(0) < str2nr(len)
