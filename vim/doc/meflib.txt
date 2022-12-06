@@ -7,7 +7,6 @@ Introduction	|meflib-introduction|
 Commands	|meflib-commands|
 Functions	|meflib-functions|
 Options		|meflib-options|
-Samples		|meflib-samples|
 License		|meflib-license|
 
 ==============================================================================
@@ -146,7 +145,7 @@ If {opt_name} or {sub_opt_name} does not exist, return {default}.
 
 meflib#add({opt_name}, {value})				*meflib#add()*
 
-Add {value} to |list|{opt_name}. If {opt_name} does not exist, make the list.
+Add {value} to |list| of {opt_name}. If {opt_name} does not exist, make the list.
 
 meflib#basic#get_conf_dir()			*meflib#basic#get_conf_dir()*
 
@@ -229,46 +228,148 @@ Show the color configuration of |status-line|.
 OPTIONS							*meflib-options*
 
 auto_ime_off						*meflib-auto_ime_off*
+	type: number
+	default: 0
+If set 1, turn off the IME/Japanese input automatically when leave the insert
+mode.
 
 birthday						*meflib-birthday*
+	type: list of number
+	default: [0, 0]
+Set the birthday; [month, day]. This is refered by day-by-day statusline
+color.
+
 
 cfi_on							*meflib-cfi_on*
+	type: number
+	default: 0
+If set 1, show the result of |cfi.txt| at the top line.
 
 colorscheme						*meflib-colorscheme*
+	type: string
+	default: "evening"
+Set the default color scheme.
 
 ctags_opt						*meflib-ctags_opt*
+	type: string
+	default: ""
+Options of ctags command.
 
 del_commands						*meflib-del_commands*
-
-deno_on							*meflib-deno_on*
+	type: list of strings
+Commands deleted after entering the vim.
+Using |meflib#add| is recommended. >
+	call meflib#add('del_commands', 'Hoge')
+<
 
 get_top_dir						*meflib-get_top_dir*
+	type: number
+	default: 0
+If set 1, use top directory as a default directory in some commands.
+Currently this values is referred by Gregrep.
 
 insert_plugins						*meflib-insert_plugins*
+	type: list of plugin names
+Set plugins loaded after entering insert mode.
+Using |meflib#add| is recommended. >
+	call meflib#add('insert_plugins', 'Hoge')
+<
 
 lazy_plugins						*meflib-lazy_plugins*
+	type: list of plugin names
+Set plugins loaded after entering vim.
+Using |meflib#add| is recommended. >
+	call meflib#add('lazy_plugins', 'Hoge')
+<
 
 load_plugin						*meflib-load_plugin*
+	type: dict
+An option to check that plugins/functions are able to load.
+To set this option, {sub_opt_name} is available; >
+	call meflib#set('load_plugin', 'nerdfont', 1)
+<
+Currently following {sub_opt_name} are used;
+	- denops
+	- deoplete
+	- hitspop
+	- nerdfont
 
 my_color_set						*meflib-my_color_set*
+	type: dict
+An option to set functions overwriting highlights of color scheme. e.g. >
+	call meflib#set('my_color_set', 'inkpotter', expand('<SID>').'my_color_set_inkpotter')
+<
 
 plugin_his						*meflib-plugin_his*
+	type: list of plugin names
+An option to set plugin highlights. e.g. >
+	call meflib#add('plugin_his', expand('<SID>').'plug_his')
+<
 
 qrun_finished						*meflib-qrun_finished*
-
-quickrun_nvimterm				*meflib-quickrun_nvimterm*
+	type: number
+	default: 0
+An option used in .qrun_conf.vim file. If this option is set 1, QuickRun is
+already run. Sample; >
+	let make_file = findfile('Makefile', expand('%:p:h')..';')
+	if !empty(make_file)
+	    let q_config = {
+	                \ 'command': 'make',
+	                \ 'exec' : '%c',
+	                \ }
+	    call quickrun#run(q_config)
+	    call meflib#set('qrun_finished', 1)
+	else
+	    call meflib#set('qrun_finished', 0)
+	endif
+<
 
 show_cwd_tab						*meflib-show_cwd_tab*
+	type: number
+	default: 1
+If set 1, show the current working directory at tab line.
 
 st_per_type						*meflib-st_per_type*
+	type: string
+	default: ""
+Set the type of percentage at status line. Currently "clock", "moon", and
+"battery". Nerd fonts (https://www.nerdfonts.com) and nerdfont in
+|meflib-load_plugin| is required.
 
 statusline						*meflib-statusline*
+	type: dict
+Set the configuration of status line. Possible keys are
+	- "_": default status line.
+	- "qf": status line for quickfix window.
+	- "off": status line for nonactive window.
+	- else(number): status line for narrow window. The key value is
+	  accounted as the max width of the window.
 
 tab_debug						*meflib-tab_debug*
+	type: number
+	default: 0
+If set 1, debug mode of 'tabline' is on.
 
 tabinfo							*meflib-tabinfo*
+	type: str
+An option storing the debug message of 'tabline'. This is automatically set if
+|meflib-tab_debug| = 1.
 
 tabline_footer						*meflib-tabline_footer*
+	type: function name or |Funcref|
+	default: ""
+An option to set additional message in tab line. The return values of this
+function is set of message and length of message. >
+	function! AddTab() abort
+		let message = "%#TabHighlight# message %#TabLineFill#"
+		let len = 9 " length of ' message '
+		return [message, len]
+	endfunction
+<
 
+==============================================================================
+LICENSE							*meflib-license*
+
+The MIT License (https://github.com/MeF0504/basic_setup/blob/master/LICENSE)
 
 vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:
