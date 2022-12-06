@@ -227,6 +227,14 @@ function! s:outliner_hook() abort
                     \ 'line': 0,
                     \},
                 \}, 'keep')
+
+    let g:outliner_settings.help = get(g:outliner_settings, 'help', {})
+    call extend(g:outliner_settings.help, {
+                \ 'head1': {
+                    \ 'pattern': '^=\+$',
+                    \ 'line': 1,
+                    \},
+                \}, 'keep')
 endfunction
 autocmd PlugLocal User outliner.vim call s:outliner_hook()
 nnoremap <silent> <Leader>o <Cmd>OutLiner<CR>
