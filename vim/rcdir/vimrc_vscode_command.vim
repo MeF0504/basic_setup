@@ -74,3 +74,8 @@ nnoremap <leader>mi <Cmd>call VSCodeNotify('bookmarks.toggleLabeled')<CR>
 nnoremap <leader>ma <Cmd>call VSCodeNotify('bookmarks.list')<CR>
 " }}}
 
+" outliner {{{
+nnoremap <leader>t <Cmd>call VSCodeNotify('outline.focus')<CR>
+nnoremap <leader>o <Cmd>call VSCodeNotify('outline.focus')<CR>
+" }}}
+
