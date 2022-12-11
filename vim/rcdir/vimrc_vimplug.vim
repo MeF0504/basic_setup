@@ -58,7 +58,7 @@ let g:loaded_netrwFileHandlers = 1
 let g:loaded_tutor_mode_plugin = 1
 " }}}
 
-let g:insert_plugins = []
+let g:plug_window = 'tab new'
 call plug#begin(s:plug_dir)
 
 " for doc
