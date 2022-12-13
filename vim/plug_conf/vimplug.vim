@@ -96,7 +96,7 @@ function! s:bash_syntax(line, idx) abort
 endfunction
 function! s:vim_cterm_hi(line, idx) abort
     let num = str2nr(split(a:line[a:idx+8:])[0])
-    let ptrn = 'cterm[fb]g=\zs'..num..'\ze\s'
+    let ptrn = 'cterm[fb]g=\zs'..num..'\ze\>'
     if num < 16
         let rgb = [
                     \ [0, 0, 0], [150, 0, 0], [0, 150, 0], [150, 150, 0],
