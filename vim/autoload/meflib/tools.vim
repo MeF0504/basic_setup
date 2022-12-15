@@ -238,7 +238,7 @@ function! meflib#tools#Jump_path() abort
         if !empty(cmd)
             let yn = input(printf('"%s": web url. open? (y/[n])', fname))
             if (yn == 'y')
-                call system(printf('%s %s', cmd, fname))
+                call system([cmd, fname])
             endif
         else
             echo 'command to open web url is not found.'
