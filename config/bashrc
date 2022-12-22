@@ -1,12 +1,5 @@
 # vim: set filetype=sh:
 
-if [[ -z "$(tty)" ]]; then
-    # https://keyamb.hatenablog.com/entry/2017/01/08/193757
-    # direnvでエラーが出るので。こうするとtty がoffのときは以下を読み込まないらしい
-    # いや，[ -t 0] だと常に読み込まれないな...
-    return;
-fi
-
 # read shell-independent Run Command file.
 # maybe update to set the path dynamically.
 if [[ -f "${HOME}/.posixShellRC" ]]; then
