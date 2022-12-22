@@ -1,16 +1,16 @@
 *{{_expr_:expand("%:p:t")}}* {{_cursor_}}
 
 ==============================================================================
-CONTENTS *{{_expr_:expand("%:p:t:r")}}-contents*
+CONTENTS{{_expr_:repeat(' ',77-strdisplaywidth("contents")*2-strdisplaywidth(expand("%:p:t:r")))}}*{{_expr_:expand("%:p:t:r")}}-contents*
 
-Introduction |{{_expr_:expand("%:p:t:r")}}-introduction|
-License |{{_expr_:expand("%:p:t:r")}}-license|
-
-==============================================================================
-INTRODUCTION *{{_expr_:expand("%:p:t:r")}}-introduction*
+Introduction	|{{_expr_:expand("%:p:t:r")}}-introduction|
+License		|{{_expr_:expand("%:p:t:r")}}-license|
 
 ==============================================================================
-LICENSE *{{_expr_:expand("%:p:t:r")}}-license*
+INTRODUCTION{{_expr_:repeat(' ',77-strdisplaywidth("introduction")*2-strdisplaywidth(expand("%:p:t:r")))}}*{{_expr_:expand("%:p:t:r")}}-introduction*
+
+==============================================================================
+LICENSE{{_expr_:repeat(' ',77-strdisplaywidth("license")*2-strdisplaywidth(expand("%:p:t:r")))}}*{{_expr_:expand("%:p:t:r")}}-license*
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:
