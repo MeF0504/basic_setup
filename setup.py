@@ -40,10 +40,12 @@ class CopyClass():
     init -> stack -> exec
     """
 
-    def __init__(self, link: bool, force: bool, test: bool):
+    def __init__(self, link: bool, force: bool, test: bool,
+                 display_level_origin: int):
         self.link = link
         self.force = force
         self.test = test
+        self.dl = display_level_origin
         self.cwd = Path.cwd()
         self.src = []
         self.dst = []
@@ -69,7 +71,7 @@ class CopyClass():
                 self.dst.append(cpdir/(fy.name))
                 self.len += 1
         else:
-            print("No such file or directory: {}".format(src))
+            self.print("No such file or directory: {}".format(src), 0)
             return
 
     def copy(self, src: Path, dst: Path):
@@ -83,8 +85,8 @@ class CopyClass():
         if self.link:
             comment = 'link {} --> {}'.format(src.name, self.home_cut(dst))
             if self.test:
-                print('{}cmd check:: link {} -> {}{}'.format(
-                       fg, src, dst, end))
+                self.print('{}cmd check:: link {} -> {}{}'.format(
+                       fg, src, dst, end), 0)
                 return
             else:
                 os.symlink(src, dst)
@@ -92,12 +94,12 @@ class CopyClass():
             comment = 'copy {} --> {}'.format(src.name, self.home_cut(dst))
             if self.test:
                 print('{}cmd check:: copy {} -> {}{}'.format(
-                       fg, src, dst, end))
+                       fg, src, dst, end), 0)
                 return
             else:
                 shutil.copy(src, dst)
 
-        print('{}{}{}'.format(fg, comment, end))
+        self.print('{}{}{}'.format(fg, comment, end), 0)
 
     def diff(self, index):
         src = self.src[index]
@@ -124,7 +126,15 @@ class CopyClass():
             else:
                 col = ''
                 end = ''
-            print(self.dshift+col+line+end)
+            self.print(self.dshift+col+line+end, 0)
+
+    def print(self, string: str, display_level: int):
+        # display_level;
+        #   2 ... shown only if all messages are shown
+        #   1 ... shown in usual case
+        #   0 ... shown always
+        if self.dl >= display_level:
+            print(string)
 
     def dst_check(self, index):
         src = self.src[index]
@@ -140,21 +150,24 @@ class CopyClass():
 
         if exist:
             if islink and cmp:
-                print(self.shift+'[ {} ] is already linked.'.format(dst2))
+                self.print(self.shift+'[ {} ] is already linked.'.format(dst2),
+                           2)
             elif islink:
-                print(self.shift +
-                      '[ {} ] is another link file.'.format(dst2))
+                self.print(self.shift +
+                           '[ {} ] is another link file.'.format(dst2), 2)
             elif cmp:
-                print(self.shift+'[ {} ] is already copied.'.format(dst2))
+                self.print(self.shift+'[ {} ] is already copied.'.format(dst2),
+                           2)
             else:
-                print(self.shift+'[ {} ] is already existed.'.format(dst2))
+                self.print(self.shift +
+                           '[ {} ] is already existed.'.format(dst2), 2)
         else:
             if islink:
                 # broken link
                 linkpath = dst.parent.joinpath(dst.readlink())
                 os.unlink(dst)
-                print('{} -> {} is a broken link. unlink this.'.format(
-                    dst2, self.home_cut(linkpath)))
+                self.print('{} -> {} is a broken link. unlink this.'.format(
+                    dst2, self.home_cut(linkpath)), 0)
                 exist = False
                 islink = False
                 cmp = False
@@ -175,12 +188,12 @@ class CopyClass():
             if yn in ['y', 'yes']:
                 return True
             elif yn in ['d', 'diff'] and not is_diff:
-                print('')
+                self.print('', 0)
                 self.diff(index)
-                print('')
+                self.print('', 0)
                 is_diff = True
             elif yn in ['n', 'no']:
-                print('Do not copy '+src.name)
+                self.print('Do not copy '+src.name, 0)
                 return False
 
     def show_files(self):
@@ -190,7 +203,7 @@ class CopyClass():
         else:
             fg = ''
             end = ''
-        print('{}target files{}'.format(fg, end))
+        self.print('{}target files{}'.format(fg, end), 1)
 
         for i in range(self.len):
             if py_version >= 3009 and \
@@ -198,8 +211,8 @@ class CopyClass():
                 src = self.src[i].relative_to(self.cwd)
             else:
                 src = self.src[i]
-            print('{} => {}'.format(src, self.home_cut(self.dst[i])))
-        print(fg+'=~=~=~=~=~=~=~=~=~='+end)
+            self.print('{} => {}'.format(src, self.home_cut(self.dst[i])), 1)
+        self.print(fg+'=~=~=~=~=~=~=~=~=~='+end, 1)
 
     def home_cut(self, path: Path):
         home = Path.home()
@@ -220,7 +233,7 @@ class CopyClass():
             dst_dir = dst.parent
             if self.test:
                 if not dst_dir.is_dir():
-                    print('process check:: mkdir {}'.format(dst_dir))
+                    self.print('process check:: mkdir {}'.format(dst_dir), 0)
             else:
                 mkdir(dst_dir)
 
@@ -233,7 +246,7 @@ class CopyClass():
                     if cmp:
                         continue
                     elif self.force and not islink:
-                        print(self.shift+'overwrite;')
+                        self.print(self.shift+'overwrite;', 0)
                         self.copy(src, dst)
                     else:
                         if self.diff_check(i):
@@ -301,7 +314,8 @@ def main_opt(args):
                 if not fname.endswith('pyc'):
                     files[lfy] = lib_dst/fname
 
-    cc = CopyClass(link=args.link, force=args.force, test=args.test)
+    cc = CopyClass(link=args.link, force=args.force, test=args.test,
+                   display_level_origin=args.display_level)
     for fy in sorted(files.keys()):
         cc.stack(opt_src.joinpath(fy), files[fy])
     cc.show_files()
@@ -378,7 +392,8 @@ def main_conf(args):
         mkdir(bashdir)
         urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', bashdir/'git-prompt.sh')
 
-    cc = CopyClass(link=args.link, force=args.force, test=args.test)
+    cc = CopyClass(link=args.link, force=args.force, test=args.test,
+                   display_level_origin=args.display_level)
     for fy in sorted(files.keys()):
         fy_dir = Path(files[fy]).expanduser().parent
         if fy_dir.is_dir():
@@ -392,6 +407,7 @@ def main_conf(args):
     zsh_read = 'read "YN?update? (y/[n]) "'
     pyopt = '--prefix "{}"'.format(args.prefix)
     pyopt += ' --type ' + args.type
+    pyopt += ' --display_level ' + str(args.display_level)
     if args.setup_file is not None:
         pyopt += ' --setup_file "{}"'.format(args.setup_file)
     if args.link:
@@ -519,7 +535,8 @@ def main_vim(args):
 
         print('\nremoved download tmp files')
 
-    cc = CopyClass(link=args.link, force=args.force, test=args.test)
+    cc = CopyClass(link=args.link, force=args.force, test=args.test,
+                   display_level_origin=args.display_level)
     for fy in sorted(files.keys()):
         cc.stack(vim_src.joinpath(fy), files[fy])
     cc.show_files()
@@ -561,6 +578,9 @@ def main():
                         choices='all opt config vim min'.split(), default='all')
     parser.add_argument('-s', '--setup_file',
                         help='specify the copy files by json format setting file. please see "opt/test/setup_file_template.json" as an example.')
+    parser.add_argument('-d', '--display_level', choices=[0, 1, 2],
+                        help='set the diaplay level. 0=only executed process, 1=target files and executed process, 2=all',
+                        type=int, default=1)
     args = parser.parse_args()
 
     if not Path(args.prefix).is_dir():
