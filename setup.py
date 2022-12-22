@@ -93,7 +93,7 @@ class CopyClass():
         else:
             comment = 'copy {} --> {}'.format(src.name, self.home_cut(dst))
             if self.test:
-                print('{}cmd check:: copy {} -> {}{}'.format(
+                self.print('{}cmd check:: copy {} -> {}{}'.format(
                        fg, src, dst, end), 0)
                 return
             else:
@@ -159,8 +159,12 @@ class CopyClass():
                 self.print(self.shift+'[ {} ] is already copied.'.format(dst2),
                            2)
             else:
+                if self.force:
+                    dl = 2
+                else:
+                    dl = 0
                 self.print(self.shift +
-                           '[ {} ] is already existed.'.format(dst2), 2)
+                           '[ {} ] is already existed.'.format(dst2), dl)
         else:
             if islink:
                 # broken link
