@@ -855,7 +855,7 @@ function! <SID>cursorword_his() abort
     highlight default CursorWord1 ctermfg=None ctermbg=None cterm=None guifg=NONE guifg=NONE gui=NONE
     highlight default CursorWord0 ctermfg=None ctermbg=None cterm=underline guifg=NONE guifg=NONE gui=Underline
     " CursorWord[01] is not supported? or CursorWord is required?
-    highlight default CursorWord ctermfg=None ctermbg=None cterm=underline guifg=NONE guifg=NONE gui=Underline
+    highlight default CursorWord ctermfg=None ctermbg=None cterm=underline,bold guifg=NONE guifg=NONE gui=Underline,bold
 
 endfunction
 call meflib#add('plugin_his', s:sid.'cursorword_his')
@@ -1130,7 +1130,7 @@ let g:lsp_auto_enable = 0
 let g:lsp_diagnostics_enabled = 1
 let g:lsp_diagnostics_highlights_enabled = 0
 let g:lsp_diagnostics_signs_enabled = 1
-let g:lsp_diagnostics_signs_insert_mode_enabled = 1
+let g:lsp_diagnostics_signs_insert_mode_enabled = 0
 let g:lsp_diagnostics_virtual_text_enabled = 0
 " cursor上にwarningとかあったらechoしてくれる
 let g:lsp_diagnostics_echo_cursor = 1
