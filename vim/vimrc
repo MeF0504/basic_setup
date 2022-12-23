@@ -12,53 +12,7 @@ scriptencoding utf-8
 set nocompatible
 " 文字の色づけ ... onだと現状の設定を破棄する。詳しくは:h :syntax-on
 syntax enable
-""########## tips {{{
-" ##### shortcut comment
-" <c-h> ... backspace <c-m> ... Enter
-" <c-i> ... tab <c-j> ... Down
 
-" ##### useful command
-" :set          ... Show all options that differ from their default value.
-" :set all      ... Show all but terminal options.
-" :set termcap  ... Show all terminal options.
-" :map          ... Show all mapping settings.
-" :highlight    ... Show all highlight settings.
-" :command       ... Show all user commands.
-
-" ##### spell check
-" information; :h spell or https://vim-jp.org/vimdoc-ja/spell.html
-" on; :setlocal spell spelllang=en_us
-" search;
-" 次を検索 ]s or ]S
-" 前を検索 [s or [S
-" (カーソル下を)正しい(good)単語として登録      zg or :spe[llgood] {word}
-" (カーソル下を)間違った(wrong)単語として登録   zw or :spellw[rong] {word}
-" (カーソル下の?)単語を一覧から削除             zuw / zug / :spellu[ndo] {word}
-
-" ##### other topics
-" about command args... <f-args>=string, <args>=value
-" about equation operator ...  (sorry for Japanese)
-"   ==#, !=#, ># etc..    ：大文字小文字を区別する
-"   ==?, !=?, >? etc..    ：大文字小文字を区別しない
-"   =~, =~#, =~?          ：正規表現マッチ
-"   !~, !~#, !~?          ：正規表現非マッチ
-" 正規表現については :h pattern-overview or https://vim-jp.org/vimdoc-ja/pattern.html#pattern-overview
-" about SID
-" :scriptnames          ... List all sourced script names
-" :echo expand('<SID>') ... Get the current file SID
-" :filter {str} {cmd} ... restrict the output.
-
-" about <Cmd>
-" mapping でcmd modeに移るときは : よりも <Cmd> の方が良さそう
-" :h map-cmd
-" 使用できるのは ver. 8.2 && patch-1978 以降
-
-" コマンド補完の結果を取得するには
-" :h getcompletion()
-" これは？
-" :h complete()
-
-"" }}}
 if exists('$VIM_TERMINAL') || $SHELL_INFO[-1:]=='v'
     echoerr 'Warning!! vim is already opened!!'
 endif

@@ -1,31 +1,34 @@
 *meflib.txt*    local library of vim script.
+both Japanese and English
+色々あって日本語／英語混在 *meflib.jax*
 
 ==============================================================================
-CONTENTS						*meflib-contents*
+CONTENTS                                                       *meflib-contents*
 
 Introduction	|meflib-introduction|
 Commands	|meflib-commands|
 Functions	|meflib-functions|
 Options		|meflib-options|
+Memo		|meflib-memo|
 License		|meflib-license|
 
 ==============================================================================
-INTRODUCTION						*meflib-introduction*
+INTRODUCTION                                               *meflib-introduction*
 
 local library of vim scripts for Mef0504 (https://github.com/MeF0504)
 
 ==============================================================================
-COMMANDS						*meflib-commands*
+COMMANDS                                                       *meflib-commands*
 
-DiffOrig						*:DiffOrig*
+DiffOrig                                                             *:DiffOrig*
 
 See |diff-original-file|
 
-Diff {filename}						*:Diff*
+Diff {filename}                                                          *:Diff*
 
 Check the difference between current file and {filename}.
 
-SearchConf						*:SearchConf*
+SearchConf                                                         *:SearchConf*
 
 Search the conflict strings.
 Conflict strings are following; >
@@ -34,34 +37,34 @@ Conflict strings are following; >
 	>>>>>>>
 <
 
-Spell							*:Spell*
+Spell                                                                   *:Spell*
 
 Toggle 'spell'.
 
-FileInfo						*:FileInfo*
+FileInfo                                                             *:FileInfo*
 
 Show the information of current file.
 Python support is required.
 
-EijiroWeb {word}					*:EijiroWeb*
+EijiroWeb {word}                                                    *:EijiroWeb*
 
 Search the {word} in the eijiro web page (https://eowf.alc.co.jp/).
 
-Ctags							*:Ctags*
+Ctags                                                                   *:Ctags*
 
 Execute ctags command.
 Also see |meflib-opt-ctags_opt|.
 
-JobStatus						*:JobStatus*
+JobStatus                                                           *:JobStatus*
 
 Show the job status.
 
-BinMode							*:BinMode*
+BinMode                                                               *:BinMode*
 
 Set the current file as a bin file and move to bin mode.
 Also refer |using-xxd|.
 
-Terminal [-win X] [-term term_name] [commands]		*:Terminal*
+Terminal [-win X] [-term term_name] [commands]                       *:Terminal*
 
 Wrapper of terminal command.
 
@@ -74,7 +77,7 @@ Wrapper of terminal command.
 
 Also see |meflib-opt-term_default|.
 
-DiffLine {args1} {args2}				*:DiffLine*
+DiffLine {args1} {args2}                                             *:DiffLine*
 
 Show the difference between {args1} and {args2}.
 The format of each args is >
@@ -83,7 +86,7 @@ The format of each args is >
 filename should be in buffer.
 start_line and end_line are number, start_line < end_line.
 
-Gregrep [-wd=WORD] [-dir=DIR] [ex=EXT]			*:Gregrep*
+Gregrep [-wd=WORD] [-dir=DIR] [ex=EXT]                                *:Gregrep*
 
 Wrapper of grep command.
 	-wd: set searching strings (default: current word).
@@ -94,15 +97,15 @@ Wrapper of grep command.
 	-ex: set the file extension (default: extension of current file).
 		if -ex=None, no file is excluded.
 
-XPMLoader						*:XPMLoader*
+XPMLoader                                                           *:XPMLoader*
 
 Test command to set highlights of xpm file.
 
-MefShowVar						*:MefShowVar*
+MefShowVar                                                         *:MefShowVar*
 
 Show all local variables. See |meflib-options|.
 
-Echo {option}						*:Echo*
+Echo {option}                                                            *:Echo*
 
 Expand echo command. Available options are;
 	- pand str
@@ -124,34 +127,34 @@ Expand echo command. Available options are;
 		acceptable date formats are "YYYY/MM/DD" or 
 		"YYYY/MM/DD:hh-mm-ss".
 
-BufOpen[!]						*:BufOpen*
+BufOpen[!]                                                            *:BufOpen*
 
 Select and open a buffer.
 
 ==============================================================================
-FUNCTIONS						*meflib-functions*
+FUNCTIONS                                                     *meflib-functions*
 
-meflib#set({opt_name}, [sub_opt_name], {value})		*meflib#set()*
+meflib#set({opt_name}, [sub_opt_name], {value})                   *meflib#set()*
 
 Set the {value} of {opt_name}. If {sub_opt_name} is specified, the
 {value} of the {sub_opt_name} key in the {opt_name} is set.
 See |meflib-options| for available options.
 
-meflib#get({opt_name}, [sub_opt_name], {default})	*meflib#get()*
+meflib#get({opt_name}, [sub_opt_name], {default})                 *meflib#get()*
 
 Return the item of {opt_name}. If {sub_opt_name} is specified, Get the item if
 {opt_name}[{sub_opt_name}]. 
 If {opt_name} or {sub_opt_name} does not exist, return {default}.
 
-meflib#add({opt_name}, {value})				*meflib#add()*
+meflib#add({opt_name}, {value})                                   *meflib#add()*
 
 Add {value} to |list| of {opt_name}. If {opt_name} does not exist, make the list.
 
-meflib#basic#get_conf_dir()			*meflib#basic#get_conf_dir()*
+meflib#basic#get_conf_dir()                        *meflib#basic#get_conf_dir()*
 
 Return the user local configuration directory.
 
-meflib#basic#analythis_args_eq({args})	*meflib#basic#analythis_args_eq()*
+meflib#basic#analythis_args_eq({args})        *meflib#basic#analythis_args_eq()*
 
 A function to analyze the arguments of a command. This function analyze the
 arguments like >
@@ -161,7 +164,7 @@ arguments like >
 Return value is the |dict| which keys are key1, key2, ... and item of each key
 is val1, val2, ...
 
-					*meflib#basic#analythis_args_hyp()*
+                                             *meflib#basic#analythis_args_hyp()*
 meflib#basic#analythis_args_hyp({args}, {config})
 
 A function to analyze the arguments of a command. This function analyze the
@@ -176,18 +179,18 @@ Return value is the |dict| keys are key1, key2, ... and item of each key is
 |list| of values. "no_opt" key is also returned, which contains arguments with
 no key.
 
-meflib#basic#get_top_dir({directory})		*meflib#basic#get_top_dir()*
+meflib#basic#get_top_dir({directory})               *meflib#basic#get_top_dir()*
 
 Return the project-top directory relative to the {directory}. "project-top
 directory" means the directory containing .git/.svn directory.
 
-meflib#basic#get_exe_cmd([{command}])		*meflib#basic#get_exe_cmd()*
+meflib#basic#get_exe_cmd([{command}])               *meflib#basic#get_exe_cmd()*
 
 If called with no arguments, return system commands; "start" for Windows,
 "open" for macOS, and "xdg-open" for Linux. If {command} is specified, return
 the command path if {command} is executable. Otherwise return empty string.
 
-meflib#basic#get_hi_info({group_name}, {keys})	*meflib#basic#get_hi_info()*
+meflib#basic#get_hi_info({group_name}, {keys})      *meflib#basic#get_hi_info()*
 
 Return the highlight setting of {group_name}. {keys} is a string or list of
 strings to return the setting. e.g. >
@@ -196,7 +199,7 @@ strings to return the setting. e.g. >
 	echo meflib#basic#get_hi_info('Number', ['ctermfg', 'guifg'])
 	" ['9', 'Red']
 <
-						*meflib#floating#open()*
+                                                        *meflib#floating#open()*
 meflib#floating#open({bufid}, {winid}, {str_list}, {config})
 
 Wrapper function to create and open floating/popup window. For initialization,
@@ -205,14 +208,14 @@ set {bufid}=-1 and {winid}=-1. This function return the list of {bufid} and
 these returned values.
 See |meflib-floating-config| for available configuration items.
 
-meflib#floating#close({winids})			*meflib#floating#close()*
+meflib#floating#close({winids})                        *meflib#floating#close()*
 
 Wrapper function to close floating/popup window.
 
-meflib#floating#close_all()			*meflib#floating#close_all()*
+meflib#floating#close_all()                        *meflib#floating#close_all()*
 Close all floating/popup windows opened by |meflib#floating#open()|.
 
-						*meflib#floating#select()*
+                                                      *meflib#floating#select()*
 meflib#floating#select({str_list}, {config}, {callback})
 
 Wrapper function to create and open floating/popup select menu. This works
@@ -220,69 +223,69 @@ almost same as |popup_menu| of vim.
 {config} is same as |meflib#floating#open()|. See |meflib-floating-config| for
 available configuration items.
 
-ShowStatusLineBG()					*ShowStatusLineBG()*
+ShowStatusLineBG()                                          *ShowStatusLineBG()*
 
 Show the color configuration of |status-line|.
 
 ==============================================================================
-OPTIONS							*meflib-options*
+OPTIONS                                                         *meflib-options*
 
-auto_ime_off						*meflib-auto_ime_off*
+auto_ime_off                                               *meflib-auto_ime_off*
 	type: number
 	default: 0
 If set 1, turn off the IME/Japanese input automatically when leave the insert
 mode.
 
-birthday						*meflib-birthday*
+birthday                                                       *meflib-birthday*
 	type: list of number
 	default: [0, 0]
 Set the birthday; [month, day]. This is refered by day-by-day statusline
 color.
 
 
-cfi_on							*meflib-cfi_on*
+cfi_on                                                           *meflib-cfi_on*
 	type: number
 	default: 0
 If set 1, show the result of |cfi.txt| at the top line.
 
-colorscheme						*meflib-colorscheme*
+colorscheme                                                 *meflib-colorscheme*
 	type: string
 	default: "evening"
 Set the default color scheme.
 
-ctags_opt						*meflib-ctags_opt*
+ctags_opt                                                     *meflib-ctags_opt*
 	type: string
 	default: ""
 Options of ctags command.
 
-del_commands						*meflib-del_commands*
+del_commands                                               *meflib-del_commands*
 	type: list of strings
 Commands deleted after entering the vim.
 Using |meflib#add| is recommended. >
 	call meflib#add('del_commands', 'Hoge')
 <
 
-get_top_dir						*meflib-get_top_dir*
+get_top_dir                                                 *meflib-get_top_dir*
 	type: number
 	default: 0
 If set 1, use top directory as a default directory in some commands.
 Currently this values is referred by Gregrep.
 
-insert_plugins						*meflib-insert_plugins*
+insert_plugins                                           *meflib-insert_plugins*
 	type: list of plugin names
 Set plugins loaded after entering insert mode.
 Using |meflib#add| is recommended. >
 	call meflib#add('insert_plugins', 'Hoge')
 <
 
-lazy_plugins						*meflib-lazy_plugins*
+lazy_plugins                                               *meflib-lazy_plugins*
 	type: list of plugin names
 Set plugins loaded after entering vim.
 Using |meflib#add| is recommended. >
 	call meflib#add('lazy_plugins', 'Hoge')
 <
 
-load_plugin						*meflib-load_plugin*
+load_plugin                                                 *meflib-load_plugin*
 	type: dict
 An option to check that plugins/functions are able to load.
 To set this option, {sub_opt_name} is available; >
@@ -294,19 +297,19 @@ Currently following {sub_opt_name} are used;
 	- hitspop
 	- nerdfont
 
-my_color_set						*meflib-my_color_set*
+my_color_set                                               *meflib-my_color_set*
 	type: dict
 An option to set functions overwriting highlights of color scheme. e.g. >
 	call meflib#set('my_color_set', 'inkpotter', expand('<SID>').'my_color_set_inkpotter')
 <
 
-plugin_his						*meflib-plugin_his*
+plugin_his                                                   *meflib-plugin_his*
 	type: list of plugin names
 An option to set plugin highlights. e.g. >
 	call meflib#add('plugin_his', expand('<SID>').'plug_his')
 <
 
-qrun_finished						*meflib-qrun_finished*
+qrun_finished                                             *meflib-qrun_finished*
 	type: number
 	default: 0
 An option used in .qrun_conf.vim file. If this option is set 1, QuickRun is
@@ -324,19 +327,19 @@ already run. Sample; >
 	endif
 <
 
-show_cwd_tab						*meflib-show_cwd_tab*
+show_cwd_tab                                               *meflib-show_cwd_tab*
 	type: number
 	default: 1
 If set 1, show the current working directory at tab line.
 
-st_per_type						*meflib-st_per_type*
+st_per_type                                                 *meflib-st_per_type*
 	type: string
 	default: ""
 Set the type of percentage at status line. Currently "clock", "moon", and
 "battery". Nerd fonts (https://www.nerdfonts.com) and nerdfont in
 |meflib-load_plugin| is required.
 
-statusline						*meflib-statusline*
+statusline                                                   *meflib-statusline*
 	type: dict
 Set the configuration of status line. Possible keys are
 	- "_": default status line.
@@ -345,17 +348,17 @@ Set the configuration of status line. Possible keys are
 	- else(number): status line for narrow window. The key value is
 	  accounted as the max width of the window.
 
-tab_debug						*meflib-tab_debug*
+tab_debug                                                     *meflib-tab_debug*
 	type: number
 	default: 0
 If set 1, debug mode of 'tabline' is on.
 
-tabinfo							*meflib-tabinfo*
+tabinfo                                                         *meflib-tabinfo*
 	type: str
 An option storing the debug message of 'tabline'. This is automatically set if
 |meflib-tab_debug| = 1.
 
-tabline_footer						*meflib-tabline_footer*
+tabline_footer                                           *meflib-tabline_footer*
 	type: function name or |Funcref|
 	default: ""
 An option to set additional message in tab line. The return values of this
@@ -366,9 +369,55 @@ function is set of message and length of message. >
 		return [message, len]
 	endfunction
 <
+==============================================================================
+MEMO                                                               *meflib-memo*
+##### shortcut comment
+<c-h> ... backspace <c-m> ... Enter
+<c-i> ... tab <c-j> ... Down
+
+##### useful command
+|:set|          ... Show all options that differ from their default value.
+|:set| all      ... Show all but terminal options.
+|:set| termcap  ... Show all terminal options.
+|:map|          ... Show all mapping settings.
+|:highlight|    ... Show all highlight settings.
+|:command|       ... Show all user commands.
+
+##### spell check
+information; |spell| or https://vim-jp.org/vimdoc-ja/spell.html
+on; `:setlocal spell spelllang=en_us`
+search;
+次を検索 |]s| or |]S|
+前を検索 |[s| or |[S|
+(カーソル下を)正しい(good)単語として登録      |zg| or |:spe|[llgood] {word}
+(カーソル下を)間違った(wrong)単語として登録   |zw| or |:spellw|[rong] {word}
+(カーソル下の?)単語を一覧から削除             |zuw| / |zug| / |:spellu|[ndo] {word}
+
+##### other topics
+about command args... <f-args>=string, <args>=value
+about equation operator ...  (sorry for Japanese)
+  |==#|, |!=#|, |>#| etc..    ：大文字小文字を区別する
+  |==?|, |!=?|, |>?| etc..    ：大文字小文字を区別しない
+  |=~|, |=~#|, |=~?|          ：正規表現マッチ
+  |!~|, |!~#|, |!~?|          ：正規表現非マッチ
+正規表現については |pattern-overview| or https://vim-jp.org/vimdoc-ja/pattern.html#pattern-overview
+about SID
+|:scriptnames|          ... List all sourced script names
+:echo expand('<SID>') ... Get the current file SID
+:filter {str} {cmd} ... restrict the output.
+
+about <Cmd>
+mapping でcmd modeに移るときは : よりも <Cmd> の方が良さそう
+|map-cmd|
+使用できるのは ver. 8.2 && patch-1978 以降
+
+コマンド補完の結果を取得するには
+|getcompletion()|
+これは？入力補完を自作する時用かな
+|complete()|
 
 ==============================================================================
-LICENSE							*meflib-license*
+LICENSE                                                         *meflib-license*
 
 The MIT License (https://github.com/MeF0504/basic_setup/blob/master/LICENSE)
 
