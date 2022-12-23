@@ -1,6 +1,5 @@
 for dir in plugin autoload colors doc
 do
-    echo $dir
     if [[ -d "./${dir}" ]]; then
         echo "copy ./${dir}"
         if [[ ! -d "${HOME}/.vim/test/${dir}" ]]; then
