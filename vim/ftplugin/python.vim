@@ -89,16 +89,16 @@ endfunction
 function! <SID>chk_current_position_python() abort
 
     let res = []
-    let tablevel = match(getline('.'), '\S')
+    let tablevel = indent('.')
     let clnnr = line('.')
     for lnnr in range(clnnr)
         let ln = getline(clnnr-lnnr-1)
-        let tmp_tablevel = match(ln, '\S')
+        let tmp_tablevel = indent(clnnr-lnnr-1)
         " echo tmp_tablevel . '-' . tablevel
         if tmp_tablevel < tablevel
             for hs in s:hit_str
-                let match_level = match(ln, '\<'.hs.'\>')
-                if (match_level != -1) && (match_level == tmp_tablevel)
+                let is_hit = match(ln, '^\s*\<'.hs.'\>') != -1
+                if is_hit
                     " echo ln
                     call insert(res, printf('%0'.len(line('.')).'d| %s', clnnr-lnnr-1, ln))
                     if match('elif else except', '\<'.hs.'\>') == -1
@@ -135,16 +135,16 @@ nnoremap <buffer> <leader>c <Cmd>call <SID>chk_current_position_python()<CR>
 
 " match-upはpython 非対応らしいので，自作 {{{
 function! <SID>next_identifer_python() abort
-    if match(s:hit_str, expand('<cword>')) != -1
-        let keyword = expand('<cword>')
-        let ind_level = match(getline('.'), keyword)
+    if match(s:hit_str, expand('<cword>')) != -1 &&
+       \ match(getline('.'), '^\s*'..expand('<cword>')) != -1
+        let ind_level = indent('.')
     else
         return '%'
     endif
 
     for lnum in range(line('.')+1, line('$'))
-        let match = match(getline(lnum), '\S')
-        if match!=-1 && match<=ind_level
+        let match = indent(lnum)
+        if !empty(getline(lnum)) && match<=ind_level
             return lnum.'gg'
         endif
     endfor
