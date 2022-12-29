@@ -115,6 +115,13 @@ endif
 
 call plug#end()
 
+function! s:load_comp(arglead, cmdline, cursorpos) abort
+    let dirs = getcompletion(s:plug_dir..'/', 'dir')
+    let dirs = map(dirs, "fnamemodify(v:val[:-2], ':t')")
+    return filter(dirs, '!stridx(v:val, a:arglead)')
+endfunction
+command -nargs=1 -complete=customlist,s:load_comp PlugLoad call plug#load(<f-args>)
+
 " https://zenn.dev/kawarimidoll/articles/8172a4c29a6653
 " 遅延読み込み
 function! s:lazy_load(timer) abort
