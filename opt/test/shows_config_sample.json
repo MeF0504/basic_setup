@@ -1,0 +1,4 @@
+{
+    "ext": ["png", "jpg", "jpeg", "miff", "pdf"],
+    "cmd": "open"
+}

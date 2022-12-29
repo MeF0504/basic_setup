@@ -14,6 +14,7 @@ import tempfile
 import platform
 import urllib.request as urlreq
 from pathlib import Path
+
 sys.path.append(Path(__file__).parent/'opt'/'lib')
 from local_lib import mkdir, chk_cmd
 try:
@@ -324,6 +325,10 @@ def main_opt(args):
         cc.stack(opt_src.joinpath(fy), files[fy])
     cc.show_files()
     cc.exec()
+    local_conf_dir = Path(args.conf_home)/'meflib'
+    if not local_conf_dir.exists():
+        os.makedirs(local_conf_dir)
+        print('mkdir: {}'.format(local_conf_dir))
 
 
 def main_conf(args):

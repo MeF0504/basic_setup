@@ -4,13 +4,47 @@ import os
 import subprocess
 import glob
 import argparse
+import json
+from pathlib import Path
+
+
+def get_config():
+    if 'XDG_CONFIG_DIR' in os.environ:
+        xdg_dir = Path(os.environ['XDG_CONFIG_DIR'])
+    else:
+        xdg_dir = Path('~/.config').expanduser()
+
+    conf_file = xdg_dir/'meflib'/'shows_config.json'
+    if conf_file.is_file():
+        print('find config: {}'.format(conf_file))
+        with open(conf_file, 'r') as f:
+            conf = json.load(f)
+        if 'ext' in conf:
+            exts = conf['ext']
+        else:
+            exts = None
+        if 'cmd' in conf:
+            cmd = conf['cmd']
+        else:
+            cmd = None
+    else:
+        print('config file is not found,')
+        exts = None
+        cmd = None
+    return exts, cmd
+
 
 def linux(files, thr, force=False):
+    exts, cmd = get_config()
+    if exts is None:
+        exts = 'png jpg jpeg miff'.split(' ')
+    if cmd is None:
+        cmd = 'display'
     img_files = []
     pdf_files = []
     for f in files:
         ext = f[f.rfind('.')+1:].lower()
-        if (ext in 'png jpg jpeg miff'.split(' ')):
+        if ext in exts:
             img_files.append(f)
         elif (ext in 'pdf'.split(' ')):
             pdf_files.append(f)
@@ -31,57 +65,64 @@ def linux(files, thr, force=False):
             print('open files: {}'.format(fnum))
 
     for fy in img_files:
-        judge = subprocess.call('display {} &'.format(fy), shell=True)
+        judge = subprocess.call('{} {} &'.format(cmd, fy), shell=True)
         if judge != 0:
             break
 
     for fy in pdf_files:
         # judge = subprocess.call('evince {} &'.format(fy), shell=True)
-        judge = subprocess.call('display {} &'.format(fy), shell=True)
+        judge = subprocess.call('{} {} &'.format(cmd, fy), shell=True)
         if judge != 0:
             break
 
+
 def mac(files, thr):
+    exts, cmd = get_config()
+    if exts is None:
+        exts = 'png jpg jpeg miff pdf'.split(' ')
+    if cmd is None:
+        cmd = 'open -a Preview'
     f2 = ''
     cnt = 0
     for f in files:
         ext = f[f.rfind('.')+1:].lower()
-        if ext in 'png jpg jpeg miff pdf'.split(' '):
-            f = f.replace(' ','\ ')
+        if ext in exts:
+            f = f.replace(' ', '\ ')
             f2 += ' '+f
             cnt += 1
 
-    #print f2
+    # print f2
     if cnt > thr:
         yn = input('open files: {}\tOK? (y/[n])'.format(cnt))
         if yn != 'y':
             return
     else:
         print('all files: {}'.format(cnt))
-    subprocess.call('open -a Preview '+f2,shell=True)
+    subprocess.call('{} {}'.format(cmd, f2), shell=True)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('figs',help="figures: file type=('png','jpg','jpeg','MIFF','pdf')",nargs='*')
-    parser.add_argument('-f','--force',help='show images w/o no check',action='store_true')
-    parser.add_argument('-n',dest='num',help='number of showing figures',type=int)
+    parser.add_argument('figs', help="figures: file type=('png','jpg','jpeg','MIFF','pdf')", nargs='*')
+    parser.add_argument('-f', '--force', help='show images w/o no check', action='store_true')
+    parser.add_argument('-n', dest='num', help='number of showing figures', type=int)
     parser.add_argument('-t', '--threshold', help='the number of files that this command doesn\'t ask "open?"', type=int, default=3)
     args = parser.parse_args()
-    if len(args.figs)==0:
+    if len(args.figs) == 0:
         files = glob.glob('./*')
     else:
         files = []
         for fig in args.figs:
             if os.path.isdir(fig):
-                files += glob.glob(os.path.join(fig,'*'))
+                files += glob.glob(os.path.join(fig, '*'))
             elif os.path.isfile(fig):
                 files.append(fig)
     # for fy in files: print(fy)
     # print(len(files))
-    if hasattr(args,'num'):
+    if hasattr(args, 'num'):
         files = files[:args.num]
 
-    if os.uname()[0] == 'Linux': linux(files, args.threshold, args.force)
-    if os.uname()[0] == 'Darwin': mac(files, args.threshold)
-
+    if os.uname()[0] == 'Linux':
+        linux(files, args.threshold, args.force)
+    if os.uname()[0] == 'Darwin':
+        mac(files, args.threshold)
