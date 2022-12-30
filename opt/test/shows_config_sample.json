@@ -5,8 +5,9 @@
     "cmd": [["xdg-open"], ["&"]],
     "conf": {
         "png": [["display"],  ["&"]],
+        "comment": "↓if empty, use common command.",
+        "jpg": [],
         "comment": "mac sample↓",
-        "jpg": [["open"], []],
         "jpeg": [["open"], []],
         "miff": [["open"], []],
         "pdf": [["open", "-a", "Preview"], []]

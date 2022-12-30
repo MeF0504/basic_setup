@@ -85,16 +85,20 @@ def main(files, simul):
             cmds = ' '.join(cmd[0]+[images]+cmd[1])
         else:
             cmds = cmd[0]+images+cmd[1]
+        # print(cmds)
         subprocess.call(cmds, shell=shell)
     else:
         for im in images:
             ext = im[im.rfind('.')+1:].lower()
             cur_cmd = conf[ext]
+            if len(cur_cmd) != 2:
+                cur_cmd = cmd
             if shell:
                 im = im.replace(' ', '\ ')
                 cmds = ' '.join(cmd[0]+[im]+cmd[1])
             else:
                 cmds = cur_cmd[0]+[im]+cur_cmd[1]
+            # print(cmds)
             judge = subprocess.call(cmds, shell=shell)
             if judge != 0:
                 print('failed to open: {}'.format(im))
