@@ -18,95 +18,97 @@ def get_config():
     if conf_file.is_file():
         print('find config: {}'.format(conf_file))
         with open(conf_file, 'r') as f:
-            conf = json.load(f)
-        if 'ext' in conf:
-            exts = conf['ext']
+            shows_conf = json.load(f)
+
+        if 'conf' in shows_conf:
+            conf = shows_conf['conf']
         else:
-            exts = None
-        if 'cmd' in conf:
-            cmd = conf['cmd']
+            conf = None
+        if 'cmd' in shows_conf:
+            # common command
+            cmd = shows_conf['cmd']
         else:
             cmd = None
+        if "threshold" in shows_conf:
+            thr = shows_conf['threshold']
+        else:
+            thr = None
+        if "shell" in shows_conf:
+            shell = shows_conf['shell']
+        else:
+            shell = None
     else:
         print('config file is not found,')
-        exts = None
+        conf = None
         cmd = None
-    return exts, cmd
+        thr = None
+        shell = None
 
-
-def linux(files, thr, force=False):
-    exts, cmd = get_config()
-    if exts is None:
-        exts = 'png jpg jpeg miff'.split(' ')
     if cmd is None:
-        cmd = 'display'
-    img_files = []
-    pdf_files = []
-    for f in files:
-        ext = f[f.rfind('.')+1:].lower()
-        if ext in exts:
-            img_files.append(f)
-        elif (ext in 'pdf'.split(' ')):
-            pdf_files.append(f)
+        if os.uname()[0] == 'Linux':
+            cmd = [['display'], ['&']]
+        elif os.uname()[0] == 'Darwin':
+            cmd = [['open', '-a', 'Preview'], []]
         else:
-            continue
+            print('unsupported OS.')
+            return None, None, None
+    if conf is None:
+        conf = {}
+        for ext in 'png jpg jpeg miff pdf'.split(' '):
+            conf[ext] = cmd
+    if thr is None:
+        thr = 3
+    if shell is None:
+        shell = False
+    return conf, cmd, thr, shell
 
-    fnum = len(img_files)+len(pdf_files)
-    if fnum == 0:
-        print('open 0 files')
+
+def main(files, simul):
+    conf, cmd, thr, shell = get_config()
+    if cmd is None:
         return
-
-    if not force:
-        if fnum > thr:
-            yn = input('open files: {}\tOK? (y/[n])'.format(fnum))
-            if yn != 'y':
-                return
-        else:
-            print('open files: {}'.format(fnum))
-
-    for fy in img_files:
-        judge = subprocess.call('{} {} &'.format(cmd, fy), shell=True)
-        if judge != 0:
-            break
-
-    for fy in pdf_files:
-        # judge = subprocess.call('evince {} &'.format(fy), shell=True)
-        judge = subprocess.call('{} {} &'.format(cmd, fy), shell=True)
-        if judge != 0:
-            break
-
-
-def mac(files, thr):
-    exts, cmd = get_config()
-    if exts is None:
-        exts = 'png jpg jpeg miff pdf'.split(' ')
-    if cmd is None:
-        cmd = 'open -a Preview'
-    f2 = ''
-    cnt = 0
-    for f in files:
-        ext = f[f.rfind('.')+1:].lower()
-        if ext in exts:
-            f = f.replace(' ', '\ ')
-            f2 += ' '+f
-            cnt += 1
-
-    # print f2
-    if cnt > thr:
-        yn = input('open files: {}\tOK? (y/[n])'.format(cnt))
+    images = []
+    for fy in files:
+        ext = fy[fy.rfind('.')+1:].lower()
+        if ext in conf:
+            images.append(fy)
+    if len(images) > thr:
+        yn = input('open files: {}\tOK? (y/[n])'.format(len(images)))
         if yn != 'y':
             return
     else:
-        print('all files: {}'.format(cnt))
-    subprocess.call('{} {}'.format(cmd, f2), shell=True)
+        print('open files: {}'.format(len(images)))
+
+    if simul:
+        if shell:
+            images = ' '.join(map(lambda x: x.replace(' ', '\ '), images))
+            cmds = ' '.join(cmd[0]+[images]+cmd[1])
+        else:
+            cmds = cmd[0]+images+cmd[1]
+        subprocess.call(cmds, shell=shell)
+    else:
+        for im in images:
+            ext = im[im.rfind('.')+1:].lower()
+            cur_cmd = conf[ext]
+            if shell:
+                im = im.replace(' ', '\ ')
+                cmds = ' '.join(cmd[0]+[im]+cmd[1])
+            else:
+                cmds = cur_cmd[0]+[im]+cur_cmd[1]
+            judge = subprocess.call(cmds, shell=shell)
+            if judge != 0:
+                print('failed to open: {}'.format(im))
+                break
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('figs', help="figures: file type=('png','jpg','jpeg','MIFF','pdf')", nargs='*')
-    parser.add_argument('-f', '--force', help='show images w/o no check', action='store_true')
-    parser.add_argument('-n', dest='num', help='number of showing figures', type=int)
-    parser.add_argument('-t', '--threshold', help='the number of files that this command doesn\'t ask "open?"', type=int, default=3)
+    parser.add_argument('figs', help="shown figures", nargs='*')
+    parser.add_argument('-n', dest='num', type=int,
+                        help='number of showing figures')
+    parser.add_argument('-s', '--simultaneously', action='store_true',
+                        help='open files simultaneously')
+
     args = parser.parse_args()
     if len(args.figs) == 0:
         files = glob.glob('./*')
@@ -117,12 +119,9 @@ if __name__ == '__main__':
                 files += glob.glob(os.path.join(fig, '*'))
             elif os.path.isfile(fig):
                 files.append(fig)
-    # for fy in files: print(fy)
-    # print(len(files))
+            else:
+                print('{} not found.'.format(fig))
     if hasattr(args, 'num'):
         files = files[:args.num]
 
-    if os.uname()[0] == 'Linux':
-        linux(files, args.threshold, args.force)
-    if os.uname()[0] == 'Darwin':
-        mac(files, args.threshold)
+    main(files, args.simultaneously)

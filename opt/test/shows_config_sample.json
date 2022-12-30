@@ -1,4 +1,14 @@
 {
-    "ext": ["png", "jpg", "jpeg", "miff", "pdf"],
-    "cmd": "open"
+    "shell": false,
+    "threshold": 3,
+    "comment": "linux sample↓",
+    "cmd": [["xdg-open"], ["&"]],
+    "conf": {
+        "png": [["display"],  ["&"]],
+        "comment": "mac sample↓",
+        "jpg": [["open"], []],
+        "jpeg": [["open"], []],
+        "miff": [["open"], []],
+        "pdf": [["open", "-a", "Preview"], []]
+    }
 }
