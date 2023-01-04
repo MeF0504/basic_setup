@@ -105,7 +105,7 @@ function _prompt_cnt_time
         end
     end
     set --erase -g __pre_time
-    set --erase -g __exec_time
+    # set --erase -g __exec_time  # show the previous time if command is not run.
     printf ' %s' $res
 end
 # }}}
