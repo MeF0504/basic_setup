@@ -1147,7 +1147,7 @@ if meflib#get('load_plugin', 'nerdfont', 0)
     let g:lsp_diagnostics_signs_warning = {'text': nr2char(0xf071)}
     let g:lsp_diagnostics_signs_error = {'text': nr2char(0xfb8a)}
 endif
-" highlights
+" highlights {{{
 function! <SID>lsp_his() abort
     highlight default Lsp_Running ctermfg=233 ctermbg=183 guifg=#000000 guibg=#c8a0ef
     highlight default Lsp_NotRunning ctermfg=255 ctermbg=52 guifg=#eeeeee guibg=#702030
@@ -1166,7 +1166,7 @@ function! <SID>lsp_his() abort
     endif
 endfunction
 call meflib#add('plugin_his', s:sid.'lsp_his')
-
+" }}}
 " reference: lsp_settings#profile#status()
 function! <SID>chk_lsp_running(map_pop) " {{{
     let active_servers = lsp#get_allowed_servers()
@@ -1249,7 +1249,7 @@ endfunction
 " <c-p>でhelp hover, definition, type definition を選択
 function! s:lsp_mapping(map) abort " {{{
     if a:map == 1
-        echo 'open in; [t]ab/[s]plit/[v]ertical/cur_win '
+        echo 'open in; [t]ab/[s]plit/[v]ertical/cur_win<CR> '
         let yn = getcharstr()
         if yn == 't'
             return "\<Cmd>tab LspDefinition\<CR>"
@@ -1257,11 +1257,11 @@ function! s:lsp_mapping(map) abort " {{{
             return "\<Cmd>aboveleft LspDefinition\<CR>"
         elseif yn == 'v'
             return "\<Cmd>vertical LspDefinition\<CR>"
-        elseif yn == "\<esc>"
+        elseif yn == "\<CR>"
+            return "\<Plug>(lsp-definition)"
+        else
             echo 'canceled'
             return ''
-        else
-            return "\<Plug>(lsp-definition)"
         endif
     elseif a:map == 2
         return "\<Plug>(lsp-references)"
