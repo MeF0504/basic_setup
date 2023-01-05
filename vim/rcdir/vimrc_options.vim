@@ -149,11 +149,14 @@ if exists('s:vimdir')
 endif
 " test用directoryを追加
 if exists('s:vimdir')
-    let s:test_vim_dir = s:vimdir . 'test'
+    let s:test_vim_dir = s:vimdir..'test'
     if !isdirectory(s:test_vim_dir)
         call mkdir(s:test_vim_dir)
     endif
-    execute 'set runtimepath^=' . substitute(s:test_vim_dir, ' ', '\\ ', 'g')
+    if isdirectory(s:test_vim_dir..'/doc')
+        execute "helptags "..s:test_vim_dir..'/doc'
+    endif
+    execute 'set runtimepath^='..substitute(s:test_vim_dir, ' ', '\\ ', 'g')
 endif
 
 " terminal mode設定
