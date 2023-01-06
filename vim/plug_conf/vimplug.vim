@@ -904,7 +904,6 @@ Plug 'lambdalisue/fern-mapping-project-top.vim', PlugCond(1, {'on': 'Fern'})
 Plug 'MeF0504/fern-mapping-search-ctrlp.vim', PlugCond(1, {'on': 'Fern'})
 " {{{
 let g:fern_search_ctrlp_root = 1
-let g:fern_search_ctrlp_open_file = 1
 " }}}
 
 Plug 'lambdalisue/fern-renderer-nerdfont.vim', PlugCond(1, {'on': 'Fern'})
