@@ -61,7 +61,7 @@ class CopyClass():
             assert dst.is_file() or not dst.exists()
             for il in self.ignore_list:
                 if il in str(src):
-                    self.print('[{}] ignored by [{}]'.format(src, il), 1)
+                    self.print('[{}] ignored by [{}]'.format(src, il), 2)
                     return
             self.src.append(src)
             self.dst.append(dst)
@@ -74,7 +74,7 @@ class CopyClass():
                     continue
                 for il in self.ignore_list:
                     if il in str(fy):
-                        self.print('[{}] ignored by [{}]'.format(fy, il), 1)
+                        self.print('[{}] ignored by [{}]'.format(fy, il), 2)
                         skip = True
                 if skip:
                     continue
@@ -579,7 +579,7 @@ def main():
     parser.add_argument('-s', '--setup_file',
                         help='specify the copy files by json format setting file. please see "opt/test/setup_file_template.json" as an example.')
     parser.add_argument('-d', '--display_level', choices=[0, 1, 2],
-                        help='set the diaplay level. 0=only executed process, 1=target files and executed process, 2=all',
+                        help='set the diaplay level. 0=only executed process, 1=target files and executed process (default), 2=all',
                         type=int, default=1)
     args = parser.parse_args()
 
