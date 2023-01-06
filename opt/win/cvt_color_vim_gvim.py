@@ -2,7 +2,8 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '../lib'))
-from local_lib_color import convert_256_to_fullcolor as cvt_256_fc
+from pymeflib.color import convert_256_to_fullcolor as cvt_256_fc
+
 
 def main():
     vim_color = sys.argv[1]
@@ -38,10 +39,11 @@ def main():
                 gline.append(line.replace('\n', ''))
 
     with open(gvim_color, 'w', encoding='utf-8') as gvimf:
-        for l in gline:
-            print(l, file=gvimf)
+        for al in gline:
+            print(al, file=gvimf)
 
     return
+
 
 if __name__ == '__main__':
     main()

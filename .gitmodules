@@ -1,0 +1,3 @@
+[submodule "opt/lib/pymeflib"]
+	path = opt/lib/pymeflib
+	url = git@github.com:MeF0504/pymeflib.git

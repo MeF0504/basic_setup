@@ -5,7 +5,7 @@ import subprocess
 import argparse
 
 try:
-    from local_lib_color import BG, END
+    from pymeflib.color import BG, END
     bg = BG['c']
 except ImportError:
     bg = ''

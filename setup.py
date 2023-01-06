@@ -1,6 +1,4 @@
 
-from __future__ import print_function
-
 import os
 import sys
 import argparse
@@ -15,13 +13,9 @@ import platform
 import urllib.request as urlreq
 from pathlib import Path
 
-sys.path.append(Path(__file__).parent/'opt'/'lib')
-from local_lib import mkdir, chk_cmd
-try:
-    from local_lib_color import FG256, END
-    is_color = True
-except ImportError:
-    is_color = False
+sys.path.append(str(Path(__file__).parent/'opt'/'lib'))
+from pymeflib.util import mkdir
+from pymeflib.color import FG256, END
 
 uname = platform.system()
 if uname == 'Windows':
@@ -53,19 +47,36 @@ class CopyClass():
         self.len = 0
         self.shift = '  '
         self.dshift = '   |'
+        self.ignore_list = [
+                '__pycache__',
+                '.git',
+                'LICENSE',
+                'README',
+                ]
 
     def stack(self, src: str, dst: str):
         src = Path(src).expanduser()
         dst = Path(dst).expanduser()
         if src.is_file():
             assert dst.is_file() or not dst.exists()
+            for il in self.ignore_list:
+                if il in str(src):
+                    self.print('[{}] ignored by [{}]'.format(src, il), 1)
+                    return
             self.src.append(src)
             self.dst.append(dst)
             self.len += 1
         elif src.is_dir():
             assert dst.is_dir() or not dst.exists()
             for fy in src.glob("**/*"):
+                skip = False
                 if fy.is_dir():
+                    continue
+                for il in self.ignore_list:
+                    if il in str(fy):
+                        self.print('[{}] ignored by [{}]'.format(fy, il), 1)
+                        skip = True
+                if skip:
                     continue
                 cpdir = dst/(fy.parent.relative_to(src))
                 self.src.append(fy)
@@ -76,12 +87,8 @@ class CopyClass():
             return
 
     def copy(self, src: Path, dst: Path):
-        if is_color:
-            fg = FG256(11)
-            end = END
-        else:
-            fg = ''
-            end = ''
+        fg = FG256(11)
+        end = END
 
         if self.link:
             comment = 'link {} --> {}'.format(src.name, self.home_cut(dst))
@@ -118,10 +125,10 @@ class CopyClass():
                 fromfiledate=dst_dt.strftime('%m %d (%Y) %H:%M:%S'),
                 tofiledate=src_dt.strftime('%m %d (%Y) %H:%M:%S')):
             line = line.replace('\n', '')
-            if is_color and (line[0] == '+'):
+            if line[0] == '+':
                 col = FG256(12)
                 end = END
-            elif is_color and (line[0] == '-'):
+            elif line[0] == '-':
                 col = FG256(1)
                 end = END
             else:
@@ -202,12 +209,8 @@ class CopyClass():
                 return False
 
     def show_files(self):
-        if is_color:
-            fg = FG256(2)
-            end = END
-        else:
-            fg = ''
-            end = ''
+        fg = FG256(2)
+        end = END
         self.print('{}target files{}'.format(fg, end), 1)
 
         for i in range(self.len):
@@ -290,12 +293,8 @@ def main_opt(args):
     opt_src = Path(args.fpath)/'opt'
     bin_src = opt_src/'bin'
     lib_src = opt_src/'lib'
-    if is_color:
-        fg = FG256(10)
-        end = END
-    else:
-        fg = ''
-        end = ''
+    fg = FG256(10)
+    end = END
     print('\n{}@ {}{}\n'.format(fg, opt_src, end))
 
     files = get_files(args.setup_file, 'opt', args.prefix)
@@ -335,12 +334,8 @@ def main_conf(args):
     bin_dst = Path(args.prefix)/'bin'
     lib_dst = Path(args.prefix)/'lib'
     set_src = Path(args.fpath)/'config'
-    if is_color:
-        fg = FG256(10)
-        end = END
-    else:
-        fg = ''
-        end = ''
+    fg = FG256(10)
+    end = END
     print('\n{}@ {}{}\n'.format(fg, set_src, end))
 
     files_mac = {
@@ -477,12 +472,8 @@ def main_conf(args):
 
 def main_vim(args):
     vim_src = Path(args.fpath)/'vim'
-    if is_color:
-        fg = FG256(10)
-        end = END
-    else:
-        fg = ''
-        end = ''
+    fg = FG256(10)
+    end = END
     print('\n{}@ {}{}\n'.format(fg, vim_src, end))
 
     if args.vim_prefix is not None:
