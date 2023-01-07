@@ -360,7 +360,7 @@ _get_zodiac_whgm() # {{{
     # 星座 - 和風月名
     case "$(date '+%m')" in
         01)
-            if [[ $(date '+%d') -lt 19 ]]; then
+            if [[ $(date '+%-d') -lt 19 ]]; then
                 num=9
             else
                 num=A
@@ -368,7 +368,7 @@ _get_zodiac_whgm() # {{{
             whgm=睦月
             ;;
         02)
-            if [[ $(date '+%d') -lt 18 ]]; then
+            if [[ $(date '+%-d') -lt 18 ]]; then
                 num=A
             else
                 num=B
@@ -376,7 +376,7 @@ _get_zodiac_whgm() # {{{
             whgm=如月
             ;;
         03)
-            if [[ $(date '+%d') -lt 20 ]]; then
+            if [[ $(date '+%-d') -lt 20 ]]; then
                 num=B
             else
                 num=0
@@ -384,7 +384,7 @@ _get_zodiac_whgm() # {{{
             whgm=弥生
             ;;
         04)
-            if [[ $(date '+%d') -lt 19 ]]; then
+            if [[ $(date '+%-d') -lt 19 ]]; then
                 num=0
             else
                 num=1
@@ -392,7 +392,7 @@ _get_zodiac_whgm() # {{{
             whgm=卯月
             ;;
         05)
-            if [[ $(date '+%d') -lt 20 ]]; then
+            if [[ $(date '+%-d') -lt 20 ]]; then
                 num=1
             else
                 num=2
@@ -400,7 +400,7 @@ _get_zodiac_whgm() # {{{
             whgm=皐月
             ;;
         06)
-            if [[ $(date '+%d') -lt 21 ]]; then
+            if [[ $(date '+%-d') -lt 21 ]]; then
                 num=2
             else
                 num=3
@@ -408,7 +408,7 @@ _get_zodiac_whgm() # {{{
             whgm=水無月
             ;;
         07)
-            if [[ $(date '+%d') -lt 22 ]]; then
+            if [[ $(date '+%-d') -lt 22 ]]; then
                 num=3
             else
                 num=4
@@ -416,7 +416,7 @@ _get_zodiac_whgm() # {{{
             whgm=文月
             ;;
         08)
-            if [[ $(date '+%d') -lt 22 ]]; then
+            if [[ $(date '+%-d') -lt 22 ]]; then
                 num=4
             else
                 num=5
@@ -424,7 +424,7 @@ _get_zodiac_whgm() # {{{
             whgm=葉月
             ;;
         09)
-            if [[ $(date '+%d') -lt 23 ]]; then
+            if [[ $(date '+%-d') -lt 23 ]]; then
                 num=5
             else
                 num=6
@@ -432,7 +432,7 @@ _get_zodiac_whgm() # {{{
             whgm=長月
             ;;
         10)
-            if [[ $(date '+%d') -lt 23 ]]; then
+            if [[ $(date '+%-d') -lt 23 ]]; then
                 num=6
             else
                 num=7
@@ -440,7 +440,7 @@ _get_zodiac_whgm() # {{{
             whgm=神無月
             ;;
         11)
-            if [[ $(date '+%d') -lt 22 ]]; then
+            if [[ $(date '+%-d') -lt 22 ]]; then
                 num=7
             else
                 num=8
@@ -448,7 +448,7 @@ _get_zodiac_whgm() # {{{
             whgm=霜月
             ;;
         12)
-            if [[ $(date '+%d') -lt 21 ]]; then
+            if [[ $(date '+%-d') -lt 21 ]]; then
                 num=8
             else
                 num=9
