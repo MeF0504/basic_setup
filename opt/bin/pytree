@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-# # # pseudo-tree command
+# pseudo-tree command
 
 import os
 import argparse
@@ -8,7 +8,7 @@ from pathlib import Path
 import datetime
 from stat import filemode
 
-from libtree import show_tree
+from pymeflib.tree import show_tree
 
 debug = False
 
