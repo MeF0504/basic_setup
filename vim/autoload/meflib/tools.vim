@@ -519,7 +519,7 @@ function! meflib#tools#xpm_loader()
     endif
     pythonx << EOL
 import vim
-from xpm_loader import XPMLoader
+from pymeflib.xpm_loader import XPMLoader
 
 xpm_file = vim.eval('file')
 is_gui = int(vim.eval('is_gui'))
