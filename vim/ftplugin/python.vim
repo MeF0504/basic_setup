@@ -5,6 +5,7 @@ augroup PythonLocal
     autocmd!
 augroup END
 
+" set系 {{{
 "gfの検索にPYTHON PATHを追加
 if exists("$PYTHONPATH")
     execute 'set path+=' . substitute(substitute(expand($PYTHONPATH), ':', ',', 'g'), ' ', '\\ ', 'g')
@@ -12,10 +13,26 @@ endif
 set suffixesadd+=.py
 " error format for quickfix https://vim-jp.org/vimdoc-ja/quickfix.html#errorformats
 " if needed
-set errorformat=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+setlocal errorformat=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+" PEP8より
+" https://pep8-ja.readthedocs.io/ja/latest/
+" 最長文字をccで確認はしたいが，折返しはしたくない...
+setlocal textwidth=79
+setlocal formatoptions-=tc
+setlocal colorcolumn=+1
 
+" \ で終わったときのindent量を設定
+" $VIMRUNTIME/indent/python.vim
+let g:pyindent_continue = shiftwidth()
+" }}}
+
+" 簡易command {{{
 " これはlspで代替出来ると思うので一旦コメントアウト
 " command! -buffer PySyntax !python3 -m py_compile %
+
+" debug command
+command -buffer DebugPrint call append(line('.')-1, 'print("\033[32m#####debug {} \033[0m".format(""))')
+" }}}
 
 " help 確認用コマンド
 " pydocとかいう便利ツールがあるじゃん
@@ -57,22 +74,7 @@ function! s:python_help(module) abort
     execute printf("autocmd PythonLocal WinClosed %d ++once let s:pyhelp_id = -1", s:pyhelp_id)
     " }}}
 endfunction
-
 command! -buffer -nargs=1 PyHelp call s:python_help(<f-args>)
-
-" debug command
-command -buffer DebugPrint call append(line('.')-1, 'print("\033[32m#####debug {} \033[0m".format(""))')
-
-" \ で終わったときのindent量を設定
-" $VIMRUNTIME/indent/python.vim
-let g:pyindent_continue = shiftwidth()
-
-" PEP8より
-" https://pep8-ja.readthedocs.io/ja/latest/
-" 最長文字をccで確認はしたいが，折返しはしたくない...
-setlocal textwidth=79
-setlocal formatoptions-=tc
-setlocal colorcolumn=+1
 
 let s:hit_str = split('def class if else elif for with while try except', ' ')
 " {{{ 今自分がどの関数/class/for/if内にいるのか表示する
@@ -80,6 +82,7 @@ function! <SID>ccpp_cb(res, wid, idx) abort
     if a:idx > 0
         let sel_res = a:res[a:idx-1]
         let lnum = sel_res[:match(sel_res, '|')-1]
+        let lnum = substitute(lnum, '0', '', 'g')
         " save position. :h jumplist
         normal! m'
         call cursor(lnum, 1)
