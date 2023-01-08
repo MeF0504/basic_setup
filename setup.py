@@ -490,6 +490,7 @@ def main_vim(args):
     plg_dst = vim_config_path/'plug_conf'
     al_dst = vim_config_path/'autoload'
     doc_dst = vim_config_path/'doc'
+    aft_dst = vim_config_path/'after'
     mkdir(vim_config_path/'swp')
 
     files = get_files(args.setup_file, 'vim', args.prefix)
@@ -508,6 +509,7 @@ def main_vim(args):
             files[str(vim_src/'plug_conf')] = plg_dst
             files[str(vim_src/'autoload')] = al_dst
             files[str(vim_src/'doc')] = doc_dst
+            files[str(vim_src/'after')] = aft_dst
 
     if args.download:
         print('\ndownload vimPlug')
