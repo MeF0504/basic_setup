@@ -23,16 +23,16 @@ command! SearchConf /<<<<<<<\|=======\|>>>>>>>
 " ipython を呼ぶ用 {{{
 let s:ipythons = {'ipython':'Ipython', 'ipython2':'Ipython2', 'ipython3':'Ipython3'}
 let s:ipy_ac = 1
-for s:ipy in keys(s:ipythons)
-    if executable(s:ipy)
+for [s:sh_cmd, s:vim_cmd] in items(s:ipythons)
+    if executable(s:sh_cmd)
         if has('nvim')
-            execute printf('command! %s botright <mods> new | setlocal nonumber | terminal %s', s:ipythons[s:ipy], s:ipy)
+            execute printf('command! %s botright <mods> new | setlocal nonumber | terminal %s', s:vim_cmd, s:sh_cmd)
             if s:ipy_ac
                 autocmd cmdLocal TermOpen *ipython* startinsert
                 let s:ipy_ac = 0
             endif
         else
-            execute printf('command! %s botright <mods> terminal %s', s:ipythons[s:ipy], s:ipy)
+            execute printf('command! %s botright <mods> terminal %s', s:vim_cmd, s:sh_cmd)
         endif
     endif
 endfor
