@@ -699,14 +699,14 @@ if !meflib#get('load_plugin', 'hitspop', 0)
         if !exists('g:loaded_anzu')
             return
         endif
+        " update status. if it takes time, cancel this.
+        AnzuUpdateSearchStatus
         let anzu_str = anzu#search_status()
         if empty(anzu_str)
             call meflib#floating#close(s:anzu_popid)
             let s:anzu_popid = -1
             return
         endif
-        " update status. if it takes time, cancel this.
-        AnzuUpdateSearchStatus
         let config = {
             \ 'relative': 'win',
             \ 'line': winheight(0),
