@@ -242,6 +242,7 @@ nnoremap <silent> <Leader>o <Cmd>OutLiner<CR>
 
 " git log 表示用plugin
 Plug 'MeF0504/gitewer.vim', PlugCond(1, {'on': 'Gitewer'})
+nnoremap <leader>gw <Cmd>Gitewer status<CR>
 
 " vim上でpetを飼う
 Plug 'MeF0504/vim-pets', PlugCond(1, {'on': 'Pets'})
@@ -1471,7 +1472,7 @@ Plug 'rhysd/git-messenger.vim', PlugCond(1, {'on': 'GitMessenger'})
 " git messenger {{{
 let g:git_messenger_no_default_mappings = v:true
 let g:git_messenger_floating_win_opts = {'border': 'single'}
-nnoremap <leader>g <Cmd>GitMessenger<CR>
+nnoremap <leader>gm <Cmd>GitMessenger<CR>
 " }}}
 
 " plugin のdot repeatをサポート (RegistPasteで使用)
