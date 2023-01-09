@@ -423,6 +423,7 @@ def main_conf(args):
     up_stup = \
         "alias update_setup='builtin cd \"{}\"".format(args.fpath) +\
         " && git pull" +\
+        " && git submodule update" +\
         " && {}" +\
         " && [[ $YN = \"y\" ]]" +\
         " && python3 setup.py {}".format(pyopt) +\
