@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 import datetime
 from stat import filemode
+from fnmatch import fnmatchcase
 
 from pymeflib.tree import show_tree
 
@@ -14,9 +15,9 @@ debug = False
 
 
 def get_pattern_from_file(exfiles):
+    res = []
     if exfiles is None:
-        return None
-    pat = ''
+        return res
 
     for exfile in exfiles:
         exfile = Path(exfile)
@@ -29,16 +30,8 @@ def get_pattern_from_file(exfiles):
                 line = line.replace('\n', '')
                 if re.match('\s*#', line):
                     continue
-                if (len(pat) != 0) and len(line) != 0:
-                    pat += '|'
-                pat += line
-    if len(pat) == 0:
-        return None
-    else:
-        pat = '(' + pat + ')'
-        if debug:
-            print(pat)
-        return pat
+                res.append(line)
+    return res
 
 
 def get_file_list(args):
@@ -46,7 +39,7 @@ def get_file_list(args):
     file_list = [{}]
     # top_path = Path(args.root).resolve()
     top_path = Path(args.root)
-    expat_file = get_pattern_from_file(args.exfiles)
+    expatrns = get_pattern_from_file(args.exfiles)
     root = str(top_path)
     if args.maxdepth == 0:
         glob_path = ['**/*']
@@ -61,9 +54,15 @@ def get_file_list(args):
         if debug:
             print('<--{}-->'.format(gp))
         for cpath in top_path.glob(gp):
-            if (args.exclude is not None) and re.search(args.exclude, str(cpath)):
+            if (args.exclude is not None) and\
+               re.search(args.exclude, str(cpath)):
                 continue
-            if (expat_file is not None) and re.search(expat_file, str(cpath)):
+            skip = False
+            for expt in expatrns:
+                if fnmatchcase(str(cpath), expt):
+                    skip = True
+                    break
+            if skip:
                 continue
 
             if not args.all:
@@ -157,7 +156,7 @@ if __name__ == '__main__':
     parser.add_argument('-v', '--verbose', help='show the verbose.', action='store_true')
     parser.add_argument('-maxdepth', help='specify the level of directory. If set 0, show all directories.', type=int, default=0)
     parser.add_argument('-exclude', help='specify excluding patterns using regular expression.', type=str)
-    parser.add_argument('-exfiles', help='specify excluding patterns from pattern files.', type=str, nargs='*')
+    parser.add_argument('-exfiles', help='specify excluding patterns from pattern files written in shell-style wildcards, like gitignore.', type=str, nargs='*')
     # parser.add_argument('--walk', help='use os.walk', action='store_true')
     args = parser.parse_args()
     main(args)
