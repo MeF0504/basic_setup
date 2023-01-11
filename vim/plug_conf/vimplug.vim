@@ -1294,6 +1294,12 @@ function! s:lsp_mapping(map) abort " {{{
     endif
 endfunction
 " }}}
+function! s:lsp_unmap(map) abort " {{{
+    let map_dict = maparg(a:map, 'n', 0, 1)
+    if !empty(map_dict) && map_dict.buffer
+        execute "nunmap <buffer>"..a:map
+    endif
+endfunction " }}}
 let s:lsp_map = {}
 function! s:vim_lsp_hook() abort
     if !exists('g:lsp_loaded')
@@ -1323,11 +1329,11 @@ function! s:vim_lsp_hook() abort
                 \ nnoremap <buffer> <expr> <c-y> lsp#scroll(-1)
     autocmd PlugLocal User lsp_float_opened
                 \ nmap <buffer> <silent> q <Plug>(lsp-preview-close)
-    autocmd PlugLocal User lsp_float_closed nunmap <buffer> <c-d>
-    autocmd PlugLocal User lsp_float_closed nunmap <buffer> <c-u>
-    autocmd PlugLocal User lsp_float_closed nunmap <buffer> <c-e>
-    autocmd PlugLocal User lsp_float_closed nunmap <buffer> <c-y>
-    autocmd PlugLocal User lsp_float_closed nunmap <buffer> q
+    autocmd PlugLocal User lsp_float_closed call s:lsp_unmap("<c-d>")
+    autocmd PlugLocal User lsp_float_closed call s:lsp_unmap("<c-u>")
+    autocmd PlugLocal User lsp_float_closed call s:lsp_unmap("<c-e>")
+    autocmd PlugLocal User lsp_float_closed call s:lsp_unmap("<c-y>")
+    autocmd PlugLocal User lsp_float_closed call s:lsp_unmap("q")
     autocmd PlugLocal BufEnter LspHoverPreview setlocal nolist
     " }}}
     " show status {{{
