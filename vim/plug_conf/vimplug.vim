@@ -1294,6 +1294,14 @@ function! s:lsp_mapping(map) abort " {{{
     endif
 endfunction
 " }}}
+function! s:lsp_move_map(map, motion) abort " {{{
+    if lsp#document_hover_preview_winid() != v:null
+        " check lsp-hover exists.
+        return a:motion
+    else
+        return a:map
+    endif
+endfunction " }}}
 function! s:lsp_unmap(map) abort " {{{
     let map_dict = maparg(a:map, 'n', 0, 1)
     if !empty(map_dict) && map_dict.buffer
@@ -1320,13 +1328,17 @@ function! s:vim_lsp_hook() abort
     " normal modeでmouseが使えないとscroll出来ないので，とりあえず対処。
     " lsp_float_closed がvimだとpopupがcursor moveで閉じても叩かれない？ので，qで閉じるようにする
     autocmd PlugLocal User lsp_float_opened
-                \ nnoremap <buffer> <expr> <c-d> lsp#scroll(+5)
+                \ nnoremap <buffer> <expr> <c-d>
+                \ <SID>lsp_move_map("<c-d>", lsp#scroll(+5))
     autocmd PlugLocal User lsp_float_opened
-                \ nnoremap <buffer> <expr> <c-u> lsp#scroll(-5)
+                \ nnoremap <buffer> <expr> <c-u>
+                \ <SID>lsp_move_map("<c-u>", lsp#scroll(-5))
     autocmd PlugLocal User lsp_float_opened
-                \ nnoremap <buffer> <expr> <c-e> lsp#scroll(+1)
+                \ nnoremap <buffer> <expr> <c-e>
+                \ <SID>lsp_move_map("<c-e>", lsp#scroll(+1))
     autocmd PlugLocal User lsp_float_opened
-                \ nnoremap <buffer> <expr> <c-y> lsp#scroll(-1)
+                \ nnoremap <buffer> <expr> <c-y>
+                \ <SID>lsp_move_map("<c-y>", lsp#scroll(-1))
     autocmd PlugLocal User lsp_float_opened
                 \ nmap <buffer> <silent> q <Plug>(lsp-preview-close)
     autocmd PlugLocal User lsp_float_closed call s:lsp_unmap("<c-d>")
