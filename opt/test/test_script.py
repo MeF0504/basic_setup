@@ -1,33 +1,47 @@
+import random
+from pathlib import Path
 
-import os
-import sys
 
-# comment
 class TestClass():
     def __init__(self):
-        self.var = 1.3
+        self.txt_file = Path(__file__).parent/'four_strings.txt'
 
-    def chk_test(self):
-        if self.var == 1:
-            is_one = True
-        else:
-            is_one = False
-        if is_one:
-            print('Hello, World!!')
-        else:
-            return
-
-def try_test():
-    x = 1
-    for i in 'a b c hoge x y z'.split():
+    def set_string(self):
+        txt_list = []
         try:
-            print('{} = {}'.format(i, locals()[i]))
-            break
-        except Exception as e:
-            print('Error! {} => {}: {}'.format(i,type(e), e), file=sys.stderr)
+            with open(self.txt_file, 'r') as f:
+                for line in f:
+                    txt_list.append(line)
+            rand = int(random.random()*len(txt_list))
+            self.txt = txt_list[rand]
+        except IOError as e:
+            print(e)
+            self.txt = "hoge"
+
+
+def main():
+    tc = TestClass()
+    # set string
+    tc.set_string()
+    while True:
+        comp = ''
+        in_txt = input('4 letters:\n')
+        if len(in_txt) != 4:
             continue
 
+        for i, char in enumerate(in_txt):
+            if tc.txt[i] == char:
+                comp += 'o'
+            elif char in tc.txt:
+                comp += '~'
+            else:
+                comp += 'x'
+        print('----')
+        print(comp)
+        if comp == 'oooo':
+            print('Great!')
+            break
+
+
 if __name__ == '__main__':
-    test_class = TestClass()
-    test_class.chk_test()
-    try_test()
+    main()
