@@ -31,7 +31,10 @@ let g:pyindent_continue = shiftwidth()
 " command! -buffer PySyntax !python3 -m py_compile %
 
 " debug command
-command -buffer DebugPrint call append(line('.')-1, 'print("\033[32m#####debug {} \033[0m".format(""))')
+command -buffer DebugPrint call append(line('.')-1,
+            \ repeat(' ', indent('.'))..
+            \ 'print("\033[32m#####debug {} \033[0m".format(""))') |
+            \ normal k
 " }}}
 
 " help 確認用コマンド
