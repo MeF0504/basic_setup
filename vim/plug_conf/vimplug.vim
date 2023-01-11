@@ -1135,6 +1135,7 @@ let g:lsp_diagnostics_virtual_text_enabled = 0
 " cursor上にwarningとかあったら(echo|float表示)してくれる
 let g:lsp_diagnostics_echo_cursor = 0
 let g:lsp_diagnostics_float_cursor = 1
+let g:lsp_diagnostics_float_delay = 1500
 " highlightはvim-cursorwordで表示しているので使わない
 let g:lsp_document_highlight_enabled = 0
 " LspPeekDefinition で表示する位置
