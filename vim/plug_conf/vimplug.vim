@@ -1133,8 +1133,8 @@ let g:lsp_diagnostics_signs_enabled = 1
 let g:lsp_diagnostics_signs_insert_mode_enabled = 0
 let g:lsp_diagnostics_virtual_text_enabled = 0
 " cursor上にwarningとかあったら(echo|float表示)してくれる
-let g:lsp_diagnostics_echo_cursor = 1
-let g:lsp_diagnostics_float_cursor = 0
+let g:lsp_diagnostics_echo_cursor = 0
+let g:lsp_diagnostics_float_cursor = 1
 " highlightはvim-cursorwordで表示しているので使わない
 let g:lsp_document_highlight_enabled = 0
 " LspPeekDefinition で表示する位置
@@ -1312,19 +1312,21 @@ function! s:vim_lsp_hook() abort
     " autocmd {{{
     " normal modeでmouseが使えないとscroll出来ないので，とりあえず対処。
     " lsp_float_closed がvimだとpopupがcursor moveで閉じても叩かれない？ので，qで閉じるようにする
-    autocmd PlugLocal User lsp_float_opened nnoremap <buffer> <expr> <c-d> lsp#scroll(+5)
-    autocmd PlugLocal User lsp_float_opened nnoremap <buffer> <expr> <c-u> lsp#scroll(-5)
-    autocmd PlugLocal User lsp_float_opened nnoremap <buffer> <expr> <c-e> lsp#scroll(+1)
-    autocmd PlugLocal User lsp_float_opened nnoremap <buffer> <expr> <c-y> lsp#scroll(-1)
-    autocmd PlugLocal User lsp_float_opened nmap <buffer> <silent> q <Plug>(lsp-preview-close)
+    autocmd PlugLocal User lsp_float_opened
+                \ nnoremap <buffer> <expr> <c-d> lsp#scroll(+5)
+    autocmd PlugLocal User lsp_float_opened
+                \ nnoremap <buffer> <expr> <c-u> lsp#scroll(-5)
+    autocmd PlugLocal User lsp_float_opened
+                \ nnoremap <buffer> <expr> <c-e> lsp#scroll(+1)
+    autocmd PlugLocal User lsp_float_opened
+                \ nnoremap <buffer> <expr> <c-y> lsp#scroll(-1)
+    autocmd PlugLocal User lsp_float_opened
+                \ nmap <buffer> <silent> q <Plug>(lsp-preview-close)
     autocmd PlugLocal User lsp_float_closed nunmap <buffer> <c-d>
     autocmd PlugLocal User lsp_float_closed nunmap <buffer> <c-u>
     autocmd PlugLocal User lsp_float_closed nunmap <buffer> <c-e>
     autocmd PlugLocal User lsp_float_closed nunmap <buffer> <c-y>
     autocmd PlugLocal User lsp_float_closed nunmap <buffer> q
-    if !has('nvim')
-        autocmd PlugLocal User lsp_float_opened nunmap <buffer> <esc>   " tentative
-    endif
     autocmd PlugLocal BufEnter LspHoverPreview setlocal nolist
     " }}}
     " show status {{{
@@ -1394,7 +1396,8 @@ function! s:ddc_hook() abort
             \ 'vim-lsp': {
                 \ 'mark': 'lsp',
             \ },
-        \ },
+        \ })
+    call ddc#custom#patch_global(
         \ 'sourceParams', {
             \ 'tabnine': {
                 \ 'maxNumResults': 10,
