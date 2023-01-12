@@ -40,8 +40,7 @@ command -buffer DebugPrint call append(line('.')-1,
 " help 確認用コマンド
 " pydocとかいう便利ツールがあるじゃん
 let s:pyhelp_id = -1
-function! s:python_help(module) abort
-    " {{{
+function! s:python_help(module) abort " {{{
     let pydoc_cmd = meflib#get('pydoc_cmd', 'pydoc3')
     if !executable(pydoc_cmd)
         echohl ErrorMsg
@@ -75,8 +74,7 @@ function! s:python_help(module) abort
     normal! gg
     let s:pyhelp_id = win_getid()
     execute printf("autocmd PythonLocal WinClosed %d ++once let s:pyhelp_id = -1", s:pyhelp_id)
-    " }}}
-endfunction
+endfunction " }}}
 function! s:pyhelp_comp(arglead, cmdline, cursorpos) abort " {{{
     let s:pyhelpdir = []
     let idx = strridx(a:arglead, '.')
@@ -87,9 +85,14 @@ import vim
 from importlib import import_module
 from inspect import getmembers, ismodule, isfunction
 mod_name = vim.eval('mod')
-mod = import_module(mod_name)
-for mem in getmembers(mod, lambda obj: ismodule(obj) or isfunction(obj)):
-    vim.command('let s:pyhelpdir += ["{}.{}"]'.format(mod_name, mem[0]))
+try:
+    mod = import_module(mod_name)
+except ModuleNotFoundError:
+    # NOTE: ↓ not shown
+    vim.out_write('module {} not found'.format(mod_name))
+else:
+    for mem in getmembers(mod, lambda obj: ismodule(obj) or isfunction(obj)):
+        vim.command('let s:pyhelpdir += ["{}.{}"]'.format(mod_name, mem[0]))
 EOF
         let L = len(mod)+1
         return filter(s:pyhelpdir, '!stridx(v:val[L:], a:arglead[L:])')
