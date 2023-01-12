@@ -77,7 +77,27 @@ function! s:python_help(module) abort
     execute printf("autocmd PythonLocal WinClosed %d ++once let s:pyhelp_id = -1", s:pyhelp_id)
     " }}}
 endfunction
-command! -buffer -nargs=1 PyHelp call s:python_help(<f-args>)
+function! s:pyhelp_comp(arglead, cmdline, cursorpos) abort " {{{
+    let s:pyhelpdir = []
+    let idx = strridx(a:arglead, '.')
+    if idx != -1
+        let mod = a:arglead[:idx-1]
+        python3 << EOF
+import vim
+from importlib import import_module
+from inspect import getmembers, ismodule, isfunction
+mod_name = vim.eval('mod')
+mod = import_module(mod_name)
+for mem in getmembers(mod, lambda obj: ismodule(obj) or isfunction(obj)):
+    vim.command('let s:pyhelpdir += ["{}.{}"]'.format(mod_name, mem[0]))
+EOF
+        let L = len(mod)+1
+        return filter(s:pyhelpdir, '!stridx(v:val[L:], a:arglead[L:])')
+    else
+        return []
+    endif
+endfunction " }}}
+command! -buffer -nargs=1 -complete=customlist,s:pyhelp_comp PyHelp call s:python_help(<f-args>)
 
 let s:hit_str = split('def class if else elif for with while try except', ' ')
 " {{{ 今自分がどの関数/class/for/if内にいるのか表示する
