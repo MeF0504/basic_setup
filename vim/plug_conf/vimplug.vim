@@ -1484,11 +1484,19 @@ Plug '4513ECHO/vim-readme-viewer', PlugCond(1, { 'on': 'PlugReadme' })
 " カーソルの下の文字とかをhighlight
 Plug 'azabiong/vim-highlighter', PlugCond(1, {'on': 'Hi'})
 " {{{
-" function! s:highlighter_hook() abort
-" endfunction
-" autocmd PlugLocal User vim-highlighter call s:highlighter_hook()
 let g:HiClear = '\\'
-nnoremap // :<c-u>Hi + 
+function! s:highlighter_map() abort
+    let cword = expand('<cword>')
+    for mat in getmatches()
+        if has_key(mat, 'pattern') && cword =~# mat.pattern
+            if mat.group =~ "HiColor"
+                return "\<Cmd> Hi -\<CR>"
+            endif
+        endif
+    endfor
+    return ":\<c-u>Hi + "
+endfunction
+nnoremap <expr> // <SID>highlighter_map()
 " }}}
 
 " git の現在行のコミット履歴を辿る
