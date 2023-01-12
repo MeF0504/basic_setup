@@ -1133,8 +1133,8 @@ let g:lsp_diagnostics_signs_enabled = 1
 let g:lsp_diagnostics_signs_insert_mode_enabled = 0
 let g:lsp_diagnostics_virtual_text_enabled = 0
 " cursor上にwarningとかあったら(echo|float表示)してくれる
-let g:lsp_diagnostics_echo_cursor = 0
-let g:lsp_diagnostics_float_cursor = 1
+let g:lsp_diagnostics_echo_cursor = 1
+let g:lsp_diagnostics_float_cursor = 0 " disgnosticsのfloatは挙動が難しい..
 let g:lsp_diagnostics_float_delay = 1500
 " highlightはvim-cursorwordで表示しているので使わない
 let g:lsp_document_highlight_enabled = 0
@@ -1295,7 +1295,9 @@ function! s:lsp_mapping(map) abort " {{{
 endfunction
 " }}}
 function! s:lsp_move_map(map, motion) abort " {{{
-    if lsp#document_hover_preview_winid() != v:null
+    if !g:lsp_diagnostics_float_cursor
+        return a:motion
+    elseif lsp#document_hover_preview_winid() != v:null
         " check lsp-hover exists.
         return a:motion
     else
