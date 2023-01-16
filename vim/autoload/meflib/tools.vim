@@ -228,10 +228,10 @@ function! meflib#tools#Jump_path() abort
         let lnum = line[idx_l:idx_r]
     elseif isdirectory(fname)
         " file
-        let yn = input(printf('%s: directory. open in new tab? (y/[n]): ', fname))
+        let yn = input(printf('%s: directory. open in new tab? (y/s/[n]): ', fname))
     elseif filereadable(fname)
         " directory
-        let yn = input(printf('%s: file. open in new tab? (y/[n]): ',fname))
+        let yn = input(printf('%s: file. open in new tab? (y/s/[n]): ',fname))
     elseif fname[:6] ==# 'http://' || fname[:7] ==# 'https://'
         " URL
         let cmd = meflib#basic#get_exe_cmd()
@@ -249,9 +249,16 @@ function! meflib#tools#Jump_path() abort
         return
     endif
 
-    if yn == 'y'
+    if yn ==# 'y'
         execute "tabnew ".fname
         execute lnum
+    elseif yn ==# 's'
+        let cmd = meflib#basic#get_exe_cmd()
+        if !empty(cmd)
+            call system([cmd, fname])
+        else
+            echo 'command to open the file is not found.'
+        endif
     endif
 endfunction
 " }}}
