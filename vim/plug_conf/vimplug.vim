@@ -273,6 +273,7 @@ Plug 'Shougo/neosnippet-snippets'
 
 " コード実行plugin
 Plug 'thinca/vim-quickrun', PlugCond(1, {'on': 'QuickRun'})
+let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
 "" vim-quick_run {{{
 let g:quickrun_no_default_key_mappings = 1
 function! s:quickrun_hook() abort
@@ -288,11 +289,14 @@ function! s:quickrun_hook() abort
         \ 'hook/time/enable'        : 1,
         \ },
         \ 'keep')
-    if has('job')
-        let g:quickrun_config._.runner = 'job'
-        let quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
+    if has('terminal')
+        let g:quickrun_config._.runner = 'terminal'
         let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
-        call meflib#set('statusline', '_', cur_status..quickrun_status)
+        call meflib#set('statusline', '_', cur_status..s:quickrun_status)
+    elseif has('job')
+        let g:quickrun_config._.runner = 'job'
+        let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
+        call meflib#set('statusline', '_', cur_status..s:quickrun_status)
     endif
 
     " python
@@ -402,13 +406,14 @@ nnoremap <silent> <Leader>q <Cmd>call <SID>quickrun_wrapper()<CR>
 Plug 'lambdalisue/vim-quickrun-neovim-job', PlugCond(has('nvim'))
 "" vim-auickrun-neovim-job {{{
 function! s:quickrun_nvim_job_hook() abort
-    " 変数がなければ初期化
-    let g:quickrun_config = get(g:, 'quickrun_config', {})
-    let g:quickrun_config._ = get(g:quickrun_config, '_', {})
-    let g:quickrun_config._.runner = 'neovim_job'
-    let quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
-    let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
-    call meflib#set('statusline', '_', cur_status..quickrun_status)
+    if !meflib#get('quickrun_nvimterm', 1)
+        " 変数がなければ初期化
+        let g:quickrun_config = get(g:, 'quickrun_config', {})
+        let g:quickrun_config._ = get(g:quickrun_config, '_', {})
+        let g:quickrun_config._.runner = 'neovim_job'
+        let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
+        call meflib#set('statusline', '_', cur_status..s:quickrun_status)
+    endif
 endfunction
 " plugin directoryが無いとlazy loadはされないらしい。それもそうか。
 autocmd PlugLocal User vim-quickrun if has('nvim') | call s:quickrun_nvim_job_hook() | endif
@@ -417,8 +422,17 @@ autocmd PlugLocal User vim-quickrun if has('nvim') | call s:quickrun_nvim_job_ho
 " terminal runner of quickrun for Neovim (unofficial)
 Plug 'statiolake/vim-quickrun-runner-nvimterm', PlugCond(has('nvim'))
 "" vim-auickrun-runner-nvimterm {{{
-" to check nvimterm is loaded
-autocmd PlugLocal User vim-quickrun if has('nvim') | call meflib#set('quickrun_nvimterm', 1) | endif
+function! s:quickrun_nvimterm_hook() abort
+    if meflib#get('quickrun_nvimterm', 1)
+        " 変数がなければ初期化
+        let g:quickrun_config = get(g:, 'quickrun_config', {})
+        let g:quickrun_config._ = get(g:quickrun_config, '_', {})
+        let g:quickrun_config._.runner = 'nvimterm'
+        let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
+        call meflib#set('statusline', '_', cur_status..s:quickrun_status)
+    endif
+endfunction
+autocmd PlugLocal User vim-quickrun if has('nvim') | call s:quickrun_nvimterm_hook() | endif
 " }}}
 
 " 背景透過
