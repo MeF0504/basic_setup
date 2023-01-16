@@ -1,7 +1,7 @@
 "vim script encoding setting
 scriptencoding utf-8
 
-" get vim config directory
+" get vim config directory {{{
 function! meflib#basic#get_conf_dir() abort
     if has('nvim')
         let vimdir = stdpath('config')..'/'
@@ -15,7 +15,8 @@ function! meflib#basic#get_conf_dir() abort
 
     return vimdir
 endfunction
-
+" }}}
+" set, get, add {{{
 let s:local_var_dict = {}
 let s:local_var_def_dict = {}
 function! meflib#basic#set_local_var(var_name, args1, args2=v:null) abort
@@ -39,6 +40,9 @@ function! meflib#basic#add_local_var(var_name, var) abort
         call add(s:local_var_dict[a:var_name], a:var)
     else
         let s:local_var_dict[a:var_name] = [a:var]
+    endif
+    if has_key(s:local_var_def_dict, a:var_name)
+        unlet s:local_var_def_dict[a:var_name]
     endif
 endfunction
 
@@ -95,8 +99,8 @@ function! meflib#basic#get_local_var(var_name, args1, args2=v:null) abort
         return default
     endif
 endfunction
-
-" 関数の引数解析用関数 (key=arg)
+" }}}
+" 関数の引数解析用関数 (key=arg) {{{
 function! meflib#basic#analythis_args_eq(arg) abort
     let args = split(a:arg, ' ')
     let ret = {'no_key':""}
@@ -124,8 +128,8 @@ function! meflib#basic#analythis_args_eq(arg) abort
 
     return ret
 endfunction
-
-" 関数の引数解析用関数 (-opt arg)
+" }}}
+" 関数の引数解析用関数 (-opt arg) {{{
 function! meflib#basic#analythis_args_hyp(args, args_config) abort
     let args = split(a:args, ' ')
     let res = {'no_opt':[]}
@@ -161,8 +165,8 @@ function! meflib#basic#analythis_args_hyp(args, args_config) abort
 
     return res
 endfunction
-
-" search top directory of this project
+" }}}
+" search top directory of this project {{{
 function! meflib#basic#get_top_dir(cwd) abort
     let cwd = fnamemodify(a:cwd, ':p')
     for repo_dir in ['.git', 'svn']
@@ -173,8 +177,8 @@ function! meflib#basic#get_top_dir(cwd) abort
     endfor
     return ''
 endfunction
-
-" get command to execute default application in each OS.
+" }}}
+" get command to execute default application in each OS. {{{
 function! meflib#basic#get_exe_cmd(...) abort
     if a:0 == 0
         if has('mac')
@@ -198,7 +202,8 @@ function! meflib#basic#get_exe_cmd(...) abort
         return ''
     endif
 endfunction
-
+" }}}
+" get term color for {{{
 function! meflib#basic#get_term_color() abort
      " black, red, green, yellow, blue, magenta, cyan, white,
      " bright black, bright red, bright green, bright yellow, bright blue, bright magenta, bright cyan, bright white
@@ -216,7 +221,8 @@ function! meflib#basic#get_term_color() abort
      endif
      return colors[col_name]
 endfunction
-
+" }}}
+" get highlight setting {{{
 function! meflib#basic#get_hi_info(group_name, keys) abort
     let hi = execute(printf('highlight %s', a:group_name))->split(' ')
     if type(a:keys) == type([])
@@ -235,4 +241,4 @@ function! meflib#basic#get_hi_info(group_name, keys) abort
     endfor
     return res
 endfunction
-
+" }}}
