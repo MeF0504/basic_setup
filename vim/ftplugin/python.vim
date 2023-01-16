@@ -128,6 +128,7 @@ function! <SID>chk_current_position_python() abort
             for hs in s:hit_str
                 let is_hit = match(ln, '^\s*\<'.hs.'\>') != -1
                 if is_hit
+                    let ln = substitute(ln, "\t", repeat(' ', &tabstop), 'g')
                     " echo ln
                     call insert(res, printf('%0'.len(line('.')).'d| %s', clnnr-lnnr-1, ln))
                     if match('elif else except', '\<'.hs.'\>') == -1
