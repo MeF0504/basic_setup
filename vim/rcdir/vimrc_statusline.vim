@@ -204,10 +204,13 @@ function! <SID>Set_statusline(winid)
         let st_config = {'_':s:def_statusline}
     endif
 
-    let cur_win = win_getid()==a:winid
+    " statusline_winid って何時からあった？
+    " g: なのにstatusline内でしか参照できないっぽい
+    let winid = g:statusline_winid
+    let cur_win = win_getid()==winid
     if !cur_win && has_key(st_config, 'off')
         let st_str = st_config['off']
-    elseif (win_gettype(a:winid) == 'quickfix') && has_key(st_config, 'qf')
+    elseif (win_gettype(winid) == 'quickfix') && has_key(st_config, 'qf')
         let st_str = st_config['qf']
     else
         let st_str = st_config['_']
@@ -226,14 +229,14 @@ function! <SID>Set_statusline(winid)
 endfunction
 let &statusline = printf('%%!%sSet_statusline(%d)', s:sid, win_getid())
 
-augroup slLocal
-    autocmd!
-    " on/off 設定
-    autocmd WinEnter * let &statusline =
-                \ printf('%%!%sSet_statusline(%d)', s:sid, win_getid()) |
-    " autocmd TabEnter * if &buftype != 'quickfix' | let &statusline='%!'..s:sid..'Set_statusline(win_getid())' | endif
-    autocmd WinLeave *
-                \ execute printf('setlocal statusline=%%!%sSet_statusline(%d)',
-                \ s:sid, win_getid()) |
-augroup END
-
+if v:false " g:statusline_winidが無いとき用に少しの間残しておく
+    augroup slLocal
+        autocmd!
+        " on/off 設定
+        autocmd WinEnter * let &statusline =
+                    \ printf('%%!%sSet_statusline(%d)', s:sid, win_getid()) |
+        autocmd WinLeave *
+                    \ execute printf('setlocal statusline=%%!%sSet_statusline(%d)',
+                    \ s:sid, win_getid()) |
+    augroup END
+endif
