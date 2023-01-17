@@ -1144,7 +1144,7 @@ let g:lsp_auto_enable = 0
 let g:lsp_diagnostics_enabled = 1
 let g:lsp_diagnostics_highlights_enabled = 0
 let g:lsp_diagnostics_signs_enabled = 1
-let g:lsp_diagnostics_signs_insert_mode_enabled = 0
+let g:lsp_diagnostics_signs_insert_mode_enabled = 1
 let g:lsp_diagnostics_virtual_text_enabled = 0
 " cursor上にwarningとかあったら(echo|float表示)してくれる
 let g:lsp_diagnostics_echo_cursor = 1
