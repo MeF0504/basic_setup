@@ -1,6 +1,7 @@
-*meflib.txt*    local library of vim script.
+*meflib.txt*    local library of vim script. 色々あって日本語／英語混在
 both Japanese and English
-色々あって日本語／英語混在 *meflib.jax*
+vimは1行目にマルチバイトがあるかどうかでエンコーディングを判別するらしい
+|E670| *meflib.jax*
 
 ==============================================================================
 CONTENTS                                                       *meflib-contents*

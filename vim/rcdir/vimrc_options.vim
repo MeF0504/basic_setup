@@ -123,9 +123,21 @@ endif
 set updatetime=4000 " (default)
 
 " directory 設定系
-" doc directoryを追加
-if exists('s:vimdir') && isdirectory(s:vimdir . 'doc')
-    execute "helptags " . s:vimdir . "doc"
+" 月1回helptags を実行
+if exists('s:vimdir') && isdirectory(s:vimdir..'doc')
+    let s:htagfs = glob(s:vimdir..'doc/tags*', 0, 1)
+    if empty(s:htagfs)
+        echomsg "exec helptags"
+        execute "helptags " . s:vimdir . "doc"
+    else
+        for s:htagf in s:htagfs
+            if localtime()-getftime(s:htagf) >= 3600*24*30
+                echomsg "exec helptags"
+                execute "helptags " . s:vimdir . "doc"
+                break
+            endif
+        endfor
+    endif
 endif
 " swp fileあり、backup, undoなし
 set swapfile
