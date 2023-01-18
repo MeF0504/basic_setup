@@ -286,6 +286,7 @@ function! s:quickrun_hook() abort
         \ 'outputter/multi/targets' : ['buffer', 'quickfix'],
         \ 'outputter/error/success' : 'buffer',
         \ 'outputter/error/error'   : 'multi',
+        \ 'outputter/buffer/opener' : '%{winwidth(0) * 2 < winheight(0) * 5 ? "botright new" : "vnew"}',
         \ 'hook/time/enable'        : 1,
         \ },
         \ 'keep')
