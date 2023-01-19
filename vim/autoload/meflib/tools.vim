@@ -507,9 +507,13 @@ function! meflib#tools#Mygrep(...)
         endif
         let wd_opt = is_word ? ' -w ' : ''
 
-        execute printf('grep! %s %s "%s" %s', l:ft, wd_opt, l:word, l:dir)
-        " botright copen
-        " set statusline="%t%{exists('w:quickfix_title')? ' '.w:quickfix_title : ' '} "
+        " execute printf('grep! %s %s "%s" %s', l:ft, wd_opt, l:word, l:dir)
+        " いちいちterminalに戻らない様になる
+        " https://zenn.dev/skanehira/articles/2020-09-18-vim-cexpr-quickfix
+        let cmd = printf("cgetexpr system('%s %s %s \"%s\" %s')", &grepprg, l:ft, wd_opt, l:word, l:dir)
+        " quickfix_title をいい感じにするためにexecute を使う
+        execute cmd
+        cwindow
     else
         echo "not supported grepprg"
     endif
