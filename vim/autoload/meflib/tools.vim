@@ -513,7 +513,8 @@ function! meflib#tools#Mygrep(...)
         let cmd = printf("cgetexpr system('%s %s %s \"%s\" %s')", &grepprg, l:ft, wd_opt, l:word, l:dir)
         " quickfix_title をいい感じにするためにexecute を使う
         execute cmd
-        cwindow
+        " cwindow -> copen to check if grep is finished.
+        copen
     else
         echo "not supported grepprg"
     endif
