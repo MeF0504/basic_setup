@@ -196,6 +196,9 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
             let bufid = a:bufid
         endif
         if !empty(a:str_list)
+            " 詳細は分かっていないがscratch bufferがnomidifiableに
+            " なっていることがあるのでfail safe
+            call setbufvar(bufid, "&modifiable", v:true)
             call nvim_buf_set_lines(bufid, 0, -1, 0, a:str_list)
         endif
         if a:popid < 0
