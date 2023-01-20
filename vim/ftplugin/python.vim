@@ -108,7 +108,7 @@ function! <SID>ccpp_cb(res, wid, idx) abort
     if a:idx > 0
         let sel_res = a:res[a:idx-1]
         let lnum = sel_res[:match(sel_res, '|')-1]
-        let lnum = substitute(lnum, '0', '', 'g')
+        let lnum = substitute(lnum, "^0\*", '', '')
         " save position. :h jumplist
         normal! m'
         call cursor(lnum, 1)
