@@ -1185,12 +1185,14 @@ endfunction
 call meflib#add('plugin_his', s:sid.'lsp_his')
 " }}}
 " reference: lsp_settings#profile#status()
-function! <SID>chk_lsp_running(map_pop) " {{{
+function! <SID>chk_lsp_running(bool, echo) abort " {{{
     let active_servers = lsp#get_allowed_servers()
     if empty(active_servers)
-        if a:map_pop == 'map'
+        if a:echo
             echomsg 'No Language server'
             sleep 300ms
+        endif
+        if a:bool
             return v:false
         else
             return 'No Lang Server'
@@ -1199,14 +1201,14 @@ function! <SID>chk_lsp_running(map_pop) " {{{
     for active_server in active_servers
         let lsp_status = lsp#get_server_status(active_server)
         if lsp_status == 'running'
-            if a:map_pop == 'popup'
-                return printf('%s:%s', active_server, lsp_status)
-            else
+            if a:bool
                 return v:true
+            else
+                return printf('%s:%s', active_server, lsp_status)
             endif
         endif
     endfor
-    if a:map_pop == 'map'
+    if a:bool
         return v:false
     else
         return printf('%s:%s', active_server, lsp_status)
@@ -1214,7 +1216,7 @@ function! <SID>chk_lsp_running(map_pop) " {{{
 endfunction
 " }}}
 function! s:show_lsp_server_status(tid) abort " {{{
-    let lsp_status = <SID>chk_lsp_running('popup')
+    let lsp_status = <SID>chk_lsp_running(0, 0)
     if has('nvim')
         let line = 1
     else
@@ -1239,7 +1241,7 @@ let s:lsp_bufid = -1
 " }}}
 function! <SID>lsp_status_tab() abort " {{{
     let name_max = 8
-    let lsp_status = <SID>chk_lsp_running('popup')
+    let lsp_status = <SID>chk_lsp_running(0, 0)
     let idx = strridx(lsp_status, ':')
     if idx == -1
         let name = lsp_status
@@ -1335,9 +1337,9 @@ function! s:vim_lsp_hook() abort
     let s:lsp_map[1] = empty(maparg('<c-]>', 'n')) ? '<c-]>' : maparg('<c-]>', 'n')
     let s:lsp_map[2] = empty(maparg('<c-j>', 'n')) ? '<c-j>' : maparg('<c-j>', 'n')
     let s:lsp_map[3] = empty(maparg('<c-p>', 'n')) ? '<c-p>' : maparg('<c-p>', 'n')
-    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running('map') ? <SID>lsp_mapping(1) : '"..s:lsp_map[1]."'"
-    execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running('map') ? <SID>lsp_mapping(2) : '"..s:lsp_map[2]."'"
-    execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running('map') ? <SID>lsp_mapping(3) : '"..s:lsp_map[3]."'"
+    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1, 1) ? <SID>lsp_mapping(1) : '"..s:lsp_map[1]."'"
+    execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1, 1) ? <SID>lsp_mapping(2) : '"..s:lsp_map[2]."'"
+    execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1, 1) ? <SID>lsp_mapping(3) : '"..s:lsp_map[3]."'"
     " help file でバグる？
     autocmd PlugLocal FileType help nnoremap <buffer> <c-]> <c-]>
     " }}}
@@ -1364,6 +1366,8 @@ function! s:vim_lsp_hook() abort
     autocmd PlugLocal User lsp_float_closed call s:lsp_unmap("<c-y>")
     autocmd PlugLocal User lsp_float_closed call s:lsp_unmap("q")
     autocmd PlugLocal BufEnter LspHoverPreview setlocal nolist
+    autocmd PlugLocal WinEnter * if <SID>chk_lsp_running(1, 0) |
+                \ setlocal keywordprg=:LspHover\ --ui=preview | endif
     " }}}
     " show status {{{
     " call timer_start(1000, s:sid.'show_lsp_server_status', {'repeat':-1})
