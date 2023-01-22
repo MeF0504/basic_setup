@@ -1138,6 +1138,7 @@ nnoremap <silent> <Leader>u <Cmd>GundoToggle<CR>
 Plug 'prabirshrestha/vim-lsp', PlugCond(0, {})
 call meflib#add('lazy_plugins', 'vim-lsp')
 "" vim-lsp {{{
+" config {{{
 " lazy load
 let g:lsp_auto_enable = 0
 " https://qiita.com/kitagry/items/216c2cf0066ff046d200
@@ -1163,7 +1164,16 @@ let g:lsp_document_code_action_signs_enabled = 0
 if meflib#get('load_plugin', 'nerdfont', 0)
     let g:lsp_diagnostics_signs_warning = {'text': nr2char(0xf071)}
     let g:lsp_diagnostics_signs_error = {'text': nr2char(0xfb8a)}
+    let s:lsp_status_icon = {
+                \ 'running': nr2char(0xf633)..' ',
+                \ 'unknown server': nr2char(0xf059)..' ',
+                \ 'exited': nr2char(0xf705)..' ',
+                \ 'starting': nr2char(0xebbd)..' ',
+                \ 'failed': nr2char(0xf46e)..' ',
+                \ 'not running': nr2char(0xeabd)..' ',
+                \ }
 endif
+" }}}
 " highlights {{{
 function! <SID>lsp_his() abort
     highlight default Lsp_Running ctermfg=233 ctermbg=183 guifg=#000000 guibg=#c8a0ef
@@ -1195,7 +1205,7 @@ function! <SID>chk_lsp_running(bool, echo) abort " {{{
         if a:bool
             return v:false
         else
-            return 'No Lang Server'
+            return 'No LSP'
         endif
     endif
     for active_server in active_servers
@@ -1204,6 +1214,9 @@ function! <SID>chk_lsp_running(bool, echo) abort " {{{
             if a:bool
                 return v:true
             else
+                if meflib#get('load_plugin', 'nerdfont', 0)
+                    let lsp_status = s:lsp_status_icon[lsp_status]
+                endif
                 return printf('%s:%s', active_server, lsp_status)
             endif
         endif
@@ -1211,6 +1224,9 @@ function! <SID>chk_lsp_running(bool, echo) abort " {{{
     if a:bool
         return v:false
     else
+        if meflib#get('load_plugin', 'nerdfont', 0)
+            let lsp_status = s:lsp_status_icon[lsp_status]
+        endif
         return printf('%s:%s', active_server, lsp_status)
     endif
 endfunction
@@ -1253,7 +1269,8 @@ function! <SID>lsp_status_tab() abort " {{{
             let name = name[:name_max-1]
         endif
         let status = lsp_status[idx+1:]
-        if status == 'running'
+        if (status == 'running') ||
+                    \ (status == s:lsp_status_icon['running'])
             let highlight = 'LSP_Running'
         else
             let highlight = 'Lsp_NotRunning'
