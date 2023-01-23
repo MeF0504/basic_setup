@@ -1175,6 +1175,11 @@ if meflib#get('load_plugin', 'nerdfont', 0)
                 \ 'failed': nr2char(0xf46e)..' ',
                 \ 'not running': nr2char(0xf057)..' ',
                 \ }
+    function! LspStatusIcon() abort
+        for [stat, icon] in items(s:lsp_status_icon)
+            echo printf('%s: %s', stat, icon)
+        endfor
+    endfunction
 endif
 " }}}
 " highlights {{{
