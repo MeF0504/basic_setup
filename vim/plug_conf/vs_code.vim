@@ -71,10 +71,11 @@ endif
 " }}}
 
 " 色々な言語のtemplate
-Plug 'mattn/vim-sonictemplate', PlugCond(1, {'on': 'Template'})
+Plug 'mattn/vim-sonictemplate', PlugCond(1)
 " {{{
 let g:sonictemplate_vim_template_dir = meflib#basic#get_conf_dir()..'plug_conf/templates'
 let g:sonictemplate_key = "\<c-q>a"
 let g:sonictemplate_intelligent_key = "\<c-q>A"
+nmap <leader>a :<C-u>Template 
 " }}}
 
