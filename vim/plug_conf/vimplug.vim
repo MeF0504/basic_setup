@@ -286,7 +286,7 @@ function! s:quickrun_hook() abort
         \ 'outputter/multi/targets' : ['buffer', 'quickfix'],
         \ 'outputter/error/success' : 'buffer',
         \ 'outputter/error/error'   : 'multi',
-        \ 'outputter/buffer/opener' : '%{winwidth(0) * 2 < winheight(0) * 5 ? "botright new" : "vnew"}',
+        \ 'runner/terminal/opener' : 'botright new',
         \ 'hook/time/enable'        : 1,
         \ },
         \ 'keep')
@@ -428,7 +428,10 @@ function! s:quickrun_nvimterm_hook() abort
         " 変数がなければ初期化
         let g:quickrun_config = get(g:, 'quickrun_config', {})
         let g:quickrun_config._ = get(g:quickrun_config, '_', {})
-        let g:quickrun_config._.runner = 'nvimterm'
+        let g:quickrun_config._= {
+                    \ 'runner': 'nvimterm',
+                    \ 'runner/nvimterm/opener': 'botright new',
+                    \ }
         let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
         call meflib#set('statusline', '_', cur_status..s:quickrun_status)
     endif
