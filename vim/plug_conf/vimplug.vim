@@ -1168,9 +1168,9 @@ if meflib#get('load_plugin', 'nerdfont', 0)
                 \ 'running': nr2char(0xf633)..' ',
                 \ 'unknown server': nr2char(0xf059)..' ',
                 \ 'exited': nr2char(0xf705)..' ',
-                \ 'starting': nr2char(0xebbd)..' ',
+                \ 'starting': nr2char(0xf01b)..' ',
                 \ 'failed': nr2char(0xf46e)..' ',
-                \ 'not running': nr2char(0xeabd)..' ',
+                \ 'not running': nr2char(0xf057)..' ',
                 \ }
 endif
 " }}}
