@@ -424,7 +424,7 @@ function _update_vcs_info_msg() {
         prompt="${(j: :)messages}"
     fi
 
-    RPROMPT="$prompt"
+    RPROMPT="$prompt"' $(today_percentage)%%'
 }
 add-zsh-hook precmd _update_vcs_info_msg
 
