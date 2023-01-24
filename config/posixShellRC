@@ -347,7 +347,8 @@ echoenvall() # {{{
 calc() # {{{
 {
     # here document?
-    bc -l <<< "$@"
+    # bc -l <<< "$@"
+    echo $(("$@"))
 } # }}}
 vimfind() # {{{
 {
