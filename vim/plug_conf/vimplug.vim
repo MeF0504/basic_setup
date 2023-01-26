@@ -1278,7 +1278,7 @@ function! <SID>lsp_status_tab() abort " {{{
         endif
         let status = lsp_status[idx+1:]
         if (status == 'running') ||
-                    \ (meflib#get('plugin', 'nerdfont', 0) &&
+                    \ (meflib#get('load_plugin', 'nerdfont', 0) &&
                     \ status == s:lsp_status_icon['running'])
             let highlight = 'LSP_Running'
         else
