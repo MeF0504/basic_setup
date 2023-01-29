@@ -1456,7 +1456,7 @@ function! s:ddc_hook() abort
             \ },
             \ 'tabnine': {
                 \ 'mark': 'TN',
-                \ 'maxCandidate': 5,
+                \ 'maxItems': 5,
                 \ 'isVolatile': v:true,
             \ },
             \ 'vim-lsp': {
@@ -1491,7 +1491,7 @@ function! s:ddc_hook() abort
         \ 'sourceOptions': {
             \ 'necovim': {
                 \ 'mark': 'vim',
-                \ 'maxCandidate': 5,
+                \ 'maxItems': 5,
             \},
         \}
     \ })
