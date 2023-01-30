@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
     char c;
     res_contin res;
     set_string(&txt);
-    /* printf("%s\n", txt); */
+    printf("%s\n", txt);
     while (1){
         res.res = 0;
         printf("%d letters:\n", LEN-1);

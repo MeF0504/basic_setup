@@ -23,6 +23,7 @@ def main():
     tc = TestClass()
     # set string
     tc.set_string()
+    print(tc.txt)
     while True:
         comp = ''
         in_txt = input('4 letters:\n')

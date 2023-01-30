@@ -2,6 +2,7 @@ scriptencoding utf-8
 
 function! <SID>main() abort
     let txt = <SID>set_string()
+    echo txt
     while 1
         let intxt = input("4 letters:\n")
         if len(intxt) != 4
