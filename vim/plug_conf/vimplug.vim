@@ -288,6 +288,7 @@ function! s:quickrun_hook() abort
         \ 'outputter/error/error'   : 'multi',
         \ 'runner/terminal/opener' : 'botright new',
         \ 'hook/time/enable'        : 1,
+        \ 'hook/time/dest'        : "buffer",
         \ },
         \ 'keep')
     if has('terminal')
@@ -376,7 +377,12 @@ function! <SID>quickrun_wrapper()
         endif
     endif
     echomsg '[qrun-wrapper] use default settings.'
-    QuickRun
+    if &filetype ==# 'vim'
+        echomsg 'source %'
+        source %
+    else
+        QuickRun
+    endif
 endfunction
 " }}}
 
@@ -428,10 +434,11 @@ function! s:quickrun_nvimterm_hook() abort
         " 変数がなければ初期化
         let g:quickrun_config = get(g:, 'quickrun_config', {})
         let g:quickrun_config._ = get(g:quickrun_config, '_', {})
-        let g:quickrun_config._= {
+        call extend(g:quickrun_config._,
+                    \ {
                     \ 'runner': 'nvimterm',
                     \ 'runner/nvimterm/opener': 'botright new',
-                    \ }
+                    \ }, "force")
         let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
         call meflib#set('statusline', '_', cur_status..s:quickrun_status)
     endif
