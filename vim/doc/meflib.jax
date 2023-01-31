@@ -387,6 +387,12 @@ MEMO                                                               *meflib-memo*
 |:highlight|    ... Show all highlight settings.
 |:command|       ... Show all user commands.
 
+##### useful non-default settings
+分割したwindow間で移動を同期 (それぞれのwindowでsetする必要あり)
+'scrollbind'
+terminalでもgui colorを使う
+'termguicolors'
+
 ##### spell check
 information; |spell| or https://vim-jp.org/vimdoc-ja/spell.html
 on; `:setlocal spell spelllang=en_us`

@@ -99,9 +99,6 @@ set showmode
 " if (v:version > 801) || ((v:version==801) && has('patch1270')) || has('neovim')
 "     set shortmess-=S
 " endif
-" 分割したwindow間で移動を同期
-" (それぞれのwindowでsetする必要あり)
-" set scrollbind
 " エコーエリアに補完時のメッセージ (match n of Nとか)を表示しない
 if (v:version > 704) || ((v:version==704) && has('patch314'))
     set shortmess+=c
@@ -113,21 +110,17 @@ try
 catch
     " nothing
 endtry
-" terminalでもgui colorを使う
-" set termguicolors " if needed
 " windowsでgit bashから起動するとバグることが多々あるので。
 if has('win32') || has('win64')
     set shell=cmd.exe
 endif
 " CursorHoldの時間
 set updatetime=4000 " (default)
-
-" directory 設定系
 " 月1回helptags を実行
 if exists('s:vimdir') && isdirectory(s:vimdir..'doc')
     let s:htagfs = glob(s:vimdir..'doc/tags*', 0, 1)
     if empty(s:htagfs)
-        echomsg "exec helptags"
+        echomsg "no help tags: exec helptags"
         execute "helptags " . s:vimdir . "doc"
     else
         for s:htagf in s:htagfs
@@ -139,6 +132,8 @@ if exists('s:vimdir') && isdirectory(s:vimdir..'doc')
         endfor
     endif
 endif
+
+" directory 設定系
 " swp fileあり、backup, undoなし
 set swapfile
 " 作れればswp用のdirectoryをvimdir配下に作る
@@ -175,6 +170,11 @@ endif
 if has('terminal')
     "terminal-job modeでのwindow移動short cutを変更
     set termwinkey=<c-l>
+    " terminalの色設定 (neovimはautocmdで)
+    if !has('nvim') && (has('patch-8.0.1685') || v:version>=801)
+        " https://qiita.com/yami_beta/items/97480d5e88f0d867176b
+        let g:terminal_ansi_colors = meflib#basic#get_term_color()
+    endif
 endif
 
 " 環境変数
@@ -205,9 +205,5 @@ let g:tex_flavor = 'latex'
 " default shell script type
 let g:is_bash = 1
 
-" terminalの色設定 (neovimはautocmdで)
-if !has('nvim') && (has('patch-8.0.1685') || v:version>=801)
-    " https://qiita.com/yami_beta/items/97480d5e88f0d867176b
-    let g:terminal_ansi_colors = meflib#basic#get_term_color()
 endif
 
