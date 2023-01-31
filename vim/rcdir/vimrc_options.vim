@@ -205,5 +205,15 @@ let g:tex_flavor = 'latex'
 " default shell script type
 let g:is_bash = 1
 
+" 端末オプション
+" カーソルをmodeごとに変える
+" https://snyt45.com/aKv0HdyTu, https://qiita.com/Linda_pp/items/9e0c94eb82b18071db34
+if has('vim_starting')
+    " insert -> 非点滅縦棒 (5で点滅？)
+    let &t_SI .= "\e[6 q"
+    " normal -> 非点滅ブロック (1で点滅？)
+    let &t_EI .= "\e[2 q"
+    " replace -> 非点滅下線 (3で点滅？)
+    let &t_SR .= "\e[4 q"
 endif
 
