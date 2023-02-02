@@ -43,7 +43,13 @@ call meflib#set('my_color_set', 'PaperColor', expand('<SID>').'my_color_set_Pape
 Plug 'google/vim-colorscheme-primary'
 " primary {{{
 function! <SID>my_color_set_primary()
-    highlight Normal ctermfg=254 guifg=#e4e4e4
+    " if &background == 'dark'
+    "     highlight Normal ctermfg=254 guifg=#e4e4e4
+    "     highlight SpecialKey ctermfg=242 ctermbg=None guifg=#6c6c6c guibg=NONE
+    " else
+    "     highlight Normal ctermfg=235 guifg=#202020
+    "     highlight SpecialKey ctermfg=242 ctermbg=None guifg=#6c6c6c guibg=NONE
+    " endif
     highlight Identifier ctermbg=None guibg=NONE
     " highlight String ctermbg=None
     highlight PreProc ctermbg=None guibg=NONE
@@ -59,8 +65,6 @@ function! <SID>my_color_set_primary()
     highlight Type ctermbg=None guibg=NONE
     highlight Structure ctermbg=None guibg=NONE
     highlight Macro ctermbg=None guibg=NONE
-    highlight SpecialKey ctermfg=242 ctermbg=None guifg=#6c6c6c guibg=NONE
-    highlight CursorWord1 ctermbg=239 cterm=None guibg=#4e4e4e gui=NONE
 endfunction
 call meflib#set('my_color_set', 'primary', expand('<SID>').'my_color_set_primary')
 " }}}
