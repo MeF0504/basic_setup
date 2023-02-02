@@ -40,8 +40,13 @@ else
 endif
 " highlights
 function! <SID>highlightag_his() abort
-    highlight default HiTagClasses ctermfg=171 guifg=#d75fff
-    highlight default HiTagMembers ctermfg=69 guifg=#5f87ff
+    if &background == 'dark'
+        highlight default HiTagClasses ctermfg=171 guifg=#d75fff
+        highlight default HiTagMembers ctermfg=69 guifg=#5f87ff
+    else
+        highlight default HiTagClasses ctermfg=52 guifg=#a63095
+        highlight default HiTagMembers ctermfg=24 guifg=#2860af
+    endif
 endfunction
 call meflib#add('plugin_his', s:sid.'highlightag_his')
 " }}}
