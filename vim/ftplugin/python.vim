@@ -8,9 +8,9 @@ augroup END
 " set系 {{{
 "gfの検索にPYTHON PATHを追加
 if exists("$PYTHONPATH")
-    execute 'set path+=' . substitute(substitute(expand($PYTHONPATH), ':', ',', 'g'), ' ', '\\ ', 'g')
+    execute 'setlocal path+=' . substitute(substitute(expand($PYTHONPATH), ':', ',', 'g'), ' ', '\\ ', 'g')
 endif
-set suffixesadd+=.py
+setlocal suffixesadd+=.py
 " error format for quickfix https://vim-jp.org/vimdoc-ja/quickfix.html#errorformats
 " if needed
 setlocal errorformat=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
