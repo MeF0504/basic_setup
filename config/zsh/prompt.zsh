@@ -237,7 +237,7 @@ RPROMPT=''
 
 function set_rprompt()
 {
-    local git_status=$(_update_vcs_info_msg)
+    local git_status="$(_update_vcs_info_msg)"
     if [[ -z "$git_status" ]]; then
         RPROMPT="$(today_percentage)%%"
     else
