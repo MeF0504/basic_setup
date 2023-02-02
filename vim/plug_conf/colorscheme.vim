@@ -85,7 +85,7 @@ function! <SID>my_color_set_night_owl()
     highlight HiTagImports ctermfg=227 guifg=#f0e860
     highlight FernIndentMarkers ctermfg=246 guifg=#a9a9a9
 endfunction
-call meflib#set('my_color_set', 'night_owl', expand('<SID>').'my_color_set_night_owl')
+call meflib#set('my_color_set', 'night-owl', expand('<SID>').'my_color_set_night_owl')
 " }}}
 
 Plug 'MeF0504/inkpotter.vim'
@@ -122,7 +122,7 @@ function! <SID>my_color_set_modus_operandi() abort
     highlight Title gui=Bold guifg=#580030
     highlight LspWarningText guifg=#ffff00 guibg=Gray
 endfunction
-call meflib#set('my_color_set', 'modus_operandi', expand('<SID>').'my_color_set_modus_operandi')
+call meflib#set('my_color_set', 'modus-operandi', expand('<SID>').'my_color_set_modus_operandi')
 " }}}
 
 Plug 'sainnhe/everforest'

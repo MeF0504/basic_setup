@@ -98,7 +98,8 @@ call meflib#set('my_color_set', 'evening', s:sid.'my_color_set_evening')
 
 function! <SID>my_color_set()
     " colorscheme specified setings
-    let colname = substitute(g:colors_name, "-", "_", "g")
+    " let colname = substitute(g:colors_name, "-", "_", "g")
+    let colname = g:colors_name
     let local_scheme_funcs = meflib#get('my_color_set', {})
     if has_key(local_scheme_funcs, colname)
         call call(local_scheme_funcs[colname], [])
