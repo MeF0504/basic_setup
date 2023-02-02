@@ -233,6 +233,18 @@ set_prompt
 # PROMPTが表示されるたびにPROMPT分を再評価する
 setopt prompt_subst
 
+RPROMPT=''
+
+function set_rprompt()
+{
+    local git_status=$(_update_vcs_info_msg)
+    if [[ -z "$git_status" ]]; then
+        RPROMPT="$(today_percentage)%%"
+    else
+        RPROMPT="$git_status"
+    fi
+}
+
 # show git status in right prompt
 # {{{ old settings...
 ## # http://tkengo.github.io/blog/2013/05/12/zsh-vcs-info/
@@ -255,7 +267,6 @@ setopt prompt_subst
 ## add-zsh-hook precmd rprom
 # }}}
 
-RPROMPT=''
 # https://qiita.com/mollifier/items/8d5a627d773758dd8078
 autoload -Uz vcs_info
 # 以下の3つのメッセージをエクスポートする
@@ -403,7 +414,8 @@ if is-at-least 4.3.11; then
 
 fi
 
-function _update_vcs_info_msg() {
+function _update_vcs_info_msg()
+{
     local -a messages
     local prompt
 
@@ -424,7 +436,7 @@ function _update_vcs_info_msg() {
         prompt="${(j: :)messages}"
     fi
 
-    RPROMPT="$prompt"' $(today_percentage)%%'
+    echo "$prompt"
 }
-add-zsh-hook precmd _update_vcs_info_msg
+add-zsh-hook precmd set_rprompt
 
