@@ -1174,6 +1174,7 @@ let g:lsp_document_code_action_signs_enabled = 0
 if meflib#get('load_plugin', 'nerdfont', 0)
     let g:lsp_diagnostics_signs_warning = {'text': nr2char(0xf071)}
     let g:lsp_diagnostics_signs_error = {'text': nr2char(0xfb8a)}
+    let g:lsp_diagnostics_signs_hint = {'text': nr2char(0xf12a)}
     let s:lsp_status_icon = {
                 \ 'running': nr2char(0xf633)..' ',
                 \ 'unknown server': nr2char(0xf059)..' ',
@@ -1199,12 +1200,21 @@ function! <SID>lsp_his() abort
         if &background == 'dark'
             let cwarn = "226"
             let gwarn = "#f0f000"
+            let cerr = "124"
+            let gerr = "#d00000"
+            let chint = "253"
+            let ghint = "#d5d5d5"
         else
             let cwarn = "136"
             let gwarn = "#b0a000"
+            let cerr = "124"
+            let gerr = "#d00000"
+            let chint = "235"
+            let ghint = "#2f2f2f"
         endif
         execute printf("highlight default LspWarningText ctermfg=%s ctermbg=%s guifg=%s guibg=%s", cwarn, ctermbg, gwarn, guibg)
-        execute printf("highlight default LspErrorText ctermfg=124 ctermbg=%s guifg=#d00000 guibg=%s", ctermbg, guibg)
+        execute printf("highlight default LspErrorText ctermfg=%s ctermbg=%s guifg=%s guibg=%s", cerr, ctermbg, gerr, guibg)
+        execute printf("highlight default LspHintText ctermfg=%s ctermbg=%s guifg=%s guibg=%s", chint, ctermbg, ghint, guibg)
     endif
 endfunction
 call meflib#add('plugin_his', s:sid.'lsp_his')
