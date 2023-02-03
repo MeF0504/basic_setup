@@ -242,3 +242,18 @@ function! meflib#basic#get_hi_info(group_name, keys) abort
     return res
 endfunction
 " }}}
+" scratch buffer {{{
+function! meflib#basic#set_scratch(text) abort
+    setlocal noswapfile
+    setlocal nobackup
+    setlocal noundofile
+    setlocal buftype=nofile
+    setlocal nobuflisted
+    setlocal nolist
+    setlocal nowrap
+    setlocal modifiable
+    silent %delete _
+    call append(0, a:text)
+    setlocal nomodifiable
+endfunction
+" }}}

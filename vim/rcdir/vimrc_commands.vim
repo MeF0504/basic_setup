@@ -133,5 +133,5 @@ vnoremap <c-x><c-x> <Cmd>call meflib#tools#addsub('x', 0)<CR>
 command! -bang BufOpen call meflib#tools#open_buffer(<q-mods>, "<bang>")
 " }}}
 " Buffer にコマンドの出力結果をだす {{{
-command! -nargs=* ExOut call meflib#tools#ex(<f-args>)
+command! -nargs=* -complete=customlist,meflib#tools#cmdout_cmp CmdOut call meflib#tools#cmdout(<f-args>)
 " }}}

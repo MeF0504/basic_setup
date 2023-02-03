@@ -56,21 +56,7 @@ function! s:python_help(module) abort " {{{
         call win_execute(s:pyhelp_id, 'quit')
     endif
     silent split PythonHelp
-    setlocal noswapfile
-    setlocal nobackup
-    setlocal noundofile
-    setlocal buftype=nofile
-    " setlocal nowrap
-    setlocal nobuflisted
-    setlocal nolist
-    setlocal modifiable
-    silent %delete _
-    call append(0, res)
-    " need to check ↓
-    " if has('win32') || has('win64')
-    "     %s///g
-    " endif
-    setlocal nomodifiable
+    call meflib#basic#set_scratch(res)
     normal! gg
     let s:pyhelp_id = win_getid()
     execute printf("autocmd PythonLocal WinClosed %d ++once let s:pyhelp_id = -1", s:pyhelp_id)

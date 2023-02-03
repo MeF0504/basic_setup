@@ -647,7 +647,25 @@ endfunction
 " }}}
 
 " Buffer にコマンドの出力結果をだす {{{
-function! meflib#tools#ex(...) abort
+" 補完
+function! meflib#tools#cmdout_cmp(arglead, cmdline, cursorpos) abort
+    let cmdlines = split(a:cmdline, ' ', 1)
+    let cmd_idx = match(cmdlines, 'C.*')
+    if len(cmdlines) <= cmd_idx+2
+        if a:arglead[0] == ":"
+            " vim command
+            return map(getcompletion(a:arglead[1:], "command"), '":"..v:val')
+            " return ["a", "b", "c"]
+        else
+            " shell command
+            return getcompletion(a:arglead, "shellcmd")
+        endif
+    else
+        return getcompletion(a:arglead, "file")
+    endif
+endfunction
+
+function! meflib#tools#cmdout(...) abort
     if empty(a:000)
         echohl ErrorMsg
         echo "empty input"
@@ -685,18 +703,8 @@ function! meflib#tools#ex(...) abort
     else
         execute winnr.."wincmd w"
     endif
-    setlocal noswapfile
-    setlocal nobackup
-    setlocal noundofile
-    setlocal buftype=nofile
+    call meflib#basic#set_scratch(res)
     setlocal filetype=ex_output
-    setlocal nobuflisted
-    setlocal nolist
-    setlocal nowrap
-    setlocal modifiable
-    silent %delete _
-    call append(0, res)
-    setlocal nomodifiable
     normal! gg
 endfunction
 " }}}
