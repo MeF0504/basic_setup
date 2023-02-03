@@ -56,7 +56,7 @@ else
 endif
 " }}}
 " 開いているファイル情報を表示（ざっくり）{{{
-command! FileInfo call meflib#tools#fileinfo()
+command! FileInfo call meflib#fileinfo#main()
 " }}}
 " 辞書（というか英辞郎）で検索 {{{
 command! -nargs=1 EijiroWeb call meflib#tools#eijiro(<f-args>)
@@ -74,14 +74,13 @@ command! BinMode call meflib#tools#BinaryMode()
 command! -nargs=? -complete=customlist,meflib#terminal#comp  Terminal call meflib#terminal#main(<f-args>)
 " }}}
 " ファイルの存在チェック {{{
-nnoremap <leader>f <Cmd>call meflib#tools#Jump_path()<CR>
+nnoremap <leader>f <Cmd>call meflib#filejump#main()<CR>
 " }}}
 " 行単位で差分を取る {{{
-command! -nargs=+ -complete=file DiffLine call meflib#tools#diff_line(<f-args>)
+command! -nargs=+ -complete=file DiffLine call meflib#diffline#main(<f-args>)
 " }}}
 " 自作grep {{{
-command! -nargs=? -complete=customlist,meflib#tools#grep_comp Gregrep call meflib#tools#Mygrep(<f-args>)
-command! -nargs=? -complete=customlist,meflib#tools#grep_comp GREgrep Gregrep
+command! -nargs=? -complete=customlist,meflib#grep#comp Gregrep call meflib#grep#main(<f-args>)
 " }}}
 " XPM test function {{{
 command! XPMLoader call meflib#tools#xpm_loader()
@@ -130,8 +129,8 @@ vnoremap <c-x><c-a> <Cmd>call meflib#tools#addsub('x', 1)<CR>
 vnoremap <c-x><c-x> <Cmd>call meflib#tools#addsub('x', 0)<CR>
 " }}}
 " buffer を選んでtabで開く {{{
-command! -bang BufOpen call meflib#tools#open_buffer(<q-mods>, "<bang>")
+command! -bang BufOpen call meflib#openbuffer#main(<q-mods>, "<bang>")
 " }}}
 " Buffer にコマンドの出力結果をだす {{{
-command! -nargs=* -complete=customlist,meflib#tools#cmdout_cmp CmdOut call meflib#tools#cmdout(<f-args>)
+command! -nargs=* -complete=customlist,meflib#cmdout#cmp CmdOut call meflib#cmdout#main(<f-args>)
 " }}}
