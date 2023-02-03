@@ -645,3 +645,45 @@ function! meflib#tools#open_buffer(mod, bang) abort
                 \ function(expand('<SID>')..'open_buffer_cb', [a:mod, a:bang]))
 endfunction
 " }}}
+
+" Buffer にコマンドの出力結果をだす {{{
+function! meflib#tools#ex(...) abort
+    if empty(a:000)
+        echohl ErrorMsg
+        echo "empty input"
+        echohl None
+        return
+    endif
+    if !executable(a:1)
+        echohl ErrorMsg
+        echo printf("command %s is not executable", a:1)
+        echohl None
+        return
+    endif
+    let res = systemlist(a:000)
+    let winnr = -1
+    for i in range(1, winnr('$'))
+        if bufname(winbufnr(i)) ==# "ex_output"
+            let winnr = i
+        endif
+    endfor
+    if winnr == -1
+        silent vertical split ex_output
+    else
+        execute winnr.."wincmd w"
+    endif
+    setlocal noswapfile
+    setlocal nobackup
+    setlocal noundofile
+    setlocal buftype=nofile
+    setlocal filetype=ex_output
+    setlocal nobuflisted
+    setlocal nolist
+    setlocal nowrap
+    setlocal modifiable
+    silent %delete _
+    call append(0, res)
+    setlocal nomodifiable
+    normal! gg
+endfunction
+" }}}
