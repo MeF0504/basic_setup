@@ -654,13 +654,21 @@ function! meflib#tools#ex(...) abort
         echohl None
         return
     endif
-    if !executable(a:1)
-        echohl ErrorMsg
-        echo printf("command %s is not executable", a:1)
-        echohl None
-        return
+    if a:1[0] == ':'
+        " vim command
+        let cmd = join(a:000)
+        let res = execute(cmd)->split("\n")
+    else
+        " shell command
+        if !executable(a:1)
+            echohl ErrorMsg
+            echo printf("command %s is not executable", a:1)
+            echohl None
+            return
+        endif
+        let res = systemlist(a:000)
     endif
-    let res = systemlist(a:000)
+
     let winnr = -1
     for i in range(1, winnr('$'))
         if bufname(winbufnr(i)) ==# "ex_output"
