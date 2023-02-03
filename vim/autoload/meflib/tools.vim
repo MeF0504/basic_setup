@@ -666,7 +666,12 @@ function! meflib#tools#ex(...) abort
             echohl None
             return
         endif
-        let res = systemlist(a:000)
+        if has('nvim')
+            let cmd = a:000
+        else
+        let cmd = join(a:000)
+        endif
+        let res = systemlist(cmd)
     endif
 
     let winnr = -1
