@@ -420,31 +420,35 @@ def main_conf(args):
         pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
     update_setup = """#! /bin/bash
 
+close()
+{{
+    if [[ -n "$moved" ]]; then
+        echo "go back"
+        builtin cd -
+    fi
+}}
 if [[ "$PWD" != "{}" ]]; then
+    echo "cd {}"
     builtin cd "{}"
     moved="true"
 fi
+echo "pull ..."
 git pull
 if [[ $? != 0 ]]; then
-    if [[ -n "$moved" ]]; then
-        builtin cd -
-    fi
+    close
     exit
 fi
+echo "submodule update ..."
 git submodule update
 if [[ $? != 0 ]]; then
-    if [[ -n "$moved" ]]; then
-        builtin cd -
-    fi
+    close
     exit
 fi
 read -p "update? (y/[n]) " YN
 python3 setup.py {}
-if [[ -n "$moved" ]]; then
-    builtin cd -
-fi
+close
 # vim:ft=sh
-""".format(args.fpath, args.fpath, pyopt)
+""".format(args.fpath, args.fpath, args.fpath, pyopt)
     if bin_dst.is_dir():
         print('creating update_setup file in {} ...'.format(bin_dst))
         update_setup_file = bin_dst/'update_setup'
