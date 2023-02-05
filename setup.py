@@ -407,8 +407,6 @@ def main_conf(args):
     cc.show_files()
     cc.exec()
 
-    bash_read = 'read -p "update? (y/[n]) " YN'
-    zsh_read = 'read "YN?update? (y/[n]) "'
     pyopt = '--prefix "{}"'.format(args.prefix)
     pyopt += ' --type ' + args.type
     pyopt += ' --display_level ' + str(args.display_level)
@@ -420,15 +418,42 @@ def main_conf(args):
         pyopt += ' --force'
     if args.vim_prefix is not None:
         pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
-    up_stup = \
-        "alias update_setup='builtin cd \"{}\"".format(args.fpath) +\
-        " && git pull" +\
-        " && git submodule update" +\
-        " && {}" +\
-        " && [[ $YN = \"y\" ]]" +\
-        " && python3 setup.py {}".format(pyopt) +\
-        " ; builtin cd -'"
-    mine_exist = True
+    update_setup = """#! /bin/bash
+
+if [[ "$PWD" != "{}" ]]; then
+    builtin cd "{}"
+    moved="true"
+fi
+git pull
+if [[ $? != 0 ]]; then
+    if [[ -n "$moved" ]]; then
+        builtin cd -
+    fi
+    exit
+fi
+git submodule update
+if [[ $? != 0 ]]; then
+    if [[ -n "$moved" ]]; then
+        builtin cd -
+    fi
+    exit
+fi
+read -p "update? (y/[n]) " YN
+python3 setup.py {}
+if [[ -n "$moved" ]]; then
+    builtin cd -
+fi
+# vim:ft=sh
+""".format(args.fpath, args.fpath, pyopt)
+    if bin_dst.is_dir():
+        print('creating update_setup file in {} ...'.format(bin_dst))
+        update_setup_file = bin_dst/'update_setup'
+        with open(update_setup_file, 'w') as f:
+            f.write(update_setup)
+        update_setup_file.chmod(0o744)
+        print('done')
+    else:
+        print('{} is not found. update_setup is not created'.format(bin_dst))
 
     if not args.test and 'zshrc' in files:
         zshrc_mine = Path('~/.zsh/zshrc.mine').expanduser()
@@ -442,10 +467,7 @@ def main_conf(args):
                 f.write('\n')
                 f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
                 f.write('\n\n')
-                f.write(up_stup.format(zsh_read))
-                f.write('\n\n')
             print('made zshrc.mine')
-            mine_exist = False
 
     if not args.test and 'bashrc' in files:
         bashrc_mine = Path('~/.bash/bashrc.mine').expanduser()
@@ -459,16 +481,7 @@ def main_conf(args):
                 f.write('\n')
                 f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
                 f.write('\n\n')
-                f.write(up_stup.format(bash_read))
-                f.write('\n\n')
             print('made bashrc.mine')
-            mine_exist = False
-
-    if mine_exist:
-        if 'zsh' in os.environ['SHELL']:
-            print('  update alias is\n{}'.format(up_stup.format(zsh_read)))
-        elif 'bash' in os.environ['SHELL']:
-            print('  update alias is\n{}'.format(up_stup.format(bash_read)))
 
 
 def main_vim(args):
