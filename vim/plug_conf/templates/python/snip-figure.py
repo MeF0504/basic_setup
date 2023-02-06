@@ -1,3 +1,2 @@
-fig1 = plt.figure({{_input_:fig-args:figsize=(6.4, 4.8)}})
-ax11 = fig1.add_subplot({{_input_:subplots}})
-{{_cursor_}}
+fig{{_input_:fignum}} = plt.figure()
+{{_expr_:map(range(1, {{_input_:row}}*{{_input_:col}}), "printf('ax{{_input_:fignum}}%d = fig{{_input_:fignum}}.add_subplot({{_input_:row}}{{_input_:col}}%d)', v:val, v:val)")}}{{_cursor_}}
