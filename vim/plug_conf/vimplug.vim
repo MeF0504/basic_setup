@@ -867,8 +867,14 @@ endif
 " https://qiita.com/gorilla0513/items/37c80569ff8f3a1c721c
 " translate.vim はarchive された模様。new oneに移行
 Plug 'skanehira/denops-translate.vim', PlugCond(meflib#get('deno_on', 0))
+" denopsが動かない場合に欲しいのでやむなく復活
+Plug 'skanehira/translate.vim', PlugCond(!meflib#get('deno_on', 0))
 " {{{
-" let g:translate_popup_window = 0
+" for translate.vim
+let g:translate_popup_window = 0
+" for denops-translate.vim
+let g:translate_ui = 'buffer'
+" both
 let g:translate_source = 'en'
 let g:translate_target = 'ja'
 " }}}
