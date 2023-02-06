@@ -348,7 +348,7 @@ calc() # {{{
 {
     # here document?
     # bc -l <<< "$@"
-    echo $(("$@"))
+    echo $(($@))
 } # }}}
 vimfind() # {{{
 {
