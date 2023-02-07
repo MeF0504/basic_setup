@@ -447,6 +447,9 @@ https://koturn.hatenablog.com/entry/2018/02/14/000000
 4 => 1, 2, 3
   |winbufnr()|, |win_id2win()|, |win_id2tabwin()|
 
+文字数カウント~
+g <c-g> (|g_CTRL-G|)
+関数なら|wordcount()|
 
 ==============================================================================
 LICENSE                                                         *meflib-license*
