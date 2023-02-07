@@ -73,5 +73,8 @@ if os.path.islink(fname):
 print(res)
 EOL
     endif
+    let words = wordcount()
+    " pythonのprintはmessageに残るので，こっちもechomsgにする
+    echomsg printf('characters: %d, words: %d', words['chars'], words['words'])
 endfunction
 
