@@ -1578,6 +1578,8 @@ Plug 'rhysd/git-messenger.vim', PlugCond(1, {'on': 'GitMessenger'})
 let g:git_messenger_no_default_mappings = v:true
 let g:git_messenger_floating_win_opts = {'border': 'single'}
 nnoremap <leader>gm <Cmd>GitMessenger<CR>
+autocmd PlugLocal FileType gitmessengerpopup
+            \ nnoremap <buffer> q <Cmd>GitMessengerClose<CR>
 " }}}
 
 " plugin のdot repeatをサポート (RegistPasteで使用)
