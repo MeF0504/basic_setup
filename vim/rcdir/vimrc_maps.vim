@@ -140,14 +140,7 @@ nnoremap dp ddp
 nnoremap dP ddkP
 
 " preview , nofile, quickfix window, help windowはqで閉じる
-function! <SID>special_win(winid)
-    return
-            \ getwinvar(a:winid, '&previewwindow')
-            \ || (getwinvar(a:winid, '&buftype')=='nofile')
-            \ || (getwinvar(a:winid, '&filetype')=='qf')
-            \ || (getwinvar(a:winid, '&buftype')=='help')
-endfunction
-nnoremap <silent> <expr> q <SID>special_win(win_getid()) ? '<Cmd>quit<CR>' : 'q'
+nnoremap <silent> <expr> q meflib#basic#special_win(win_getid()) ? '<Cmd>quit<CR>' : 'q'
 
 " terminal mode設定
 if has('terminal') || has('nvim')
@@ -182,7 +175,7 @@ endif
 if !exists('g:vscode')
     function! <SID>close_sidebar() abort
         let winid = win_getid(1)
-        if <SID>special_win(winid)
+        if meflib#basic#special_win(winid)
             call win_execute(winid, 'quit')
         endif
     endfunction

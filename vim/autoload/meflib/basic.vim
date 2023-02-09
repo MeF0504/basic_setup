@@ -257,3 +257,12 @@ function! meflib#basic#set_scratch(text) abort
     setlocal nomodifiable
 endfunction
 " }}}
+" 特殊window判断 {{{
+function! meflib#basic#special_win(winid)
+    return
+            \ getwinvar(a:winid, '&previewwindow')
+            \ || (getwinvar(a:winid, '&buftype')=='nofile')
+            \ || (getwinvar(a:winid, '&filetype')=='qf')
+            \ || (getwinvar(a:winid, '&buftype')=='help')
+endfunction
+" }}}
