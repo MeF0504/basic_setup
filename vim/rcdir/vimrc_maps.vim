@@ -1,6 +1,6 @@
 " vim script encoding setting
 scriptencoding utf-8
-"" vim map(key) settings
+" vim map(key) settings
 
 " 誤って使うとまずいkeymapを削除
 " 保存して終了 :h ZZ
@@ -176,7 +176,12 @@ if !exists('g:vscode')
     function! <SID>close_sidebar() abort
         let winid = win_getid(1)
         if meflib#basic#special_win(winid)
-            call win_execute(winid, 'quit')
+            " call win_execute(winid, 'quit')
+            " execute() を使うとvimでindent-guidesがエラーを吐くので...
+            let cur_winnr = winnr()
+            1wincmd w
+            quit
+            execute cur_winnr-1..'wincmd w'
         endif
     endfunction
     nnoremap <silent> <c-b> <Cmd>call <SID>close_sidebar()<CR>
