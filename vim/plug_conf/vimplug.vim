@@ -1055,7 +1055,7 @@ function! <SID>indentguide_his() abort
     endif
 endfunction
 call meflib#add('plugin_his', s:sid.'indentguide_his')
-autocmd PlugLocal WinEnter * if meflib#basic#special_win(win_getid()) | IndentGuidesDisable | endif
+let g:indent_guides_exclude_filetypes = split('help taglist git')
 " }}}
 
 " vim 新機能用pluginっぽい
