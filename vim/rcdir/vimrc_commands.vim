@@ -103,3 +103,8 @@ command! -bang BufOpen call meflib#openbuffer#main(<q-mods>, "<bang>")
 " Buffer にコマンドの出力結果をだす {{{
 command! -nargs=* -complete=customlist,meflib#cmdout#cmp CmdOut call meflib#cmdout#main(<f-args>)
 " }}}
+" Jで\を消す {{{
+nnoremap J <Cmd>call meflib#tools#join_wrapper()<CR>
+vnoremap J <Cmd>call meflib#tools#join_wrapper()<CR>
+" }}}
+
