@@ -89,38 +89,7 @@ command! XPMLoader call meflib#tools#xpm_loader()
 command! MefShowVar call meflib#get('', '')
 " }}}
 " echo 拡張 {{{
-function! s:echo_ex(cmd, args='') abort
-    if a:cmd ==# 'pand'  " expandを打つのがめんどくさい
-        echo expand(a:args)
-    elseif a:cmd ==# 'env'  " 環境変数を見やすくする
-        if !empty(a:args)
-            call meflib#echo#env(eval(a:args))
-        endif
-    elseif a:cmd ==# 'runtime'  " runtime 確認
-        call meflib#echo#runtimepath()
-    elseif a:cmd ==# 'conv10'  " 10進数に変換
-        if !empty(a:args)
-            call meflib#echo#convert(10, a:args)
-        endif
-    elseif a:cmd ==# 'conv8'  " 8進数に変換
-        if !empty(a:args)
-            call meflib#echo#convert(8, a:args)
-        endif
-    elseif a:cmd ==# 'conv16'  " 16進数に変換
-        if !empty(a:args)
-            call meflib#echo#convert(16, a:args)
-        endif
-    elseif a:cmd ==# 'conv2'  " 2進数に変換
-        if !empty(a:args)
-            call meflib#echo#convert(2, a:args)
-        endif
-    elseif a:cmd ==# 'time'  " 時刻表示
-        if !empty(a:args)
-            call meflib#echo#time(eval(a:args))
-        endif
-    endif
-endfunction
-command! -nargs=+ -complete=customlist,meflib#echo#comp Echo call s:echo_ex(<f-args>)
+command! -nargs=+ -complete=customlist,meflib#echo#comp Echo call meflib#echo#main(<f-args>)
 " }}}
 " 複数行で順に加算／減算 {{{
 vnoremap <c-a><c-a> <Cmd>call meflib#tools#addsub('a', 0)<CR>

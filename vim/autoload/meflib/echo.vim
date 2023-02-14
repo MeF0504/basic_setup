@@ -1,4 +1,38 @@
 
+" main
+function! meflib#echo#main(cmd, args='') abort
+    if a:cmd ==# 'pand'  " expandを打つのがめんどくさい
+        echo expand(a:args)
+    elseif a:cmd ==# 'env'  " 環境変数を見やすくする
+        if !empty(a:args)
+            call meflib#echo#env(eval(a:args))
+        endif
+    elseif a:cmd ==# 'runtime'  " runtime 確認
+        call meflib#echo#runtimepath()
+    elseif a:cmd ==# 'conv10'  " 10進数に変換
+        if !empty(a:args)
+            call meflib#echo#convert(10, a:args)
+        endif
+    elseif a:cmd ==# 'conv8'  " 8進数に変換
+        if !empty(a:args)
+            call meflib#echo#convert(8, a:args)
+        endif
+    elseif a:cmd ==# 'conv16'  " 16進数に変換
+        if !empty(a:args)
+            call meflib#echo#convert(16, a:args)
+        endif
+    elseif a:cmd ==# 'conv2'  " 2進数に変換
+        if !empty(a:args)
+            call meflib#echo#convert(2, a:args)
+        endif
+    elseif a:cmd ==# 'time'  " 時刻表示
+        if !empty(a:args)
+            call meflib#echo#time(eval(a:args))
+        endif
+    endif
+endfunction
+" }}}
+
 " echo 拡張の補完 {{{
 function! meflib#echo#comp(arglead, cmdline, cursorpos) abort
     let comp_list = split('pand env runtime conv10 conv8 conv2 conv16 time')
