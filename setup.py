@@ -443,7 +443,9 @@ if [[ $? != 0 ]]; then
     exit
 fi
 read -p "update? (y/[n]) " YN
-python3 setup.py {}
+if [[ ${{YN}} = 'y' ]]; then
+    python3 setup.py {}
+fi
 close
 # vim:ft=sh
 """.format(args.fpath, args.fpath, args.fpath, pyopt)
