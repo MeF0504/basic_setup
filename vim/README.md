@@ -1,8 +1,10 @@
-## My Vim settings
-I assume using (almost) latest Vim from terminal in Mac/Linux machine and Kaoriya-gVim in windows machine.
+## Vim settings
 
-vim help in Japanese is at here: https://github.com/vim-jp/vimdoc-ja/archive/master.tar.gz
+(Almost latest) Vim or (Almost latest) Neovim  
+GVim may also works.
 
-Please see `toml/dein_min.toml`, `toml/dein.toml` and `toml/dein_lazy.toml`
-to check my using plugins, colorschemes, etc..
+- basic rc files -> `rcdir`
+- plugin configurations -> `plug_conf`
+
+vim help in Japanese: [web](https://vim-jp.org/vimdoc-ja/), [github](https://github.com/vim-jp/vimdoc-ja), [tar](https://github.com/vim-jp/vimdoc-ja/archive/master.tar.gz)
 
