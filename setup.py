@@ -443,7 +443,7 @@ if [[ $? != 0 ]]; then
     exit
 fi
 read -p "update? (y/[n]) " YN
-if [[ ${{YN}} = 'y' ]]; then
+if [[ "${{YN}}" = "y" ]]; then
     python3 setup.py {}
 fi
 close
