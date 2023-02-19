@@ -3,12 +3,10 @@ import os
 import sys
 import argparse
 import shutil
-import subprocess
 import filecmp
 import difflib
 import datetime
 import json
-import tempfile
 import platform
 import urllib.request as urlreq
 from pathlib import Path
@@ -534,27 +532,6 @@ def main_vim(args):
         mkdir(al_dst)
         urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim', al_dst/'plug.vim')
 
-    if False:  # (args.type != 'min') and args.download and chk_cmd('sh', True):
-        print('\nclone dein')
-        dein_path = vim_config_path/'dein'
-        mkdir(dein_path)
-
-        if hasattr(tempfile, 'TemporaryDirectory'):
-            with tempfile.TemporaryDirectory() as tmpdir:
-                os.chdir(tmpdir)
-                urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
-                subprocess.call('sh installer.sh {}'.format(dein_path), shell=True)
-                os.chdir(args.fpath)
-        else:
-            tmpdir = tempfile.mkdtemp()
-            os.chdir(tmpdir)
-            urlreq.urlretrieve('https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh', 'installer.sh')
-            subprocess.call('sh installer.sh {}'.format(dein_path), shell=True)
-            os.chdir(args.fpath)
-            shutil.rmtree(tmpdir)
-
-        print('\nremoved download tmp files')
-
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    display_level_origin=args.display_level)
     for fy in sorted(files.keys()):
@@ -581,7 +558,7 @@ def main_vim(args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--prefix', help='install directory',
-                        default=Path('~/opt').expanduser())
+                        default=Path('~/workspace/opt').expanduser())
     parser.add_argument('--vim_prefix', help='Vim configuration directory',
                         default=None)
     parser.add_argument('--download', help='download some files (from git)',
