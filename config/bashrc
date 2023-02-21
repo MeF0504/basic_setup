@@ -71,14 +71,9 @@ autocd()
 alias cd="autocd"
 # }}}
 
-# load fzf settings {{{
-[[ -f ${HOME}/.fzf.bash ]] && source ${HOME}/.fzf.bash
-# }}}
-
 ##{{{ load other .bashrc configuration file
-[[ -f "$HOME/.bash/prompt.bash" ]] && source "$HOME/.bash/prompt.bash"
-[[ -f "$HOME/.bash/complete.bash" ]] && source "$HOME/.bash/complete.bash"
-
-[[ -f "$HOME/.bash/bashrc.mine" ]] && source "$HOME/.bash/bashrc.mine"
+_chk_and_source "$HOME/.bash/prompt.bash"
+_chk_and_source "$HOME/.bash/complete.bash"
+_chk_and_source "$HOME/.bash/bashrc.mine"
 # }}}
 

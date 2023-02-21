@@ -244,6 +244,11 @@ add_env() # {{{
     done
 }
 # }}}
+_chk_and_source() # {{{
+{
+    [[ -f "$1" ]] && source $1
+}
+# }}}
 vim_wrapper() # {{{
 {
     if [[ -x $(which "$_USE_VIM" 2> /dev/null) ]]; then
