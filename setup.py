@@ -89,20 +89,16 @@ class CopyClass():
         end = END
 
         if self.link:
-            comment = 'link {} --> {}'.format(src.name, self.home_cut(dst))
             if self.test:
-                self.print('{}cmd check:: link {} -> {}{}'.format(
-                       fg, src, dst, end), 0)
-                return
+                comment = 'cmd check:: link {} --> {}'.format(src, dst)
             else:
+                comment = 'link {} --> {}'.format(src.name, self.home_cut(dst))
                 os.symlink(src, dst)
         else:
-            comment = 'copy {} --> {}'.format(src.name, self.home_cut(dst))
             if self.test:
-                self.print('{}cmd check:: copy {} -> {}{}'.format(
-                       fg, src, dst, end), 0)
-                return
+                comment = 'cmd check:: copy {} --> {}'.format(src, dst)
             else:
+                comment = 'copy {} --> {}'.format(src.name, self.home_cut(dst))
                 shutil.copy(src, dst)
 
         self.print('{}{}{}'.format(fg, comment, end), 0)
@@ -176,8 +172,8 @@ class CopyClass():
                 # broken link
                 linkpath = dst.parent.joinpath(dst.readlink())
                 os.unlink(dst)
-                self.print('{} -> {} is a broken link. unlink this.'.format(
-                    dst2, self.home_cut(linkpath)), 0)
+                self.print('{}{} -> {} is a broken link. unlink.{}'.format(
+                    FG256(1), dst2, self.home_cut(linkpath), END), 0)
                 exist = False
                 islink = False
                 cmp = False
@@ -450,12 +446,15 @@ close
 # vim:ft=sh
 """.format(args.fpath, args.fpath, args.fpath, pyopt)
     if bin_dst.is_dir():
-        print('creating update_setup file in {} ...'.format(bin_dst))
-        update_setup_file = bin_dst/'update_setup'
-        with open(update_setup_file, 'w') as f:
-            f.write(update_setup)
-        update_setup_file.chmod(0o744)
-        print('done')
+        if args.test:
+            print('create update_setup in {}'.format(bin_dst))
+        else:
+            print('creating update_setup file in {} ...'.format(bin_dst))
+            update_setup_file = bin_dst/'update_setup'
+            with open(update_setup_file, 'w') as f:
+                f.write(update_setup)
+            update_setup_file.chmod(0o744)
+            print('done')
     else:
         print('{} is not found. update_setup is not created'.format(bin_dst))
 
