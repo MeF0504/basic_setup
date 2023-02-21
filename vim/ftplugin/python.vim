@@ -159,8 +159,7 @@ function! <SID>next_identifer_python() abort
     endif
 
     for lnum in range(line('.')+1, line('$'))
-        let match = indent(lnum)
-        if !empty(getline(lnum)) && match<=ind_level
+        if match(getline(lnum), '^\s*$') == -1 && indent(lnum) <= ind_level
             return lnum.'gg'
         endif
     endfor
