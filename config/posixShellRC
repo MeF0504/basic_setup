@@ -246,7 +246,7 @@ add_env() # {{{
 # }}}
 _chk_and_source() # {{{
 {
-    [[ -f "$1" ]] && source $1
+    [[ -f "$1" ]] && source "$1"
 }
 # }}}
 vim_wrapper() # {{{
