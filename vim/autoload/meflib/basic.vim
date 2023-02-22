@@ -133,36 +133,25 @@ endfunction
 function! meflib#basic#analythis_args_hyp(args, args_config) abort
     let args = split(a:args, ' ')
     let res = {'no_opt':[]}
-    let skip_cnt = -1
-    " echo args
-    for i in range(len(args))
+    let i = 0
+    while i < len(args)
         let arg = args[i]
-        " echo '<>'.i.':'.arg
-        let opt_num = 0
-        if arg[0]=='-' && has_key(a:args_config, arg[1:])
+        if arg[0] ==# '-' && has_key(a:args_config, arg[1:])
             let opt = arg[1:]
-            let res[opt] = []
-            " echo ' set '.opt
-            if has_key(a:args_config, opt)
-                let opt_num = a:args_config[opt]
+            let opt_num = a:args_config[opt]
+            let res[opt] = args[i+1:i+opt_num]
+            if len(res[opt]) != opt_num
+                echohl ErrorMsg
+                echo "incorrect arguments"
+                echohl None
+                return {}
             endif
-            let skip_cnt = i
-            for j in range(i+1, i+opt_num)
-                let res[opt] += [args[j]]
-                let skip_cnt += 1
-                " echo '  '.j.': add '.args[j].'(skip:'.skip_cnt.')'
-            endfor
-        elseif i <= skip_cnt
-            " already set to res dictionary
-            " echo 'skip '.i
-            continue
+            let i += opt_num
         else
-            " echo 'no key: '.i.' '.arg
-            let res['no_opt'] += [arg]
+            call add(res['no_opt'], arg)
         endif
-        " let test=input('>> ')
-    endfor
-
+        let i += 1
+    endwhile
     return res
 endfunction
 " }}}

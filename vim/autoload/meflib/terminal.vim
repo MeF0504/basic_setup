@@ -198,13 +198,14 @@ function! meflib#terminal#main(...) abort
         let opts = a:1
     endif
     let opts = meflib#basic#analythis_args_hyp(opts, args_config)
+    if empty(opts)
+        return
+    endif
 
     if has_key(opts, 'win')
         let win_opt = opts['win'][0]
-    elseif !empty(meflib#get('term_default', ''))
-        let win_opt = meflib#get('term_default', 'S')
     else
-        let win_opt = 'S'
+        let win_opt = meflib#get('term_default', 'S')
     endif
 
     let term_opt = ''
