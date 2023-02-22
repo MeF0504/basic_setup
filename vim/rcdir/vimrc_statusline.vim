@@ -7,7 +7,7 @@ set laststatus=2
 " コマンドラインの画面上の行数
 set cmdheight=2
 
-" Anywhere SID.
+" Anywhere SID. {{{
 function! s:SID_PREFIX() " tentative
   return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
 endfunction
@@ -16,9 +16,10 @@ if empty(expand('<SID>'))
 else
     let s:sid = expand('<SID>')
 endif
+" }}}
 
 let s:per_line = 5
-" file format 設定
+" file format 設定 {{{
 function! <SID>get_fileformat(short) abort
     let ff = &fileformat
     if !(line('.')%s:per_line==1)
@@ -46,8 +47,9 @@ function! <SID>get_fileformat(short) abort
     " 何故か最初に2個spaceが必要？
     return printf('  %s:%s ', ff, fe)
 endfunction
+" }}}
 
-" file type 設定
+" file type 設定 {{{
 function! s:get_filetype() abort
     if line('.')%s:per_line==1
         return printf(' %s ', &filetype)
@@ -62,8 +64,9 @@ function! s:get_filetype() abort
         return ''
     endif
 endfunction
+" }}}
 
-" mode変換用string
+" mode変換用string {{{
 function! <SID>get_mode()
     let st_modes =
                 \ {'n':'NORMAL',
@@ -104,50 +107,21 @@ function! <SID>get_mode()
     endif
     return mode_col..st_mode..st_mode_split
 endfunction
+" }}}
 
-function! <SID>get_rel_filename(status) abort
-    let width = winwidth(0)*2/3
+function! s:get_rel_filename(status) abort
+    let width = winwidth(0)-7-(2+2+len(line('.')..line('$')..col('.')))-5
+    " mode, line&col, line percentage
+    if meflib#get('load_plugin', 'nerdfont', 0)
+        let width = width-2-2
+        " ft, ff
+    endif
     return "%."..width.."(%f "..a:status.."%)"
-endfunction
-
-function! s:get_percentage() abort
-    if !meflib#get('load_plugin', 'nerdfont', 0) ||
-                \ (line('.')%s:per_line==1)
-        return '[%p%%]'
-    endif
-
-    let st_per_type = meflib#get('st_per_type', '')
-    if st_per_type == 'moon'
-        let moon = range(27)
-        let per = 1.0*line('.')/line('$')
-        if per ==1 || per == 0
-            return nr2char(0xe3e3).' '
-        else
-            let idx = float2nr(per*len(moon))
-            return nr2char(moon[idx]+0xe3c8).' '
-        endif
-    elseif st_per_type == 'battery'
-        let per = 10*line('.')/line('$')
-        if per >= 9
-            return nr2char(0xf578)
-        else
-            return nr2char(0xf579+per)
-        endif
-    elseif st_per_type == 'clock'
-        let per = 12*line('.')/line('$')
-        if per == 12
-            return nr2char(0xe381).' '
-        else
-            return nr2char(0xe381+per).' '
-        endif
-    else
-        return '[%p%%]'
-    endif
 endfunction
 
 " 修正フラグ 読込専用 ヘルプ preview_window
 let s:st_status = "%#StatusLine_ST#%M%R%H%W%#StatusLine#"
-" ファイル名&file status (最大長 windowの2/3)
+" ファイル名&file status (短縮表示なら)
 if has('patch-8.2.2854') || has('nvim-0.5.0')
     let s:st_filename1 = "%{%"..s:sid.."get_rel_filename('"..s:st_status.."')%}"
 else
@@ -166,12 +140,7 @@ let s:st_ft = "%#StatusLine_FT#%{"..s:sid.."get_filetype()}"
 let s:st_ff1 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(0)}"
 let s:st_ff2 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(1)}"
 " 今の行/全体の行-今の列 [%表示]
-let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v %#StatusLine#"
-if has('patch-8.2.2854') || has('nvim-0.5.0')
-    let s:st_ln1 .= "%{%".s:sid.'get_percentage()%}'
-else
-    let s:st_ln1 .= '[%p%%]'
-endif
+let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%p%%]"
 " winwidthが60より短い時は列と%はなし
 let s:st_ln2 = "%#StatusLine_LN# %l/%L"
 " 可能ならstatus lineにmodeを表示
@@ -206,6 +175,7 @@ function! <SID>Set_statusline(winid)
 
     " statusline_winid って何時からあった？
     " g: なのにstatusline内でしか参照できないっぽい
+    " 対応していないときのために引数のwinidは残しておく
     let winid = g:statusline_winid
     let cur_win = win_getid()==winid
     if !cur_win && has_key(st_config, 'off')
@@ -229,14 +199,3 @@ function! <SID>Set_statusline(winid)
 endfunction
 let &statusline = printf('%%!%sSet_statusline(%d)', s:sid, win_getid())
 
-if v:false " g:statusline_winidが無いとき用に少しの間残しておく
-    augroup slLocal
-        autocmd!
-        " on/off 設定
-        autocmd WinEnter * let &statusline =
-                    \ printf('%%!%sSet_statusline(%d)', s:sid, win_getid()) |
-        autocmd WinLeave *
-                    \ execute printf('setlocal statusline=%%!%sSet_statusline(%d)',
-                    \ s:sid, win_getid()) |
-    augroup END
-endif
