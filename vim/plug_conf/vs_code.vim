@@ -74,8 +74,8 @@ endif
 Plug 'mattn/vim-sonictemplate', PlugCond(1)
 " {{{
 let g:sonictemplate_vim_template_dir = meflib#basic#get_conf_dir()..'plug_conf/templates'
-let g:sonictemplate_key = "\<c-q>a"
-let g:sonictemplate_intelligent_key = "\<c-q>A"
+let g:sonictemplate_key = "\<c-q>\<c-q>"
+let g:sonictemplate_intelligent_key = "\<c-q>\<c-a>"
 nmap <leader>a :<C-u>Template 
 " }}}
 
