@@ -32,6 +32,7 @@ function! <SID>my_color_set_PaperColor()
     if &background == 'dark'
         highlight IndentGuidesOdd ctermfg=17 ctermbg=17 guifg=#003851 guibg=#003851
         highlight IndentGuidesEven ctermfg=54 ctermbg=54 guifg=#3f0057 guibg=#3f0057
+        highlight HiTagImports ctermfg=89 guifg=#ae5858
     else
         highlight IndentGuidesOdd ctermfg=159 ctermbg=159 guifg=#e0f8ff guibg=#e0f8ff
         highlight IndentGuidesEven ctermfg=225 ctermbg=225 guifg=#ffe0fd guibg=#ffe0fd
