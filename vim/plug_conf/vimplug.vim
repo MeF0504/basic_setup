@@ -1302,22 +1302,29 @@ function! <SID>lsp_status_tab() abort " {{{
         let name = lsp_status
         let status = ''
         let highlight = 'Lsp_NotRunning'
+        let offset = 1
     else
         let name = lsp_status[:idx-1]
         if len(name) > name_max
             let name = name[:name_max-1]
         endif
+        if meflib#get('load_plugin', 'nerdfont', 0)
+            let is_running = s:lsp_status_icon['running']
+            " len(nerdfont) = 3? 問題があったら修正
+            let offset = -1
+        else
+            let is_running = 'running'
+            let offset = 1
+        endif
         let status = lsp_status[idx+1:]
-        if (status == 'running') ||
-                    \ (meflib#get('load_plugin', 'nerdfont', 0) &&
-                    \ status == s:lsp_status_icon['running'])
+        if status == is_running
             let highlight = 'LSP_Running'
         else
             let highlight = 'Lsp_NotRunning'
         endif
     endif
     let footer = printf('%%#%s#|%s:%s%%#%s#', highlight, name, status, 'TabLineFill')
-    let len = len(name..':'..status)+1
+    let len = len(name..':'..status)+offset
     return [footer, len]
 endfunction
 " }}}
@@ -1429,7 +1436,7 @@ function! s:vim_lsp_hook() abort
     " show status {{{
     " call timer_start(1000, s:sid.'show_lsp_server_status', {'repeat':-1})
     " autocmd PlugLocal WinLeave * call meflib#floating#close(s:lsp_popid) | let s:lsp_popid = -1
-    call meflib#set('tabline_footer', s:sid.'lsp_status_tab')
+    call meflib#add('tabline_footer', s:sid.'lsp_status_tab')
     " }}}
 endfunction
 autocmd PlugLocal User vim-lsp call s:vim_lsp_hook()

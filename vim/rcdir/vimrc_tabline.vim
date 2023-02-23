@@ -42,8 +42,12 @@ function! s:get_cwd_path()
         let ret = '~~'.ret[-(max_dir_len-len(hname)-2):]
     endif
 
-    return hname.ret
+    let ret = printf(' @%s%s', hname, ret)
+    return [printf('%s%s%s', '%=%#TabLineDir#', ret, '%#TabLineFill#'), len(ret)]
 endfunction
+if meflib#get('show_cwd_tab', 1)
+    call meflib#add('tabline_footer', expand('<SID>')..'get_cwd_path')
+endif
 
 function! s:set_tabline()
     let width = &columns
@@ -56,17 +60,12 @@ function! s:set_tabline()
     let tab_fin_l = 0
     let tab_fin_r = 0
 
-    if meflib#get('show_cwd_tab', 1) == 1
-        let cdir = ' @'.s:get_cwd_path()
-        let tab_len += len(cdir)
-    else
-        let cdir = ''
-    endif
     let debug = meflib#get('tab_debug', 0)
     if debug
         let str = ''
     endif
 
+    " set header
     " count listed & loaded buffers
     for bn in range(1, bufnr('$'))
         if buflisted(bn) && bufloaded(bn)
@@ -79,13 +78,15 @@ function! s:set_tabline()
     let all_tabs = tabpagenr('$')
     let header = printf('_%d/%d(%d)_ ', is_edit, all_files, all_tabs)
     let tab_len += len(header)
+    let header = '%#TabLineFill#'.header.'%#TabLineFill#'
 
     " set footer
-    let footer = meflib#get('tabline_footer', '')
-    if !empty(footer)
-        let [footer, len] = call(footer, [])
+    let footer = '%='
+    for ffunc in meflib#get('tabline_footer', [])
+        let [fstr, len] = call(ffunc, [])
+        let footer .= fstr
         let tab_len += len
-    endif
+    endfor
 
     for i in range(1, tabpagenr('$'))
         " left side of current tab page (include current tab page).
@@ -178,10 +179,6 @@ function! s:set_tabline()
             endif
         endif
     endfor
-    " color setting
-    let header = '%#TabLineFill#'.header.'%#TabLineFill#'
-    " 右寄せしてディレクトリ表示
-    let footer = '%=%#TabLineDir#'.cdir.'%#TabLineFill#'.footer
     let s = header.s.footer
     if debug
         call meflib#set('tabinfo', str)
