@@ -192,6 +192,7 @@ function! <SID>my_color_set()
     highlight default link Quote String
     highlight qfLineNr ctermfg=22 ctermbg=252 guifg=#205020 guibg=#d0d0d0
     highlight QuickFixLine ctermfg=242 ctermbg=209 guifg=#505050 guibg=#fea085
+    highlight default GitStatusLocal ctermbg=2 ctermfg=15 guibg=#50a050 guifg=#f0f0f0
     " }}}
 
     """ plugin highlights
