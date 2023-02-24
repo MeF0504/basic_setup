@@ -868,9 +868,11 @@ endif
 " 英語翻訳プラグイン
 " https://qiita.com/gorilla0513/items/37c80569ff8f3a1c721c
 " translate.vim はarchive された模様。new oneに移行
-Plug 'skanehira/denops-translate.vim', PlugCond(meflib#get('deno_on', 0))
+Plug 'skanehira/denops-translate.vim', PlugCond(meflib#get('deno_on', 0),
+            \ {'on': 'Translate'})
 " denopsが動かない場合に欲しいのでやむなく復活
-Plug 'skanehira/translate.vim', PlugCond(!meflib#get('deno_on', 0))
+Plug 'skanehira/translate.vim', PlugCond(!meflib#get('deno_on', 0),
+            \ {'on': 'Translate'})
 " {{{
 " for translate.vim
 let g:translate_popup_window = 0
