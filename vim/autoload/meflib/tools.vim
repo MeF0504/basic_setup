@@ -195,6 +195,9 @@ function! meflib#tools#join_wrapper() abort
     " https://zenn.dev/kawarimidoll/articles/7ae1e7a485d882
     let from = line('v')
     let to = line('.')
+    if from == to
+        let to += 1
+    endif
     " echomsg from..' - '..to
     let pattern = ''
     let sla = ''

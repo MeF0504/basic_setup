@@ -6,7 +6,7 @@ augroup cmdLocal
     autocmd!
 augroup END
 
- map leader にmapされているmapを表示 {{{
+" map leader にmapされているmapを表示 {{{
 " nnoremap <Leader><Leader> :map mapleader<CR>
 function! <SID>leader_map()
     map <Leader>
