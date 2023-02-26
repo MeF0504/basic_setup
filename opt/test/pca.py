@@ -32,12 +32,15 @@ def main(data):
     ax12.set_xlim(xlim)
     ax12.set_ylim(ylim)
 
-    ax13 = fig1.add_subplot(223)
+    ax13 = fig1.add_subplot(234)
     im13 = ax13.imshow(C_x)
     fig1.colorbar(im13)
-    ax14 = fig1.add_subplot(224)
+    ax14 = fig1.add_subplot(235)
     im14 = ax14.imshow(C_y)
     fig1.colorbar(im14)
+    ax15 = fig1.add_subplot(236)
+    im15 = ax15.imshow(P)
+    fig1.colorbar(im15)
 
     plt.show()
 
