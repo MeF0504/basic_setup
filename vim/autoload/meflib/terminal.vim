@@ -12,11 +12,7 @@ function! meflib#terminal#comp(arglead, cmdline, cursorpos) abort
     " return ['-1-'.a:arglead, '-2-'.a:cmdline, '-3-'.a:cursorpos, '-4-'.a:cmdline[opt_idx:]]
     if a:arglead[0] == '-'
         " select option
-        let res = []
-        for opt in s:term_opts
-            let res += ['-'.opt]
-        endfor
-        return filter(res, '!stridx(tolower(v:val), a:arglead)')
+        return filter(map(copy(s:term_opts), '"-"..v:val'), '!stridx(tolower(v:val), a:arglead)')
     elseif a:cmdline[opt_idx:end_space_idx-1] == '-win'
         return s:term_win_opts
     elseif a:cmdline[opt_idx:end_space_idx-1] == '-term'
@@ -43,9 +39,27 @@ function! meflib#terminal#comp(arglead, cmdline, cursorpos) abort
         endif
         return term_names
     else
-        " shell コマンド一覧が得られたら嬉しい
-        " $PATHでfor文を回す手もあるが，時間が掛かりそう...
-        return []
+        " shell コマンド一覧
+        if empty(a:arglead)
+            " 未入力だとちゃんと動かないので...
+            return []
+        endif
+        let cmdlines = a:cmdline->split()
+        let def_opts = ['Terminal']
+        let def_opts += map(copy(s:term_opts), '"-"..v:val')
+        let def_opts += s:term_win_opts
+        if match(cmdlines, '-term') != -1
+            " -termがあるならコマンドは取らない
+            return []
+        else
+            for cmd in cmdlines[:-2]
+                if match(def_opts, cmd) == -1
+                    " shell command を入力済み
+                    return []
+                endif
+            endfor
+        endif
+        return getcompletion(a:arglead, 'shellcmd')
     endif
 endfunction
 function! s:open_term(bufname) abort
