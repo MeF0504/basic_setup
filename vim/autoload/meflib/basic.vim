@@ -255,3 +255,26 @@ function! meflib#basic#special_win(winid)
             \ || (getwinvar(a:winid, '&buftype')=='help')
 endfunction
 " }}}
+" terminal buffer 一覧 {{{
+function! meflib#basic#term_list() abort
+    if exists('*term_list')
+        let term_list = term_list()
+    else
+        if has('nvim')
+            let st_idx = 6
+            let term_head = 'term://'
+        else
+            let st_idx = 0
+            let term_head = '!'
+        endif
+        let term_list = []
+        for i in range(1, bufnr('$'))
+            let bname = bufname(i)
+            if bname[:st_idx] == term_head
+                let term_list += [i]
+            endif
+        endfor
+    endif
+    return term_list
+endfunction
+" }}}

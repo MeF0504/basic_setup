@@ -215,3 +215,13 @@ autocmd local BufEnter .*_tags set filetype=tags
 " markdownとgit commit messageでspell on
 autocmd local Filetype markdown,gitcommit setlocal spell
 
+" git status を表示
+call meflib#git_status#main()
+autocmd local TabLeave * call meflib#git_status#clear()
+autocmd local WinEnter *
+            \ if match(meflib#basic#term_list(), bufnr()) == -1 |
+            \ call meflib#git_status#main() |
+            \ else |
+            \ call meflib#git_status#clear() |
+            \ endif
+

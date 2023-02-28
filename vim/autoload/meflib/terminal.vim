@@ -16,27 +16,9 @@ function! meflib#terminal#comp(arglead, cmdline, cursorpos) abort
     elseif a:cmdline[opt_idx:end_space_idx-1] == '-win'
         return s:term_win_opts
     elseif a:cmdline[opt_idx:end_space_idx-1] == '-term'
-        if exists('*term_list')
-            let term_names = filter(map(term_list(), 'bufname(v:val)'), '!stridx(tolower(v:val), a:arglead)')
-        else
-            if has('nvim')
-                let st_idx = 6
-                let term_head = 'term://'
-            else
-                let st_idx = 0
-                let term_head = '!'
-            endif
-            let term_list = []
-            for i in range(1, tabpagenr('$'))
-                for j in tabpagebuflist(i)
-                    let bname = bufname(j)
-                    if bname[:st_idx] == term_head
-                        let term_list += [bname]
-                    endif
-                endfor
-            endfor
-            let term_names = filter(term_list, '!stridx(tolower(v:val), a:arglead)')
-        endif
+        let term_list = meflib#basic#term_list()
+        let term_names = filter(map(term_list, 'bufname(v:val)'),
+                    \ '!stridx(tolower(v:val), a:arglead)')
         return term_names
     else
         " shell コマンド一覧

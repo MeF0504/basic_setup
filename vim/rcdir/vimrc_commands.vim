@@ -107,7 +107,4 @@ command! -nargs=* -complete=customlist,meflib#cmdout#cmp CmdOut call meflib#cmdo
 nnoremap J <Cmd>call meflib#tools#join_wrapper()<CR>
 vnoremap J <Cmd>call meflib#tools#join_wrapper()<CR>
 " }}}
-" git status を表示 {{{
-call meflib#git_status#main()
-" }}}
 
