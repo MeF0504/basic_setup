@@ -7,20 +7,28 @@ function! meflib#git_status#main() abort
     if empty(finddir('.git'))
         return
     endif
-    let b_cmd = ['git', 'branch', '--contains']
+    let cmd = ['git', 'branch', '--contains']
     if !has('nvim')
-        let b_cmd = join(b_cmd)
+        let cmd = join(cmd)
     endif
-    let branch = system(b_cmd)[2:]
+    let branch = substitute(system(cmd)[2:], '\n', '', 'g')
+
     if has('nvim')
-        let d_cmd = ['git', 'log', '--date=iso', '--date=format:%Y/%m/%d',
+        let cmd = ['git', 'log', '--date=iso', '--date=format:%Y/%m/%d',
                 \ '--pretty=format:%ad', '-1']
     else
-        let d_cmd = join(['git', 'log', '--date=iso', '--date=format:"%Y/%m/%d"',
+        let cmd = join(['git', 'log', '--date=iso', '--date=format:"%Y/%m/%d"',
                 \ '--pretty=format:"%ad"', '-1'])
     endif
-    let date = system(d_cmd)
-    let print_str = printf("%s:%s", branch, date)->substitute('\n', '', '')
+    let date = system(cmd)
+
+    let cmd = ['git', 'log', '--oneline', printf('HEAD..origin/%s', branch)]
+    if !has('nvim')
+        let cmd = join(cmd)
+    endif
+    let pre_merge = len(systemlist(cmd))
+
+    let print_str = printf("%s(m:%d):%s", branch, pre_merge, date)
     " echo print_str
     let config = {
                 \ 'relative': 'editor',
