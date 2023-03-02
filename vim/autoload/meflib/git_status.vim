@@ -4,7 +4,7 @@ scriptencoding utf-8
 let s:git_pid = -1
 let s:git_bid = -1
 function! meflib#git_status#main() abort
-    if empty(finddir('.git', $PWD))
+    if empty(finddir('.git', ';'))
         return
     endif
     let cmd = ['git', 'branch', '--contains']
