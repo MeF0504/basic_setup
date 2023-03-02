@@ -426,17 +426,19 @@ if [[ "$PWD" != "{}" ]]; then
     builtin cd "{}"
     moved="true"
 fi
-echo "pull ..."
-git pull
-if [[ $? != 0 ]]; then
-    close
-    exit
-fi
-echo "submodule update ..."
-git submodule update
-if [[ $? != 0 ]]; then
-    close
-    exit
+if [[ "$1" != "--nopull" ]]; then
+    echo "pull ..."
+    git pull
+    if [[ $? != 0 ]]; then
+        close
+        exit
+    fi
+    echo "submodule update ..."
+    git submodule update
+    if [[ $? != 0 ]]; then
+        close
+        exit
+    fi
 fi
 read -p "update? (y/[n]) " YN
 if [[ "${{YN}}" = "y" ]]; then
