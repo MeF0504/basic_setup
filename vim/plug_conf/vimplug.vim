@@ -271,6 +271,7 @@ Plug 'MeF0504/vim-TabJumper', PlugCond(1, {'on': 'TabJump'})
 nnoremap <leader>l <Cmd>TabJump<CR>
 tnoremap <c-l><c-l> <Cmd>TabJump<CR>
 let g:tabjumper_preview_enable = 'manual'
+let g:tabjumper_preview_width = &columns-20
 " }}}
 
 " neosnippet用のsnipets
