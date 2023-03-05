@@ -1,8 +1,4 @@
 
-# https://gist.github.com/mitukiii/4954559
-# https://blog.freedom-man.com/zsh-completions
-# https://qiita.com/suzuki-hoge/items/0f5851bcd84176b4f46e
-
 function _grep_comp()
 {
     _arguments \
