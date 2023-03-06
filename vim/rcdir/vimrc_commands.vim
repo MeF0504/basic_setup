@@ -104,7 +104,7 @@ command! -bang BufOpen call meflib#openbuffer#main(<q-mods>, "<bang>")
 command! -nargs=* -complete=customlist,meflib#cmdout#cmp CmdOut call meflib#cmdout#main(<f-args>)
 " }}}
 " Jで\を消す {{{
-nnoremap J <Cmd>call meflib#tools#join_wrapper()<CR>
-vnoremap J <Cmd>call meflib#tools#join_wrapper()<CR>
+nnoremap J <Cmd>call meflib#join_wrapper#main()<CR>
+vnoremap J <Cmd>call meflib#join_wrapper#main()<CR>
 " }}}
 
