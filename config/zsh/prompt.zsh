@@ -355,11 +355,13 @@ if is-at-least 4.3.11; then
            [[ "${hook_com[branch]}" != "main" ]]; then
             # master, main ブランチでない場合は何もしない
             return 0
+        else
+            BRA=${hook_com[branch]}
         fi
 
         # push していないコミット数を取得する
         local ahead
-        ahead=$(command git rev-list origin/master..master 2>/dev/null \
+        ahead=$(command git rev-list origin/$BRA..$BRA 2>/dev/null \
             | wc -l \
             | tr -d ' ')
 
@@ -380,13 +382,16 @@ if is-at-least 4.3.11; then
             return 0
         fi
 
-        if [[ "${hook_com[branch]}" == "master" ]]; then
-            # master ブランチの場合は何もしない
+        if [[ "${hook_com[branch]}" = "master" ]] && \
+           [[ "${hook_com[branch]}" = "main" ]]; then
+            # master, main ブランチの場合は何もしない
             return 0
+        else
+            BRA=${hook_com[branch]}
         fi
 
         local nomerged
-        nomerged=$(command git rev-list master..${hook_com[branch]} 2>/dev/null | wc -l | tr -d ' ')
+        nomerged=$(command git rev-list $BRA..${hook_com[branch]} 2>/dev/null | wc -l | tr -d ' ')
 
         if [[ "$nomerged" -gt 0 ]] ; then
             # misc (%m) に追加
