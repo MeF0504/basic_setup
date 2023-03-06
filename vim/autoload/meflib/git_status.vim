@@ -7,12 +7,14 @@ function! meflib#git_status#main() abort
     if empty(finddir('.git', ';'))
         return
     endif
+    " branch
     let cmd = ['git', 'branch', '--contains']
     if !has('nvim')
         let cmd = join(cmd)
     endif
     let branch = substitute(system(cmd)[2:], '\n', '', 'g')
 
+    " latest update date
     if has('nvim')
         let cmd = ['git', 'log', '--date=iso', '--date=format:%Y/%m/%d',
                 \ '--pretty=format:%ad', '-1']
@@ -22,13 +24,21 @@ function! meflib#git_status#main() abort
     endif
     let date = system(cmd)
 
+    " number of unmerged commits
     let cmd = ['git', 'log', '--oneline', printf('HEAD..origin/%s', branch)]
     if !has('nvim')
         let cmd = join(cmd)
     endif
     let pre_merge = len(systemlist(cmd))
 
-    let print_str = printf("%s(m:%d):%s", branch, pre_merge, date)
+    " number of unpushed commits
+    let cmd = ['git', 'rev-list', printf('origin/%s..%s', branch, branch)]
+    if !has('nvim')
+        let cmd = join(cmd)
+    endif
+    let pre_push = len(systemlist(cmd))
+
+    let print_str = printf("%s(m%d|p%d) %s", branch, pre_merge, pre_push, date)
     " echo print_str
     let config = {
                 \ 'relative': 'editor',
