@@ -38,6 +38,8 @@ function! <SID>my_color_set_PaperColor()
         highlight IndentGuidesOdd ctermfg=159 ctermbg=159 guifg=#e0f8ff guibg=#e0f8ff
         highlight IndentGuidesEven ctermfg=225 ctermbg=225 guifg=#ffe0fd guibg=#ffe0fd
     endif
+    highlight link pythonBuiltin Function
+    highlight Quote ctermfg=183 ctermbg=None guifg=#d7afff guibg=NONE
 endfunction
 call meflib#set('my_color_set', 'PaperColor', expand('<SID>').'my_color_set_PaperColor')
 " }}}
