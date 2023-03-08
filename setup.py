@@ -328,6 +328,10 @@ def main_conf(args):
     bin_dst = Path(args.prefix)/'bin'
     lib_dst = Path(args.prefix)/'lib'
     set_src = Path(args.fpath)/'config'
+    local_conf_dir = Path(args.conf_home)/'meflib'
+    if not local_conf_dir.exists():
+        os.makedirs(local_conf_dir)
+        print('mkdir: {}'.format(local_conf_dir))
     fg = FG256(10)
     end = END
     print('\n{}@ {}{}\n'.format(fg, set_src, end))
@@ -417,8 +421,8 @@ def main_conf(args):
 if [[ -d "$TMPDIR" ]]; then
     tmpfile="${{TMPDIR}}/update_setup"
 else
-    echo "TMPDIR is not found. update failed."
-    exit
+    echo "TMPDIR is not found. use config dir."
+    tmpfile="{}/update_setup"
 fi
 echo '
 close()
@@ -456,7 +460,8 @@ close
 chmod u+x $tmpfile
 $tmpfile $1
 # vim:ft=sh
-""".format(args.fpath, args.fpath, args.fpath, pyopt)
+""".format(local_conf_dir/'update_setup',
+           args.fpath, args.fpath, args.fpath, pyopt)
     if bin_dst.is_dir():
         if args.test:
             print('create update_setup in {}'.format(bin_dst))
