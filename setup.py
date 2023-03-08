@@ -460,8 +460,7 @@ close
 chmod u+x $tmpfile
 $tmpfile $1
 # vim:ft=sh
-""".format(local_conf_dir/'update_setup',
-           args.fpath, args.fpath, args.fpath, pyopt)
+""".format(local_conf_dir, args.fpath, args.fpath, args.fpath, pyopt)
     if bin_dst.is_dir():
         if args.test:
             print('create update_setup in {}'.format(bin_dst))
