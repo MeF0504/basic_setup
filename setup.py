@@ -418,14 +418,8 @@ def main_conf(args):
         pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
     update_setup = """#! /bin/bash
 
-if [[ -d "$TMPDIR" ]]; then
-    tmpfile="${{TMPDIR}}/update_setup"
-else
-    echo "TMPDIR is not found. use config dir."
-    tmpfile="{}/update_setup"
-fi
-echo '
-#! /bin/bash
+tmpfile="{}/.update_setup_tmp"
+echo '#! /bin/bash
 close()
 {{
     if [[ -n "$moved" ]]; then
