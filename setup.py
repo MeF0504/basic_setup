@@ -414,6 +414,13 @@ def main_conf(args):
         pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
     update_setup = """#! /bin/bash
 
+if [[ -d "$TMPDIR" ]]; then
+    tmpfile="${{TMPDIR}}/update_setup"
+else
+    echo "TMPDIR is not found. update failed."
+    exit
+fi
+echo '
 close()
 {{
     if [[ -n "$moved" ]]; then
@@ -445,6 +452,9 @@ if [[ "${{YN}}" = "y" ]]; then
     python3 setup.py {}
 fi
 close
+' > $tmpfile
+chmod u+x $tmpfile
+$tmpfile $1
 # vim:ft=sh
 """.format(args.fpath, args.fpath, args.fpath, pyopt)
     if bin_dst.is_dir():
