@@ -425,6 +425,7 @@ else
     tmpfile="{}/update_setup"
 fi
 echo '
+#! /bin/bash
 close()
 {{
     if [[ -n "$moved" ]]; then
