@@ -414,7 +414,7 @@ def main_conf(args):
         pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
     with open(Path(args.fpath)/'opt/samples/update_setup_sample.py', 'r') as f:
         update_setup = f.read().format(args.fpath, args.fpath, args.fpath,
-                                       pyopt)
+                                       pyopt).replace('\\', '\\\\')
     if bin_dst.is_dir():
         if args.test:
             print('create update_setup in {}'.format(bin_dst))
