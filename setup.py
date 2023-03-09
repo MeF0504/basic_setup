@@ -328,10 +328,6 @@ def main_conf(args):
     bin_dst = Path(args.prefix)/'bin'
     lib_dst = Path(args.prefix)/'lib'
     set_src = Path(args.fpath)/'config'
-    local_conf_dir = Path(args.conf_home)/'meflib'
-    if not local_conf_dir.exists():
-        os.makedirs(local_conf_dir)
-        print('mkdir: {}'.format(local_conf_dir))
     fg = FG256(10)
     end = END
     print('\n{}@ {}{}\n'.format(fg, set_src, end))
@@ -416,46 +412,9 @@ def main_conf(args):
         pyopt += ' --force'
     if args.vim_prefix is not None:
         pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
-    update_setup = """#! /bin/bash
-
-tmpfile="{}/.update_setup_tmp"
-echo '#! /bin/bash
-close()
-{{
-    if [[ -n "$moved" ]]; then
-        echo "go back"
-        builtin cd -
-    fi
-}}
-if [[ "$PWD" != "{}" ]]; then
-    echo "cd {}"
-    builtin cd "{}"
-    moved="true"
-fi
-if [[ "$1" != "--nopull" ]]; then
-    echo "pull ..."
-    git pull
-    if [[ $? != 0 ]]; then
-        close
-        exit
-    fi
-    echo "submodule update ..."
-    git submodule update
-    if [[ $? != 0 ]]; then
-        close
-        exit
-    fi
-fi
-read -p "update? (y/[n]) " YN
-if [[ "${{YN}}" = "y" ]]; then
-    python3 setup.py {}
-fi
-close
-' > $tmpfile
-chmod u+x $tmpfile
-$tmpfile $1
-# vim:ft=sh
-""".format(local_conf_dir, args.fpath, args.fpath, args.fpath, pyopt)
+    with open(Path(args.fpath)/'opt/samples/update_setup_sample.py', 'r') as f:
+        update_setup = f.read().format(args.fpath, args.fpath, args.fpath,
+                                       pyopt)
     if bin_dst.is_dir():
         if args.test:
             print('create update_setup in {}'.format(bin_dst))

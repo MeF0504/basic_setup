@@ -1,8 +1,11 @@
 let yn = input('update setup? y/[n]: ')
 if yn == 'y'
     if exists(':Terminal') == 2
-        " bash ... windowsで動かすようのお呪い
-        Terminal -win S bash update_setup --nopull
+        if executable('update_setup')
+            Terminal -win S update_setup --nopull
+        else
+            " do what?
+        endif
     else
         echo 'Terminal does not exist'
     endif
