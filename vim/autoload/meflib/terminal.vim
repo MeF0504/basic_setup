@@ -37,7 +37,7 @@ function! meflib#terminal#comp(arglead, cmdline, cursorpos) abort
             for cmd in cmdlines[:-2]
                 if match(def_opts, cmd) == -1
                     " shell command を入力済み
-                    return []
+                    return getcompletion(a:arglead, 'file')
                 endif
             endfor
         endif
