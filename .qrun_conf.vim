@@ -4,7 +4,8 @@ if yn == 'y'
         if executable('update_setup')
             Terminal -win S update_setup --nopull
         else
-            " do what?
+            " assume windows
+            Terminal -win S python3 tmp\update_setup --nopull
         endif
     else
         echo 'Terminal does not exist'
