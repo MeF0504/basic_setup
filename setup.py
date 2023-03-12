@@ -34,11 +34,14 @@ class CopyClass():
     """
 
     def __init__(self, link: bool, force: bool, test: bool,
-                 display_level_origin: int):
+                 show_target: bool, show_no_update: bool,
+                 show_all: bool):
         self.link = link
         self.force = force
         self.test = test
-        self.dl = display_level_origin
+        self.show_target = show_target or show_all
+        self.show_no_update = show_no_update or show_all
+        self.show_all = show_all
         self.cwd = Path.cwd()
         self.src = []
         self.dst = []
@@ -59,7 +62,8 @@ class CopyClass():
             assert dst.is_file() or not dst.exists()
             for il in self.ignore_list:
                 if il in str(src):
-                    self.print('[{}] ignored by [{}]'.format(src, il), 2)
+                    self.print('[{}] ignored by [{}]'.format(src, il),
+                               self.show_all)
                     return
             self.src.append(src)
             self.dst.append(dst)
@@ -72,7 +76,8 @@ class CopyClass():
                     continue
                 for il in self.ignore_list:
                     if il in str(fy):
-                        self.print('[{}] ignored by [{}]'.format(fy, il), 2)
+                        self.print('[{}] ignored by [{}]'.format(fy, il),
+                                   self.show_all)
                         skip = True
                 if skip:
                     continue
@@ -81,7 +86,7 @@ class CopyClass():
                 self.dst.append(cpdir/(fy.name))
                 self.len += 1
         else:
-            self.print("No such file or directory: {}".format(src), 0)
+            self.print("No such file or directory: {}".format(src), True)
             return
 
     def copy(self, src: Path, dst: Path):
@@ -101,7 +106,7 @@ class CopyClass():
                 comment = 'copy {} --> {}'.format(src.name, self.home_cut(dst))
                 shutil.copy(src, dst)
 
-        self.print('{}{}{}'.format(fg, comment, end), 0)
+        self.print('{}{}{}'.format(fg, comment, end), True)
 
     def diff(self, index):
         src = self.src[index]
@@ -128,14 +133,10 @@ class CopyClass():
             else:
                 col = ''
                 end = ''
-            self.print(self.dshift+col+line+end, 0)
+            self.print(self.dshift+col+line+end, True)
 
-    def print(self, string: str, display_level: int):
-        # display_level;
-        #   2 ... shown only if all messages are shown
-        #   1 ... shown in usual case
-        #   0 ... shown always
-        if self.dl >= display_level:
+    def print(self, string: str, show: bool):
+        if show:
             print(string)
 
     def dst_check(self, index):
@@ -153,27 +154,28 @@ class CopyClass():
         if exist:
             if islink and cmp:
                 self.print(self.shift+'[ {} ] is already linked.'.format(dst2),
-                           2)
+                           self.show_no_update)
             elif islink:
                 self.print(self.shift +
-                           '[ {} ] is another link file.'.format(dst2), 2)
+                           '[ {} ] is another link file.'.format(dst2),
+                           self.show_no_update)
             elif cmp:
                 self.print(self.shift+'[ {} ] is already copied.'.format(dst2),
-                           2)
+                           self.show_no_update)
             else:
                 if self.force:
-                    dl = 2
+                    show_cmt = self.show_all
                 else:
-                    dl = 0
+                    show_cmt = True
                 self.print(self.shift +
-                           '[ {} ] is already existed.'.format(dst2), dl)
+                           '[ {} ] is already existed.'.format(dst2), show_cmt)
         else:
             if islink:
                 # broken link
                 linkpath = dst.parent.joinpath(dst.readlink())
                 os.unlink(dst)
                 self.print('{}{} -> {} is a broken link. unlink.{}'.format(
-                    FG256(1), dst2, self.home_cut(linkpath), END), 0)
+                    FG256(1), dst2, self.home_cut(linkpath), END), True)
                 exist = False
                 islink = False
                 cmp = False
@@ -194,18 +196,18 @@ class CopyClass():
             if yn in ['y', 'yes']:
                 return True
             elif yn in ['d', 'diff'] and not is_diff:
-                self.print('', 0)
+                self.print('', True)
                 self.diff(index)
-                self.print('', 0)
+                self.print('', True)
                 is_diff = True
             elif yn in ['n', 'no']:
-                self.print('Do not copy '+src.name, 0)
+                self.print('Do not copy '+src.name, True)
                 return False
 
     def show_files(self):
         fg = FG256(2)
         end = END
-        self.print('{}target files{}'.format(fg, end), 1)
+        self.print('{}target files{}'.format(fg, end), self.show_target)
 
         for i in range(self.len):
             if py_version >= 3009 and \
@@ -213,8 +215,9 @@ class CopyClass():
                 src = self.src[i].relative_to(self.cwd)
             else:
                 src = self.src[i]
-            self.print('{} => {}'.format(src, self.home_cut(self.dst[i])), 1)
-        self.print(fg+'=~=~=~=~=~=~=~=~=~='+end, 1)
+            self.print('{} => {}'.format(src, self.home_cut(self.dst[i])),
+                       self.show_target)
+        self.print(fg+'=~=~=~=~=~=~=~=~=~='+end, self.show_target)
 
     def home_cut(self, path: Path):
         home = Path.home()
@@ -235,7 +238,8 @@ class CopyClass():
             dst_dir = dst.parent
             if self.test:
                 if not dst_dir.is_dir():
-                    self.print('process check:: mkdir {}'.format(dst_dir), 0)
+                    self.print('process check:: mkdir {}'.format(dst_dir),
+                               True)
             else:
                 mkdir(dst_dir)
 
@@ -248,7 +252,8 @@ class CopyClass():
                     if cmp:
                         continue
                     elif self.force and not islink:
-                        self.print(self.shift+'overwrite;', 0)
+                        self.print(self.shift+'overwrite the following file;',
+                                   True)
                         self.copy(src, dst)
                     else:
                         if self.diff_check(i):
@@ -313,7 +318,9 @@ def main_opt(args):
                     files[lfy] = lib_dst/fname
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
-                   display_level_origin=args.display_level)
+                   show_target=args.show_target_files,
+                   show_no_update=args.show_no_update_files,
+                   show_all=args.show_all)
     for fy in sorted(files.keys()):
         cc.stack(opt_src.joinpath(fy), files[fy])
     cc.show_files()
@@ -391,7 +398,9 @@ def main_conf(args):
         urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', bashdir/'git-prompt.sh')
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
-                   display_level_origin=args.display_level)
+                   show_target=args.show_target_files,
+                   show_no_update=args.show_no_update_files,
+                   show_all=args.show_all)
     for fy in sorted(files.keys()):
         fy_dir = Path(files[fy]).expanduser().parent
         if fy_dir.is_dir():
@@ -403,7 +412,6 @@ def main_conf(args):
 
     pyopt = '--prefix "{}"'.format(args.prefix)
     pyopt += ' --type ' + args.type
-    pyopt += ' --display_level ' + str(args.display_level)
     if args.setup_file is not None:
         pyopt += ' --setup_file "{}"'.format(args.setup_file)
     if args.link:
@@ -412,6 +420,10 @@ def main_conf(args):
         pyopt += ' --force'
     if args.vim_prefix is not None:
         pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
+    if args.show_target_files:
+        pyopt += ' --show_target_files'
+    if args.show_no_update_files:
+        pyopt += ' --show_no_update_files'
     with open(Path(args.fpath)/'opt/samples/update_setup_sample.py', 'r') as f:
         update_setup = f.read().format(args.fpath, args.fpath, args.fpath,
                                        pyopt).replace('\\', '\\\\')
@@ -508,7 +520,9 @@ def main_vim(args):
         urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim', al_dst/'plug.vim')
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
-                   display_level_origin=args.display_level)
+                   show_target=args.show_target_files,
+                   show_no_update=args.show_no_update_files,
+                   show_all=args.show_all)
     for fy in sorted(files.keys()):
         cc.stack(vim_src.joinpath(fy), files[fy])
     cc.show_files()
@@ -550,9 +564,12 @@ def main():
                         choices='all opt config vim min'.split(), default='all')
     parser.add_argument('-s', '--setup_file',
                         help='specify the copy files by json format setting file. please see "opt/test/setup_file_template.json" as an example.')
-    parser.add_argument('-d', '--display_level', choices=[0, 1, 2],
-                        help='set the diaplay level. 0=only executed process, 1=target files and executed process (default), 2=all',
-                        type=int, default=1)
+    parser.add_argument('--show_target_files', action='store_true',
+                        help='show target_files before copying')
+    parser.add_argument('--show_no_update_files', action='store_true',
+                        help='show messages "the file is already copied or linked"')
+    parser.add_argument('--show_all', action='store_true',
+                        help='show all messages')
     args = parser.parse_args()
 
     if not Path(args.prefix).is_dir():
