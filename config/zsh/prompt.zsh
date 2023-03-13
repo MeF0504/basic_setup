@@ -382,12 +382,19 @@ if is-at-least 4.3.11; then
             return 0
         fi
 
-        if [[ "${hook_com[branch]}" = "master" ]] && \
+        if [[ "${hook_com[branch]}" = "master" ]] || \
            [[ "${hook_com[branch]}" = "main" ]]; then
             # master, main ブランチの場合は何もしない
             return 0
         else
-            BRA=${hook_com[branch]}
+            if [[ "$(git branch)" =~ "master" ]]; then
+                BRA="master"
+            elif [[ "$(git branch)" =~ "master" ]]; then
+                BRA="main"
+            else
+                # ?
+                BRA="main"
+            fi
         fi
 
         local nomerged
