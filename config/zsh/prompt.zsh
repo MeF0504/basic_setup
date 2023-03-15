@@ -235,11 +235,18 @@ setopt prompt_subst
 
 RPROMPT=''
 
+function _set_per()
+{
+    export _PERCENTAGE_TODAY="$(today_percentage)%%"
+}
+add-zsh-hook periodic _set_per
+_PERCENTAGE_TODAY="$(today_percentage)%%"
+
 function set_rprompt()
 {
     local git_status="$(_update_vcs_info_msg)"
     if [[ -z "$git_status" ]]; then
-        RPROMPT="$(today_percentage)%%"
+        RPROMPT=$_PERCENTAGE_TODAY
     else
         RPROMPT="$git_status"
     fi
