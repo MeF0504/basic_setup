@@ -22,7 +22,9 @@ function get_ip() {
 }
 # do get_ip 1 time per 1 min.
 export PERIOD=60
-add-zsh-hook periodic get_ip
+if [ -z "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
+    add-zsh-hook periodic get_ip
+fi
 
 function ip_color() {
     # {{{
