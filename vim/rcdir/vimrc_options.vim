@@ -117,13 +117,13 @@ endif
 " CursorHoldの時間
 set updatetime=4000 " (default)
 " 月1回helptags を実行
-if exists('s:vimdir') && isdirectory(s:vimdir..'doc')
-    let s:htagfs = glob(s:vimdir..'doc/tags*', 0, 1)
-    if empty(s:htagfs)
+function! s:exec_helptag(tid) abort
+    let htagfs = glob(s:vimdir..'doc/tags*', 0, 1)
+    if empty(htagfs)
         echomsg "no help tags: exec helptags"
         execute "helptags " . s:vimdir . "doc"
     else
-        for s:htagf in s:htagfs
+        for s:htagf in htagfs
             if localtime()-getftime(s:htagf) >= 3600*24*30
                 echomsg "exec helptags"
                 execute "helptags " . s:vimdir . "doc"
@@ -131,6 +131,9 @@ if exists('s:vimdir') && isdirectory(s:vimdir..'doc')
             endif
         endfor
     endif
+endfunction
+if exists('s:vimdir') && isdirectory(s:vimdir..'doc')
+    call timer_start(1000*3, expand('<SID>')..'exec_helptag')
 endif
 
 " directory 設定系
@@ -161,6 +164,7 @@ if exists('s:vimdir')
         call mkdir(s:test_vim_dir)
     endif
     if isdirectory(s:test_vim_dir..'/doc')
+        echomsg "exec helptags in test"
         execute "helptags "..s:test_vim_dir..'/doc'
     endif
     execute 'set runtimepath^='..substitute(s:test_vim_dir, ' ', '\\ ', 'g')
