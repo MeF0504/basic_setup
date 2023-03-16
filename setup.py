@@ -420,6 +420,8 @@ def main_conf(args):
         pyopt += ' --force'
     if args.vim_prefix is not None:
         pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
+    if args.show_all:
+        pyopt += ' --show_all'
     if args.show_target_files:
         pyopt += ' --show_target_files'
     if args.show_no_update_files:
