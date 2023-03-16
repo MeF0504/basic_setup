@@ -2,6 +2,40 @@
 # default https://github.com/jonas/tig/blob/master/tigrc
 # reference? https://qiita.com/sfus/items/063797a1dd8fdc7d032f
 
+# g/Gで先頭と最後に移動
+bind generic g  move-first-line
+bind generic G move-last-line
+bind main    G move-last-line
+# gを潰したのでgrepをrebind
+bind generic ?  view-grep
+# Gを潰したのでctrl-g
+bind main   <C-G> :toggle commit-title-graph
+
+# 水平分割のみ
+set vertical-split = no
+
+# utf-8 文字で画面描画する (~でトグル)
+set line-graphics = utf-8
+
+# タブサイズ
+set tab-size = 4
+
+# 検索時に大文字小文字を無視する (default: false)
+set ignore-case = true
+
+# マウスを有効にする
+set mouse = true
+
+# Pager系の行数表示をON、intervalを1に (default: line-number:no,interval=5)
+set pager-view  = line-number:yes,interval=1 text
+set stage-view  = line-number:yes,interval=1 text
+set log-view    = line-number:yes,interval=1 text
+set blob-view   = line-number:yes,interval=1 text
+set diff-view   = line-number:yes,interval=1 text:yes,commit-title-overflow=no
+
+# diff-highlight を使う
+set diff-highlight = true
+
 # ↓ https://qiita.com/lighttiger2505/items/383e28f093b03188fc6b
 bind main D !sh -c "git difftool %(commit)~ %(commit)"
 
