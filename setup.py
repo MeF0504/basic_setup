@@ -365,6 +365,7 @@ def main_conf(args):
                   'matplotlibrc': Path(args.conf_home)/'matplotlib/matplotlibrc',
                   'gitignore_global': '~/.gitignore_global',
                   'screenrc': '~/.screenrc',
+                  'tigrc':  '~/.tigrc',
                   'fish/config.fish': Path(args.conf_home)/'fish/config.fish',
                   'fish/functions': Path(args.conf_home)/'fish/functions',
                 }
