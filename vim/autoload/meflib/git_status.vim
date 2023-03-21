@@ -12,7 +12,7 @@ function! meflib#git_status#main() abort
     if !has('nvim')
         let cmd = join(cmd)
     endif
-    let branch = substitute(system(cmd)[2:], '\n', '', 'g')
+    let branch = systemlist(cmd)[0][2:]
 
     " latest update date
     if has('nvim')
