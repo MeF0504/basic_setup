@@ -1,5 +1,19 @@
 scriptencoding utf-8
 
+function! s:is_remote_branch(bra) abort
+    let remote_bra = printf('origin/%s', a:bra)
+    let cmd = ['git', 'branch', '--remotes']
+    if !has('nvim')
+        let cmd = join(cmd)
+    endif
+    let remote_bras = systemlist(cmd)
+    if match(remote_bras, remote_bra) == -1
+        return v:false
+    else
+        return v:true
+    endif
+endfunction
+
 " gitのbranchと最終更新日時を表示
 let s:git_pid = -1
 let s:git_bid = -1
@@ -25,18 +39,26 @@ function! meflib#git_status#main() abort
     let date = system(cmd)
 
     " number of unmerged commits
-    let cmd = ['git', 'log', '--oneline', printf('HEAD..origin/%s', branch)]
-    if !has('nvim')
-        let cmd = join(cmd)
+    if s:is_remote_branch(branch)
+        let cmd = ['git', 'log', '--oneline', printf('HEAD..origin/%s', branch)]
+        if !has('nvim')
+            let cmd = join(cmd)
+        endif
+        let pre_merge = len(systemlist(cmd))
+    else
+        let pre_merge = 0
     endif
-    let pre_merge = len(systemlist(cmd))
 
     " number of unpushed commits
-    let cmd = ['git', 'rev-list', printf('origin/%s..%s', branch, branch)]
-    if !has('nvim')
-        let cmd = join(cmd)
+    if s:is_remote_branch(branch)
+        let cmd = ['git', 'rev-list', printf('origin/%s..%s', branch, branch)]
+        if !has('nvim')
+            let cmd = join(cmd)
+        endif
+        let pre_push = len(systemlist(cmd))
+    else
+        let pre_push = 0
     endif
-    let pre_push = len(systemlist(cmd))
 
     let print_str = printf("%s(m%d|p%d) %s", branch, pre_merge, pre_push, date)
     " echo print_str
