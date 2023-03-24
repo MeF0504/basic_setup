@@ -239,10 +239,10 @@ RPROMPT=''
 
 function _set_per()
 {
-    export _PERCENTAGE_TODAY="$(today_percentage)%%"
+    export _PERCENTAGE_TODAY="$(today_percentage 2> /dev/null)%%"
 }
 add-zsh-hook periodic _set_per
-_PERCENTAGE_TODAY="$(today_percentage)%%"
+_PERCENTAGE_TODAY="$(today_percentage 2> /dev/null)%%"
 
 function set_rprompt()
 {

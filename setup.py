@@ -344,6 +344,7 @@ def main_conf(args):
                 'zlogin': '~/.zlogin',
                 'zsh': '~/.zsh',
                 'posixShellRC': '~/.posixShellRC',
+                'psfuncs': '~/.psfuncs',
                 'bashrc': '~/.bashrc',
                 'bash': '~/.bash',
                 'matplotlibrc': '~/.matplotlib/matplotlibrc',
@@ -360,6 +361,7 @@ def main_conf(args):
                   'zlogin': '~/.zlogin',
                   'zsh': '~/.zsh',
                   'posixShellRC': '~/.posixShellRC',
+                  'psfuncs': '~/.psfuncs',
                   'bashrc': '~/.bashrc',
                   'bash': '~/.bash',
                   'matplotlibrc': Path(args.conf_home)/'matplotlib/matplotlibrc',
@@ -374,6 +376,7 @@ def main_conf(args):
 
     files_min = {
                   'posixShellRC': '~/.posixShellRC',
+                  'psfuncs': '~/.psfuncs',
                   'bashrc': '~/.bashrc',
                   'bash': '~/.bash',
                   'gitignore_global': '~/.gitignore_global',
