@@ -1357,7 +1357,21 @@ endfunction
 " lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
 " <c-p>でhelp hover, definition, type definition を選択
 function! s:lsp_mapping(map) abort " {{{
+    if !s:chk_lsp_running(1, 1)
+        " not running
+        if a:map == 1
+            " <c-]>
+            return "\<Cmd>tjump "..expand('<cword>').."\<CR>"
+        elseif a:map == 2
+            " <c-j>
+            return "\<Cmd>tab tjump "..expand('<cword>').."\<CR>"
+        elseif a:map == 3
+            " <c-p>
+            return "\<Cmd>ptjump "..expand("<cword>").."\<CR>"
+        endif
+    endif
     if a:map == 1
+        " <c-]>
         echo 'open in; [t]ab/[s]plit/[v]ertical/cur_win<CR> '
         let yn = getcharstr()
         if yn == 't'
@@ -1373,8 +1387,10 @@ function! s:lsp_mapping(map) abort " {{{
             return ''
         endif
     elseif a:map == 2
+        " <c-j>
         return "\<Plug>(lsp-references)"
     elseif a:map == 3
+        " <c-p>
         let res = ""
         let old_cmdheight = &cmdheight
         let &cmdheight = 5
@@ -1417,19 +1433,15 @@ function! s:lsp_unmap(map) abort " {{{
         execute "nunmap <buffer>"..a:map
     endif
 endfunction " }}}
-let s:lsp_map = {}
 function! s:vim_lsp_hook() abort
     if !exists('g:lsp_loaded')
         return
     endif
     call lsp#enable()
     " mapping {{{
-    let s:lsp_map[1] = empty(maparg('<c-]>', 'n')) ? '<c-]>' : maparg('<c-]>', 'n')
-    let s:lsp_map[2] = empty(maparg('<c-j>', 'n')) ? '<c-j>' : maparg('<c-j>', 'n')
-    let s:lsp_map[3] = empty(maparg('<c-p>', 'n')) ? '<c-p>' : maparg('<c-p>', 'n')
-    execute "nmap <silent> <expr> <c-]> <SID>chk_lsp_running(1, 1) ? <SID>lsp_mapping(1) : '"..s:lsp_map[1]."'"
-    execute "nmap <silent> <expr> <c-j> <SID>chk_lsp_running(1, 1) ? <SID>lsp_mapping(2) : '"..s:lsp_map[2]."'"
-    execute "nmap <silent> <expr> <c-p> <SID>chk_lsp_running(1, 1) ? <SID>lsp_mapping(3) : '"..s:lsp_map[3]."'"
+    nmap <expr> <c-]> <SID>lsp_mapping(1)
+    nmap <silent> <expr> <c-j> <SID>lsp_mapping(2)
+    nmap <silent> <expr> <c-p> <SID>lsp_mapping(3)
     " help file でバグる？
     autocmd PlugLocal FileType help nnoremap <buffer> <c-]> <c-]>
     " }}}
