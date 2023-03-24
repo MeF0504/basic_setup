@@ -28,6 +28,9 @@ function! meflib#tools#exec_ctags(...) abort
 
     if a:0 == 0
         let cwd = meflib#basic#get_top_dir(expand('%:h'))
+        if empty(cwd)
+            let cwd = getcwd()
+        endif
     else
         let cwd = a:1
     endif
