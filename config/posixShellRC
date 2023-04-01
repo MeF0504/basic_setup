@@ -167,10 +167,19 @@ timeout_local() # {{{
     /usr/bin/expect -c "set timeout $time; spawn -noecho $command; expect timeout { exit 124 } eof; catch wait result; exit [lindex \$result 3];"
 } # }}}
 if [[ -d "$HOME/.psfuncs" ]]; then
-    for dir in $HOME/.psfuncs/*; do
+    OLD_IFS=$IFS
+    if [[ "$0" = "bash" ]]; then
+        IFS=$'\n'
+    else
+        IFS='
+'
+    fi
+    for dir in $(find "$HOME/.psfuncs" -type f); do
         _chk_and_source $dir
     done
+    IFS=$OLD_IFS
     unset dir
+    unset OLD_IFS
 fi
 #}}}
 
