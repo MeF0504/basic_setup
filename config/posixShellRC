@@ -174,7 +174,7 @@ if [[ -d "$HOME/.psfuncs" ]]; then
         IFS='
 '
     fi
-    for dir in $(find "$HOME/.psfuncs" -type f); do
+    for dir in $(find "$HOME/.psfuncs" \( -type f -or -type l \)); do
         _chk_and_source $dir
     done
     IFS=$OLD_IFS
