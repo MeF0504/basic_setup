@@ -8,13 +8,18 @@ from pathlib import Path
 import datetime
 from stat import filemode
 from fnmatch import fnmatchcase
+from functools import partial
 
-from pymeflib.tree import show_tree
+from pymeflib.tree2 import show_tree
 
 debug = False
+expatrns = None
 
 
 def get_pattern_from_file(exfiles):
+    global expatrns
+    if expatrns is not None:
+        return expatrns
     res = []
     if exfiles is None:
         return res
@@ -28,72 +33,45 @@ def get_pattern_from_file(exfiles):
         with open(exfile, 'r') as f:
             for line in f:
                 line = line.replace('\n', '')
-                if re.match('\s*#', line):
+                line = line.replace(' ', '')
+                if line.startswith('#'):
                     continue
                 res.append(line)
+    expatrns = res
     return res
 
 
-def get_file_list(args):
-    # get list of directories and files by using pathlib
-    file_list = [{}]
-    # top_path = Path(args.root).resolve()
-    top_path = Path(args.root)
+def get_contents(args, root, path):
+    if args.maxdepth != 0 and len(Path(path).parts) >= args.maxdepth:
+        return [], []
+    fullpath = Path(root)/path
+    dirs = []
+    files = []
     expatrns = get_pattern_from_file(args.exfiles)
-    root = str(top_path)
-    if args.maxdepth == 0:
-        glob_path = ['**/*']
-    else:
-        glob_path = []
-        for i in range(args.maxdepth):
-            glob_path.append('*/'*i)
-            glob_path[i] += '*'
-
-    tmp_list = file_list
-    for gp in glob_path:
-        if debug:
-            print('<--{}-->'.format(gp))
-        for cpath in top_path.glob(gp):
-            if (args.exclude is not None) and\
-               re.search(args.exclude, str(cpath)):
+    for f in fullpath.glob('*'):
+        if f.name.startswith('.') and not args.all:
+            continue
+        if args.exclude is not None:
+            if re.search(args.exclude, str(f)):
                 continue
-            skip = False
-            for expt in expatrns:
-                if fnmatchcase(str(cpath), expt):
-                    skip = True
+        skip = False
+        for expt in expatrns:
+            if expt.startswith('!'):
+                expt = expt[1:]
+                if fnmatchcase(str(f), expt):
+                    skip = False
                     break
-            if skip:
-                continue
-
-            if not args.all:
-                if cpath.name.startswith('.'):
-                    continue
-                cpath_ignore = False
-                for d in cpath.parents:
-                    if d == top_path:
-                        break
-                    if str(d.name).startswith('.'):
-                        cpath_ignore = True
-                        break
-                if cpath_ignore:
-                    continue
-
-            if debug:
-                print('cpath: {},\n  parent: {}'.format(cpath, cpath.relative_to(top_path).parent))
-            tmp_list = file_list
-            for par in cpath.relative_to(top_path).parts[:-1]:
-                if debug:
-                    print('par: {}'.format(par))
-                if str(par) == '.':
-                    continue
-                tmp_list = tmp_list[0][str(par)]
-            if debug:
-                print('file_list:{},\n tmp_list:{}'.format(file_list, tmp_list))
-            if cpath.is_dir():
-                tmp_list[0][str(cpath.name)] = [{}]
             else:
-                tmp_list.append(str(cpath.name))
-    return root, file_list
+                if fnmatchcase(str(f), expt):
+                    skip = True
+        if skip:
+            continue
+
+        if f.is_file():
+            files.append(f.name)
+        elif f.is_dir():
+            dirs.append(f.name)
+    return dirs, files
 
 
 def get_file_info(fpath):
@@ -141,12 +119,11 @@ def get_file_info(fpath):
 
 
 def main(args):
-    root, file_list = get_file_list(args)
     if args.verbose:
         add_info = get_file_info
     else:
         add_info = None
-    show_tree(file_list, root, add_info)
+    show_tree(args.root, partial(get_contents, args, args.root), add_info)
 
 
 if __name__ == '__main__':
@@ -157,6 +134,5 @@ if __name__ == '__main__':
     parser.add_argument('-maxdepth', help='specify the level of directory. If set 0, show all directories.', type=int, default=0)
     parser.add_argument('-exclude', help='specify excluding patterns using regular expression.', type=str)
     parser.add_argument('-exfiles', help='specify excluding patterns from pattern files written in shell-style wildcards, like gitignore.', type=str, nargs='*')
-    # parser.add_argument('--walk', help='use os.walk', action='store_true')
     args = parser.parse_args()
     main(args)
