@@ -193,3 +193,32 @@ function! meflib#tools#addsub(ax, decrease) abort range
 endfunction
 " }}}
 
+" <c-a> でtrue/falseも置換したい {{{
+function! meflib#tools#true_false(premap) abort
+    let cword = expand('<cword>')
+    let pos = getpos('.')
+    if cword ==# 'true'
+        let new_word = 'false'
+    elseif cword ==# 'false'
+        let new_word = 'true'
+    elseif cword ==# 'True'
+        let new_word = 'False'
+    elseif cword ==# 'False'
+        let new_word = 'True'
+    elseif cword ==# 'TRUE'
+        let new_word = 'FALSE'
+    elseif cword ==# 'FALSE'
+        let new_word = 'TRUE'
+    else
+        if a:premap ==# 'a'
+            execute "normal! \<c-a>"
+        elseif a:premap ==# "x"
+            execute "normal! \<c-x>"
+        endif
+        return
+    endif
+    execute printf("substitute/%s/%s", cword, new_word)
+    call setpos('.', pos)
+endfunction
+" }}}
+

@@ -107,4 +107,8 @@ command! -nargs=* -complete=customlist,meflib#cmdout#cmp CmdOut call meflib#cmdo
 nnoremap J <Cmd>call meflib#join_wrapper#main()<CR>
 vnoremap J <Cmd>call meflib#join_wrapper#main()<CR>
 " }}}
+" <c-a> でtrue/falseも置換したい {{{
+nnoremap <c-a> <Cmd>call meflib#tools#true_false('a')<CR>
+nnoremap <c-x> <Cmd>call meflib#tools#true_false('x')<CR>
+" }}}
 
