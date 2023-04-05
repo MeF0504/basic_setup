@@ -1571,8 +1571,13 @@ function! s:ddc_hook() abort
             \},
         \}
     \ })
+    if meflib#get('tabnine_on', 1)
+        let ft_sources = ['file', 'vim-lsp', 'around', 'tabnine']
+    else
+        let ft_sources = ['file', 'vim-lsp', 'around']
+    endif
     call ddc#custom#patch_filetype(['python', 'c', 'cpp'], {
-        \ 'sources': ['file', 'vim-lsp', 'around', 'tabnine'],
+        \ 'sources': ft_sources,
     \ })
 
     " Mappings
