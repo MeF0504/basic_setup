@@ -1,4 +1,5 @@
 
+# {{{ grep
 function _grep_comp()
 {
     _arguments \
@@ -19,9 +20,24 @@ function _grep_comp()
         '3:targets:_files'
 }
 compdef _grep_comp grep
+# }}}
 
+# {{{ pytree
+function _pytree_comp()
+{
+    _arguments \
+        '(- *)'{-h,--help}'[show help]' \
+        -a'[do not ignore entries starting with .]' \
+        '(-v --verbose)'{-v,--verbose}'[show the verbose.]' \
+        -maxdepth'[specify the level of directory. If set 0, show all directories.]' \
+        -exclude'[specify excluding patterns using regular expression.]' \
+        -exfiles'[specify excluding patterns from pattern files written in shell]:exfiles:_files' \
+        '*:target dir:_dirs'
+}
+compdef _pytree_comp pytree
+# }}}
 
-# pip zsh completion start
+# pip zsh completion start {{{
 # https://pip.pypa.io/en/stable/user_guide/#command-completion
 function _pip_completion
 {
@@ -33,5 +49,5 @@ function _pip_completion
              PIP_AUTO_COMPLETE=1 $words[1] 2>/dev/null ))
 }
 compctl -K _pip_completion pip3
-# pip zsh completion end
+# pip zsh completion end }}}
 
