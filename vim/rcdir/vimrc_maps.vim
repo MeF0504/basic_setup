@@ -139,9 +139,8 @@ if has('terminal') || has('nvim')
     " terminal-job modeからterminal-normal modeへの移行をescape*2で行えるようにする
     " (1回だと矢印を検知してしまうため2回にする)
     tnoremap <ESC><ESC> <c-\><c-n>
-    " (なんかescape 2回だとE21 cannot changeが出るので，ちょっと変えてみる...)
-    " -> 直った？
-    " tnoremap <ESC><C-e> <c-\><c-n>
+    " 新規タブ <Cmd> だと楽なのでこうする..
+    tnoremap <c-t> <Cmd>tabnew<CR>
 endif
 
 " vim only
