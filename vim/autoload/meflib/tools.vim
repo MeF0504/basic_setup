@@ -210,10 +210,11 @@ function! meflib#tools#true_false(premap) abort
     elseif cword ==# 'FALSE'
         let new_word = 'TRUE'
     else
+        let cnt = v:count1
         if a:premap ==# 'a'
-            execute printf("normal! %d\<c-a>", v:count)
+            execute printf("normal! %d\<c-a>", cnt)
         elseif a:premap ==# "x"
-            execute printf("normal! %d\<c-x>", v:count)
+            execute printf("normal! %d\<c-x>", cnt)
         endif
         return
     endif
