@@ -10,6 +10,16 @@ call meflib#set('my_color_set', 'shiki', expand('<SID>').'my_color_set_shiki')
 " }}}
 
 Plug 'altercation/vim-colors-solarized'
+" solarized {{{
+let g:solarized_termcolors=256
+let g:solarized_termtrans=1
+let g:solarized_visibility="high"
+let g:solarized_contrast="high"
+function! <SID>my_color_set_solarized() abort
+    set notermguicolors
+endfunction
+call meflib#set('my_color_set', 'solarized', expand('<SID>').'my_color_set_solarized')
+" }}}
 
 Plug 'NLKNguyen/papercolor-theme'
 " PaperColor {{{
