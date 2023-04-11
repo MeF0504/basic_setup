@@ -44,7 +44,7 @@ function! <SID>my_color_set_PaperColor()
         highlight IndentGuidesEven ctermfg=54 ctermbg=54 guifg=#3f0057 guibg=#3f0057
         highlight HiTagImports ctermfg=89 guifg=#ae5858
         highlight Function ctermfg=41 guifg=#50e899
-        highlight pythonEscape ctermfg=135 ctermbg=None guifg=#c080d0 guibg=None
+        highlight pythonEscape ctermfg=135 ctermbg=None guifg=#c080d0 guibg=NONE
     else
         highlight IndentGuidesOdd ctermfg=159 ctermbg=159 guifg=#e0f8ff guibg=#e0f8ff
         highlight IndentGuidesEven ctermfg=225 ctermbg=225 guifg=#ffe0fd guibg=#ffe0fd
