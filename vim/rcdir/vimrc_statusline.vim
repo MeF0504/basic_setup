@@ -109,6 +109,7 @@ function! <SID>get_mode()
 endfunction
 " }}}
 
+" file name を適当な長さに調整 {{{
 function! s:get_rel_filename(status) abort
     let width = winwidth(0)-7-(2+2+len(line('.')..line('$')..col('.')))-5
     " mode, line&col, line percentage
@@ -118,6 +119,18 @@ function! s:get_rel_filename(status) abort
     endif
     return "%."..width.."(%f "..a:status.."%)"
 endfunction
+" }}}
+
+" quick fix title を切り詰めて表示 {{{
+function! s:qf_title() abort
+    let title = get(w:, 'quickfix_title', '')
+    if len(title) >= winwidth(0) -17 -5
+        " %t, %l/%L
+        let title = title[-(winwidth(0)-22):]
+    endif
+    return title
+endfunction
+" }}}
 
 " 修正フラグ 読込専用 ヘルプ preview_window
 let s:st_status = "%#StatusLine_ST#%M%R%H%W%#StatusLine#"
@@ -161,7 +174,7 @@ let s:st_off = "%#StatusLine_OFF#<%t>%#StatusLineNC# %m%{&readonly?'[RO]':''}%h%
 " other(num): statusline for short window. num=max width for this statusline
 call meflib#set('statusline', {
             \ '_':   s:st_mode.s:st_filename1.s:st_right.s:st_ft.s:st_ff1.s:st_turn.s:st_ln1,
-            \ 'qf': '%t%{exists("w:quickfix_title") ? " ".w:quickfix_title : ""}'..s:st_turn..s:st_right..s:st_ln2,
+            \ 'qf': '%t%{'..s:sid..'qf_title()}'..s:st_right..s:st_ln2,
             \ 'off': s:st_off,
             \ '60':  s:st_mode.s:st_filename2.s:st_right.s:st_ft.s:st_ff2.s:st_turn.s:st_ln2,
             \ })
