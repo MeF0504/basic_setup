@@ -59,9 +59,7 @@ add_env()
         in_dir=${in_dir%/}
     fi
 
-    find "$in_dir" -mindepth 1 -maxdepth 1 \( -type d -o -type l \) \
-        | while read -r basedir
-    do
+    for basedir in $(find "$in_dir" -mindepth 1 -maxdepth 1 \( -type d -o -type l \)); do
         if [[ $verbose = 1 ]]; then echo "  @ $basedir"; fi
         local bname=
         bname="$(basename "$basedir")"
