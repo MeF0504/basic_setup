@@ -93,7 +93,7 @@ cal_time()
         hour=$((${time}/3600))
         min=$(((${time}%3600)/60))
         sec=$((${time}%60))
-        echo " ${min}m ${sec}s"
+        echo " ${hour}h ${min}m ${sec}s"
     fi
 }
 
