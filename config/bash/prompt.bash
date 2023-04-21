@@ -31,33 +31,38 @@ if [[ -f "$GITPROMPT" ]]; then
     _PS_GIT='$(__git_ps1 " (%s)")'
 fi
 
-# change red if the previous command was failed.
-# https://qiita.com/rtakasuke/items/4b50e156ab82b0824676
-_PS_END=" $ "
+# root -> # else -> $
+_PS_END=" \$ "
 
-case $(date "+%w") in
-0)
-    _PS_SHCOL="\e[100m"
-    ;;
-1)
-    _PS_SHCOL="\e[45m"
-    ;;
-2)
-    _PS_SHCOL="\e[101m"
-    ;;
-3)
-    _PS_SHCOL="\e[44m"
-    ;;
-4)
-    _PS_SHCOL="\e[42m"
-    ;;
-5)
-    _PS_SHCOL="\e[43m"
-    ;;
-6)
-    _PS_SHCOL="\e[40m"
-    ;;
-esac
+set_weekly_color()
+{
+    # weekly color
+    case $(date "+%w") in
+    0)
+        _PS_SHCOL="\e[100m"
+        ;;
+    1)
+        _PS_SHCOL="\e[45m"
+        ;;
+    2)
+        _PS_SHCOL="\e[101m"
+        ;;
+    3)
+        _PS_SHCOL="\e[44m"
+        ;;
+    4)
+        _PS_SHCOL="\e[42m"
+        ;;
+    5)
+        _PS_SHCOL="\e[43m"
+        ;;
+    6)
+        _PS_SHCOL="\e[40m"
+        ;;
+    esac
+}
+set_weekly_color
+# change the SHELL_INFO color to black if previous command is failed.
 _PS_SHINFO="\`
 if [ \$? = 0 ]; then
     echo '\[\e[97m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
@@ -67,5 +72,39 @@ fi
 \`"
 # "
 
-export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}\n${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_GIT}${_PS_END}"
+cal_time()
+{
+    if [[ -z "${__PRI_TIME}" ]]; then
+        return
+    fi
+    if [[ -z "${__POST_TIME}" ]]; then
+        return
+    fi
+    time=$((${__POST_TIME}-${__PRI_TIME}))
+    if [[ ${time} -lt 10 ]]; then
+        echo ""
+    elif [[ ${time} -lt 60 ]]; then
+        echo " ${time}s"
+    elif [[ ${time} -lt 3600 ]]; then
+        min=$((${time}/60))
+        sec=$((${time}%60))
+        echo " ${min}m ${sec}s"
+    else
+        hour=$((${time}/3600))
+        min=$(((${time}%3600)/60))
+        sec=$((${time}%60))
+        echo " ${min}m ${sec}s"
+    fi
+}
 
+__PRI_TIME=$(date "+%s")
+set_prompt()
+{
+    set_weekly_color
+    __POST_TIME=$(date "+%s")
+    export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}$(cal_time)\n${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_GIT}${_PS_END}"
+    __PRI_TIME=${__POST_TIME}
+}
+set_prompt
+
+export PROMPT_COMMAND="set_prompt"

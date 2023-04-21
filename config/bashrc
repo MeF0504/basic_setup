@@ -56,9 +56,6 @@ autocd()
 {
     # ||: fail safe
     builtin cd "$@" || return
-
-    # update prompt
-    [[ -f "$HOME/.bash/prompt.bash" ]] && source "$HOME/.bash/prompt.bash"
     # auto fetch
     if [ -d "${PWD}/.git" ]; then
         read -p "execute fetch? ([y]/n) " -r yn
