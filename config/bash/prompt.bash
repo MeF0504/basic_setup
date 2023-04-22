@@ -37,6 +37,7 @@ _PS_END=" \$ "
 set_weekly_color()
 {
     # weekly color
+    # case $(($(date "+%S")%7)) in # test
     case $(date "+%w") in
     0)
         _PS_SHCOL="\e[100m"
@@ -60,17 +61,17 @@ set_weekly_color()
         _PS_SHCOL="\e[40m"
         ;;
     esac
+    # change the SHELL_INFO color to black if previous command is failed.
+    _PS_SHINFO="\`
+    if [ \$? = 0 ]; then
+        echo '\[\e[97m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
+    else
+        echo '\[\e[90m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
+    fi
+    \`"
+    # "
 }
 set_weekly_color
-# change the SHELL_INFO color to black if previous command is failed.
-_PS_SHINFO="\`
-if [ \$? = 0 ]; then
-    echo '\[\e[97m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
-else
-    echo '\[\e[90m\]\[${_PS_SHCOL}\][${SHELL_INFO}]\[\e[0m\] ';
-fi
-\`"
-# "
 
 cal_time()
 {
