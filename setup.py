@@ -300,22 +300,21 @@ def main_opt(args):
     if files is None:
         files = {}
 
-        if args.type != 'min':
-            for bfy in bin_src.glob('*'):
-                if os.access(bfy, os.X_OK):
-                    fname = bfy.name
-                    if (fname == 'pdf2jpg'):
-                        if (uname == 'Darwin'):
-                            files[bfy] = bin_dst/fname
-                    else:
+        for bfy in bin_src.glob('*'):
+            if os.access(bfy, os.X_OK):
+                fname = bfy.name
+                if (fname == 'pdf2jpg'):
+                    if (uname == 'Darwin'):
                         files[bfy] = bin_dst/fname
+                else:
+                    files[bfy] = bin_dst/fname
 
-            for lfy in lib_src.glob('*'):
-                fname = lfy.name
-                if fname == '__pycache__':
-                    continue
-                if not fname.endswith('pyc'):
-                    files[lfy] = lib_dst/fname
+        for lfy in lib_src.glob('*'):
+            fname = lfy.name
+            if fname == '__pycache__':
+                continue
+            if not fname.endswith('pyc'):
+                files[lfy] = lib_dst/fname
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    show_target=args.show_target_files,
@@ -374,19 +373,9 @@ def main_conf(args):
 
     files_win = {}
 
-    files_min = {
-                  'posixShellRC': '~/.posixShellRC',
-                  'psfuncs': '~/.psfuncs',
-                  'bashrc': '~/.bashrc',
-                  'bash': '~/.bash',
-                  'gitignore_global': '~/.gitignore_global',
-                }
-
     files = get_files(args.setup_file, 'config', args.prefix)
     if files is None:
-        if args.type == 'min':
-            files = files_min
-        elif uname == 'Darwin':
+        if uname == 'Darwin':
             files = files_mac
         elif uname == 'Linux':
             files = files_linux
@@ -415,7 +404,7 @@ def main_conf(args):
     cc.exec()
 
     pyopt = '--prefix "{}"'.format(args.prefix)
-    pyopt += ' --type ' + args.type
+    pyopt += ' --type ' + ' '.join(args.type)
     if args.setup_file is not None:
         pyopt += ' --setup_file "{}"'.format(args.setup_file)
     if args.link:
@@ -504,21 +493,13 @@ def main_vim(args):
 
     files = get_files(args.setup_file, 'vim', args.prefix)
     if files is None:
-        if args.type == 'min':
-            files = {'vimrc': vimrc,
-                     'rcdir/vimrc_options.vim': rc_dst/'vimrc_options.vim',
-                     'rcdir/vimrc_maps.vim': rc_dst/'vimrc_maps.vim',
-                     'autoload/meflib.vim': al_dst/'meflib.vim',
-                     'autoload/meflib/basic.vim': al_dst/'meflib'/'basic.vim',
-                     }
-        else:
-            files = {'vimrc': vimrc}
-            files[str(vim_src/'rcdir')] = rc_dst
-            files[str(vim_src/'ftplugin')] = ft_dst
-            files[str(vim_src/'plug_conf')] = plg_dst
-            files[str(vim_src/'autoload')] = al_dst
-            files[str(vim_src/'doc')] = doc_dst
-            files[str(vim_src/'after')] = aft_dst
+        files = {'vimrc': vimrc}
+        files[str(vim_src/'rcdir')] = rc_dst
+        files[str(vim_src/'ftplugin')] = ft_dst
+        files[str(vim_src/'plug_conf')] = plg_dst
+        files[str(vim_src/'autoload')] = al_dst
+        files[str(vim_src/'doc')] = doc_dst
+        files[str(vim_src/'after')] = aft_dst
 
     if args.download:
         print('\ndownload vimPlug')
@@ -565,9 +546,9 @@ def main():
     parser.add_argument('-f', '--force',
                         help="Do not prompt for confirmation before overwriting the destination path",
                         action='store_true')
-    parser.add_argument('-t', '--type',
-                        help="set the type of copy files. If min is specified, only copy *shrc, posixShellRC, and vimrc_basic.vim.",
-                        choices='all opt config vim min'.split(), default='all')
+    parser.add_argument('-t', '--type', nargs='*',
+                        help="set the type of copy files.",
+                        choices='all opt config vim'.split(), default=['all'])
     parser.add_argument('-s', '--setup_file',
                         help='specify the copy files by json format setting file. please see "opt/test/setup_file_template.json" as an example.')
     parser.add_argument('--show_target_files', action='store_true',
@@ -592,12 +573,18 @@ def main():
         conf_home = Path('~/.config').expanduser()
     args.conf_home = conf_home
 
-    if args.type in 'all opt min'.split():
+    if 'all' in args.type:
         main_opt(args)
-    if args.type in 'all config min'.split():
         main_conf(args)
-    if args.type in 'all vim min'.split():
         main_vim(args)
+    else:
+        for t in args.type:
+            if t == 'opt':
+                main_opt(args)
+            elif t == 'config':
+                main_conf(args)
+            elif t == 'vim':
+                main_vim(args)
 
 
 if __name__ == "__main__":
