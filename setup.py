@@ -443,10 +443,10 @@ def main_conf(args):
                 f.write(update_setup)
             update_setup_file.chmod(0o744)
             print('done')
-        if uname == 'Windows':
-            # for .qrun_conf.vim
-            mkdir('tmp')
-            shutil.copy(update_setup_file, Path('tmp')/'update_setup')
+            if uname == 'Windows':
+                # for .qrun_conf.vim
+                mkdir('tmp')
+                shutil.copy(update_setup_file, Path('tmp')/'update_setup')
     else:
         print('{} is not found. update_setup is not created'.format(bin_dst))
 
