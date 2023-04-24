@@ -9,9 +9,9 @@ self-made commands and libraries, and vim setting files.
 
 ## Download
 ```vim
-git clone https://github.com/MeF0504/basic_setup.git
+git clone --recursive https://github.com/MeF0504/basic_setup.git
 # or
-git clone git@github.com:MeF0504/basic_setup.git
+git clone --recursive git@github.com:MeF0504/basic_setup.git
 ```
 
 ## Install
