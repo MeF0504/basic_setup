@@ -23,6 +23,14 @@ let s:pre_merge = 0
 let s:pre_push = 0
 
 function! meflib#git_status#update_info() abort
+    if empty(finddir('.git', ';'))
+        let s:branch = ""
+        let s:date = ""
+        let s:pre_merge = 0
+        let s:pre_push = 0
+        return
+    endif
+
     " branch
     let cmd = ['git', 'branch', '--contains']
     if !has('nvim')
