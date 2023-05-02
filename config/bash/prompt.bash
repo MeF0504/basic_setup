@@ -90,11 +90,17 @@ cal_time()
         min=$((${time}/60))
         sec=$((${time}%60))
         echo " ${min}m ${sec}s"
-    else
+    elif [[ ${time} -lt 86400 ]]; then
         hour=$((${time}/3600))
         min=$(((${time}%3600)/60))
         sec=$((${time}%60))
         echo " ${hour}h ${min}m ${sec}s"
+    else
+        day=$((${time}/86400))
+        hour=$(((${time}%86400)/3600))
+        min=$(((${time}%3600)/60))
+        sec=$((${time}%60))
+        echo " ${day}d ${hour}h ${min}m ${sec}s"
     fi
 }
 
