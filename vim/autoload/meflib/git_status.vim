@@ -47,6 +47,9 @@ function! meflib#git_status#update_info() abort
                 \ '--pretty=format:"%ad"', '-1'])
     endif
     let s:date = system(cmd)
+    if s:date[0:3] == strftime("%Y")
+        let s:date = s:date[5:]
+    endif
 
     " number of unmerged commits
     if s:is_remote_branch(s:branch)
