@@ -10,10 +10,11 @@ echo 'aaa\nbbb' >> tmp_dir/bin/version.py
 ln -s $curdir/opt/bin/hoge tmp_dir/bin/pytree
 cp opt/bin/optlink tmp_dir/bin/optlink
 
-args="-t opt --prefix $curdir/tmp_dir"
+args="--prefix $curdir/tmp_dir"
+args="$args -t opt"
 # args="$args --link"
 # args="$args --force"
-# args="$args --test"
+args="$args --test"
 # args="$args -s opt/test/setup_file_template.json"
 args="$args --show_all"
 # args="$args --show_no_update_files"

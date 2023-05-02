@@ -277,6 +277,9 @@ def get_files(fpath, args_type, prefix):
         for src in set_dict[args_type]:
             dest = set_dict[args_type][src]
             if '$PREFIX' in dest:
+                if prefix is None:
+                    print('prefix is None: skip {}'.format(src))
+                    continue
                 dest = dest.replace('$PREFIX', prefix)
             res_files[src] = dest
         return res_files
@@ -287,6 +290,9 @@ def get_files(fpath, args_type, prefix):
 
 
 def main_opt(args):
+    if args.prefix is None:
+        return
+
     bin_dst = Path(args.prefix)/'bin'
     lib_dst = Path(args.prefix)/'lib'
     opt_src = Path(args.fpath)/'opt'
@@ -331,8 +337,12 @@ def main_opt(args):
 
 
 def main_conf(args):
-    bin_dst = Path(args.prefix)/'bin'
-    lib_dst = Path(args.prefix)/'lib'
+    if args.prefix is None:
+        bin_dst = None
+        lib_dst = None
+    else:
+        bin_dst = Path(args.prefix)/'bin'
+        lib_dst = Path(args.prefix)/'lib'
     set_src = Path(args.fpath)/'config'
     fg = FG256(10)
     end = END
@@ -403,7 +413,9 @@ def main_conf(args):
     cc.show_files()
     cc.exec()
 
-    pyopt = '--prefix "{}"'.format(args.prefix)
+    pyopt = ''
+    if args.prefix is not None:
+        pyopt += '--prefix "{}"'.format(args.prefix)
     pyopt += ' --type ' + ' '.join(args.type)
     if args.setup_file is not None:
         pyopt += ' --setup_file "{}"'.format(args.setup_file)
@@ -422,7 +434,9 @@ def main_conf(args):
     with open(Path(args.fpath)/'opt/samples/update_setup_sample.py', 'r') as f:
         update_setup = f.read().format(args.fpath, args.fpath, args.fpath,
                                        pyopt).replace('\\', '\\\\')
-    if bin_dst.is_dir():
+    if bin_dst is None:
+        pass
+    elif bin_dst.is_dir():
         if args.test:
             print('create update_setup in {}'.format(bin_dst))
         else:
@@ -447,10 +461,13 @@ def main_conf(args):
                 f.write('## PC dependent zshrc\n')
                 f.write('#\n')
                 f.write('\n')
-                f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
+                if bin_dst is not None:
+                    f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
+                    f.write('\n')
+                if lib_dst is not None:
+                    f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
+                    f.write('\n')
                 f.write('\n')
-                f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
-                f.write('\n\n')
             print('made zshrc.mine')
 
     if not args.test and 'bashrc' in files:
@@ -461,10 +478,13 @@ def main_conf(args):
                 f.write('## PC dependent bashrc\n')
                 f.write('#\n')
                 f.write('\n')
-                f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
+                if bin_dst is not None:
+                    f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
+                    f.write('\n')
+                if lib_dst is not None:
+                    f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
+                    f.write('\n')
                 f.write('\n')
-                f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
-                f.write('\n\n')
             print('made bashrc.mine')
 
 
@@ -561,7 +581,7 @@ def main():
 
     if not Path(args.prefix).is_dir():
         print("install path {} does not exit".format(args.prefix))
-        exit()
+        args.prefix = None
 
     fpath = Path(__file__).resolve().parent
     args.fpath = fpath
