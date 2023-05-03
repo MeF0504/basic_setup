@@ -71,6 +71,8 @@ def get_contents(args, root, path):
             files.append(f.name)
         elif f.is_dir():
             dirs.append(f.name)
+    dirs.sort()
+    files.sort()
     return dirs, files
 
 
