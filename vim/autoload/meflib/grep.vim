@@ -45,7 +45,13 @@ function! meflib#grep#main(...)
     if a:0 == '0'
         let l:word = expand('<cword>')
         let is_word = 1
-        let l:ft = '.' . expand('%:e')
+        if meflib#basic#special_win(win_getid())
+            let l:ft = 'None'
+        elseif &buftype == 'terminal'
+            let l:ft = 'None'
+        else
+            let l:ft = '.' . expand('%:e')
+        endif
         let l:dir = def_dir
     else
         let arg = meflib#basic#analythis_args_eq(a:1)
@@ -66,7 +72,15 @@ function! meflib#grep#main(...)
             let l:word = expand('<cword>')
             let is_word = 1
         endif
-        let l:ft =  has_key(arg,  "ex") ? arg["ex"] : expand('%:e')
+        if has_key(arg, 'ex')
+            let l:ft = arg['ex']
+        elseif meflib#basic#special_win(win_getid())
+            let l:ft = 'None'
+        elseif &buftype == 'terminal'
+            let l:ft = 'None'
+        else
+            let l:ft = '.' . expand('%:e')
+        endif
         let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : '.'
     endif
     let l:word = fnameescape(l:word)
