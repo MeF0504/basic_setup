@@ -202,22 +202,26 @@ function! <SID>my_color_set()
 endfunction
 
 function! <SID>Day_by_Day_StatusLine()
-    let month = str2nr(strftime("%m"))
-    let day = str2nr(strftime("%d"))
-    let dow = str2nr(strftime("%w"))
-    let s:stl_br = (dow==6 ? 0 : dow)       " 土日は0
-    let s:stl_bg = (month+(day-1)/10-1)%6   " 月+(日-1)の十の位で計算
-    let s:stl_bb = abs((day+5-1)%10-5)      " 0 1 2 3 4 5 4 3 2 1 0 ...
+    let s:month = str2nr(strftime("%m"))
+    let s:day = str2nr(strftime("%d"))
+    let s:dow = str2nr(strftime("%w"))
+    let s:stl_br = (s:dow==6 ? 0 : s:dow)       " 土日は0
+    let s:stl_bg = (s:month+(s:day-1)/10-1)%6   " 月+(日-1)の十の位で計算
+    let s:stl_bb = abs((s:day+5-1)%10-5)      " 0 1 2 3 4 5 4 3 2 1 0 ...
+    let st_modes = split('Mode_Ns Mode_Is Mode_Vs Mode_Rs Mode_Ts Mode_ELSEs', ' ')
 
     let birthday = meflib#get('birthday', [0,0])
-    if (month == birthday[0]) && (day == birthday[1])
+    if (s:month == birthday[0]) && (s:day == birthday[1])
         "" Birthday
-        highlight StatusLine cterm=None ctermfg=7 ctermbg=136 gui=NONE guifg=Silver guibg=Gold
-        highlight WildMenu cterm=Bold ctermfg=136 ctermbg=7 gui=NONE guifg=Gold guibg=Silver
+        highlight StatusLine cterm=Bold ctermfg=241 ctermbg=220 gui=Bold guifg=Grey39 guibg=Gold
+        highlight WildMenu cterm=Bold ctermfg=220 ctermbg=241 gui=Bold guifg=Gold guibg=Grey39
+        for st_mode in st_modes
+            execute printf('highlight %s ctermbg=220 guibg=Gold', st_mode)
+        endfor
     else
         let cbg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb, 0)
         let gbg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb, 1)
-        if s:isdark(s:stl_br, s:stl_bg, s:stl_bb) == 1
+        if s:isdark(s:stl_br, s:stl_bg, s:stl_bb)
             let cfg = 255
             let gfg = '#eeeeee'
         else    " light background
@@ -227,28 +231,32 @@ function! <SID>Day_by_Day_StatusLine()
         " echo 'color:'..s:stl_br..'='..s:stl_bg..'='..s:stl_bb..'='..cfg..'='..cbg..'='..gfg..'='..gbg
         execute printf('highlight StatusLine cterm=Bold ctermfg=%s ctermbg=%s gui=Bold guifg=%s guibg=%s', cfg, cbg, gfg, gbg)
         execute printf('highlight WildMenu cterm=Bold ctermfg=%s ctermbg=%s gui=Bold guifg=%s guibg=%s', cbg, cfg, gbg, gfg)
-        for st_mode in split('Mode_Ns Mode_Is Mode_Vs Mode_Rs Mode_Ts Mode_ELSEs', ' ')
+        for st_mode in st_modes
             execute printf('highlight %s ctermbg=%s guibg=%s', st_mode, cbg, gbg)
         endfor
-        if !has('nvim')
-            highlight! link StatusLineTerm StatusLine
-        endif
+    endif
+    if !has('nvim')
+        highlight! link StatusLineTerm StatusLine
     endif
 endfunction
 
 function! ShowStatusLineBG()
+    let birthday = meflib#get('birthday', [0,0])
+    if (s:month == birthday[0]) && (s:day == birthday[1])
+        echo 'birthday!!'
+        return
+    endif
     let is_gui = has('gui_running') || (has('termguicolors') && &termguicolors)
     let echo_str  = 'red:'.s:stl_br
     let echo_str .= ' green:'.s:stl_bg
     let echo_str .= ' blue:'.s:stl_bb
     let echo_str .= ' => bg:'.<SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb, is_gui)
     let echo_str .= '   is_dark:'
-    let echo_str .= ' ('.s:stl_br.'*'.printf('%.1f', s:w_r)
-    let echo_str .= '+'.s:stl_bg.'*'.printf('%.1f', s:w_g)
-    let echo_str .= '+'.s:stl_bb.'*'.printf('%.1f', s:w_b).')'
-    let echo_str .= printf('%s%.1f%s%.1f%s%.1f%s', '/(', s:w_r, '+', s:w_g, '+', s:w_b, ')')
-    let echo_str .= ' = '.printf('%.3f', (s:stl_br*s:w_r+s:stl_bg*s:w_g+s:stl_bb*s:w_b)/(s:w_r+s:w_g+s:w_b))
-    let echo_str .= ' < '.printf('%.3f', s:thsd)
+    let echo_str .= printf('(%d*%.1f+%d*%.1f+%d*%.1f)/(%.1f+%.f1+%.1f)',
+                \ s:stl_br, s:w_r, s:stl_bg, s:w_g, s:stl_bb, s:w_b,
+                \ s:w_r, s:w_g, s:w_b)
+    let echo_str .= printf(' = %.3f', (s:stl_br*s:w_r+s:stl_bg*s:w_g+s:stl_bb*s:w_b)/(s:w_r+s:w_g+s:w_b))
+    let echo_str .= printf(' < %.3f', s:thsd)
     echo echo_str
 endfunction
 
