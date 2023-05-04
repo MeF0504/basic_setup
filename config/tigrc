@@ -10,6 +10,12 @@ bind main    G move-last-line
 bind generic ?  view-grep
 # Gを潰したのでctrl-g
 bind main   <C-G> :toggle commit-title-graph
+# Windows だとなぜか矢印が効かないので
+bind generic <C-L> scroll-right
+bind generic <C-H> scroll-left
+# ↑c-hはBSか...
+# ctrl-lを潰したので
+bind generic <C-R> screen-redraw
 
 # 水平分割のみ
 set vertical-split = no
