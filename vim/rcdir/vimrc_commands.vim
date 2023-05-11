@@ -111,4 +111,7 @@ vnoremap J <Cmd>call meflib#join_wrapper#main()<CR>
 nnoremap <c-a> <Cmd>call meflib#tools#true_false('a')<CR>
 nnoremap <c-x> <Cmd>call meflib#tools#true_false('x')<CR>
 " }}}
+" 関数一覧 {{{
+command! TagFuncAll call meflib#tag_func_all#open()
+" }}}
 
