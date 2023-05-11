@@ -3,7 +3,9 @@ scriptencoding utf-8
 
 " get vim config directory {{{
 function! meflib#basic#get_conf_dir() abort
-    if has('nvim')
+    if !empty(meflib#get("conf_dir", ""))
+        return meflib#get("conf_dir", "")
+    elseif has('nvim')
         let vimdir = stdpath('config')..'/'
     else
         if has('win32') || has('win64')
