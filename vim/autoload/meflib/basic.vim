@@ -2,17 +2,13 @@
 scriptencoding utf-8
 
 " get vim config directory {{{
+" <sfile> は関数外で呼ぶ
+let s:vimdir = expand('<sfile>:h:h:h')..'/'
 function! meflib#basic#get_conf_dir() abort
-    if !empty(meflib#get("conf_dir", ""))
-        return meflib#get("conf_dir", "")
-    elseif has('nvim')
+    if has('nvim')
         let vimdir = stdpath('config')..'/'
     else
-        if has('win32') || has('win64')
-            let vimdir = expand('~/vimfiles/')
-        else
-            let vimdir = expand('~/.vim/')
-        endif
+        let vimdir = s:vimdir
     endif
 
     return vimdir
