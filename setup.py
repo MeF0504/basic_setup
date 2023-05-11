@@ -332,8 +332,12 @@ def main_opt(args):
     cc.exec()
     local_conf_dir = Path(args.conf_home)/'meflib'
     if not local_conf_dir.exists():
-        os.makedirs(local_conf_dir)
-        print('mkdir: {}'.format(local_conf_dir))
+        try:
+            os.makedirs(local_conf_dir)
+            print('mkdir: {}'.format(local_conf_dir))
+        except Exception as e:
+            print('failed to make conf dir: {}'.format(local_conf_dir))
+            print('error: {}'.format(e))
 
 
 def main_conf(args):
@@ -352,10 +356,12 @@ def main_conf(args):
                 'zshrc': '~/.zshrc',
                 'zlogin': '~/.zlogin',
                 'zsh': '~/.zsh',
+                'tmp/zshrc.mine': '~/.zsh/zshrc.mine',
                 'posixShellRC': '~/.posixShellRC',
                 'psfuncs': '~/.psfuncs',
                 'bashrc': '~/.bashrc',
                 'bash': '~/.bash',
+                'tmp/bashrc.mine': '~/.bash/bashrc.mine',
                 'matplotlibrc': '~/.matplotlib/matplotlibrc',
                 'gitignore_global': '~/.gitignore_global',
                 'screenrc': '~/.screenrc',
@@ -369,10 +375,12 @@ def main_conf(args):
                   'zshrc': '~/.zshrc',
                   'zlogin': '~/.zlogin',
                   'zsh': '~/.zsh',
+                  'tmp/zshrc.mine': '~/.zsh/zshrc.mine',
                   'posixShellRC': '~/.posixShellRC',
                   'psfuncs': '~/.psfuncs',
                   'bashrc': '~/.bashrc',
                   'bash': '~/.bash',
+                  'tmp/bashrc.mine': '~/.bash/bashrc.mine',
                   'matplotlibrc': Path(args.conf_home)/'matplotlib/matplotlibrc',
                   'gitignore_global': '~/.gitignore_global',
                   'screenrc': '~/.screenrc',
@@ -396,9 +404,35 @@ def main_conf(args):
 
     if args.download:
         print('download git-prompt for bash')
-        bashdir = Path('~/.bash').expanduser()
-        mkdir(bashdir)
-        urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', bashdir/'git-prompt.sh')
+        try:
+            bashdir = Path('~/.bash').expanduser()
+            mkdir(bashdir)
+            urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', bashdir/'git-prompt.sh')
+        except Exception as e:
+            print('failed to download git-prompt')
+            print('error: {}'.format(e))
+
+    if not args.test:
+        for shell in 'bash zsh'.split():
+            mine_src = 'tmp/{}rc.mine'.format(shell)
+            if mine_src in files:
+                if not Path(files[mine_src]).expanduser().is_file():
+                    mkdir('config/tmp')
+                    with open(mine_src, 'w') as f:
+                        f.write('## PC dependent {}rc\n'.format(shell))
+                        f.write('#\n')
+                        f.write('\n')
+                        if bin_dst is not None:
+                            f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
+                            f.write('\n')
+                        if lib_dst is not None:
+                            f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
+                            f.write('\n')
+                        f.write('\n')
+                    print('made {}rc.mine'.format(shell))
+                else:
+                    print('{}rc.mine is already exists'.format(shell))
+                    files.pop(mine_src)
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    show_target=args.show_target_files,
@@ -453,40 +487,6 @@ def main_conf(args):
     else:
         print('{} is not found. update_setup is not created'.format(bin_dst))
 
-    if not args.test and 'zshrc' in files:
-        zshrc_mine = Path('~/.zsh/zshrc.mine').expanduser()
-        if not zshrc_mine.is_file():
-            mkdir('~/.zsh')
-            with open(zshrc_mine, 'a') as f:
-                f.write('## PC dependent zshrc\n')
-                f.write('#\n')
-                f.write('\n')
-                if bin_dst is not None:
-                    f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
-                    f.write('\n')
-                if lib_dst is not None:
-                    f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
-                    f.write('\n')
-                f.write('\n')
-            print('made zshrc.mine')
-
-    if not args.test and 'bashrc' in files:
-        bashrc_mine = Path('~/.bash/bashrc.mine').expanduser()
-        if not bashrc_mine.is_file():
-            mkdir('~/.bash')
-            with open(bashrc_mine, 'a') as f:
-                f.write('## PC dependent bashrc\n')
-                f.write('#\n')
-                f.write('\n')
-                if bin_dst is not None:
-                    f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
-                    f.write('\n')
-                if lib_dst is not None:
-                    f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
-                    f.write('\n')
-                f.write('\n')
-            print('made bashrc.mine')
-
 
 def main_vim(args):
     vim_src = Path(args.fpath)/'vim'
@@ -540,15 +540,23 @@ def main_vim(args):
         dst = Path('~/.vimrc').expanduser()
         if not dst.is_file():
             if not args.test:
-                print("link " + src + " -> " + dst)
-                os.symlink(src, dst)
+                print("link {} -> {}".format(src, dst))
+                try:
+                    os.symlink(src, dst)
+                except Exception as e:
+                    print('failed to link vimrc.')
+                    print('error: {}'.format(e))
 
         src = vim_config_path
         dst = Path('~/.vim').expanduser()
         if not dst.is_dir():
             if not args.test:
-                print("link " + src + " -> " + dst)
-                os.symlink(src, dst)
+                print("link {} -> {}".format(src, dst))
+                try:
+                    os.symlink(src, dst)
+                except Exception as e:
+                    print('failed to link vim dir.')
+                    print('error: {}'.format(e))
 
 
 def main():
