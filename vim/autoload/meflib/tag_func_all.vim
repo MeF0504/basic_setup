@@ -1,6 +1,9 @@
 scriptencoding utf-8
 
-let s:taginfo = {}
+if has('python3')
+    python3 import vim
+    py3file <sfile>:h/tag_func_all.py
+endif
 
 function! s:get_line(sfile, string) abort
     if filereadable(a:sfile)
@@ -15,7 +18,7 @@ function! s:get_line(sfile, string) abort
     return 0
 endfunction
 
-function! s:get_tag_info(tfile) abort
+function! s:set_tag_info(tfile) abort
     if filereadable(a:tfile)
         for line in readfile(a:tfile)
             if line[0] ==# '!'
@@ -33,7 +36,7 @@ function! s:get_tag_info(tfile) abort
             else
                 let lnum = 0
             endif
-            let str = printf('%s|%d| %s', sfile, lnum, word)
+            let str = printf('%s|%d| %s (%s)', sfile, lnum, word, kind)
             if has_key(s:taginfo, kind)
                 call add(s:taginfo[kind], str)
             else
@@ -44,20 +47,25 @@ function! s:get_tag_info(tfile) abort
 endfunction
 
 function! meflib#tag_func_all#open() abort
+    let s:taginfo = {}
     for tfile in tagfiles()
-        call s:get_tag_info(tfile)
+        if has('python3')
+            python3 set_tag_info(vim.eval("tfile"))
+        else
+            call s:set_tag_info(tfile)
+        endif
     endfor
     if empty(s:taginfo)
         echo "no tag information"
         return
     endif
 
-    let kind = input(printf('kind [%s]? ', join(keys(s:taginfo), ' ')))
-    if !has_key(s:taginfo, kind)
-        echo "incorrect kind."
-        return
-    endif
-    cgetexpr s:taginfo[kind]
+    let kind = input(printf('kinds [%s]? ', join(keys(s:taginfo), ' ')))
+    let res = []
+    for k in kind
+        let res += s:taginfo[k]
+    endfor
+    cgetexpr res
     copen
 endfunction
 
