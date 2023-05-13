@@ -43,15 +43,13 @@ function! meflib#tools#exec_ctags(...) abort
 
     let ctags_opt = meflib#get('ctags_opt', '')
     let out_file_name = printf('%s/.%s_tags', cwd, &filetype)
-    let ctags_out = '-f '..out_file_name
     if &filetype == 'cpp'
         let ft = 'c++'
     else
         let ft = &filetype
     endif
-    let spec_ft = '--languages='..ft
 
-    let ctags_cmd = printf('ctags %s %s %s -R %s', ctags_opt, ctags_out, spec_ft, cwd)
+    let ctags_cmd = printf('ctags %s -f "%s" --languages=%s -R "%s"', ctags_opt, out_file_name, ft, cwd)
     call system(ctags_cmd)
     echomsg ctags_cmd
 endfunction

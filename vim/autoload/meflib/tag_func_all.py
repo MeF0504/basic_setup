@@ -5,11 +5,12 @@ from pathlib import Path
 
 
 def get_line(sfile, lstr):
-    with open(sfile, 'r') as f:
-        for i, line in enumerate(f):
-            line = line.replace("\n", "")
-            if line == lstr:
-                return i+1
+    if sfile.is_file():
+        with open(sfile, 'r') as f:
+            for i, line in enumerate(f):
+                line = line.replace("\n", "")
+                if line == lstr:
+                    return i+1
     return 0
 
 
@@ -24,7 +25,7 @@ def set_tag_info(tfile):
             if line.startswith('!'):
                 continue
             word = line.split("\t")[0]
-            sfile = line.split("\t")[1]
+            sfile = Path(line.split("\t")[1])
             ist = line.find('/^')
             iend = line.rfind('$/;"')
             kind = line[iend+5]
