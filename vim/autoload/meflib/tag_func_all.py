@@ -6,7 +6,7 @@ from pathlib import Path
 
 def get_line(sfile, lstr):
     if sfile.is_file():
-        with open(sfile, 'r') as f:
+        with open(sfile, 'r', encoding='utf-8') as f:
             for i, line in enumerate(f):
                 line = line.replace("\n", "")
                 if line == lstr:
@@ -31,7 +31,7 @@ def set_tag_info(tfile):
             kind = line[iend+5]
             lstr = line[ist+2:iend]
             lnum = get_line(sfile, lstr)
-            res_str = "{}|{:d}| {} ({})".format(sfile, lnum, word, kind)
+            res_str = "{}|{:d}| {} ({})".format(str(sfile).replace("\\", "\\\\"), lnum, word, kind)
             if kind in kinds:
                 vim.command('call add(s:taginfo["{}"], "{}")'.format(kind, res_str))
             else:
