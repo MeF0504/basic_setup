@@ -19,43 +19,28 @@ nnoremap sc <Nop>
 
 " 使いやすいようにmapping
 " window 移動
-if exists('g:vscode')
-    nmap s <c-w>
-else
-    nnoremap s <c-w>
-    nnoremap sj <c-w>j
-    nnoremap s<Down> <c-w>j
-    nnoremap sk <c-w>k
-    nnoremap s<Up> <c-w>k
-    nnoremap sh <c-w>h
-    nnoremap s<Left> <c-w>h
-    nnoremap sl <c-w>l
-    nnoremap s<Right> <c-w>l
-endif
+nnoremap s <c-w>
+nnoremap sj <c-w>j
+nnoremap s<Down> <c-w>j
+nnoremap sk <c-w>k
+nnoremap s<Up> <c-w>k
+nnoremap sh <c-w>h
+nnoremap s<Left> <c-w>h
+nnoremap sl <c-w>l
+nnoremap s<Right> <c-w>l
 
 " new tab
-if exists('g:vscode')
-    nnoremap <silent> T <Cmd>call VSCodeNotify('workbench.action.quickOpen')<CR>
-else
-    nnoremap T :<c-u>tabnew<space>
-endif
+nnoremap T :<c-u>tabnew<space>
 
 " quick fix window
-if !exists('g:vscode')
-    nnoremap <silent> co <Cmd>botright copen<CR>
-    nnoremap <silent> cc <Cmd>cclose<CR>
-    nnoremap <silent> cn <Cmd>cnewer<CR>
-    nnoremap <silent> cp <Cmd>colder<CR>
-endif
+nnoremap <silent> co <Cmd>botright copen<CR>
+nnoremap <silent> cc <Cmd>cclose<CR>
+nnoremap <silent> cn <Cmd>cnewer<CR>
+nnoremap <silent> cp <Cmd>colder<CR>
 
 " search
-if !exists('g:vscode')
-    nnoremap / /\v
-    nnoremap * /\v<<c-r><c-w>><CR>
-else
-    nnoremap / <Cmd>call VSCodeNotify('actions.find')<CR>
-    nnoremap * <Cmd>call VSCodeNotify('actions.find')<CR>
-endif
+nnoremap / /\v
+nnoremap * /\v<<c-r><c-w>><CR>
 
 " tab 移動
 nmap g<Right> gt
@@ -80,12 +65,6 @@ cnoremap <c-a> <c-b>
 nnoremap Y y$
 vnoremap Y $y
 
-if exists('g:vscode')
-    nnoremap g<Up> <Cmd>call VSCodeNotify('cursorMove', { 'to': 'up', 'by': 'wrappedLine', 'value': v:count ? v:count : 1 })<CR>
-    nnoremap g<Down> <Cmd>call VSCodeNotify('cursorMove', { 'to': 'down', 'by': 'wrappedLine', 'value': v:count ? v:count : 1 })<CR>
-endif
-" vim over wrap
-
 " fold関連
 " 大文字にするとファイル全体に適用
 nnoremap zO zR
@@ -104,23 +83,14 @@ nmap <c-l> z<CR>
 nnoremap gf <c-w>gf
 
 " tag jump
-if exists('g:vscode')
-    " <c-]> で定義ジャンプ
-    nnoremap <silent> <c-]> <Cmd>call VSCodeNotify('editor.action.revealDefinition')<CR>
-    " <c-p> でhover
-    nnoremap <silent> <c-p> <Cmd>call VSCodeNotify('editor.action.showHover')<CR>
-    " <c-j> でreference
-    nnoremap <silent> <c-j> <Cmd>call VSCodeNotify('editor.action.goToReferences')<CR>
-else
-    " 候補が複数ある場合にリストを表示
-    nnoremap <c-]> g<c-]>
-    " 分割で表示
-    nnoremap <silent> g<c-]> <Cmd>vertical stjump<CR>
-    " preview で開く
-    nnoremap <silent> <c-p> <Cmd>execute "ptjump "..expand("<cword>")<CR>
-    "jump先をnew tabで開く
-    nnoremap <silent> <c-j> <Cmd>execute "tab tjump "..expand("<cword>")<CR>
-endif
+" 候補が複数ある場合にリストを表示
+nnoremap <c-]> g<c-]>
+" 分割で表示
+nnoremap <silent> g<c-]> <Cmd>vertical stjump<CR>
+" preview で開く
+nnoremap <silent> <c-p> <Cmd>execute "ptjump "..expand("<cword>")<CR>
+"jump先をnew tabで開く
+nnoremap <silent> <c-j> <Cmd>execute "tab tjump "..expand("<cword>")<CR>
 
 " \で検索のハイライトを消す
 nnoremap <silent> \ <Cmd>nohlsearch<CR>
@@ -163,18 +133,16 @@ elseif has('nvim')
 endif
 
 " VS Code を見習って，<c-b> で左端のwindowを閉じる
-if !exists('g:vscode')
-    function! <SID>close_sidebar() abort
-        let winid = win_getid(1)
-        if meflib#basic#special_win(winid)
-            " call win_execute(winid, 'quit')
-            " execute() を使うとvimでindent-guidesがエラーを吐くので...
-            let cur_winnr = winnr()
-            1wincmd w
-            quit
-            execute cur_winnr-1..'wincmd w'
-        endif
-    endfunction
-    nnoremap <silent> <c-b> <Cmd>call <SID>close_sidebar()<CR>
-endif
+function! <SID>close_sidebar() abort
+    let winid = win_getid(1)
+    if meflib#basic#special_win(winid)
+        " call win_execute(winid, 'quit')
+        " execute() を使うとvimでindent-guidesがエラーを吐くので...
+        let cur_winnr = winnr()
+        1wincmd w
+        quit
+        execute cur_winnr-1..'wincmd w'
+    endif
+endfunction
+nnoremap <silent> <c-b> <Cmd>call <SID>close_sidebar()<CR>
 

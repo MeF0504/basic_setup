@@ -65,13 +65,13 @@ call plug#begin(s:plug_dir)
 Plug 'junegunn/vim-plug'
 
 " Project Sekai inspired plugin
-Plug 'MeF0504/untitled.vim', PlugCond(!exists('g:vscode'), {'on': 'Untitled'})
+Plug 'MeF0504/untitled.vim', PlugCond(1, {'on': 'Untitled'})
 
 " colorscheme
-Plug 'MeF0504/vim-monoTone', PlugCond(!exists('g:vscode'))
+Plug 'MeF0504/vim-monoTone'
 
 " window のresize, 移動用plugin
-Plug 'simeji/winresizer', PlugCond(!exists('g:vscode'), {'on': 'WinResizerStartResize'})
+Plug 'simeji/winresizer', PlugCond(1, {'on': 'WinResizerStartResize'})
 " {{{
 nnoremap <leader>w <Cmd>WinResizerStartResize<CR>
 let g:winresizer_finish_with_escape = 0
@@ -82,7 +82,7 @@ let g:winresizer_horiz_resize = 2
 
 " カッコの強調を，処理を落として高速化
 " https://itchyny.hatenablog.com/entry/2016/03/30/210000
-Plug 'itchyny/vim-parenmatch', PlugCond(!exists('g:vscode'))
+Plug 'itchyny/vim-parenmatch'
 " {{{
 " デフォルト機能をoff
 let g:loaded_matchparen = 1
@@ -97,20 +97,14 @@ call meflib#add('plugin_his', expand('<SID>').'parenmatch_his')
 
 " color schemes
 let s:colorscheme_file = expand('<sfile>:h:h').'/plug_conf/colorscheme.vim'
-if !exists('g:vscode') && filereadable(s:colorscheme_file)
+if filereadable(s:colorscheme_file)
     execute 'source '..s:colorscheme_file
 endif
 
 " usual (somewhat heavy) plugins
 let s:plug_file = expand('<sfile>:h:h').'/plug_conf/vimplug.vim'
-if !exists('g:vscode') && filereadable(s:plug_file)
+if filereadable(s:plug_file)
     execute 'source '..s:plug_file
-endif
-
-" plugins that also works in VS Code
-let s:vscode_file = expand('<sfile>:h:h').'/plug_conf/vs_code.vim'
-if filereadable(s:vscode_file)
-    execute 'source '..s:vscode_file
 endif
 
 call plug#end()
