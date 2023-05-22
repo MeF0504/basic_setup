@@ -11,6 +11,7 @@ from fnmatch import fnmatchcase
 from functools import partial
 
 from pymeflib.tree2 import show_tree
+from pymeflib.color import FG, END
 
 debug = False
 expatrns = None
@@ -76,10 +77,25 @@ def get_contents(args, root, path):
     return dirs, files
 
 
-def get_file_info(fpath):
+def get_file_info(verbose, fpath):
     if not os.path.exists(fpath):
         # bloken link
-        return '\tfile not exists.'
+        return '', '\tfile not exists.'
+
+    col = ''
+    # directory
+    if os.path.isdir(fpath):
+        col = FG['b']
+
+    # symbolic link
+    if os.path.islink(fpath):
+        realpath = '-> '+os.path.realpath(fpath)
+        col = FG['m']
+    else:
+        realpath = ''
+
+    if not verbose:
+        return col, END
 
     stat = os.stat(fpath)
 
@@ -111,20 +127,12 @@ def get_file_info(fpath):
         prefix = 'k'
     size = '({:.1f} {}B)'.format(filesize, prefix)
 
-    # symbolic link
-    if os.path.islink(fpath):
-        realpath = '-> '+os.path.realpath(fpath)
-    else:
-        realpath = ''
-
-    return '\t{} {} {} {}'.format(access, size, timestamp, realpath)
+    return col,\
+        '{}\t{} {} {} {}'.format(END, access, size, timestamp, realpath)
 
 
 def main(args):
-    if args.verbose:
-        add_info = get_file_info
-    else:
-        add_info = None
+    add_info = partial(get_file_info, args.verbose)
     show_tree(args.root, partial(get_contents, args, args.root), add_info)
 
 
