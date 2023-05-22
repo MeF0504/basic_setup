@@ -5,14 +5,18 @@
 if [[ -f "${HOME}/.posixShellRC" ]]; then
     source "$HOME/.posixShellRC"
 else
-    echo "[posix shell rc] not found!" >&2
+    if [[ -t 0 ]]; then
+        echo "[posix shell rc] not found!" >&2
+    fi
 fi
 
 # tab title {{{
-if [[ $(uname) =~ MINGW ]]; then
-    echo -ne "\033]0;$(_get_zodiac_whgm 2> /dev/null) Git Bash @ ${HOSTNAME}\a"
-else
-    echo -ne "\033]0;$(_get_zodiac_whgm 2> /dev/null) ${USER} @ ${HOSTNAME}\a"
+if [[ -t 0 ]]; then
+    if [[ $(uname) =~ MINGW ]]; then
+        echo -ne "\033]0;$(_get_zodiac_whgm 2> /dev/null) Git Bash @ ${HOSTNAME}\a"
+    else
+        echo -ne "\033]0;$(_get_zodiac_whgm 2> /dev/null) ${USER} @ ${HOSTNAME}\a"
+    fi
 fi
 # }}}
 
