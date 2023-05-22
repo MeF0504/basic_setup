@@ -17,6 +17,8 @@ elif [[ 条件式 ]]; then
 else
 	それ以外の処理
 fi
+式一覧~
+ref: https://atmarkit.itmedia.co.jp/ait/articles/1810/31/news001_2.html
 数値比較~
 A -eq B		AとBが等しい
 A -ne B		AとBが等しくない
@@ -50,6 +52,10 @@ AND, OR, NOT~
 	if which {cmd} > /dev/null 2>&1; then
 	fi
 <
+標準入出力関連~
+-t 0		標準入力が端末
+-t 1		標準出力が端末
+-t 2		標準エラー出力が端末
 
 ==============================================================================
 COMPLETION                                         *meflib-shellmemo-completion*

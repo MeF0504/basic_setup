@@ -374,6 +374,7 @@ function is set of message and length of message. >
 MEMO                                                               *meflib-memo*
 
 * python  |meflib-pythonmemo.jax|
+* shell  |meflib-shellmemo.jax|
 * vim ↓  *meflib-vimmemo*
 ##### shortcut comment~
 <c-h> ... backspace <c-m> ... Enter
