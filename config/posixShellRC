@@ -40,7 +40,7 @@ export _USE_VIM=""
 
 # DISPLAYがない場合は設定したほうが良いの？
 if [[ -z "$DISPLAY" || "$DISPLAY" = "needs-to-be-defined" ]]; then
-    echo 'set DISPLAY'
+    echo 'set DISPLAY' >&2
     export DISPLAY=localhost:0.0
 fi
 #}}}

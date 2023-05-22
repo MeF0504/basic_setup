@@ -5,7 +5,7 @@
 if [[ -f "${HOME}/.posixShellRC" ]]; then
     source "$HOME/.posixShellRC"
 else
-    echo "[posix shell rc] not found!"
+    echo "[posix shell rc] not found!" >&2
 fi
 
 # tab title {{{
