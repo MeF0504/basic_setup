@@ -11,7 +11,7 @@ from fnmatch import fnmatchcase
 from functools import partial
 
 from pymeflib.tree2 import show_tree
-from pymeflib.color import FG, END
+from pymeflib.color import FG, END, FG256
 
 debug = False
 expatrns = None
@@ -72,6 +72,9 @@ def get_contents(args, root, path):
             files.append(f.name)
         elif f.is_dir():
             dirs.append(f.name)
+        else:
+            # broken links?
+            files.append(f.name)
     dirs.sort()
     files.sort()
     return dirs, files
@@ -79,8 +82,11 @@ def get_contents(args, root, path):
 
 def get_file_info(verbose, fpath):
     if not os.path.exists(fpath):
-        # bloken link
-        return '', '\tfile not exists.'
+        # broken link
+        if verbose:
+            return FG256(242), END+'\tfile not exists.'
+        else:
+            return FG256(242), END
 
     col = ''
     # directory
