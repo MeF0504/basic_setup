@@ -1747,3 +1747,11 @@ let g:winresizer_start_key = '<leader>w'
 let g:winresizer_vert_resize = 5
 let g:winresizer_horiz_resize = 2
 " }}}
+
+" typewriter sound in Vim
+Plug 'skywind3000/vim-keysound'
+" {{{
+let g:keysound_enable = 0
+" use KeysoundEnable/Disable
+let g:keysound_theme = 'typewriter'
+" }}}
