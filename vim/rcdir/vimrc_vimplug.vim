@@ -70,16 +70,6 @@ Plug 'MeF0504/untitled.vim', PlugCond(1, {'on': 'Untitled'})
 " colorscheme
 Plug 'MeF0504/vim-monoTone'
 
-" window のresize, 移動用plugin
-Plug 'simeji/winresizer', PlugCond(1, {'on': 'WinResizerStartResize'})
-" {{{
-nnoremap <leader>w <Cmd>WinResizerStartResize<CR>
-let g:winresizer_finish_with_escape = 0
-let g:winresizer_start_key = '<leader>w'
-let g:winresizer_vert_resize = 5
-let g:winresizer_horiz_resize = 2
-" }}}
-
 " カッコの強調を，処理を落として高速化
 " https://itchyny.hatenablog.com/entry/2016/03/30/210000
 Plug 'itchyny/vim-parenmatch'
@@ -94,6 +84,10 @@ function! <SID>parenmatch_his() abort
 endfunction
 call meflib#add('plugin_his', expand('<SID>').'parenmatch_his')
 " }}}
+
+" readme をhelpとして見れるようにする
+let g:readme_viewer#plugin_manager = 'vim-plug'
+Plug '4513ECHO/vim-readme-viewer', PlugCond(1, { 'on': 'PlugReadme' })
 
 " color schemes
 let s:colorscheme_file = expand('<sfile>:h:h').'/plug_conf/colorscheme.vim'

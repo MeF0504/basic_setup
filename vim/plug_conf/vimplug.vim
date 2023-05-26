@@ -1603,10 +1603,6 @@ if meflib#get('deno_on', 0)
 endif
 " }}}
 
-" readme をhelpとして見れるようにする
-let g:readme_viewer#plugin_manager = 'vim-plug'
-Plug '4513ECHO/vim-readme-viewer', PlugCond(1, { 'on': 'PlugReadme' })
-
 " カーソルの下の文字とかをhighlight
 Plug 'azabiong/vim-highlighter', PlugCond(1, {'on': 'Hi'})
 " {{{
@@ -1742,3 +1738,12 @@ let g:sonictemplate_intelligent_key = "\<c-q>\<c-a>"
 nmap <leader>a :<C-u>Template 
 " }}}
 
+" window のresize, 移動用plugin
+Plug 'simeji/winresizer', PlugCond(1, {'on': 'WinResizerStartResize'})
+" {{{
+nnoremap <leader>w <Cmd>WinResizerStartResize<CR>
+let g:winresizer_finish_with_escape = 0
+let g:winresizer_start_key = '<leader>w'
+let g:winresizer_vert_resize = 5
+let g:winresizer_horiz_resize = 2
+" }}}
