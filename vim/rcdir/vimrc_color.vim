@@ -252,7 +252,7 @@ function! ShowStatusLineBG()
     let echo_str .= ' blue:'.s:stl_bb
     let echo_str .= ' => bg:'.<SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb, is_gui)
     let echo_str .= '   is_dark:'
-    let echo_str .= printf('(%d*%.1f+%d*%.1f+%d*%.1f)/(%.1f+%.f1+%.1f)',
+    let echo_str .= printf('(%d*%.1f+%d*%.1f+%d*%.1f)/(%.1f+%.1f+%.1f)',
                 \ s:stl_br, s:w_r, s:stl_bg, s:w_g, s:stl_bb, s:w_b,
                 \ s:w_r, s:w_g, s:w_b)
     let echo_str .= printf(' = %.3f', (s:stl_br*s:w_r+s:stl_bg*s:w_g+s:stl_bb*s:w_b)/(s:w_r+s:w_g+s:w_b))
