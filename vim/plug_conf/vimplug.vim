@@ -1749,7 +1749,7 @@ let g:winresizer_horiz_resize = 2
 " }}}
 
 " typewriter sound in Vim
-Plug 'skywind3000/vim-keysound'
+Plug 'skywind3000/vim-keysound', PlugCond(1, {'on': 'KeysoundEnable'})
 " {{{
 let g:keysound_enable = 0
 " use KeysoundEnable/Disable
