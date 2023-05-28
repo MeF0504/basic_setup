@@ -213,11 +213,15 @@ function! meflib#tools#true_false(premap) abort
             execute printf("normal! %d\<c-a>", cnt)
             try
                 call repeat#set("\<c-a>")
+            catch
+                " do nothing.
             endtry
         elseif a:premap ==# "x"
             execute printf("normal! %d\<c-x>", cnt)
             try
                 call repeat#set("\<c-x>")
+            catch
+                " do nothing.
             endtry
         endif
         return
@@ -225,6 +229,8 @@ function! meflib#tools#true_false(premap) abort
     execute printf("substitute/%s/%s", cword, new_word)
     try
         call repeat#set(printf("\<Cmd>call meflib#tools#true_false('%s')\<CR>", a:premap))
+    catch
+        " do nothing.
     endtry
     call setpos('.', pos)
 endfunction
