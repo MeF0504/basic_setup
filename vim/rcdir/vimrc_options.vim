@@ -4,6 +4,8 @@ scriptencoding utf-8
 
 if exists('*meflib#basic#get_conf_dir')
     let s:vimdir = meflib#basic#get_conf_dir()
+else
+    let s:vimdir = expand('<sfile>:h:h')..'/'
 endif
 
 " 左端に数字を表示
@@ -132,7 +134,7 @@ function! s:exec_helptag(tid) abort
         endfor
     endif
 endfunction
-if exists('s:vimdir') && isdirectory(s:vimdir..'doc')
+if isdirectory(s:vimdir..'doc')
     call timer_start(1000*3, expand('<SID>')..'exec_helptag')
 endif
 
@@ -140,35 +142,29 @@ endif
 " swp fileあり、backup, undoなし
 set swapfile
 " 作れればswp用のdirectoryをvimdir配下に作る
-if exists('s:vimdir')
-    if !isdirectory(s:vimdir . 'swp')
-        call mkdir(s:vimdir . 'swp')
-    endif
-    let &directory = s:vimdir . "swp"
+if !isdirectory(s:vimdir . 'swp')
+    call mkdir(s:vimdir . 'swp')
 endif
+let &directory = s:vimdir . "swp"
 set nobackup
 set noundofile
 " spell checkする言語
 set spelllang=en_us
 " spell checkされた単語リストファイル
-if exists('s:vimdir')
-    if !isdirectory(s:vimdir.'spell')
-        call mkdir(s:vimdir.'spell')
-    endif
-    let &spellfile = s:vimdir.'spell/local.'.&encoding.'.add'
+if !isdirectory(s:vimdir.'spell')
+    call mkdir(s:vimdir.'spell')
 endif
+let &spellfile = s:vimdir.'spell/local.'.&encoding.'.add'
 " test用directoryを追加
-if exists('s:vimdir')
-    let s:test_vim_dir = s:vimdir..'test'
-    if !isdirectory(s:test_vim_dir)
-        call mkdir(s:test_vim_dir)
-    endif
-    if isdirectory(s:test_vim_dir..'/doc')
-        echomsg "exec helptags in test"
-        execute "helptags "..s:test_vim_dir..'/doc'
-    endif
-    execute 'set runtimepath^='..substitute(s:test_vim_dir, ' ', '\\ ', 'g')
+let s:test_vim_dir = s:vimdir..'test'
+if !isdirectory(s:test_vim_dir)
+    call mkdir(s:test_vim_dir)
 endif
+if isdirectory(s:test_vim_dir..'/doc')
+    echomsg "exec helptags in test"
+    execute "helptags "..s:test_vim_dir..'/doc'
+endif
+execute 'set runtimepath^='..substitute(s:test_vim_dir, ' ', '\\ ', 'g')
 
 " terminal mode設定
 if has('terminal')
