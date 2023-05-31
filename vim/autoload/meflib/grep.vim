@@ -63,7 +63,6 @@ function! meflib#grep#main(...)
 
         if has_key(arg, "wd")
             let l:word = arg["wd"]
-            let l:word .= arg["no_key"]
             if l:word[0]=='<' && l:word[-1:]=='>'
                 let is_word = 1
                 let l:word = l:word[1:-2]

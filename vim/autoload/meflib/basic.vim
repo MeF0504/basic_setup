@@ -102,25 +102,18 @@ endfunction
 function! meflib#basic#analythis_args_eq(arg) abort
     let args = split(a:arg, ' ')
     let ret = {'no_key':""}
-    let last_key = -1
+    let last_key = 'no_key'
     for dic in args
         let dic_sub = split(dic, "=", 1)
         if len(dic_sub) < 2
-            if last_key != -1
-                let ret[last_key] .= ' ' . dic_sub[0]
-                if dic_sub[0][-1:] != '\'
-                    let last_key = -1
-                endif
-            else
-                let ret["no_key"] .= ' ' . dic_sub[0]
-            endif
+            " no equal
+            let ret[last_key] .= ' ' . dic_sub[0]
         else
             let dic_key = dic_sub[0]
             let dic_val = join(dic_sub[1:], '=')
             let ret[dic_key] = dic_val
-            if dic_val[-1:] == '\'
-                let last_key = dic_key
-            endif
+            " update key
+            let last_key = dic_key
         endif
     endfor
 
