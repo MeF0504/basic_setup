@@ -97,9 +97,8 @@ if [ -n "$SSH_CLIENT" ]; then
     alias sudo='echo "sudo is not available in remote host"&&'
 fi
 # vim terminal
-if [ -n "${VIM_TERMINAL}" ]; then
+if [ -n "${VIM}" ]; then
     alias vim="echo 'already opened vim.'"
-    alias vi="echo 'already opened vim.'"
 fi
 # others
 alias global_ip="curl ifconfig.io 2> /dev/null"
@@ -148,7 +147,14 @@ _chk_and_source() # {{{
 # }}}
 vim_wrapper() # {{{
 {
-    if [[ -x $(which "$_USE_VIM" 2> /dev/null) ]]; then
+    if [[ -n "${VIM_TERMINAL}" ]]; then
+        # vim上からshellを操作してvimで開く
+        # :h terminal-api
+        # Neovimには無いらしい
+        fp=$(cd $(dirname $1) && pwd)/$(basename $1)
+        echo -ne "\e]51;[\"drop\", \"${fp}\", {}]\x07"
+        return
+    elif [[ -x $(which "$_USE_VIM" 2> /dev/null) ]]; then
         local use_vim=$_USE_VIM
     else
         local use_vim="vim"
