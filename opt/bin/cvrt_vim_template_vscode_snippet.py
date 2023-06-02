@@ -18,7 +18,7 @@ def main(args):
             input_dir = {}
             with open(path, 'r') as f:
                 for line in f:
-                    line = line.replace("{{_cursor_}}", "$0")
+                    line = line.replace("{{_cursor_}}", "${0}")
                     pat = re.search("{{.*?}}", line)
                     while pat is not None:
                         tmp = line[pat.start()+2:pat.end()-2]
@@ -28,7 +28,8 @@ def main(args):
                                 input_dir[var] = cnt
                                 cnt += 1
                             line = re.sub("{{_input_:.*?}}",
-                                          f"${input_dir[var]}", line)
+                                          f"${{{input_dir[var]}}}",
+                                          line, count=1)
                         else:
                             line = re.sub("{{.*?}}", "", line)
                         pat = re.search("{{.*?}}", line)
@@ -42,7 +43,7 @@ def main(args):
 "body": [
 {}],
 "description": "{}"
-}},'''.format(title, scope, prefix, body, title)
+}},'''.format(f"{title}-{scope}", scope, prefix, body, title)
             print(ret)
 
 
