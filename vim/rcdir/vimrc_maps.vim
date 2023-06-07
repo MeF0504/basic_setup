@@ -3,10 +3,24 @@ scriptencoding utf-8
 " vim map(key) settings
 
 " 誤って使うとまずいkeymapを削除
+function! s:close(key) abort
+    " キーボード認識が狂うとEnterも入らないのでgetcharにする
+    echo 'Are you really close file? (y/[n]): '
+    let yn = getcharstr()
+    if yn !=# 'y'
+        echo "don't close"
+        return
+    endif
+    if a:key ==# 'ZZ'
+        xit
+    elseif a:key ==# 'ZQ'
+        quit!
+    endif
+endfunction
 " 保存して終了 :h ZZ
-nnoremap ZZ <Nop>
+nnoremap ZZ <Cmd>call <SID>close('ZZ')<CR>
 " 保存せずに終了 :h ZQ
-nnoremap ZQ <Nop>
+nnoremap ZQ <Cmd>call <SID>close('ZQ')<CR>
 " ex modeに切り替え。viの前身か？ :h Q
 nnoremap Q <Nop>
 " current windowを閉じる :h CTRL-W_q
