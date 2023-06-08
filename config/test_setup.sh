@@ -11,7 +11,8 @@ ln -s $curdir/opt/bin/hoge tmp_dir/bin/pytree
 cp opt/bin/optlink tmp_dir/bin/optlink
 
 args="--prefix $curdir/tmp_dir"
-args="$args -t opt"
+# args="$args -t opt"
+args="$args -t all"
 # args="$args --link"
 # args="$args --force"
 args="$args --test"

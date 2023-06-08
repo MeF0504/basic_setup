@@ -260,6 +260,12 @@ class CopyClass():
                             self.copy(src, dst)
 
 
+def print_path(path):
+    fg = FG256(10)
+    end = END
+    print('\n{}@ {}{}\n'.format(fg, path, end))
+
+
 def get_files(fpath, args_type, prefix):
     if fpath is None:
         return None
@@ -289,68 +295,89 @@ def get_files(fpath, args_type, prefix):
         return None
 
 
+def set_path(args):
+    if 'XDG_CONFIG_HOME' in os.environ:
+        conf_home = os.environ['XDG_CONFIG_HOME']
+    else:
+        conf_home = Path('~/.config').expanduser()
+    args.conf_home = conf_home
+
+    args.opt_src = Path(args.fpath)/'opt'
+    args.bin_src = args.opt_src/'bin'
+    args.lib_src = args.opt_src/'lib'
+    if args.prefix is None:
+        args.bin_dst = None
+        args.lib_dst = None
+    else:
+        args.bin_dst = Path(args.prefix)/'bin'
+        args.lib_dst = Path(args.prefix)/'lib'
+
+    args.conf_src = Path(args.fpath)/'config'
+
+    args.vim_src = Path(args.fpath)/'vim'
+    if args.vim_prefix is not None:
+        args.vim_conf = Path(args.vim_prefix)
+        args.vimrc = args.vim_conf/'init.vim'
+    elif uname == 'Windows':
+        args.vim_conf = Path('~/vimfiles').expanduser()
+        args.vimrc = Path('~/_vimrc').expanduser()
+    else:
+        args.vim_conf = Path(args.conf_home)/'nvim'
+        args.vimrc = args.vim_conf/'init.vim'
+    args.rc_dst = args.vim_conf/'rcdir'
+    args.ft_dst = args.vim_conf/'ftplugin'
+    args.plg_dst = args.vim_conf/'plug_conf'
+    args.al_dst = args.vim_conf/'autoload'
+    args.doc_dst = args.vim_conf/'doc'
+    args.aft_dst = args.vim_conf/'after'
+
+    local_conf = Path(args.conf_home)/'meflib'
+    if not local_conf.exists():
+        try:
+            os.makedirs(local_conf)
+            print('mkdir: {}'.format(local_conf))
+        except Exception as e:
+            print('failed to make conf dir: {}'.format(local_conf))
+            print('error: {}'.format(e))
+    args.local_conf = local_conf
+
+
 def main_opt(args):
     if args.prefix is None:
         return
-
-    bin_dst = Path(args.prefix)/'bin'
-    lib_dst = Path(args.prefix)/'lib'
-    opt_src = Path(args.fpath)/'opt'
-    bin_src = opt_src/'bin'
-    lib_src = opt_src/'lib'
-    fg = FG256(10)
-    end = END
-    print('\n{}@ {}{}\n'.format(fg, opt_src, end))
+    print_path(args.opt_src)
 
     files = get_files(args.setup_file, 'opt', args.prefix)
     if files is None:
         files = {}
-
-        for bfy in bin_src.glob('*'):
+        for bfy in args.bin_src.glob('*'):
             if os.access(bfy, os.X_OK):
                 fname = bfy.name
                 if (fname == 'pdf2jpg'):
                     if (uname == 'Darwin'):
-                        files[bfy] = bin_dst/fname
+                        files[bfy] = args.bin_dst/fname
                 else:
-                    files[bfy] = bin_dst/fname
+                    files[bfy] = args.bin_dst/fname
 
-        for lfy in lib_src.glob('*'):
+        for lfy in args.lib_src.glob('*'):
             fname = lfy.name
             if fname == '__pycache__':
                 continue
             if not fname.endswith('pyc'):
-                files[lfy] = lib_dst/fname
+                files[lfy] = args.lib_dst/fname
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    show_target=args.show_target_files,
                    show_no_update=args.show_no_update_files,
                    show_all=args.show_all)
     for fy in sorted(files.keys()):
-        cc.stack(opt_src.joinpath(fy), files[fy])
+        cc.stack(args.opt_src.joinpath(fy), files[fy])
     cc.show_files()
     cc.exec()
-    local_conf_dir = Path(args.conf_home)/'meflib'
-    if not local_conf_dir.exists():
-        try:
-            os.makedirs(local_conf_dir)
-            print('mkdir: {}'.format(local_conf_dir))
-        except Exception as e:
-            print('failed to make conf dir: {}'.format(local_conf_dir))
-            print('error: {}'.format(e))
 
 
 def main_conf(args):
-    if args.prefix is None:
-        bin_dst = None
-        lib_dst = None
-    else:
-        bin_dst = Path(args.prefix)/'bin'
-        lib_dst = Path(args.prefix)/'lib'
-    set_src = Path(args.fpath)/'config'
-    fg = FG256(10)
-    end = END
-    print('\n{}@ {}{}\n'.format(fg, set_src, end))
+    print_path(args.conf_src)
 
     files_mac = {
                 'zshrc': '~/.zshrc',
@@ -422,10 +449,10 @@ def main_conf(args):
                         f.write('## PC dependent {}rc\n'.format(shell))
                         f.write('#\n')
                         f.write('\n')
-                        if bin_dst is not None:
+                        if args.bin_dst is not None:
                             f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
                             f.write('\n')
-                        if lib_dst is not None:
+                        if args.lib_dst is not None:
                             f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
                             f.write('\n')
                         f.write('\n')
@@ -441,7 +468,7 @@ def main_conf(args):
     for fy in sorted(files.keys()):
         fy_dir = Path(files[fy]).expanduser().parent
         if fy_dir.is_dir():
-            cc.stack(set_src.joinpath(fy), files[fy])
+            cc.stack(args.conf_src.joinpath(fy), files[fy])
         else:
             print('{} does not exist, do not copy {}.'.format(fy_dir, fy))
     cc.show_files()
@@ -468,14 +495,14 @@ def main_conf(args):
     with open(Path(args.fpath)/'opt/samples/update_setup_sample.py', 'r') as f:
         update_setup = f.read().format(args.fpath, args.fpath, args.fpath,
                                        pyopt).replace('\\', '\\\\')
-    if bin_dst is None:
+    if args.bin_dst is None:
         pass
-    elif bin_dst.is_dir():
+    elif args.bin_dst.is_dir():
         if args.test:
-            print('create update_setup in {}'.format(bin_dst))
+            print('create update_setup in {}'.format(args.bin_dst))
         else:
-            print('creating update_setup file in {} ...'.format(bin_dst))
-            update_setup_file = bin_dst/'update_setup'
+            print('creating update_setup file in {} ...'.format(args.bin_dst))
+            update_setup_file = args.bin_dst/'update_setup'
             with open(update_setup_file, 'w') as f:
                 f.write(update_setup)
             update_setup_file.chmod(0o744)
@@ -485,58 +512,39 @@ def main_conf(args):
                 mkdir('tmp')
                 shutil.copy(update_setup_file, Path('tmp')/'update_setup')
     else:
-        print('{} is not found. update_setup is not created'.format(bin_dst))
+        print('{} is not found. update_setup is not created'.format(args.bin_dst))
 
 
 def main_vim(args):
-    vim_src = Path(args.fpath)/'vim'
-    fg = FG256(10)
-    end = END
-    print('\n{}@ {}{}\n'.format(fg, vim_src, end))
-
-    if args.vim_prefix is not None:
-        vim_config_path = Path(args.vim_prefix)
-        vimrc = vim_config_path/'init.vim'
-    elif uname == 'Windows':
-        vim_config_path = Path('~/vimfiles').expanduser()
-        vimrc = Path('~/_vimrc').expanduser()
-    else:
-        vim_config_path = Path(args.conf_home)/'nvim'
-        vimrc = vim_config_path/'init.vim'
-    rc_dst = vim_config_path/'rcdir'
-    ft_dst = vim_config_path/'ftplugin'
-    plg_dst = vim_config_path/'plug_conf'
-    al_dst = vim_config_path/'autoload'
-    doc_dst = vim_config_path/'doc'
-    aft_dst = vim_config_path/'after'
-    mkdir(vim_config_path/'swp')
+    print_path(args.vim_src)
+    mkdir(args.vim_conf/'swp')
 
     files = get_files(args.setup_file, 'vim', args.prefix)
     if files is None:
-        files = {'vimrc': vimrc}
-        files[str(vim_src/'rcdir')] = rc_dst
-        files[str(vim_src/'ftplugin')] = ft_dst
-        files[str(vim_src/'plug_conf')] = plg_dst
-        files[str(vim_src/'autoload')] = al_dst
-        files[str(vim_src/'doc')] = doc_dst
-        files[str(vim_src/'after')] = aft_dst
+        files = {'vimrc': args.vimrc}
+        files[str(args.vim_src/'rcdir')] = args.rc_dst
+        files[str(args.vim_src/'ftplugin')] = args.ft_dst
+        files[str(args.vim_src/'plug_conf')] = args.plg_dst
+        files[str(args.vim_src/'autoload')] = args.al_dst
+        files[str(args.vim_src/'doc')] = args.doc_dst
+        files[str(args.vim_src/'after')] = args.aft_dst
 
     if args.download:
         print('\ndownload vimPlug')
-        mkdir(al_dst)
-        urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim', al_dst/'plug.vim')
+        mkdir(args.al_dst)
+        urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim', args.al_dst/'plug.vim')
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    show_target=args.show_target_files,
                    show_no_update=args.show_no_update_files,
                    show_all=args.show_all)
     for fy in sorted(files.keys()):
-        cc.stack(vim_src.joinpath(fy), files[fy])
+        cc.stack(args.vim_src.joinpath(fy), files[fy])
     cc.show_files()
     cc.exec()
 
     if not uname == 'Windows':
-        src = vimrc
+        src = args.vimrc
         dst = Path('~/.vimrc').expanduser()
         if not dst.is_file():
             if not args.test:
@@ -547,7 +555,7 @@ def main_vim(args):
                     print('failed to link vimrc.')
                     print('error: {}'.format(e))
 
-        src = vim_config_path
+        src = args.vim_conf
         dst = Path('~/.vim').expanduser()
         if not dst.is_dir():
             if not args.test:
@@ -594,12 +602,7 @@ def main():
     fpath = Path(__file__).resolve().parent
     args.fpath = fpath
     os.chdir(fpath)
-
-    if 'XDG_CONFIG_HOME' in os.environ:
-        conf_home = os.environ['XDG_CONFIG_HOME']
-    else:
-        conf_home = Path('~/.config').expanduser()
-    args.conf_home = conf_home
+    set_path(args)
 
     if 'all' in args.type:
         main_opt(args)
