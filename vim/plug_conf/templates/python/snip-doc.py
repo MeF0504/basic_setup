@@ -1,6 +1,4 @@
 """
-{{_input_:func_name}}({{_cursor_}}):
-
 description.
 
 Parameters
