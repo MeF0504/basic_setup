@@ -95,7 +95,7 @@ def main(files, simul):
                 cur_cmd = cmd
             if shell:
                 im = im.replace(' ', '\ ')
-                cmds = ' '.join(cmd[0]+[im]+cmd[1])
+                cmds = ' '.join(cur_cmd[0]+[im]+cur_cmd[1])
             else:
                 cmds = cur_cmd[0]+[im]+cur_cmd[1]
             # print(cmds)
