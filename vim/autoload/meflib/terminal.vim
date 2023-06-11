@@ -3,8 +3,7 @@ scriptencoding utf-8
 " terminal commandを快適に使えるようにする
 "" http://koturn.hatenablog.com/entry/2018/02/12/140000
 let s:term_cnt = 1
-let s:term_opts = ['win', 'term']
-let s:term_win_opts = ['S', 'V', 'F', 'P']
+let s:term_opts = ['term']
 function! meflib#terminal#comp(arglead, cmdline, cursorpos) abort
     ":h :command-completion-custom
     let opt_idx = strridx(a:cmdline, '-')
@@ -13,8 +12,6 @@ function! meflib#terminal#comp(arglead, cmdline, cursorpos) abort
     if a:arglead[0] == '-'
         " select option
         return filter(map(copy(s:term_opts), '"-"..v:val'), '!stridx(tolower(v:val), a:arglead)')
-    elseif a:cmdline[opt_idx:end_space_idx-1] == '-win'
-        return s:term_win_opts
     elseif a:cmdline[opt_idx:end_space_idx-1] == '-term'
         let term_list = meflib#basic#term_list()
         let term_names = filter(map(term_list, 'bufname(v:val)'),
@@ -44,6 +41,7 @@ function! meflib#terminal#comp(arglead, cmdline, cursorpos) abort
         return getcompletion(a:arglead, 'shellcmd')
     endif
 endfunction
+
 function! s:open_term(bufname) abort
     let bufn = bufnr(a:bufname)
     if bufn == -1
@@ -181,13 +179,13 @@ function! s:open_term_float(opts) abort
     endif
 endfunction
 
-function! meflib#terminal#main(...) abort
+function! meflib#terminal#main(mod, ...) abort
     if !has('terminal') && !has('nvim')
         echoerr "this vim doesn't support terminal!!"
         return
     endif
 
-    let args_config = {'win':1, 'term':1}
+    let args_config = {'term':1}
     if a:0 == 0
         let opts = ''
     else
@@ -198,10 +196,10 @@ function! meflib#terminal#main(...) abort
         return
     endif
 
-    if has_key(opts, 'win')
-        let win_opt = opts['win'][0]
+    if empty(a:mod)
+        let win_opt = meflib#get('term_default', 'tab')
     else
-        let win_opt = meflib#get('term_default', 'S')
+        let win_opt = a:mod
     endif
 
     let term_opt = ''
@@ -217,21 +215,9 @@ function! meflib#terminal#main(...) abort
             endif
             return
         else
-            if win_opt == 'S'
-                botright new
-            elseif win_opt == 'V'
-                botright vertical new
-            elseif win_opt == 'F'
-                tabnew
-            elseif win_opt == 'P'
-                call s:open_term_float(opts['no_opt'])
-                return
-            else
-                echo 'not a supported option. return'
-                return
-            endif
+            execute printf('%s new', win_opt)
+            call s:open_term_win(opts['no_opt'])
         endif
-        call s:open_term_win(opts['no_opt'])
 
     else
         if has('nvim')
@@ -246,25 +232,13 @@ function! meflib#terminal#main(...) abort
                 endif
                 return
             else
-                if win_opt == 'S'
-                    botright new
-                elseif win_opt == 'V'
-                    botright vertical new
-                elseif win_opt == 'F'
-                    tabnew
-                elseif win_opt == 'P'
-                    call s:open_term_float(opts['no_opt'])
-                    return
-                else
-                    echo 'not a supported option. return'
-                    return
-                endif
+                execute printf('%s new', win_opt)
+                let term_opt .= join(opts['no_opt'])
+                execute 'terminal '.term_opt
+                " rename buffer
+                execute "silent file ".substitute(expand('%'), ' ', '', 'g')
+                startinsert
             endif
-            let term_opt .= join(opts['no_opt'])
-            execute 'terminal '.term_opt
-            " rename buffer
-            execute "silent file ".substitute(expand('%'), ' ', '', 'g')
-            startinsert
 
         else
             if has_key(opts, 'term')
@@ -279,31 +253,19 @@ function! meflib#terminal#main(...) abort
                 endif
                 return
             else
-                if win_opt == 'S'
-                    botright new
-                elseif win_opt == 'V'
-                    botright vertical new
-                elseif win_opt == 'F'
-                    tabnew
-                elseif win_opt == 'P'
-                    call s:open_term_float(opts['no_opt'])
-                    return
+                execute printf('%s new', win_opt)
+                if empty(opts['no_opt'])
+                    let cmd = [&shell]
+                    let term_finish = 'close'
                 else
-                    echo 'not a supported option. return'
-                    return
+                    let cmd = opts['no_opt']
+                    let term_finish = 'open'
                 endif
+                let term_opt = s:set_term_opt(0, '!'.cmd[0], term_finish)
+                call term_start(cmd, term_opt)
+                " rename buffer (no need?)
+                " execute "silent file ".substitute(expand('%'), ' ', '', 'g')
             endif
-            if empty(opts['no_opt'])
-                let cmd = [&shell]
-                let term_finish = 'close'
-            else
-                let cmd = opts['no_opt']
-                let term_finish = 'open'
-            endif
-            let term_opt = s:set_term_opt(0, '!'.cmd[0], term_finish)
-            call term_start(cmd, term_opt)
-            " rename buffer (no need?)
-            " execute "silent file ".substitute(expand('%'), ' ', '', 'g')
         endif
     endif
 

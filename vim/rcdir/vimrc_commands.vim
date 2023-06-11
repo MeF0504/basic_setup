@@ -71,7 +71,7 @@ command! JobStatus call meflib#tools#chk_job_status()
 command! BinMode call meflib#tools#BinaryMode()
 " }}}
 " termonal commandを快適に使えるようにする {{{
-command! -nargs=? -complete=customlist,meflib#terminal#comp  Terminal call meflib#terminal#main(<f-args>)
+command! -nargs=? -complete=customlist,meflib#terminal#comp  Terminal call meflib#terminal#main(<q-mods>, <f-args>)
 " }}}
 " ファイルの存在チェック {{{
 nnoremap <leader>f <Cmd>call meflib#filejump#main()<CR>
