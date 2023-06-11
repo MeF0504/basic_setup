@@ -26,17 +26,6 @@ setlocal colorcolumn=+1
 let g:pyindent_continue = shiftwidth()
 " }}}
 
-" 簡易command {{{
-" これはlspで代替出来ると思うので一旦コメントアウト
-" command! -buffer PySyntax !python3 -m py_compile %
-
-" debug command
-command -buffer DebugPrint call append(line('.')-1,
-            \ repeat(' ', indent('.'))..
-            \ 'print("\033[32m#####debug {} \033[0m".format(""))') |
-            \ normal k
-" }}}
-
 " help 確認用コマンド
 " pydocとかいう便利ツールがあるじゃん
 let s:pyhelp_id = -1
@@ -166,3 +155,17 @@ else
 endif
 " }}}
 
+" mypy quick fix でいけるのでは？
+function! s:mypy() abort
+    if !executable('mypy')
+        echo 'mypy is not executable'
+        return
+    endif
+    let mypy_cmd = ['mypy', expand('%')]
+    if !has('nvim')
+        let mypy_cmd = join(mypy_cmd)
+    endif
+    cgetexpr system(mypy_cmd)
+    copen
+endfunction
+command! -buffer Mypy call s:mypy()
