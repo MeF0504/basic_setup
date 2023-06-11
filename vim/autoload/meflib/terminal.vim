@@ -26,7 +26,6 @@ function! meflib#terminal#comp(arglead, cmdline, cursorpos) abort
         let cmdlines = a:cmdline->split()
         let def_opts = ['Terminal']
         let def_opts += map(copy(s:term_opts), '"-"..v:val')
-        let def_opts += s:term_win_opts
         if match(cmdlines, '-term') != -1
             " -termがあるならコマンドは取らない
             return []
