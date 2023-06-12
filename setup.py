@@ -27,6 +27,15 @@ if py_version < 3006:
     print('Version >= 3.6 required')
     sys.exit()
 
+colors = {
+        "message": 11,
+        "diff_plus": 12,
+        "diff_minus": 1,
+        "error": 1,
+        "show_files": 2,
+        "path": 10,
+        }
+
 
 class CopyClass():
     """ copy class
@@ -90,7 +99,7 @@ class CopyClass():
             return
 
     def copy(self, src: Path, dst: Path):
-        fg = FG256(11)
+        fg = FG256(colors['message'])
         end = END
 
         if self.link:
@@ -125,10 +134,10 @@ class CopyClass():
                 tofiledate=src_dt.strftime('%m %d (%Y) %H:%M:%S')):
             line = line.replace('\n', '')
             if line[0] == '+':
-                col = FG256(12)
+                col = FG256(colors['diff_plus'])
                 end = END
             elif line[0] == '-':
-                col = FG256(1)
+                col = FG256(colors['diff_minus'])
                 end = END
             else:
                 col = ''
@@ -175,7 +184,8 @@ class CopyClass():
                 linkpath = dst.parent.joinpath(dst.readlink())
                 os.unlink(dst)
                 self.print('{}{} -> {} is a broken link. unlink.{}'.format(
-                    FG256(1), dst2, self.home_cut(linkpath), END), True)
+                    FG256(colors['error']), dst2,
+                    self.home_cut(linkpath), END), True)
                 exist = False
                 islink = False
                 cmp = False
@@ -205,7 +215,7 @@ class CopyClass():
                 return False
 
     def show_files(self):
-        fg = FG256(2)
+        fg = FG256(colors['show_files'])
         end = END
         self.print('{}target files{}'.format(fg, end), self.show_target)
 
@@ -261,7 +271,7 @@ class CopyClass():
 
 
 def print_path(path):
-    fg = FG256(10)
+    fg = FG256(colors['path'])
     end = END
     print('\n{}@ {}{}\n'.format(fg, path, end))
 
@@ -340,6 +350,25 @@ def set_path(args):
             print('failed to make conf dir: {}'.format(local_conf))
             print('error: {}'.format(e))
     args.local_conf = local_conf
+
+
+def set_color(args):
+    if args.setup_file is None:
+        return
+    setfile = Path(args.setup_file)
+    if not setfile.is_file():
+        return
+
+    global colors
+    with open(setfile, 'r') as f:
+        conf = json.load(f)
+        if 'color' in conf:
+            color_conf = conf['color']
+            for key in colors:
+                if key in color_conf:
+                    if type(color_conf[key]) == int and \
+                       0 <= color_conf[key] < 256:
+                        colors[key] = color_conf[key]
 
 
 def main_opt(args):
@@ -588,7 +617,7 @@ def main():
                         help="set the type of copy files.",
                         choices='all opt config vim'.split(), default=['all'])
     parser.add_argument('-s', '--setup_file',
-                        help='specify the copy files by json format setting file. please see "opt/test/setup_file_template.json" as an example.')
+                        help='specify the copy files by json format setting file. please see "opt/samples/setup_file_template.json" as an example.')
     parser.add_argument('--show_target_files', action='store_true',
                         help='show target_files before copying')
     parser.add_argument('--show_no_update_files', action='store_true',
@@ -605,6 +634,7 @@ def main():
     args.fpath = fpath
     os.chdir(fpath)
     set_path(args)
+    set_color(args)
 
     if 'all' in args.type:
         main_opt(args)

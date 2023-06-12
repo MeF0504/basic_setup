@@ -18,6 +18,10 @@
     },
     "//comment": "vim is not set here, so copy files based on default setting.",
     "//comment": "if you want to copy specified files contained in vim directory, add\"vim\" key and setting dictionaries.",
-    "//comment": "and if you don't want to copy any files in vim directory, please add \"vim\" key with empty dictionary."
+    "//comment": "and if you don't want to copy any files in vim directory, please add \"vim\" key with empty dictionary.",
+    "// comment": "The following set the colors used in setup.py.",
+    "color": {
+        "path": 5
+    }
 }
 
