@@ -4,6 +4,7 @@
 CONTENTS                                             *meflib-shellmemo-contents*
 
 If-state        |meflib-shellmemo-if-state|
+Variables       |meflib-shellmemo-variables|
 Completion      |meflib-shellmemo-completion|
 
 ==============================================================================
@@ -56,6 +57,22 @@ AND, OR, NOT~
 -t 0		標準入力が端末
 -t 1		標準出力が端末
 -t 2		標準エラー出力が端末
+
+==============================================================================
+VARIABLES                                           *meflib-shellmemo-variables*
+
+https://www.gnu.org/software/bash/manual/bash.html#Positional-Parameters-1 ?
+$0~
+実行しているファイル自身
+
+$1 ... $N~
+N番目の引数
+
+$@, $*~
+全引数。"$@"だと引数ごとに渡されるが，"$*"だとすべて繋がった状態で渡される
+
+$#~
+引数の数
 
 ==============================================================================
 COMPLETION                                         *meflib-shellmemo-completion*
