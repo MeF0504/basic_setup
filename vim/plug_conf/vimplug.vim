@@ -1356,18 +1356,27 @@ endfunction
 " }}}
 " lsp server が動いていれば<c-]>で定義に飛んで，<c-j>でreferencesを開く
 " <c-p>でhelp hover, definition, type definition を選択
+let s:tag_maps = [
+            \ maparg("\<c-]>", 'n', 0, 1),
+            \ maparg("\<c-j>", 'n', 0, 1),
+            \ maparg("\<c-p>", 'n', 0, 1),
+            \ ]
 function! s:lsp_mapping(map) abort " {{{
     if !s:chk_lsp_running(1, 1)
         " not running
-        if a:map == 1
-            " <c-]>
-            return "\<Cmd>tjump "..expand('<cword>').."\<CR>"
-        elseif a:map == 2
-            " <c-j>
-            return "\<Cmd>tab tjump "..expand('<cword>').."\<CR>"
-        elseif a:map == 3
-            " <c-p>
-            return "\<Cmd>ptjump "..expand("<cword>").."\<CR>"
+        let mapargs = s:tag_maps[a:map-1]
+        if mapargs.expr
+            let tmp = substitute(mapargs.rhs, '<SID>', printf('<SNR>%d_', mapargs.sid), '')
+            return eval(tmp)
+        else
+            " ↓ doesn't work?
+            " let tmp = substitute(mapargs.rhs, '<', '\\<', 'g')
+            " return tmp
+            if a:map == 2
+                return "\<Cmd>Gregrep ex=None dir=opened\<CR>"
+            elseif a:map == 3
+                return "\<Cmd>ptjump "..expand('<cword>').."\<CR>"
+            endif
         endif
     endif
     if a:map == 1

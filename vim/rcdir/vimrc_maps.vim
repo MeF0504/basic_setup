@@ -98,13 +98,31 @@ nnoremap gf <c-w>gf
 
 " tag jump
 " 候補が複数ある場合にリストを表示
-nnoremap <c-]> g<c-]>
+" nnoremap <c-]> g<c-]>
+function! s:tag_jump() abort
+    echo 'open in; [t]ab/[s]plit/[v]ertical/cur_win<CR> '
+    let yn = getcharstr()
+    if yn == 't'
+        return "\<Cmd>tab tjump "..expand('<cword>').."\<CR>"
+    elseif yn == 's'
+        return "\<Cmd>stjump "..expand('<cword>').."\<CR>"
+    elseif yn == 'v'
+        return "\<Cmd>vertical stjump "..expand('<cword>').."\<CR>"
+    elseif yn == "\<CR>"
+        return "g\<c-]>"
+    else
+        echo 'canceled'
+        return ''
+    endif
+endfunction
+" 更に改良，lspと同様に開き方を選択
+nnoremap <expr> <c-]> <SID>tag_jump()
 " 分割で表示
 nnoremap <silent> g<c-]> <Cmd>vertical stjump<CR>
 " preview で開く
 nnoremap <silent> <c-p> <Cmd>execute "ptjump "..expand("<cword>")<CR>
-"jump先をnew tabで開く
-nnoremap <silent> <c-j> <Cmd>execute "tab tjump "..expand("<cword>")<CR>
+" ファイル内で検索
+nnoremap <silent> <c-j> <Cmd>Gregrep ex=None dir=opened<CR>
 
 " \で検索のハイライトを消す
 nnoremap <silent> \ <Cmd>nohlsearch<CR>
