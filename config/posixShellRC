@@ -261,14 +261,7 @@ vim_wrapper() # {{{
     else
         local use_vim="vim"
     fi
-
-    if [[ -p /dev/stdin ]]; then
-        # pipe
-        files=($(cat -))
-    else
-        files=("$@")
-    fi
-    $use_vim -p "${files[@]}"
+    $use_vim -p "$@"
 }
 alias vi=vim_wrapper
 # }}}
