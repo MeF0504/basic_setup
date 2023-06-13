@@ -264,7 +264,7 @@ vim_wrapper() # {{{
 
     if [[ -p /dev/stdin ]]; then
         # pipe
-        files=("$(cat -)")
+        files=($(cat -))
     else
         files=("$@")
     fi
