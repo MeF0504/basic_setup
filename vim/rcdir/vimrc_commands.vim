@@ -92,10 +92,10 @@ command! MefShowVar call meflib#get('', '')
 command! -nargs=+ -complete=customlist,meflib#echo#comp Echo call meflib#echo#main(<f-args>)
 " }}}
 " 複数行で順に加算／減算 {{{
-vnoremap <c-a><c-a> <Cmd>call meflib#tools#addsub('a', 0)<CR>
-vnoremap <c-a><c-x> <Cmd>call meflib#tools#addsub('a', 1)<CR>
-vnoremap <c-x><c-a> <Cmd>call meflib#tools#addsub('x', 1)<CR>
-vnoremap <c-x><c-x> <Cmd>call meflib#tools#addsub('x', 0)<CR>
+vnoremap <c-a><c-a> <Cmd>call meflib#ctrlax#addsub('a', 0)<CR>
+vnoremap <c-a><c-x> <Cmd>call meflib#ctrlax#addsub('a', 1)<CR>
+vnoremap <c-x><c-a> <Cmd>call meflib#ctrlax#addsub('x', 1)<CR>
+vnoremap <c-x><c-x> <Cmd>call meflib#ctrlax#addsub('x', 0)<CR>
 " }}}
 " buffer を選んでtabで開く {{{
 command! -bang BufOpen call meflib#openbuffer#main(<q-mods>, "<bang>")
@@ -108,8 +108,8 @@ nnoremap J <Cmd>call meflib#join_wrapper#main()<CR>
 vnoremap J <Cmd>call meflib#join_wrapper#main()<CR>
 " }}}
 " <c-a> でtrue/falseも置換したい {{{
-nnoremap <c-a> <Cmd>call meflib#tools#true_false('a')<CR>
-nnoremap <c-x> <Cmd>call meflib#tools#true_false('x')<CR>
+nnoremap <c-a> <Cmd>call meflib#ctrlax#true_false('a')<CR>
+nnoremap <c-x> <Cmd>call meflib#ctrlax#true_false('x')<CR>
 " }}}
 " 関数一覧 {{{
 command! TagFuncAll call meflib#tag_func_all#open()
