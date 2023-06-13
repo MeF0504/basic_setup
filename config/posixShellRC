@@ -145,46 +145,6 @@ _chk_and_source() # {{{
     [[ -f "$1" ]] && source "$1"
 }
 # }}}
-vim_wrapper() # {{{
-{
-    if [[ -n "${VIM_TERMINAL}" ]]; then
-        # vim上からshellを操作してvimで開く
-        # :h terminal-api
-        # Neovimには無いらしい
-        fp=$(cd $(dirname $1) && pwd)/$(basename $1)
-        echo -ne "\e]51;[\"drop\", \"${fp}\", {}]\x07"
-        return
-    elif [[ -x $(which "$_USE_VIM" 2> /dev/null) ]]; then
-        local use_vim=$_USE_VIM
-    else
-        local use_vim="vim"
-    fi
-    $use_vim -p "$@"
-}
-alias vi=vim_wrapper
-# }}}
-vimfind() # {{{
-{
-    # find file and open it by vim
-    find "$@" > /dev/null && vim_wrapper $(find "$@")
-} # }}}
-vimman() # {{{
-{
-    # open manual in vim
-    # https://rcmdnk.com/blog/2014/07/20/computer-vim/
-    man "$@" 2>&1 | col -bx | vim_wrapper -R -c 'set ft=man nolist nomod noma' -
-} # }}}
-timeout_local() # {{{
-{
-    # https://qiita.com/yohm/items/db6aea3cbc71ab2d55bd
-    time=$1
-
-    # start the command in a subshell to avoid problem with pipes
-    # (spawn accepts one command)
-    command="/bin/sh -c \"${@:2}\""
-
-    /usr/bin/expect -c "set timeout $time; spawn -noecho $command; expect timeout { exit 124 } eof; catch wait result; exit [lindex \$result 3];"
-} # }}}
 add_env() # {{{
 {
     local echo_usage="
@@ -287,6 +247,46 @@ add_env() # {{{
         fi
     done
 } # }}}
+vim_wrapper() # {{{
+{
+    if [[ -n "${VIM_TERMINAL}" ]]; then
+        # vim上からshellを操作してvimで開く
+        # :h terminal-api
+        # Neovimには無いらしい
+        fp=$(cd $(dirname $1) && pwd)/$(basename $1)
+        echo -ne "\e]51;[\"drop\", \"${fp}\", {}]\x07"
+        return
+    elif [[ -x $(which "$_USE_VIM" 2> /dev/null) ]]; then
+        local use_vim=$_USE_VIM
+    else
+        local use_vim="vim"
+    fi
+    $use_vim -p "$@"
+}
+alias vi=vim_wrapper
+# }}}
+vimfind() # {{{
+{
+    # find file and open it by vim
+    find "$@" > /dev/null && vim_wrapper $(find "$@")
+} # }}}
+vimman() # {{{
+{
+    # open manual in vim
+    # https://rcmdnk.com/blog/2014/07/20/computer-vim/
+    man "$@" 2>&1 | col -bx | vim_wrapper -R -c 'set ft=man nolist nomod noma' -
+} # }}}
+timeout_local() # {{{
+{
+    # https://qiita.com/yohm/items/db6aea3cbc71ab2d55bd
+    time=$1
+
+    # start the command in a subshell to avoid problem with pipes
+    # (spawn accepts one command)
+    command="/bin/sh -c \"${@:2}\""
+
+    /usr/bin/expect -c "set timeout $time; spawn -noecho $command; expect timeout { exit 124 } eof; catch wait result; exit [lindex \$result 3];"
+} # }}}
 calc() # {{{
 {
     # here document?
@@ -298,6 +298,14 @@ echoenv() # {{{
     echo -ne "${*//:/\\n}"
     echo ''
 } # }}}
+mkcd()
+{
+    if [[ ! -d "$1" ]]; then
+        echo mkdir "$1"
+        mkdir -p "$1"
+    fi
+    \cd "$1"
+}
 _chk_and_source "$HOME/.config/meflib/get_zodiac_whgm.sh"
 _chk_and_source "$HOME/.config/meflib/today_percentage.sh"
 # }}}
