@@ -261,15 +261,17 @@ vim_wrapper() # {{{
     else
         local use_vim="vim"
     fi
-    $use_vim -p "$@"
+
+    if [[ -p /dev/stdin ]]; then
+        # pipe
+        files=("$(cat -)")
+    else
+        files=("$@")
+    fi
+    $use_vim -p "${files[@]}"
 }
 alias vi=vim_wrapper
 # }}}
-vimfind() # {{{
-{
-    # find file and open it by vim
-    find "$@" > /dev/null && vim_wrapper $(find "$@")
-} # }}}
 vimman() # {{{
 {
     # open manual in vim
