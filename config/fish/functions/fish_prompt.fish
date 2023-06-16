@@ -98,10 +98,10 @@ function _prompt_cnt_time
             set h (math --scale 0 $__exec_time / 60 / 60  % 24)
             set m (math --scale 0 $__exec_time / 60  % 60)
             set s (math --scale 0 $__exec_time % 60)
-            [ $d -gt 1 ]; and set res $res$d'd '
-            [ $h -gt 1 ]; and set res $res$h'h '
-            [ $m -gt 1 ]; and set res $res$m'm '
-            [ $s -gt 1 ]; and set res $res$s's '
+            [ $d -ge 1 ]; and set res $res$d'd '
+            [ $h -ge 1 ]; and set res $res$h'h '
+            [ $m -ge 1 ]; and set res $res$m'm '
+            [ $s -ge 1 ]; and set res $res$s's '
         end
     end
     set --erase -g __pre_time
