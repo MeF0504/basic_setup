@@ -156,16 +156,21 @@ endif
 " }}}
 
 " mypy quick fix でいけるのでは？
-function! s:mypy() abort
+function! s:mypy(...) abort
     if !executable('mypy')
         echo 'mypy is not executable'
         return
     endif
-    let mypy_cmd = ['mypy', expand('%')]
+    if a:0 == 0
+        let target_files = [expand('%')]
+    else
+        let target_files = a:000
+    endif
+    let mypy_cmd = ['mypy'] + target_files
     if !has('nvim')
         let mypy_cmd = join(mypy_cmd)
     endif
     cgetexpr system(mypy_cmd)
     copen
 endfunction
-command! -buffer Mypy call s:mypy()
+command! -buffer -nargs=* -complete=file Mypy call s:mypy(<f-args>)
