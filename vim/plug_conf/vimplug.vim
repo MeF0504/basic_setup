@@ -37,6 +37,18 @@ call meflib#set('deno_on', meflib#get('load_plugin', 'denops', 0))
 " joke command
 Plug 'MeF0504/sl.vim', PlugCond(1, {'on': 'SL'})
 
+" Project Sekai inspired plugin
+Plug 'MeF0504/untitled.vim'
+" untitled {{{
+function! s:untitled_his() abort
+    let bc = untitled#get_birthday_color()
+    if !empty(bc)
+        execute printf('highlight StatusLine ctermbg=%s ctermfg=0 guibg=%s guifg=Black', bc.cterm, bc.gui)
+    endif
+endfunction
+call meflib#add('plugin_his', s:sid.'untitled_his')
+" }}}
+
 " Syntax 情報をpopupで表示
 Plug 'MeF0504/vim-popsyntax', PlugCond(1, {'on': 'PopSyntaxToggle'})
 " popsyntax {{{
@@ -276,16 +288,7 @@ let s:map_cmds['git']['w'] = "Gitewer status"
 nnoremap <leader>g <Cmd>call <SID>map_util('git')<CR>
 " }}}
 
-" vim上でpetを飼う
-Plug 'MeF0504/vim-pets', PlugCond(1, {'on': 'Pets'})
-" {{{ vim-pets
-function! s:pets_hook() abort
-    let g:pets_garden_pos = [&lines-&cmdheight-2, &columns, 'botright']
-    let g:pets_lifetime_enable = 0
-    let g:pets_birth_enable = 1
-endfunction
-autocmd PlugLocal User vim-pets call s:pets_hook()
-" }}}
+" vim-pets extension
 Plug 'MeF0504/vim-pets-ocean', PlugCond(1, {'on': 'Pets'})
 Plug 'MeF0504/vim-pets-codes', PlugCond(1, {'on': 'Pets'})
 

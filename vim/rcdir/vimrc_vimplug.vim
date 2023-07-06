@@ -64,9 +64,6 @@ call plug#begin(s:plug_dir)
 " for doc
 Plug 'junegunn/vim-plug'
 
-" Project Sekai inspired plugin
-Plug 'MeF0504/untitled.vim', PlugCond(1, {'on': 'Untitled'})
-
 " colorscheme
 Plug 'MeF0504/vim-monoTone'
 
@@ -88,6 +85,17 @@ call meflib#add('plugin_his', expand('<SID>').'parenmatch_his')
 " readme をhelpとして見れるようにする
 let g:readme_viewer#plugin_manager = 'vim-plug'
 Plug '4513ECHO/vim-readme-viewer', PlugCond(1, { 'on': 'PlugReadme' })
+
+" vim上でpetを飼う
+Plug 'MeF0504/vim-pets', PlugCond(1, {'on': ['Pets', 'PetsWithYou']})
+" {{{ vim-pets
+function! s:pets_hook() abort
+    let g:pets_garden_pos = [&lines-&cmdheight-2, &columns, 'botright']
+    let g:pets_lifetime_enable = 0
+    let g:pets_birth_enable = 1
+endfunction
+autocmd PlugLocal User vim-pets call s:pets_hook()
+" }}}
 
 " color schemes
 let s:colorscheme_file = expand('<sfile>:h:h').'/plug_conf/colorscheme.vim'
