@@ -23,7 +23,7 @@ def main(args):
     img = Image.open(img_file)
     fig = px.imshow(img)
 
-    with open(json_file, 'r') as f:
+    with open(json_file, 'r', encoding='utf-8') as f:
         txt_list = json.load(f)
     for t in txt_list:
         if "opt" in t:
