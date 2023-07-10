@@ -21,6 +21,38 @@ def main(args):
         print('json file is not exists.')
         return
 
+    add_text(img_file, json_file, args)
+    if args.append:
+        update_json(json_file)
+        add_text(img_file, json_file, args)
+
+
+def update_json(json_file):
+    with open(json_file, 'r', encoding='utf-8') as f:
+        txt_list = json.load(f)
+    print('type "quit" to quit')
+    while True:
+        x = input('x: ')
+        if x == 'quit':
+            break
+        else:
+            x = int(x)
+        y = input('y: ')
+        if y == 'quit':
+            break
+        else:
+            y = int(y)
+        txt = input('text: ')
+        if txt == 'quit':
+            break
+
+        txt_list.append({'x': x, 'y': y, 'text': txt})
+
+    with open(args.json, 'w', encoding='utf-8') as f:
+        json.dump(txt_list, f, indent=4, ensure_ascii=False)
+
+
+def add_text(img_file, json_file, args):
     img = Image.open(img_file)
     fig = px.imshow(img)
 
@@ -61,5 +93,7 @@ if __name__ == '__main__':
         'sample: opt/samples/mkimgwtxt_sample.json',
         ))
     parser.add_argument('--output', '-o', help='output file')
+    parser.add_argument('--append', '-a', help='do append mode.',
+                        action='store_true')
     args = parser.parse_args()
     main(args)
