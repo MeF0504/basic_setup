@@ -1520,7 +1520,7 @@ function! s:ddc_hook() abort
     " set UI
     call ddc#custom#patch_global('ui', 'native')
     " add sources
-    call ddc#custom#patch_global('sources', ['file', 'vim-lsp', 'around'])
+    call ddc#custom#patch_global('sources', ['vim-lsp', 'around', 'file'])
     " set basic options
     call ddc#custom#patch_global(
         \ 'sourceOptions', {
@@ -1575,7 +1575,7 @@ function! s:ddc_hook() abort
         \ }
     \ })
     call ddc#custom#patch_filetype(['vim', 'toml'], {
-        \ 'sources': ['necovim', 'file', 'around'],
+        \ 'sources': ['necovim', 'around', 'file'],
         \ 'sourceOptions': {
             \ 'necovim': {
                 \ 'mark': 'vim',
@@ -1584,9 +1584,9 @@ function! s:ddc_hook() abort
         \}
     \ })
     if meflib#get('tabnine_on', 1)
-        let ft_sources = ['file', 'vim-lsp', 'around', 'tabnine']
+        let ft_sources = ['vim-lsp', 'around', 'tabnine', 'file']
     else
-        let ft_sources = ['file', 'vim-lsp', 'around']
+        let ft_sources = ['vim-lsp', 'around', 'file']
     endif
     call ddc#custom#patch_filetype(['python', 'c', 'cpp'], {
         \ 'sources': ft_sources,
