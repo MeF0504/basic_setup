@@ -6,21 +6,21 @@ _get_zodiac_whgm()
             if [[ $(date '+%-d') -lt 19 ]]; then
                 num=9
             else
-                num=A
+                num=10
             fi
             whgm=睦月
             ;;
         02)
             if [[ $(date '+%-d') -lt 18 ]]; then
-                num=A
+                num=10
             else
-                num=B
+                num=11
             fi
             whgm=如月
             ;;
         03)
             if [[ $(date '+%-d') -lt 20 ]]; then
-                num=B
+                num=11
             else
                 num=0
             fi
