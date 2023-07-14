@@ -78,3 +78,7 @@ _chk_and_source "$HOME/.bash/complete.bash"
 _chk_and_source "$HOME/.bash/bashrc.mine"
 # }}}
 
+# initial message {{{
+echo "today: $(today_percentage)%"
+# }}}
+
