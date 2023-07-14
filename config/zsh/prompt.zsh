@@ -26,7 +26,8 @@ if [ -z "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
     add-zsh-hook periodic get_ip
 fi
 
-function ip_color() {
+function ip_color()
+{
     # {{{
     local ip=$1
     if [[ $(echo "$ip" | wc -l) -ne 1 ]]; then
@@ -40,6 +41,9 @@ function ip_color() {
         return 0
     fi
 
+    # display colorfully:
+    # https://qiita.com/butaosuinu/items/770a040bc9cfe22c71f4
+    # https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit
     if [[ $ip == *.* ]]; then   # IPv4
         eval "ipnum=(${ip//./ })"
         ip1f=15
@@ -50,25 +54,37 @@ function ip_color() {
         ip3b=${ipnum[3]}
         ip4f=15
         ip4b=${ipnum[4]}
+        ip1="%F{$ip1f}%K{$ip1b}"
+        ip2="%F{$ip2f}%K{$ip2b}"
+        ip3="%F{$ip3f}%K{$ip3b}"
+        ip4="%F{$ip4f}%K{$ip4b}"
     elif [[ $ip == *:* ]]; then     # IPv6
         eval "ipnum=(${ip//:/ })"
-        ip1f=$(( 0x${ipnum[1]} & 0xFF ))
-        ip1b=$(( 0x${ipnum[1]} >> 8 ))
-        ip2f=$(( 0x${ipnum[2]} & 0xFF ))
-        ip2b=$(( 0x${ipnum[2]} >> 8 ))
-        ip3f=$(( 0x${ipnum[3]} & 0xFF ))
-        ip3b=$(( 0x${ipnum[3]} >> 8 ))
-        ip4f=$(( 0x${ipnum[4]} & 0xFF ))
-        ip4b=$(( 0x${ipnum[4]} >> 8 ))
+        ip1f=$(( 0x${ipnum[1]} >> 8 ))
+        ip1r=$(( 0x${ipnum[1]} & 0xFF ))
+        ip1g=$(( 0x${ipnum[2]} >> 8 ))
+        ip1b=$(( 0x${ipnum[2]} & 0xFF ))
+        ip2f=$(( 0x${ipnum[3]} >> 8 ))
+        ip2r=$(( 0x${ipnum[3]} & 0xFF ))
+        ip2g=$(( 0x${ipnum[4]} >> 8 ))
+        ip2b=$(( 0x${ipnum[4]} & 0xFF ))
+        ip3f=$(( 0x${ipnum[5]} >> 8 ))
+        ip3r=$(( 0x${ipnum[5]} & 0xFF ))
+        ip3g=$(( 0x${ipnum[6]} >> 8 ))
+        ip3b=$(( 0x${ipnum[6]} & 0xFF ))
+        ip4f=$(( 0x${ipnum[7]} >> 8 ))
+        ip4r=$(( 0x${ipnum[7]} & 0xFF ))
+        ip4g=$(( 0x${ipnum[8]} >> 8 ))
+        ip4b=$(( 0x${ipnum[8]} & 0xFF ))
+        ip1="%F{${ip1f}}\033[48;2;${ip1r};${ip1g};${ip1b}m"
+        ip2="%F{${ip2f}}\033[48;2;${ip2r};${ip2g};${ip2b}m"
+        ip3="%F{${ip3f}}\033[48;2;${ip3r};${ip3g};${ip3b}m"
+        ip4="%F{${ip4f}}\033[48;2;${ip4r};${ip4g};${ip4b}m"
     else
-        ip1f=15 # black
-        ip1b=16 # black
-        ip2f=15 # black
-        ip2b=16 # black
-        ip3f=15 # black
-        ip3b=16 # black
-        ip4f=15 # black
-        ip4b=16 # black
+        ip1="%F{15}%K{0}"
+        ip2="%F{15}%K{0}"
+        ip3="%F{15}%K{0}"
+        ip4="%F{15}%K{0}"
     fi
 
     local ch0=${SHELL_INFO:0:1}
@@ -76,49 +92,13 @@ function ip_color() {
     local ch2=${SHELL_INFO:2:1}
     local ch3=${SHELL_INFO:3}
 
-    ### display colorfully: https://qiita.com/butaosuinu/items/770a040bc9cfe22c71f4
     local ret=""
-    ret=$ret"%F{$ip1f}%K{$ip1b}${ch0}%f%k"
-    ret=$ret"%F{$ip2f}%K{$ip2b}${ch1}%f%k"
-    ret=$ret"%F{$ip3f}%K{$ip3b}${ch2}%f%k"
-    ret=$ret"%F{$ip4f}%K{$ip4b}${ch3}%f%k"
+    ret=$ret"${ip1}${ch0}%f%k"
+    ret=$ret"${ip2}${ch1}%f%k"
+    ret=$ret"${ip3}${ch2}%f%k"
+    ret=$ret"${ip4}${ch3}%f%k"
     ret=$ret" "
     echo "$ret"
-    # }}}
-}
-
-function ip_color2() {
-    # {{{
-    # only for IPv6
-    local ip=$1
-    if [[ $(echo "$ip" | wc -l) -ne 1 ]]; then
-        return 0
-    fi
-    if [[ $ip == *:* ]]; then
-        for cnt in {1..8}; do
-            tmp_str=$(echo "$ip" | cut -f ${cnt} -d ":")
-            # 4文字以上があったら弾く
-            if [[ "$tmp_str" =~ ^......*$ ]]; then
-                return 0
-            fi
-        done
-        eval "ipnum=(${ip//:/ })"
-        ip1f=$(( 0x${ipnum[5]} & 0xFF ))
-        ip1b=$(( 0x${ipnum[5]} >> 8 ))
-        ip2f=$(( 0x${ipnum[6]} & 0xFF ))
-        ip2b=$(( 0x${ipnum[6]} >> 8 ))
-        ip3f=$(( 0x${ipnum[7]} & 0xFF ))
-        ip3b=$(( 0x${ipnum[7]} >> 8 ))
-        ip4f=$(( 0x${ipnum[8]} & 0xFF ))
-        ip4b=$(( 0x${ipnum[8]} >> 8 ))
-        local ret=""
-        ret=$ret"%F{$ip1f}%K{$ip1b}I%f%k"
-        ret=$ret"%F{$ip2f}%K{$ip2b}P%f%k"
-        ret=$ret"%F{$ip3f}%K{$ip3b}v%f%k"
-        ret=$ret"%F{$ip4f}%K{$ip4b}6%f%k"
-        ret=$ret" "
-        echo "$ret"
-    fi
     # }}}
 }
 # }}}
@@ -219,10 +199,8 @@ set_prompt() {
         fi
         # ip_color
         local _PS_IPCOLOR='$(ip_color $_GLOBAL_IP)'
-        # ip_color for IPv6
-        local _PS_IPCOLOR2='$(ip_color2 $_GLOBAL_IP)'
 
-        export PROMPT="${_PS_IPCOLOR}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}${_PS_EXTIME}${_PS_NEWLINE}${_PS_IPCOLOR2}${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_END}"
+        export PROMPT="${_PS_IPCOLOR}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}${_PS_EXTIME}${_PS_NEWLINE}${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_END}"
 
         PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
 
