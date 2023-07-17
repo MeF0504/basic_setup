@@ -57,10 +57,10 @@ nnoremap / /\v
 nnoremap * /\v<<c-r><c-w>><CR>
 
 " tab 移動
-nmap g<Right> gt
-nmap g<Left> gT
-nmap gl gt
-nmap gh gT
+nnoremap g<Right> gt
+nnoremap g<Left> gT
+nnoremap gl gt
+nnoremap gh gT
 " ↓ <num>gt に合わせて0gt
 nnoremap <silent> 0gt <Cmd>tablast<CR>
 nnoremap <silent> g> <Cmd>tabmove +1<CR>
@@ -91,7 +91,7 @@ nnoremap <expr> <CR> pumvisible() != 0 ? '<c-m>' :
             \ foldlevel('.') != 0 ? 'za' : '<CR>'
 
 " 今の行を画面のtopにする。ctrl-lはterminalの感覚
-nmap <c-l> z<CR>
+nnoremap <c-l> z<CR>
 
 " goto file をタブで開く
 nnoremap gf <c-w>gf
@@ -177,4 +177,8 @@ function! <SID>close_sidebar() abort
     endif
 endfunction
 nnoremap <silent> <c-b> <Cmd>call <SID>close_sidebar()<CR>
+
+" : で:-like q: を起動
+" は手癖と合わないので一旦消す
+" nnoremap : q:
 

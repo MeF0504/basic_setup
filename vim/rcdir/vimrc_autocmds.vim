@@ -222,3 +222,10 @@ if meflib#get('show_git_status', 1)
     autocmd local CursorHold * call meflib#git_status#main()
 endif
 
+" command line window
+function! s:set_cmdwin() abort
+    startinsert
+endfunction
+" これもmapしない分には消しておく
+" autocmd local CmdWinEnter * call s:set_cmdwin()
+
