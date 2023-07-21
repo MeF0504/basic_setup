@@ -18,6 +18,8 @@ Host dummy
     IdentityFile /path/to/id_rsa
 ## multi ssh
     ProxyCommand ssh {server} -W %h:%p
+    # recently the following is cool!
+    ProxyJump {server}
 ## enable ssh with X-window
     ForwardX11 yes
 ## set server as trasted one
