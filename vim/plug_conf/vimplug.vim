@@ -41,10 +41,12 @@ Plug 'MeF0504/sl.vim', PlugCond(1, {'on': 'SL'})
 Plug 'MeF0504/untitled.vim'
 " untitled {{{
 function! s:untitled_his() abort
-    let bc = untitled#get_birthday_color()
-    if !empty(bc)
-        execute printf('highlight StatusLine ctermbg=%s ctermfg=0 guibg=%s guifg=Black', bc.cterm, bc.gui)
-    endif
+    try
+        let bc = untitled#get_birthday_color()
+        if !empty(bc)
+            execute printf('highlight CursorLineNr ctermbg=%s ctermfg=0 guibg=%s guifg=Black', bc.cterm, bc.gui)
+        endif
+    endtry
 endfunction
 call meflib#add('plugin_his', s:sid.'untitled_his')
 " }}}
