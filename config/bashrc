@@ -5,7 +5,7 @@
 if [[ -f "${HOME}/.posixShellRC" ]]; then
     source "$HOME/.posixShellRC"
 else
-    if [[ -t 0 ]]; then
+    if [[ -t 1 ]]; then
         echo "[posix shell rc] not found!" >&2
     fi
 fi
@@ -21,19 +21,21 @@ fi
 # }}}
 
 ##{{{ key bind
-# ctrl-b,f で前後の単語に移動
-# https://qiita.com/yamamoto_hiroya/items/2f5c549c2da25cb9eb78
-bind '"\C-f": forward-word'
-bind '"\C-b": backward-word'
+if [[ -t 1 ]]; then
+    # ctrl-b,f で前後の単語に移動
+    # https://qiita.com/yamamoto_hiroya/items/2f5c549c2da25cb9eb78
+    bind '"\C-f": forward-word'
+    bind '"\C-b": backward-word'
 
-# <c-w>で消す際に/単位で削除
-# https://qiita.com/yamamoto_hiroya/items/9d569010cf0be4719b6c
-stty werase undef
-bind '"\C-w": unix-filename-rubout'
+    # <c-w>で消す際に/単位で削除
+    # https://qiita.com/yamamoto_hiroya/items/9d569010cf0be4719b6c
+    stty werase undef
+    bind '"\C-w": unix-filename-rubout'
 
-# ctrl-p, nでhistoryの一致検索
-bind '"\C-p": history-search-backward'
-bind '"\C-n": history-search-forward'
+    # ctrl-p, nでhistoryの一致検索
+    bind '"\C-p": history-search-backward'
+    bind '"\C-n": history-search-forward'
+fi
 
 # }}}
 
