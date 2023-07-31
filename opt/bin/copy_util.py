@@ -15,12 +15,15 @@ def grabargs():
     parser.add_argument('source_dir', help="source directory")
     parser.add_argument('target_dir', help="target directory")
     parser.add_argument('--cmp', help='compare each file and skip copy if source and target file are same.', action='store_true')
+    parser.add_argument('--test', help='show which files will be copied.',
+                        action='store_true')
     opt_type = parser.add_mutually_exclusive_group()
     opt_type.add_argument('--date', help="copy files in the source directory to target_dir/{date}. you can specify -c, -n, -m amd -a. -c is the default.", action='store_true')
     opt_type.add_argument('-r', '--recursive', help="copy files recursively.", action='store_true')
     dt_type = parser.add_mutually_exclusive_group()
     dt_type.add_argument('-c', help='(date) meta data update (UNIX), created (Windows)', action='store_true')
-    dt_type.add_argument('-b', help='(date) created (some OS)', action='store_true')
+    dt_type.add_argument('-b', help='(date) created (some OS)',
+                         action='store_true')
     dt_type.add_argument('-m', help='(date) last update', action='store_true')
     dt_type.add_argument('-a', help='(date) last access', action='store_true')
 
@@ -76,8 +79,11 @@ def main():
                 is_copy = True
 
         if is_copy:
-            print("copy %s" % t_file)
-            shutil.copy(s_file, t_file)
+            if args.test:
+                print(f"[test] copy {s_file} -> {t_file}")
+            else:
+                print(f"copy {t_file}")
+                shutil.copy(s_file, t_file)
 
 
 if __name__ == "__main__":
