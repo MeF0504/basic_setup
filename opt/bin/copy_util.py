@@ -65,7 +65,7 @@ def main():
         else:
             dir_name = t_dir
 
-        if not dir_name.is_dir():
+        if not dir_name.is_dir() and not args.test:
             os.makedirs(dir_name)
 
         t_file = dir_name/s_file.name
