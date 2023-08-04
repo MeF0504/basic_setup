@@ -14,7 +14,7 @@ if &filetype == 'tex'
             endif
         endif
 
-        " get main % bib file
+        " get main & bib file
         let local_config = expand('%:h')..'/.tex_setting.txt'
         if filereadable(local_config)
             let [main_file, bib_file] = readfile(local_config)
