@@ -68,8 +68,14 @@ function! meflib#ctrlax#true_false(premap) abort
     let pos = getpos('.')
     let col = pos[2]-len(cword)
     let cur_line = getline('.')
-    let new_line = cur_line[:col-2]
-    let new_line .= substitute(cur_line[col-1:], cword, new_word, '')
+    if col >= 2
+        " replace Nth true/false
+        let new_line = cur_line[:col-2]
+        let new_line .= substitute(cur_line[col-1:], cword, new_word, '')
+    else
+        " replace first true/false
+        let new_line = substitute(cur_line, cword, new_word, '')
+    endif
     delete _
     call append(pos[1]-1, new_line)
     call setpos('.', pos)
