@@ -71,7 +71,9 @@ function! <SID>lsp_his() abort
         execute printf("highlight default LspHintText ctermfg=%s ctermbg=%s guifg=%s guibg=%s", chint, ctermbg, ghint, guibg)
     endif
 endfunction
-call meflib#add('plugin_his', expand('<SID>').'lsp_his')
+" call meflib#add('plugin_his', expand('<SID>').'lsp_his')
+" ↑ だとseiyaより後に呼ばれて一部透過しないので，↓で呼ぶ
+autocmd PlugLocal User vim-lsp call s:lsp_his()
 " }}}
 " reference: lsp_settings#profile#status()
 function! <SID>chk_lsp_running(bool, echo) abort " {{{
