@@ -54,7 +54,14 @@ nnoremap <silent> cp <Cmd>colder<CR>
 
 " search
 nnoremap / /\v
-nnoremap * /\v<<c-r><c-w>><CR>
+function! s:star_map() abort
+    if empty(expand('<cword>'))
+        return "\<Cmd>echo 'empty'\<CR>"
+    else
+        return "/\\v\<\<c-r>\<c-w>\>\<CR>"
+    endif
+endfunction
+nnoremap <expr> * <SID>star_map()
 
 " tab 移動
 nnoremap g<Right> gt
