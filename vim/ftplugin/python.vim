@@ -155,7 +155,7 @@ else
 endif
 " }}}
 
-" mypy quick fix でいけるのでは？
+" mypy quick fix でいけるのでは？ {{{
 function! s:mypy(...) abort
     if !executable('mypy')
         echo 'mypy is not executable'
@@ -174,3 +174,22 @@ function! s:mypy(...) abort
     copen
 endfunction
 command! -buffer -nargs=* -complete=file Mypy call s:mypy(<f-args>)
+" }}}
+
+" matplotlibの設定がみたい
+function! s:get_plt_rcparam(...) abort
+    if a:0 == 0
+        let arg = ''
+    else
+        let arg = a:1
+    endif
+    python3 << EOF
+import matplotlib.pyplot as plt
+import vim
+arg = vim.eval('arg')
+for k in plt.rcParams:
+    if arg in k:
+        print(f'{k}:  {plt.rcParams[k]}')
+EOF
+endfunction
+command! -buffer -nargs=* GetRcparam call s:get_plt_rcparam(<f-args>)
