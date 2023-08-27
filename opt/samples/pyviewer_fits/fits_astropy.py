@@ -46,5 +46,5 @@ def main(fpath, args):
     data2 = np.array([[local_color_map(np.log10(x), max_val)
                        if x > 0 else [0, 0, 0]
                        for x in tmp]
-                      for tmp in data], dtype=np.int16)
+                      for tmp in data], dtype=np.uint8)
     show_image_ndarray(data2, fname, args)
