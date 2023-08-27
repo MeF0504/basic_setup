@@ -13,6 +13,11 @@ Please append following settings.
     },
     "config": {
         "add_args": ["add_args_healpy"]
+    },
+    "fits_healpy": {
+        "projection": "mollweide",
+        "norm": "None",
+        "coord": [],
     }
 }
 ```
