@@ -44,7 +44,7 @@ function! s:untitled_his() abort
     try
         let bc = untitled#get_birthday_color()
         if !empty(bc)
-            execute printf('highlight CursorLineNr ctermbg=%s ctermfg=0 guibg=%s guifg=Black', bc.cterm, bc.gui)
+            execute printf('highlight TabLineSel ctermbg=%s ctermfg=0 guibg=%s guifg=Black', bc.cterm, bc.gui)
         endif
     endtry
 endfunction
