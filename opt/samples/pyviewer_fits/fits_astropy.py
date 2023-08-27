@@ -18,7 +18,8 @@ def show_help():
                             ' if no key is specified, show the HDU info.' +
                             ' Note that the values of each pixel are' +
                             ' displayed in log scale.',
-                            sup_iv=True, sup_k=True)
+                            sup_iv=True, sup_k=True,
+                            add_args='add_args_fits')
     print(helpmsg)
 
 
@@ -42,8 +43,12 @@ def main(fpath, args):
         return
     data -= np.nanmin(data)
     data = np.where(data == data, data, 0)
-    max_val = np.log10(np.max(data))
-    data2 = np.array([[local_color_map(np.log10(x), max_val)
+    if hasattr(args, 'log_scale') and args.log_scale:
+        f = np.log10
+    else:
+        f = lambda x: x
+    max_val = f(np.max(data))
+    data2 = np.array([[local_color_map(f(x), max_val)
                        if x > 0 else [0, 0, 0]
                        for x in tmp]
                       for tmp in data], dtype=np.uint8)

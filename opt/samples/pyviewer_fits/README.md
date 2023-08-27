@@ -12,7 +12,7 @@ Please append following settings.
         "fits_healpy": ""
     },
     "config": {
-        "add_args": ["add_args_healpy"]
+        "add_args": ["add_args_fits"]
     },
     "fits_healpy": {
         "projection": "mollweide",

@@ -12,7 +12,7 @@ def show_help():
                             ' using HealPix.' +
                             ' args.key specifies field.',
                             sup_k=True,
-                            add_args='add_args_healpy')
+                            add_args='add_args_fits')
     print(helpmsg)
 
 
