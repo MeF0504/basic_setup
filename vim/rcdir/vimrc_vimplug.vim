@@ -19,6 +19,19 @@ function! PlugCond(cond, ...)
   return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
 endfunction
 
+function! s:plug_wrapper(plug_name, ...) abort
+    let unload_plugs = meflib#get('unload_plugs', [])
+    if match(unload_plugs, printf("^%s$", a:plug_name)) != -1
+        " echomsg "unload "..a:plug_name
+        let opt = [{'on': [], 'for': []}]
+    else
+        let opt = a:000
+    endif
+    call call('plug#', [a:plug_name]+opt)
+endfunction
+
+command! -nargs=+ PlugWrapper call s:plug_wrapper(<args>)
+
 " condition check of loading plugins. {{{
 " call meflib#set('load_plugin', {})
 if exists('*searchcount') && exists('*popup_create')

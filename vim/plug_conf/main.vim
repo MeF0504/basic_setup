@@ -38,7 +38,7 @@ endfunction
 Plug 'MeF0504/sl.vim', PlugCond(1, {'on': 'SL'})
 
 " Project Sekai inspired plugin
-Plug 'MeF0504/untitled.vim'
+PlugWrapper 'MeF0504/untitled.vim'
 " untitled {{{
 function! s:untitled_his() abort
     try
@@ -52,7 +52,7 @@ call meflib#add('plugin_his', s:sid.'untitled_his')
 " }}}
 
 " Syntax 情報をpopupで表示
-Plug 'MeF0504/vim-popsyntax', PlugCond(1, {'on': 'PopSyntaxToggle'})
+PlugWrapper 'MeF0504/vim-popsyntax', PlugCond(1, {'on': 'PopSyntaxToggle'})
 " popsyntax {{{
 let g:popsyntax_match_enable = 1
 " }}}
@@ -104,7 +104,7 @@ Plug 'MeF0504/vim-pets-ocean', PlugCond(1, {'on': 'Pets'})
 Plug 'MeF0504/vim-pets-codes', PlugCond(1, {'on': 'Pets'})
 
 " paste時に履歴から選ぶ
-Plug 'MeF0504/RegistPaste.vim'
+PlugWrapper 'MeF0504/RegistPaste.vim'
 
 " tab の一覧表示＆ジャンプ
 Plug 'MeF0504/vim-TabJumper', PlugCond(1, {'on': 'TabJump'})
