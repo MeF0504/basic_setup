@@ -1,5 +1,5 @@
 " % key extender
-Plug 'andymass/vim-matchup'
+PlugWrapper 'andymass/vim-matchup'
 " 既存plugin をoff
 let g:loaded_matchit = 1
 let g:loaded_matchparen = 1

@@ -1,5 +1,5 @@
 " color codeに色を付ける
-Plug 'MeF0504/hicolcode.vim', PlugCond(1, {'on': 'ColCode'})
+PlugWrapper 'MeF0504/hicolcode.vim', PlugCond(1, {'on': 'ColCode'})
 
 function! s:bash_syntax(line, idx) abort
     let match_list = {

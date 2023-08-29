@@ -1,5 +1,5 @@
 " 簡易，柔軟 outliner生成器
-Plug 'MeF0504/outliner.vim', PlugCond(1, {'on': 'OutLiner'})
+PlugWrapper 'MeF0504/outliner.vim', PlugCond(1, {'on': 'OutLiner'})
 function! s:outliner_hook() abort
     let g:outliner_settings = get(g:, 'outliner_settings', {})
 

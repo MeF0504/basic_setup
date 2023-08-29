@@ -1,6 +1,6 @@
 " 関数一覧を表示
 " repo = 'vim-scripts/taglist.vim'
-Plug 'yegappan/taglist', PlugCond(1, {'on': 'TlistToggle'})
+PlugWrapper 'yegappan/taglist', PlugCond(1, {'on': 'TlistToggle'})
 let g:Tlist_Exit_OnlyWindow = 1
 let g:Tlist_Show_One_File = 1
 let g:Tlist_File_Fold_Auto_Close = 1

@@ -1,5 +1,5 @@
 " vimでLSP (Language Server Protocol)を扱うためのplugin
-Plug 'prabirshrestha/vim-lsp', PlugCond(0, {})
+PlugWrapper 'prabirshrestha/vim-lsp', PlugCond(0, {})
 call meflib#add('lazy_plugins', 'vim-lsp')
 
 " config {{{
@@ -25,7 +25,7 @@ let g:lsp_signature_help_enabled = 0
 " cとかjsでcode actionを無効化
 let g:lsp_document_code_action_signs_enabled = 0
 " Nerd font ならwarningとかも変えようか
-if meflib#get('load_plugin', 'nerdfont', 0)
+if meflib#get('plug_opt', 'nerdfont', 0)
     let g:lsp_diagnostics_signs_warning = {'text': nr2char(0xf071)}
     let g:lsp_diagnostics_signs_error = {'text': nr2char(0xfb8a)}
     let g:lsp_diagnostics_signs_hint = {'text': nr2char(0xf12a)}
@@ -48,7 +48,7 @@ endif
 function! <SID>lsp_his() abort
     highlight default Lsp_Running ctermfg=233 ctermbg=183 guifg=#000000 guibg=#c8a0ef
     highlight default Lsp_NotRunning ctermfg=255 ctermbg=52 guifg=#eeeeee guibg=#702030
-    if meflib#get('load_plugin', 'nerdfont', 0)
+    if meflib#get('plug_opt', 'nerdfont', 0)
         " copy highlight of SignColumn
         let [ctermbg, guibg] = meflib#basic#get_hi_info('SignColumn', ['ctermbg', 'guibg'])
         if &background == 'dark'
@@ -95,7 +95,7 @@ function! <SID>chk_lsp_running(bool, echo) abort " {{{
             if a:bool
                 return v:true
             else
-                if meflib#get('load_plugin', 'nerdfont', 0)
+                if meflib#get('plug_opt', 'nerdfont', 0)
                     let lsp_status = s:lsp_status_icon[lsp_status]
                 endif
                 return printf('%s:%s', active_server, lsp_status)
@@ -105,7 +105,7 @@ function! <SID>chk_lsp_running(bool, echo) abort " {{{
     if a:bool
         return v:false
     else
-        if meflib#get('load_plugin', 'nerdfont', 0)
+        if meflib#get('plug_opt', 'nerdfont', 0)
             let lsp_status = s:lsp_status_icon[lsp_status]
         endif
         return printf('%s:%s', active_server, lsp_status)
@@ -149,7 +149,7 @@ function! <SID>lsp_status_tab() abort " {{{
         if len(name) > name_max
             let name = name[:name_max-1]
         endif
-        if meflib#get('load_plugin', 'nerdfont', 0)
+        if meflib#get('plug_opt', 'nerdfont', 0)
             let is_running = s:lsp_status_icon['running']
         else
             let is_running = 'running'
@@ -303,6 +303,6 @@ autocmd PlugLocal User vim-lsp call s:vim_lsp_hook()
 " autocmd PlugLocal VimEnter * call s:vim_lsp_hook()
 
 " vim-lspの設定用plugin
-Plug 'mattn/vim-lsp-settings', PlugCond(0, {})
+PlugWrapper 'mattn/vim-lsp-settings', PlugCond(0, {})
 call meflib#add('lazy_plugins', 'vim-lsp-settings')
 

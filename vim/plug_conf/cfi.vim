@@ -1,5 +1,5 @@
 " current lineの関数表示用plugin (StatusLine用)
-Plug 'tyru/current-func-info.vim'
+PlugWrapper 'tyru/current-func-info.vim'
 " autocmd PlugLocal User current-func-info.vim call s:cfi_hook()
 autocmd PlugLocal VimEnter * call s:cfi_hook()
 " highlights

@@ -1,5 +1,5 @@
 " コード実行plugin
-Plug 'thinca/vim-quickrun', PlugCond(1, {'on': 'QuickRun'})
+PlugWrapper 'thinca/vim-quickrun', PlugCond(1, {'on': 'QuickRun'})
 let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
 let g:quickrun_no_default_key_mappings = 1
 function! s:quickrun_hook() abort
@@ -135,7 +135,7 @@ endfunction
 nnoremap <silent> <Leader>q <Cmd>call <SID>quickrun_wrapper()<CR>
 
 " job runner of quickrun for Neovim (unofficial)
-Plug 'lambdalisue/vim-quickrun-neovim-job', PlugCond(has('nvim'))
+PlugWrapper 'lambdalisue/vim-quickrun-neovim-job', PlugCond(has('nvim'))
 function! s:quickrun_nvim_job_hook() abort
     if !meflib#get('quickrun_nvimterm', 1)
         " 変数がなければ初期化
@@ -150,7 +150,7 @@ endfunction
 autocmd PlugLocal User vim-quickrun if has('nvim') | call s:quickrun_nvim_job_hook() | endif
 
 " terminal runner of quickrun for Neovim (unofficial)
-Plug 'statiolake/vim-quickrun-runner-nvimterm', PlugCond(has('nvim'))
+PlugWrapper 'statiolake/vim-quickrun-runner-nvimterm', PlugCond(has('nvim'))
 function! s:quickrun_nvimterm_hook() abort
     if meflib#get('quickrun_nvimterm', 1)
         " 変数がなければ初期化

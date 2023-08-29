@@ -1,20 +1,31 @@
 " 新世代(2021) dark deno-powered completion framework
+if !meflib#get('plug_opt', 'denops', 0)
+    call meflib#add('unload_plugins', 'Shougo/ddc.vim')
+    call meflib#add('unload_plugins', 'Shougo/ddc-around')
+    call meflib#add('unload_plugins', 'LumaKernel/ddc-file')
+    call meflib#add('unload_plugins', 'LumaKernel/ddc-tabnine')
+    call meflib#add('unload_plugins', 'shun/ddc-vim-lsp')
+    call meflib#add('unload_plugins', 'Shougo/ddc-matcher_head')
+    call meflib#add('unload_plugins', 'Shougo/ddc-sorter_rank')
+    call meflib#add('unload_plugins', 'Shougo/ddc-converter_remove_overlap')
+    call meflib#add('unload_plugins', 'Shougo/ddc-ui-native')
+endif
 " plugins for ddc.vim
 " source
-Plug 'Shougo/ddc-around', PlugCond(meflib#get('deno_on', 0))
-Plug 'LumaKernel/ddc-file', PlugCond(meflib#get('deno_on', 0))
-Plug 'LumaKernel/ddc-tabnine', PlugCond(meflib#get('deno_on', 0))
-Plug 'shun/ddc-vim-lsp', PlugCond(meflib#get('deno_on', 0))
+PlugWrapper 'Shougo/ddc-around'
+PlugWrapper 'LumaKernel/ddc-file'
+PlugWrapper 'LumaKernel/ddc-tabnine'
+PlugWrapper 'shun/ddc-vim-lsp'
 " matcher
-Plug 'Shougo/ddc-matcher_head', PlugCond(meflib#get('deno_on', 0))
+PlugWrapper 'Shougo/ddc-matcher_head'
 " sorter
-Plug 'Shougo/ddc-sorter_rank', PlugCond(meflib#get('deno_on', 0))
+PlugWrapper 'Shougo/ddc-sorter_rank'
 " converter
-Plug 'Shougo/ddc-converter_remove_overlap', PlugCond(meflib#get('deno_on', 0))
+PlugWrapper 'Shougo/ddc-converter_remove_overlap'
 " UI
-Plug 'Shougo/ddc-ui-native', PlugCond(meflib#get('deno_on', 0))
+PlugWrapper 'Shougo/ddc-ui-native'
 
-Plug 'Shougo/ddc.vim', PlugCond(meflib#get('deno_on', 0))
+PlugWrapper 'Shougo/ddc.vim'
 function! s:ddc_hook() abort
     echomsg 'ddc setting start'
     " set UI
@@ -83,10 +94,18 @@ function! s:ddc_hook() abort
             \},
         \}
     \ })
-    if meflib#get('tabnine_on', 1)
-        let ft_sources = ['vim-lsp', 'around', 'tabnine', 'file']
-    else
-        let ft_sources = ['vim-lsp', 'around', 'file']
+    let ft_sources = []
+    if PlugLoadChk('shun/ddc-vim-lsp')
+        call add(ft_sources, 'vim-lsp')
+    endif
+    if PlugLoadChk('Shougo/ddc-around')
+        call add(ft_sources, 'around')
+    endif
+    if PlugLoadChk('LumaKernel/ddc-tabnine')
+        call add(ft_sources, 'tabnine')
+    endif
+    if PlugLoadChk('LumaKernel/ddc-file')
+        call add(ft_sources, 'file')
     endif
     call ddc#custom#patch_filetype(['python', 'c', 'cpp'], {
         \ 'sources': ft_sources,
@@ -109,7 +128,7 @@ function! s:ddc_hook() abort
 
     echomsg 'ddc setting finish'
 endfunction
-if meflib#get('deno_on', 0)
+if meflib#get('plug_opt', 'denops', 0)
     " autocmd PlugLocal User ddc.vim call s:ddc_hook()
     autocmd PlugLocal InsertEnter * ++once call s:ddc_hook()
 endif

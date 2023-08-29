@@ -45,7 +45,7 @@ function! s:wilder_hook() abort
                 \ }))
 endfunction
 
-Plug 'gelguy/wilder.nvim', PlugCond(1, {'do': function('UpdateRemotePlugins'), 'on': []})
+PlugWrapper 'gelguy/wilder.nvim', PlugCond(1, {'do': function('UpdateRemotePlugins'), 'on': []})
 call meflib#add('lazy_plugins', 'wilder.nvim')
 autocmd PlugLocal User wilder.nvim call s:wilder_hook()
 

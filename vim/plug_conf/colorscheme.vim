@@ -1,7 +1,7 @@
 
-Plug 'MeF0504/ColorSchemePreview.vim', PlugCond(1, {'on': 'ColorSchemePreview'})
+PlugWrapper 'MeF0504/ColorSchemePreview.vim', PlugCond(1, {'on': 'ColorSchemePreview'})
 
-Plug 'MeF0504/vim-shiki'
+PlugWrapper 'MeF0504/vim-shiki'
 " shiki {{{
 function! <SID>my_color_set_shiki()
     highlight Directory ctermfg=34 guifg=#00af00
@@ -9,7 +9,7 @@ endfunction
 call meflib#set('my_color_set', 'shiki', expand('<SID>').'my_color_set_shiki')
 " }}}
 
-Plug 'altercation/vim-colors-solarized'
+PlugWrapper 'altercation/vim-colors-solarized'
 " solarized {{{
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
@@ -21,7 +21,7 @@ endfunction
 call meflib#set('my_color_set', 'solarized', expand('<SID>').'my_color_set_solarized')
 " }}}
 
-Plug 'NLKNguyen/papercolor-theme'
+PlugWrapper 'NLKNguyen/papercolor-theme'
 " PaperColor {{{
 let g:PaperColor_Theme_Options = {
             \ 'theme': {
@@ -55,7 +55,7 @@ endfunction
 call meflib#set('my_color_set', 'PaperColor', expand('<SID>').'my_color_set_PaperColor')
 " }}}
 
-Plug 'google/vim-colorscheme-primary'
+PlugWrapper 'google/vim-colorscheme-primary'
 " primary {{{
 function! <SID>my_color_set_primary()
     " if &background == 'dark'
@@ -84,7 +84,7 @@ endfunction
 call meflib#set('my_color_set', 'primary', expand('<SID>').'my_color_set_primary')
 " }}}
 
-Plug 'haishanh/night-owl.vim'
+PlugWrapper 'haishanh/night-owl.vim'
 " night-owl {{{
 function! <SID>my_color_set_night_owl()
     highlight Pmenu ctermfg=7
@@ -103,7 +103,7 @@ endfunction
 call meflib#set('my_color_set', 'night-owl', expand('<SID>').'my_color_set_night_owl')
 " }}}
 
-Plug 'MeF0504/inkpotter.vim'
+PlugWrapper 'MeF0504/inkpotter.vim'
 " inkpotter {{{
 function! <SID>my_color_set_inkpotter()
     highlight CursorWord1 ctermbg=235 cterm=None guibg=#262626 gui=NONE
@@ -114,9 +114,9 @@ endfunction
 call meflib#set('my_color_set', 'inkpotter', expand('<SID>').'my_color_set_inkpotter')
 " }}}
 
-" Plug 'ulwlu/elly.vim'
+" PlugWrapper 'ulwlu/elly.vim'
 
-Plug 'chasinglogic/modus-themes-vim'
+PlugWrapper 'chasinglogic/modus-themes-vim'
 " modus {{{
 function! <SID>my_color_set_modus_operandi() abort
     " ctermがない？
@@ -140,9 +140,9 @@ endfunction
 call meflib#set('my_color_set', 'modus-operandi', expand('<SID>').'my_color_set_modus_operandi')
 " }}}
 
-Plug 'sainnhe/everforest'
+PlugWrapper 'sainnhe/everforest'
 
-Plug 'thedenisnikulin/vim-cyberpunk'
+PlugWrapper 'thedenisnikulin/vim-cyberpunk'
 " silverhand {{{
 function! <SID>my_color_set_silverhand() abort
     highlight link HiTagFunctions Function

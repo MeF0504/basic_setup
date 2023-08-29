@@ -1,8 +1,8 @@
 " Filer
 " fern plugins
-Plug 'lambdalisue/fern-hijack.vim'
+PlugWrapper 'lambdalisue/fern-hijack.vim'
 
-Plug 'lambdalisue/fern-ssh', PlugCond(1, {'on': 'Fern'})
+PlugWrapper 'lambdalisue/fern-ssh', PlugCond(1, {'on': 'Fern'})
 "" fern-ssh {{{
 function! <SID>ssh_password() abort
     " https://qiita.com/wadahiro/items/977e4f820b4451a2e5e0
@@ -28,17 +28,17 @@ function! <SID>ssh_password() abort
 endfunction
 command! SetSshPass call <SID>ssh_password()
 
-Plug 'lambdalisue/fern-mapping-project-top.vim', PlugCond(1, {'on': 'Fern'})
+PlugWrapper 'lambdalisue/fern-mapping-project-top.vim', PlugCond(1, {'on': 'Fern'})
 
-Plug 'MeF0504/fern-mapping-search-ctrlp.vim', PlugCond(1, {'on': 'Fern'})
+PlugWrapper 'MeF0504/fern-mapping-search-ctrlp.vim', PlugCond(1, {'on': 'Fern'})
 " {{{
 let g:fern_search_ctrlp_root = 1
 " }}}
 
-Plug 'lambdalisue/fern-renderer-nerdfont.vim', PlugCond(1, {'on': 'Fern'})
+PlugWrapper 'lambdalisue/fern-renderer-nerdfont.vim', PlugCond(1, {'on': 'Fern'})
 " fern-nerd-font {{{
 function! s:fern_renderer_nerdfont() abort
-    if meflib#get('load_plugin', 'nerdfont', 0)
+    if meflib#get('plug_opt', 'nerdfont', 0)
         let g:fern#renderer = "nerdfont"
     else
         let g:fern#renderer = "default"
@@ -48,7 +48,7 @@ endfunction
 autocmd PlugLocal User fern-renderer-nerdfont.vim call s:fern_renderer_nerdfont()
 " }}}
 
-Plug 'lambdalisue/fern-git-status.vim', PlugCond(1, {'on': 'Fern'})
+PlugWrapper 'lambdalisue/fern-git-status.vim', PlugCond(1, {'on': 'Fern'})
 " fern git status {{{
 " 遅延loadするので
 let g:fern_git_status_disable_startup = 0
@@ -60,7 +60,7 @@ autocmd PlugLocal User fern-git-status.vim cal s:fern_git_status_hook()
 " }}}
 " }}}
 
-Plug 'lambdalisue/fern.vim', PlugCond(1, {'on': 'Fern'})
+PlugWrapper 'lambdalisue/fern.vim', PlugCond(1, {'on': 'Fern'})
 "" Fern {{{
 " default keymap off
 let g:fern#disable_default_mappings = 1

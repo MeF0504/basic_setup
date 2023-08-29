@@ -13,44 +13,53 @@ augroup PlugLocal
     autocmd!
 augroup END
 
+" extensions of Plug command {{{
 " https://github.com/junegunn/vim-plug/wiki/tips
 function! PlugCond(cond, ...)
   let opts = get(a:000, 0, {})
   return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
 endfunction
 
-function! s:plug_wrapper(plug_name, ...) abort
-    let unload_plugs = meflib#get('unload_plugs', [])
+function! PlugLoadChk(plug_name) abort
+    let unload_plugs = meflib#get('unload_plugins', [])
     if match(unload_plugs, printf("^%s$", a:plug_name)) != -1
+        return v:false
+    else
+        return v:true
+    endif
+endfunction
+
+function! s:plug_wrapper(plug_name, ...) abort
+    if PlugLoadChk(a:plug_name)
+        let opt = a:000
+    else
         " echomsg "unload "..a:plug_name
         let opt = [{'on': [], 'for': []}]
-    else
-        let opt = a:000
     endif
     call call('plug#', [a:plug_name]+opt)
 endfunction
 
 command! -nargs=+ PlugWrapper call s:plug_wrapper(<args>)
+" }}}
 
 " condition check of loading plugins. {{{
-" call meflib#set('load_plugin', {})
 if exists('*searchcount') && exists('*popup_create')
-    call meflib#set('load_plugin', 'hitspop', 1)
+    call meflib#add('unload_plugins', 'osyo-manga/vim-anzu')
+else
+    call meflib#add('unload_plugins', 'obcat/vim-hitspop')
 endif
 if executable('deno')
     if has('patch-8.2.3452') || has('nvim-0.6.0')
-        call meflib#set('load_plugin', 'denops', 1)
+        call meflib#set('plug_opt', 'denops', 1)
     endif
 endif
-if !meflib#get('load_plugin', 'denops', 0)
+if !meflib#get('plug_opt', 'denops', 0)
     if has('python3')
         if v:version>=801 || has('nvim-0.3.0')
-            call meflib#set('load_plugin', 'deoplete', 1)
+            call meflib#set('plug_opt', 'deoplete', 1)
         endif
     endif
 endif
-" 再定義しているのはload_plugin だと長いからだっけ
-call meflib#set('deno_on', meflib#get('load_plugin', 'denops', 0))
 " }}}
 
 " stop loading default plugins {{{
@@ -77,14 +86,14 @@ let g:plug_window = 'tab new'
 call plug#begin(s:plug_dir)
 
 " for doc
-Plug 'junegunn/vim-plug'
+PlugWrapper 'junegunn/vim-plug'
 
 " colorscheme
-Plug 'MeF0504/vim-monoTone'
+PlugWrapper 'MeF0504/vim-monoTone'
 
 " カッコの強調を，処理を落として高速化
 " https://itchyny.hatenablog.com/entry/2016/03/30/210000
-Plug 'itchyny/vim-parenmatch'
+PlugWrapper 'itchyny/vim-parenmatch'
 " {{{
 " デフォルト機能をoff
 let g:loaded_matchparen = 1
@@ -99,10 +108,10 @@ call meflib#add('plugin_his', expand('<SID>').'parenmatch_his')
 
 " readme をhelpとして見れるようにする
 let g:readme_viewer#plugin_manager = 'vim-plug'
-Plug '4513ECHO/vim-readme-viewer', PlugCond(1, { 'on': 'PlugReadme' })
+PlugWrapper '4513ECHO/vim-readme-viewer', PlugCond(1, { 'on': 'PlugReadme' })
 
 " vim上でpetを飼う
-Plug 'MeF0504/vim-pets', PlugCond(1, {'on': ['Pets', 'PetsWithYou']})
+PlugWrapper 'MeF0504/vim-pets', PlugCond(1, {'on': ['Pets', 'PetsWithYou']})
 " {{{ vim-pets
 function! s:pets_hook() abort
     let g:pets_garden_pos = [&lines-&cmdheight-2, &columns, 'botright']
@@ -121,6 +130,9 @@ endif
 " usual (somewhat heavy) plugins
 let s:plug_files = glob(expand('<sfile>:h:h').'/plug_conf/*.vim', 0, 1)
 for s:plug_file in s:plug_files
+    if s:plug_file ==# s:colorscheme_file
+        continue
+    endif
     if filereadable(s:plug_file)
         execute 'source '..s:plug_file
     endif

@@ -34,8 +34,16 @@ function! s:map_util(name) abort " {{{
 endfunction
 " }}}
 
+if meflib#get('plug_opt', 'denops', 0)
+    call meflib#add('unload_plugins', 'skanehira/translate.vim')
+else
+    call meflib#add('unload_plugins', 'skanehira/denops-translate.vim')
+    call meflib#add('unload_plugins', 'vim-denops/denops-helloworld.vim')
+    call meflib#add('unload_plugins', 'vim-denops/denops.vim')
+endif
+
 " joke command
-Plug 'MeF0504/sl.vim', PlugCond(1, {'on': 'SL'})
+PlugWrapper 'MeF0504/sl.vim', PlugCond(1, {'on': 'SL'})
 
 " Project Sekai inspired plugin
 PlugWrapper 'MeF0504/untitled.vim'
@@ -58,7 +66,7 @@ let g:popsyntax_match_enable = 1
 " }}}
 
 " ctagsを使ってhighlightを設定 (mftags 分割 その1)
-Plug 'MeF0504/highlightag.vim'
+PlugWrapper 'MeF0504/highlightag.vim'
 "" highlightag {{{
 if has('nvim')
     autocmd PlugLocal VimEnter,BufWinEnter *
@@ -89,10 +97,10 @@ call meflib#add('plugin_his', s:sid.'highlightag_his')
 " }}}
 
 " vim plugin like chrome://dino
-Plug 'MeF0504/dino.vim', PlugCond(1, {'on': 'Dino'})
+PlugWrapper 'MeF0504/dino.vim', PlugCond(1, {'on': 'Dino'})
 
 " git log 表示用plugin
-Plug 'MeF0504/gitewer.vim', PlugCond(1, {'on': 'Gitewer'})
+PlugWrapper 'MeF0504/gitewer.vim', PlugCond(1, {'on': 'Gitewer'})
 " {{{ gitewer, git
 let s:map_cmds['git'] = {}
 let s:map_cmds['git']['w'] = "Gitewer status"
@@ -100,14 +108,14 @@ nnoremap <leader>g <Cmd>call <SID>map_util('git')<CR>
 " }}}
 
 " vim-pets extension
-Plug 'MeF0504/vim-pets-ocean', PlugCond(1, {'on': 'Pets'})
-Plug 'MeF0504/vim-pets-codes', PlugCond(1, {'on': 'Pets'})
+PlugWrapper 'MeF0504/vim-pets-ocean', PlugCond(1, {'on': 'Pets'})
+PlugWrapper 'MeF0504/vim-pets-codes', PlugCond(1, {'on': 'Pets'})
 
 " paste時に履歴から選ぶ
 PlugWrapper 'MeF0504/RegistPaste.vim'
 
 " tab の一覧表示＆ジャンプ
-Plug 'MeF0504/vim-TabJumper', PlugCond(1, {'on': 'TabJump'})
+PlugWrapper 'MeF0504/vim-TabJumper', PlugCond(1, {'on': 'TabJump'})
 " TabJumper {{{
 nnoremap <leader>l <Cmd>TabJump<CR>
 tnoremap <c-l><c-l> <Cmd>TabJump<CR>
@@ -116,10 +124,10 @@ let g:tabjumper_preview_width = &columns-20
 " }}}
 
 " neosnippet用のsnipets
-Plug 'Shougo/neosnippet-snippets'
+PlugWrapper 'Shougo/neosnippet-snippets'
 
 " 背景透過
-Plug 'miyakogi/seiya.vim', PlugCond(1, {'on': ['SeiyaEnable', 'SeiyaDisable']})
+PlugWrapper 'miyakogi/seiya.vim', PlugCond(1, {'on': ['SeiyaEnable', 'SeiyaDisable']})
 "" seiya.vim "{{{
 let g:seiya_auto_enable=0
 if has('termguicolors') && !has('gui_running')
@@ -138,9 +146,9 @@ call meflib#add('plugin_his', s:sid.'seiya_his')
 "}}}
 
 " 検索時にhit数をcountしてくれるplugin
-Plug 'osyo-manga/vim-anzu', PlugCond(!meflib#get('load_plugin', 'hitspop', 0), {'on':[]})
+PlugWrapper 'osyo-manga/vim-anzu', PlugCond(1, {'on':[]})
 "" vim-anzu {{{
-if !meflib#get('load_plugin', 'hitspop', 0)
+if PlugLoadChk('osyo-manga/vim-anzu')
     " highlights
     function! <SID>anzu_his() abort
         highlight default AnzuPopup ctermfg=224 ctermbg=238 guifg=#ffd7d7 guibg=#444444
@@ -184,7 +192,7 @@ endif
 " }}}
 
 " if - endif 等を補完してくれるplugin
-Plug 'tpope/vim-endwise'
+PlugWrapper 'tpope/vim-endwise'
 "" endwise {{{
 autocmd PlugLocal FileType html
         \ let b:endwise_addition = '\=submatch(0)=="html" ? "\</html\>" : submatch(0)=="head" ? "\</head\>" : submatch(0)=="body" ? "\</body\>" : submatch(0)=="script" ? "\</script\>" : "\</style\>"' |
@@ -199,7 +207,7 @@ autocmd PlugLocal FileType tex
 "}}}
 
 " vim の document
-Plug 'vim-jp/vimdoc-ja'
+PlugWrapper 'vim-jp/vimdoc-ja'
 " {{{
 " https://gorilla.netlify.app/articles/20190427-vim-help-jp.html
 " helpを日本語優先にする
@@ -210,20 +218,20 @@ autocmd PlugLocal User vimdoc-ja set helplang=ja
 
 " for deoplete and wilder
 " vim でneovim 用 pluginを動かすためのplugin
-Plug 'roxma/nvim-yarp', PlugCond(!has('nvim'))
+PlugWrapper 'roxma/nvim-yarp', PlugCond(!has('nvim'))
 
 " for deoplete and wilder
 " vim でneovim 用 pluginを動かすためのplugin
-Plug 'roxma/vim-hug-neovim-rpc', PlugCond(!has('nvim'))
+PlugWrapper 'roxma/vim-hug-neovim-rpc', PlugCond(!has('nvim'))
 
 " visual modeで選択した範囲をgcでコメントアウトしてくれるplugin
-Plug 'tpope/vim-commentary'
+PlugWrapper 'tpope/vim-commentary'
 call meflib#add('del_commands', 'Commentary')
 
 " 検索のhit数をpopupで表示するplugin
-Plug 'obcat/vim-hitspop', PlugCond(meflib#get('load_plugin', 'hitspop', 0))
+PlugWrapper 'obcat/vim-hitspop'
 " {{{
-if meflib#get('load_plugin', 'hitspop', 0)
+if PlugLoadChk('obcat/vim-hitspop')
     " https://zenn.dev/obcat/articles/4ef6822de53b643bbd01
     " :nohlsearch で消える→ 自分は\で消える
     " 右下に表示
@@ -242,9 +250,9 @@ endif
 " https://qiita.com/gorilla0513/items/37c80569ff8f3a1c721c
 " translate.vim はarchive された模様。new oneに移行
 " ondemand loadするとコケる
-Plug 'skanehira/denops-translate.vim', PlugCond(meflib#get('deno_on', 0))
+PlugWrapper 'skanehira/denops-translate.vim'
 " denopsが動かない場合に欲しいのでやむなく復活
-Plug 'skanehira/translate.vim', PlugCond(!meflib#get('deno_on', 0))
+PlugWrapper 'skanehira/translate.vim'
 " {{{
 " for translate.vim
 let g:translate_popup_window = 0
@@ -256,7 +264,7 @@ let g:translate_target = 'ja'
 " }}}
 
 " カーソル下の変数と同じ変数に下線
-Plug 'itchyny/vim-cursorword'
+PlugWrapper 'itchyny/vim-cursorword'
 " {{{
 " デフォルトのhighlightをoff
 let g:cursorword_highlight = 0
@@ -276,13 +284,13 @@ call meflib#add('plugin_his', s:sid.'cursorword_his')
 
 " An ecosystem of Vim/Neovim which allows developers to write plugins in Deno. だそうです
 " for ddc.vim and translate.vim
-Plug 'vim-denops/denops.vim', PlugCond(meflib#get('load_plugin', 'denops', 0))
+PlugWrapper 'vim-denops/denops.vim'
 
 " denops test
-Plug 'vim-denops/denops-helloworld.vim', PlugCond(meflib#get('load_plugin', 'denops', 0))
+PlugWrapper 'vim-denops/denops-helloworld.vim'
 
 " indent のlevelを見やすくする
-Plug 'nathanaelkane/vim-indent-guides'
+PlugWrapper 'nathanaelkane/vim-indent-guides'
 "" indent-guides {{{
 " vim 起動時に起動
 let g:indent_guides_enable_on_vim_startup = 1
@@ -310,13 +318,13 @@ let g:indent_guides_exclude_filetypes = split('help taglist git')
 
 " vim 新機能用pluginっぽい
 " showcase of new vim functions.
-Plug 'vim/killersheep', PlugCond(has('patch-8.1.1705'), {'on': 'KillKillKill'})
+PlugWrapper 'vim/killersheep', PlugCond(has('patch-8.1.1705'), {'on': 'KillKillKill'})
 
 " toml 用 syntax
-Plug 'cespare/vim-toml', PlugCond(!has('patch-8.2.2106'), {'for': 'toml'})
+PlugWrapper 'cespare/vim-toml', PlugCond(!has('patch-8.2.2106'), {'for': 'toml'})
 
 " ファイルの一部のsyntax highlightを違うfiletypeにする
-Plug 'inkarkat/vim-SyntaxRange', PlugCond(1, {'for': ['toml', 'markdown', 'vim']})
+PlugWrapper 'inkarkat/vim-SyntaxRange', PlugCond(1, {'for': ['toml', 'markdown', 'vim']})
 " {{{
 function! s:syntaxRange_hook() abort
     if &filetype == 'toml'
@@ -355,16 +363,16 @@ autocmd PlugLocal User vim-SyntaxRange call s:syntaxRange_hook()
 " }}}
 
 " 上のpluginで使われるやつ
-Plug 'inkarkat/vim-ingo-library', PlugCond(1, {'for': ['toml', 'markdown']})
+PlugWrapper 'inkarkat/vim-ingo-library', PlugCond(1, {'for': ['toml', 'markdown']})
 
 " vim でsnippet を使う用の plugin (framework?)
-Plug 'Shougo/neosnippet.vim'
+PlugWrapper 'Shougo/neosnippet.vim'
 
 " vim script 用補完 plugin
-Plug 'Shougo/neco-vim', PlugCond(1, {'for': 'vim'})
+PlugWrapper 'Shougo/neco-vim', PlugCond(1, {'for': 'vim'})
 
 " vimの編集履歴を表示／適用してくれる plugin
-Plug 'sjl/gundo.vim', PlugCond(1, {'on': 'GundoToggle'})
+PlugWrapper 'sjl/gundo.vim', PlugCond(1, {'on': 'GundoToggle'})
 " {{{ "Gundo
 " if has('python3') " pythonをcheckするのに時間が掛かっているっぽい
 let g:gundo_prefer_python3 = 1
@@ -373,7 +381,7 @@ nnoremap <silent> <Leader>u <Cmd>GundoToggle<CR>
 " }}}
 
 " カーソルの下の文字とかをhighlight
-Plug 'azabiong/vim-highlighter', PlugCond(1, {'on': 'Hi'})
+PlugWrapper 'azabiong/vim-highlighter', PlugCond(1, {'on': 'Hi'})
 " {{{
 let g:HiClear = '\\'
 function! s:highlighter_map() abort
@@ -391,7 +399,7 @@ nnoremap <expr> // <SID>highlighter_map()
 " }}}
 
 " git の現在行のコミット履歴を辿る
-Plug 'rhysd/git-messenger.vim', PlugCond(1, {'on': 'GitMessenger'})
+PlugWrapper 'rhysd/git-messenger.vim', PlugCond(1, {'on': 'GitMessenger'})
 " git messenger {{{
 let g:git_messenger_no_default_mappings = v:true
 let g:git_messenger_floating_win_opts = {'border': 'single'}
@@ -402,16 +410,16 @@ autocmd PlugLocal FileType gitmessengerpopup
 " }}}
 
 " plugin のdot repeatをサポート (RegistPasteで使用)
-Plug 'tpope/vim-repeat'
+PlugWrapper 'tpope/vim-repeat'
 
 " syntax file etc. for fish script
-Plug 'dag/vim-fish', PlugCond(1, {'for': 'fish'})
+PlugWrapper 'dag/vim-fish', PlugCond(1, {'for': 'fish'})
 
 " a fundemental plugin to handle Nerd Fonts from Vim. (for Fern)
-Plug 'lambdalisue/nerdfont.vim'
+PlugWrapper 'lambdalisue/nerdfont.vim'
 
 " vim bookmark
-Plug 'MattesGroeger/vim-bookmarks', PlugCond(1, {'on': ['BookmarkToggle', 'BookmarkAnnotate']})
+PlugWrapper 'MattesGroeger/vim-bookmarks', PlugCond(1, {'on': ['BookmarkToggle', 'BookmarkAnnotate']})
 " bookmarks {{{
 let g:bookmark_no_default_key_mappings = 1
 let g:bookmark_auto_save = 0
@@ -432,7 +440,7 @@ call meflib#add('plugin_his', s:sid.'bookmarks_his')
 " }}}
 
 " 色々な言語のtemplate
-Plug 'mattn/vim-sonictemplate', PlugCond(1)
+PlugWrapper 'mattn/vim-sonictemplate'
 " {{{
 let g:sonictemplate_vim_template_dir = meflib#basic#get_conf_dir()..'plug_conf/templates'
 let g:sonictemplate_key = "\<c-q>\<c-q>"
@@ -441,7 +449,7 @@ nmap <leader>a :<C-u>Template
 " }}}
 
 " window のresize, 移動用plugin
-Plug 'simeji/winresizer', PlugCond(1, {'on': 'WinResizerStartResize'})
+PlugWrapper 'simeji/winresizer', PlugCond(1, {'on': 'WinResizerStartResize'})
 " {{{
 nnoremap <leader>w <Cmd>WinResizerStartResize<CR>
 let g:winresizer_finish_with_escape = 0
@@ -451,7 +459,7 @@ let g:winresizer_horiz_resize = 2
 " }}}
 
 " typewriter sound in Vim
-Plug 'skywind3000/vim-keysound', PlugCond(1, {'on': 'KeysoundEnable'})
+PlugWrapper 'skywind3000/vim-keysound', PlugCond(1, {'on': 'KeysoundEnable'})
 " {{{
 let g:keysound_enable = 0
 " use KeysoundEnable/Disable

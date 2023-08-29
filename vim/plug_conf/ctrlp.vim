@@ -1,5 +1,5 @@
 " project内のファイル検索
-Plug 'ctrlpvim/ctrlp.vim', PlugCond(1, {'on': 'CtrlP'})
+PlugWrapper 'ctrlpvim/ctrlp.vim', PlugCond(1, {'on': 'CtrlP'})
 "nnoremap <leader>s :<C-U>CtrlP<CR>
 let g:ctrlp_map = '<leader>s'
 nnoremap <leader>s <Cmd>CtrlP<CR>
