@@ -11,6 +11,29 @@ from plotly.subplots import make_subplots
 from pymeflib import plot2
 
 
+def get_tag(exif_info, tag_name):
+    # https://www.vieas.com/exif23.html
+    # https://www.cipa.jp/std/documents/j/DC-008-2012_J.pdf
+    exif_tag = {
+            'ImageDescription': 0x010e,
+            'Make': 0x010f,
+            'Model': 0x0110,
+            'Orientation': 0x0112,
+            'XResolution': 0x011a,
+            'YResolution': 0x011b,
+            'ResolutionUnit': 0x0128,
+            'DateTime': 0x0132,
+            'YCbCrPositioning': 0x0213,
+            'Exif IFD Pointer': 0x8769,
+            }
+
+    field = exif_tag[tag_name]
+    if field not in exif_info:
+        return None
+    else:
+        return exif_info[field]
+
+
 def main():
     if len(sys.argv) < 2:
         print('image file not specified')
@@ -18,6 +41,11 @@ def main():
     img_file = sys.argv[1]
     img_name = os.path.basename(img_file)
     img_data = Image.open(img_file)
+    img_exif = img_data.getexif()
+    if False:
+        for key, val in img_exif.items():
+            print(f'{key:4x}: {val}')
+        return
     if 'RGB' not in img_data.mode:
         img_data = img_data.convert('RGBA')
     img_data = np.asarray(img_data)
@@ -63,11 +91,22 @@ def main():
     # add_trace? append_trace?
     fig.append_trace(go.Image(z=img_data), row=1, col=1)
 
+    xrslv = get_tag(img_exif, 'XResolution')
+    yrslv = get_tag(img_exif, 'YResolution')
+    data_table = [
+            ['name', 'data size', 'file created date',
+             'title', 'maker', 'model', 'resolutions', 'exif date',
+             ],
+            [img_name, f'{w}x{h}', date,
+             get_tag(img_exif, 'ImageDescription'),
+             get_tag(img_exif, 'Make'),
+             get_tag(img_exif, 'Model'),
+             f'{xrslv}x{yrslv}',
+             get_tag(img_exif, 'DateTime'),
+             ]]
     fig.append_trace(go.Table(
         cells=dict(
-            values=[
-                ["name", "width", "height", "created date"],
-                [img_name, w, h, date]],
+            values=data_table,
             line_color="darkslategray",
             align=["center", "center"],
             font=dict(color="darkslategray", size=12),
