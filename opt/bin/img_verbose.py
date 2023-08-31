@@ -18,6 +18,8 @@ def main():
     img_file = sys.argv[1]
     img_name = os.path.basename(img_file)
     img_data = Image.open(img_file)
+    if 'RGB' not in img_data.mode:
+        img_data = img_data.convert('RGBA')
     img_data = np.asarray(img_data)
     h, w, c = img_data.shape
     date = os.stat(img_file).st_mtime
