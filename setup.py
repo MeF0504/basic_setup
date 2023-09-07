@@ -128,10 +128,14 @@ class CopyClass():
         with open(dst, 'r', encoding='utf-8') as f:
             dst_str = f.readlines()
 
-        for line in difflib.unified_diff(dst_str, src_str, n=1,
-                fromfile=self.home_cut(dst), tofile=self.home_cut(src),
-                fromfiledate=dst_dt.strftime('%m %d (%Y) %H:%M:%S'),
-                tofiledate=src_dt.strftime('%m %d (%Y) %H:%M:%S')):
+        dst_date = dst_dt.strftime('%m %d (%Y) %H:%M:%S')
+        src_date = src_dt.strftime('%m %d (%Y) %H:%M:%S')
+        dlines = difflib.unified_diff(dst_str, src_str, n=1,
+                                      fromfile=self.home_cut(dst),
+                                      tofile=self.home_cut(src),
+                                      fromfiledate=dst_date,
+                                      tofiledate=src_date)
+        for line in dlines:
             line = line.replace('\n', '')
             if line[0] == '+':
                 col = FG256(colors['diff_plus'])
@@ -481,10 +485,10 @@ def main_conf(args):
                         f.write('#\n')
                         f.write('\n')
                         if args.bin_dst is not None:
-                            f.write('export PATH=\\\n"{}":\\\n$PATH'.format(bin_dst))
+                            f.write('export PATH=\\\n"{}":\\\n$PATH'.format(args.bin_dst))
                             f.write('\n')
                         if args.lib_dst is not None:
-                            f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(lib_dst, psep))
+                            f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(args.lib_dst, psep))
                             f.write('\n')
                         f.write('\n')
                     print('made {}rc.mine'.format(shell))
@@ -543,7 +547,7 @@ def main_conf(args):
                 mkdir('tmp')
                 shutil.copy(update_setup_file, Path('tmp')/'update_setup')
     else:
-        print('{} is not found. update_setup is not created'.format(args.bin_dst))
+        print(f'{args.bin_dst} is not found. update_setup is not created')
 
 
 def main_vim(args):
