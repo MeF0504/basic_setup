@@ -52,7 +52,11 @@ function! meflib#git_status#update_info() abort
     endif
     let s:date = system(cmd)
     if s:date[0:3] == strftime("%Y")
+        " this year
         let s:date = s:date[5:]
+    elseif s:date[0:4] == 'fatal'
+        " no commit
+        let s:date = '-/-'
     endif
 
     " number of unmerged commits
