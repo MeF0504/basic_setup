@@ -10,6 +10,7 @@ import json
 import platform
 import urllib.request as urlreq
 from pathlib import Path
+from typing import List
 
 sys.path.append(str(Path(__file__).parent/'opt'/'lib'))
 from pymeflib.util import mkdir
@@ -52,8 +53,8 @@ class CopyClass():
         self.show_no_update = show_no_update or show_all
         self.show_all = show_all
         self.cwd = Path.cwd()
-        self.src = []
-        self.dst = []
+        self.src: List[Path] = []
+        self.dst: List[Path] = []
         self.len = 0
         self.shift = '  '
         self.dshift = '   |'
@@ -64,9 +65,9 @@ class CopyClass():
                 'README',
                 ]
 
-    def stack(self, src: str, dst: str):
-        src = Path(src).expanduser()
-        dst = Path(dst).expanduser()
+    def stack(self, src_str: str, dst_str: str):
+        src = Path(src_str).expanduser()
+        dst = Path(dst_str).expanduser()
         if src.is_file():
             assert dst.is_file() or not dst.exists()
             for il in self.ignore_list:
@@ -269,9 +270,46 @@ class CopyClass():
                         self.print(self.shift+'overwrite the following file;',
                                    True)
                         self.copy(src, dst)
+                    elif islink:
+                        continue
                     else:
                         if self.diff_check(i):
                             self.copy(src, dst)
+
+    def clear(self, root: str, append_files: List[Path] = []):
+        clear_files = []
+        dsts = self.dst + append_files
+        for f in Path(root).glob('**/*'):
+            if f.is_dir():
+                continue
+            elif f.is_symlink():
+                if not f.exists():
+                    # broken link
+                    clear_files.append(f)
+                elif f in dsts or f.parent.joinpath(f.readlink()) in dsts:
+                    continue
+                else:
+                    # not in dst
+                    clear_files.append(f)
+            else:
+                if f not in dsts:
+                    clear_files.append(f)
+
+        for f in clear_files:
+            if f.is_symlink():
+                if self.test:
+                    self.print(f'process check::unlink {f}', True)
+                else:
+                    yn = input(f'unlink {f}? ([y]/n)')
+                    if yn != 'n':
+                        os.unlink(f)
+            else:
+                if self.test:
+                    self.print(f'process check::remove {f}', True)
+                else:
+                    yn = input(f'remove {f}? ([y]/n)')
+                    if yn != 'n':
+                        os.remove(f)
 
 
 def print_path(path):
@@ -407,6 +445,7 @@ def main_opt(args):
         cc.stack(args.opt_src.joinpath(fy), files[fy])
     cc.show_files()
     cc.exec()
+    # opt は関係ないbin, libもあるのでclearは呼ばない
 
 
 def main_conf(args):
@@ -508,6 +547,15 @@ def main_conf(args):
             print('{} does not exist, do not copy {}.'.format(fy_dir, fy))
     cc.show_files()
     cc.exec()
+    if args.clear:
+        cc.clear(args.local_conf,
+                 [args.local_conf/'shows_config.json'])
+        cc.clear(os.path.expanduser('~/.zsh'),
+                 [Path('~/.zsh/zshrc.mine').expanduser(),
+                  Path('~/.zsh/zlogin.mine').expanduser()])
+        cc.clear(os.path.expanduser('~/.bash'),
+                 [Path('~/.bash/bashrc.mine').expanduser(),
+                  Path('~/.bash/git-prompt.sh').expanduser()])
 
     pyopt = ''
     if args.prefix is not None:
@@ -527,6 +575,8 @@ def main_conf(args):
         pyopt += ' --show_target_files'
     if args.show_no_update_files:
         pyopt += ' --show_no_update_files'
+    if args.clear:
+        pyopt += ' --clear'
     with open(Path(args.fpath)/'opt/samples/update_setup_sample.py', 'r') as f:
         update_setup = f.read().format(args.fpath, args.fpath, args.fpath,
                                        pyopt).replace('\\', '\\\\')
@@ -577,6 +627,10 @@ def main_vim(args):
         cc.stack(args.vim_src.joinpath(fy), files[fy])
     cc.show_files()
     cc.exec()
+    if args.clear:
+        cc.clear(str(args.vim_conf/'rcdir'),
+                 [args.rc_dst/'vimrc_mine.post', args.rc_dst/'vimrc_mine.pre'])
+        cc.clear(str(args.vim_conf/'plug_conf'))
 
     if not uname == 'Windows':
         src = args.vimrc
@@ -622,6 +676,8 @@ def main():
                         choices='all opt config vim'.split(), default=['all'])
     parser.add_argument('-s', '--setup_file',
                         help='specify the copy files by json format setting file. please see "opt/samples/setup_file_template.json" as an example.')
+    parser.add_argument('-c', '--clear', action='store_true',
+                        help='clear unused files')
     parser.add_argument('--show_target_files', action='store_true',
                         help='show target_files before copying')
     parser.add_argument('--show_no_update_files', action='store_true',
