@@ -300,14 +300,14 @@ class CopyClass():
                 if self.test:
                     self.print(f'process check::unlink {f}', True)
                 else:
-                    yn = input(f'unlink {f}? ([y]/n)')
+                    yn = input(f'unlink {f}? ([y]/n): ')
                     if yn != 'n':
                         os.unlink(f)
             else:
                 if self.test:
                     self.print(f'process check::remove {f}', True)
                 else:
-                    yn = input(f'remove {f}? ([y]/n)')
+                    yn = input(f'remove {f}? ([y]/n): ')
                     if yn != 'n':
                         os.remove(f)
 
