@@ -550,12 +550,12 @@ def main_conf(args):
     if args.clear:
         cc.clear(args.local_conf,
                  [args.local_conf/'shows_config.json'])
-        cc.clear(os.path.expanduser('~/.zsh'),
-                 [Path('~/.zsh/zshrc.mine').expanduser(),
-                  Path('~/.zsh/zlogin.mine').expanduser()])
-        cc.clear(os.path.expanduser('~/.bash'),
-                 [Path('~/.bash/bashrc.mine').expanduser(),
-                  Path('~/.bash/git-prompt.sh').expanduser()])
+        zshdir = Path('~/.zsh').expanduser()
+        bashdir = Path('~/.bash').expanduser()
+        cc.clear(str(zshdir), [zshdir/'zshrc.mine',
+                               zshdir/'zlogin.mine', zshdir/'enter.zsh'])
+        cc.clear(str(bashdir), [bashdir/'bashrc.mine',
+                                bashdir/'git-prompt.sh'])
 
     pyopt = ''
     if args.prefix is not None:
