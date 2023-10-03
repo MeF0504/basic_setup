@@ -50,8 +50,13 @@ function! meflib#tools#exec_ctags(...) abort
     endif
 
     let ctags_cmd = printf('ctags %s -f "%s" --languages=%s -R "%s"', ctags_opt, out_file_name, ft, cwd)
-    call system(ctags_cmd)
     echomsg ctags_cmd
+    if has('nvim')
+        call jobstart(ctags_cmd)
+    else
+        call job_start(ctags_cmd)
+    endif
+    echomsg 'done!'
 endfunction
 " }}}
 
