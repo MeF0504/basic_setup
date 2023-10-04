@@ -465,3 +465,6 @@ let g:keysound_enable = 0
 " use KeysoundEnable/Disable
 let g:keysound_theme = 'typewriter'
 " }}}
+
+" vim用check health
+PlugWrapper 'rhysd/vim-healthcheck', PlugCond(!has('nvim'))
