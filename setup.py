@@ -635,7 +635,7 @@ def main_vim(args):
     if not uname == 'Windows':
         src = args.vimrc
         dst = Path('~/.vimrc').expanduser()
-        if not dst.is_file():
+        if src.is_file() and not dst.is_file():
             if not args.test:
                 print("link {} -> {}".format(src, dst))
                 try:
@@ -646,7 +646,7 @@ def main_vim(args):
 
         src = args.vim_conf
         dst = Path('~/.vim').expanduser()
-        if not dst.is_dir():
+        if src.is_dir() and not dst.is_dir():
             if not args.test:
                 print("link {} -> {}".format(src, dst))
                 try:
