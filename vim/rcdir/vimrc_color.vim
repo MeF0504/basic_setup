@@ -12,61 +12,6 @@ else
     let s:sid = expand('<SID>')
 endif
 
-function! <SID>get_colorid(r, g, b, gui)
-    if a:gui
-        let gui_r = a:r==0 ? 0 : 55+40*a:r
-        let gui_g = a:g==0 ? 0 : 55+40*a:g
-        let gui_b = a:b==0 ? 0 : 55+40*a:b
-        return '#' . printf('%02x', gui_r) . printf('%02x', gui_g) . printf('%02x', gui_b)
-    else
-        return (36*a:r)+(6*a:g)+a:b + 16
-    endif
-endfunction
-
-" refer RGB -> YUV conversion equation
-let s:w_r = 0.299 " <- 1.0
-let s:w_g = 0.587 " <- 2.0
-let s:w_b = 0.114 " <- 1.0
-let s:thsd = 2.1
-function! s:isdark(r, g, b)
-    let cond = (a:r*s:w_r+a:g*s:w_g+a:b*s:w_b)/(s:w_r+s:w_g+s:w_b) < s:thsd
-    return cond
-endfunction
-
-function! Chk_isdark() abort
-    if has('gui_running') || &termguicolors
-        let gui = 1
-        let term = 'gui'
-    else
-        let gui = 0
-        let term = 'cterm'
-    endif
-
-    echo "\n"
-    for g in range(6)
-        for r in range(6)
-            for b in range(6)
-                let i = 36*r+6*g+b+16
-                if s:isdark(r, g, b)
-                    let fg = gui ? '#ffffff' : '255'
-                else
-                    let fg = gui ? '#000000' : '234'
-                endif
-                let bg = s:get_colorid(r, g, b, gui)
-                " echo printf('highlight tmpHl%d %sfg=%s %sbg=%s', i, term, fg, term, bg)
-                execute printf('highlight tmpHl%d %sfg=%s %sbg=%s', i, term, fg, term, bg)
-                execute 'echohl tmpHl'..i
-                echon printf('%02x', i)
-            endfor
-            echohl None
-            echon ' '
-        endfor
-        echo ''
-    endfor
-    echohl None
-    echo ''
-endfunction
-
 function! <SID>my_color_set_inkpot()
     highlight Identifier ctermfg=110 guifg=#87afd7
     highlight Number ctermfg=9 guifg=Red
@@ -202,16 +147,11 @@ function! <SID>my_color_set()
 endfunction
 
 function! <SID>Day_by_Day_StatusLine()
-    let s:month = str2nr(strftime("%m"))
-    let s:day = str2nr(strftime("%d"))
-    let s:dow = str2nr(strftime("%w"))
-    let s:stl_br = (s:dow==6 ? 0 : s:dow)       " 土日は0
-    let s:stl_bg = (s:month+(s:day-1)/10-1)%6   " 月+(日-1)の十の位で計算
-    let s:stl_bb = abs((s:day+5-1)%10-5)      " 0 1 2 3 4 5 4 3 2 1 0 ...
+    let [month, day, dow, stl_br, stl_bg, stl_bb] = meflib#color#get_today_rgb()
     let st_modes = split('Mode_Ns Mode_Is Mode_Vs Mode_Rs Mode_Ts Mode_ELSEs', ' ')
 
     let birthday = meflib#get('birthday', [0,0])
-    if (s:month == birthday[0]) && (s:day == birthday[1])
+    if (month == birthday[0]) && (day == birthday[1])
         "" Birthday
         highlight StatusLine cterm=Bold ctermfg=241 ctermbg=220 gui=Bold guifg=Grey39 guibg=Gold
         highlight WildMenu cterm=Bold ctermfg=220 ctermbg=241 gui=Bold guifg=Gold guibg=Grey39
@@ -219,16 +159,16 @@ function! <SID>Day_by_Day_StatusLine()
             execute printf('highlight %s ctermbg=220 guibg=Gold', st_mode)
         endfor
     else
-        let cbg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb, 0)
-        let gbg = <SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb, 1)
-        if s:isdark(s:stl_br, s:stl_bg, s:stl_bb)
+        let cbg = meflib#color#get_colorid(stl_br, stl_bg, stl_bb, 0)
+        let gbg = meflib#color#get_colorid(stl_br, stl_bg, stl_bb, 1)
+        if meflib#color#isdark(stl_br/5.0, stl_bg/5.0, stl_bb/5.0)
             let cfg = 255
             let gfg = '#eeeeee'
         else    " light background
             let cfg = 234
             let gfg = '#1c1c1c'
         endif
-        " echo 'color:'..s:stl_br..'='..s:stl_bg..'='..s:stl_bb..'='..cfg..'='..cbg..'='..gfg..'='..gbg
+        " echo 'color:'..stl_br..'='..stl_bg..'='..stl_bb..'='..cfg..'='..cbg..'='..gfg..'='..gbg
         execute printf('highlight StatusLine cterm=Bold ctermfg=%s ctermbg=%s gui=Bold guifg=%s guibg=%s', cfg, cbg, gfg, gbg)
         execute printf('highlight WildMenu cterm=Bold ctermfg=%s ctermbg=%s gui=Bold guifg=%s guibg=%s', cbg, cfg, gbg, gfg)
         for st_mode in st_modes
@@ -238,26 +178,6 @@ function! <SID>Day_by_Day_StatusLine()
     if !has('nvim')
         highlight! link StatusLineTerm StatusLine
     endif
-endfunction
-
-function! ShowStatusLineBG()
-    let birthday = meflib#get('birthday', [0,0])
-    if (s:month == birthday[0]) && (s:day == birthday[1])
-        echo 'birthday!!'
-        return
-    endif
-    let is_gui = has('gui_running') || (has('termguicolors') && &termguicolors)
-    let echo_str  = 'red:'.s:stl_br
-    let echo_str .= ' green:'.s:stl_bg
-    let echo_str .= ' blue:'.s:stl_bb
-    let echo_str .= ' => bg:'.<SID>get_colorid(s:stl_br, s:stl_bg, s:stl_bb, is_gui)
-    let echo_str .= '   is_dark:'
-    let echo_str .= printf('(%d*%.1f+%d*%.1f+%d*%.1f)/(%.1f+%.1f+%.1f)',
-                \ s:stl_br, s:w_r, s:stl_bg, s:w_g, s:stl_bb, s:w_b,
-                \ s:w_r, s:w_g, s:w_b)
-    let echo_str .= printf(' = %.3f', (s:stl_br*s:w_r+s:stl_bg*s:w_g+s:stl_bb*s:w_b)/(s:w_r+s:w_g+s:w_b))
-    let echo_str .= printf(' < %.3f', s:thsd)
-    echo echo_str
 endfunction
 
 augroup colorLocal
@@ -286,4 +206,3 @@ try
 catch
     colorsche evening
 endtry
-

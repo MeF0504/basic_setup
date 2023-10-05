@@ -52,7 +52,15 @@ function! s:untitled_his() abort
     try
         let bc = untitled#get_birthday_color()
         if !empty(bc)
-            execute printf('highlight TabLineSel ctermbg=%s ctermfg=0 guibg=%s guifg=Black', bc.cterm, bc.gui)
+            let [r, g, b] = bc['RGB']
+            if meflib#color#isdark(r/255.0, b/255.0, b/255.0)
+                let gfg = "White"
+                let cfg = "15"
+            else
+                let gfg = "Black"
+                let cfg = "0"
+            endif
+            execute printf('highlight TabLineSel ctermbg=%s ctermfg=%s guibg=%s guifg=%s', bc.cterm, cfg, bc.gui, gfg)
         endif
     endtry
 endfunction
