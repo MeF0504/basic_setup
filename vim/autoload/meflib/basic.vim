@@ -97,6 +97,50 @@ function! meflib#basic#get_local_var(var_name, args1, args2=v:null) abort
         return default
     endif
 endfunction
+
+function! meflib#basic#var_comp(arglead, cmdline, cursorpos) abort
+    let comp_list = keys(s:local_var_dict)+keys(s:local_var_def_dict)
+    return filter(comp_list, '!stridx(v:val, a:arglead)')
+endfunction
+
+function! meflib#basic#show_var(var_name='') abort
+    let var_pat = printf("^%s$", a:var_name)
+    if empty(a:var_name)
+        call meflib#basic#get_local_var('', '')
+    elseif match(keys(s:local_var_dict)+keys(s:local_var_def_dict), var_pat) == -1
+        echo "no such key."
+        return
+    else
+        if match(keys(s:local_var_dict), var_pat) != -1
+            let tmp = s:local_var_dict[a:var_name]
+            if type(tmp) == type({})
+                for key in sort(keys(tmp))
+                    echohl Title
+                    echo printf('%s: ', key)
+                    echohl None
+                    echon tmp[key]
+                endfor
+            else
+                echo tmp
+            endif
+        elseif match(keys(s:local_var_def_dict), var_pat) != -1
+            echohl Special
+            echo "default"
+            echohl None
+            let tmp = s:local_var_def_dict[a:var_name]
+            if type(tmp) == type({})
+                for key in sort(keys(tmp))
+                    echohl Title
+                    echo printf('%s: ', key)
+                    echohl None
+                    echon tmp[key]
+                endfor
+            else
+                echo tmp
+            endif
+        endif
+    endif
+endfunction
 " }}}
 " 関数の引数解析用関数 (key=arg) {{{
 function! meflib#basic#analythis_args_eq(arg) abort
