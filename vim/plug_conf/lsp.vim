@@ -48,6 +48,7 @@ endif
 function! <SID>lsp_his() abort
     highlight default Lsp_Running ctermfg=233 ctermbg=183 guifg=#000000 guibg=#c8a0ef
     highlight default Lsp_NotRunning ctermfg=255 ctermbg=52 guifg=#eeeeee guibg=#702030
+    highlight default Lsp_ErrorST cterm=BOLD ctermfg=7 ctermbg=1 gui=BOLD guifg=#eeeeee guibg=#d05050
     if meflib#get('plug_opt', 'nerdfont', 0)
         " copy highlight of SignColumn
         let [ctermbg, guibg] = meflib#basic#get_hi_info('SignColumn', ['ctermbg', 'guibg'])
@@ -297,6 +298,10 @@ function! s:vim_lsp_hook() abort
     " call timer_start(1000, s:sid.'show_lsp_server_status', {'repeat':-1})
     " autocmd PlugLocal WinLeave * call meflib#floating#close(s:lsp_popid) | let s:lsp_popid = -1
     call meflib#add('tabline_footer', expand('<SID>').'lsp_status_tab')
+    let lsp_sl = "%#Lsp_ErrorST#%{lsp#get_buffer_first_error_line()==v:null?'':' ! '}%#StatusLine#"
+    let def_sl = meflib#get('def_statusline', '')
+    let cur_sl = meflib#get('statusline', '_', def_sl)
+    call meflib#set('statusline', '_', cur_sl..lsp_sl)
     " }}}
 endfunction
 autocmd PlugLocal User vim-lsp call s:vim_lsp_hook()
