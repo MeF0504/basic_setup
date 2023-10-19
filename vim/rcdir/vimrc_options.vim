@@ -199,6 +199,9 @@ endif
 
 " 基本的なstatusline 設定
 set statusline=%f%m%r%h%w%<%=%y\ %l/%L\ [%p%%]
+if exists('*meflib#set')
+    call meflib#set('def_statusline', &statusline)
+endif
 
 " tex flavor
 let g:tex_flavor = 'latex'

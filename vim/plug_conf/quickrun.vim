@@ -1,6 +1,7 @@
 " コード実行plugin
 PlugWrapper 'thinca/vim-quickrun', PlugCond(1, {'on': 'QuickRun'})
 let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
+let s:def_st = meflib#get('def_statusline', '')
 let g:quickrun_no_default_key_mappings = 1
 function! s:quickrun_hook() abort
     " default configs {{{
@@ -19,11 +20,11 @@ function! s:quickrun_hook() abort
         \ 'keep')
     if has('terminal')
         let g:quickrun_config._.runner = 'terminal'
-        let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
+        let cur_status = meflib#get('statusline', '_', s:def_st)
         call meflib#set('statusline', '_', cur_status..s:quickrun_status)
     elseif has('job')
         let g:quickrun_config._.runner = 'job'
-        let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
+        let cur_status = meflib#get('statusline', '_', s:def_st)
         call meflib#set('statusline', '_', cur_status..s:quickrun_status)
     endif
 
@@ -142,7 +143,7 @@ function! s:quickrun_nvim_job_hook() abort
         let g:quickrun_config = get(g:, 'quickrun_config', {})
         let g:quickrun_config._ = get(g:quickrun_config, '_', {})
         let g:quickrun_config._.runner = 'neovim_job'
-        let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
+        let cur_status = meflib#get('statusline', '_', s:def_st)
         call meflib#set('statusline', '_', cur_status..s:quickrun_status)
     endif
 endfunction
@@ -161,7 +162,7 @@ function! s:quickrun_nvimterm_hook() abort
                     \ 'runner': 'nvimterm',
                     \ 'runner/nvimterm/opener': 'botright new',
                     \ }, "force")
-        let cur_status = meflib#get('statusline', '_', "%f%m%r%h%w%<%=%y\ %l/%L\ [%P]")
+        let cur_status = meflib#get('statusline', '_', s:def_st)
         call meflib#set('statusline', '_', cur_status..s:quickrun_status)
     endif
 endfunction

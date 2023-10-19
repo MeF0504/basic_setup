@@ -179,7 +179,7 @@ call meflib#set('statusline', {
             \ '60':  s:st_mode.s:st_filename2.s:st_right.s:st_ft.s:st_ff2.s:st_turn.s:st_ln2,
             \ })
 
-let s:def_statusline = &statusline
+let s:def_statusline = meflib#get('def_statusline', '')
 function! <SID>Set_statusline(winid)
     let st_config = meflib#get('statusline', {'_':s:def_statusline})
     if (type(st_config) != type({})) || !has_key(st_config, '_')
