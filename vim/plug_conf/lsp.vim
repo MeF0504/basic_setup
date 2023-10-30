@@ -75,6 +75,8 @@ endfunction
 " call meflib#add('plugin_his', expand('<SID>').'lsp_his')
 " ↑ だとseiyaより後に呼ばれて一部透過しないので，↓で呼ぶ
 autocmd PlugLocal User vim-lsp call s:lsp_his()
+" が，color scheme を変えるとhighlightが消えるので，後から追加する
+autocmd PlugLocal User vim-lsp call meflib#add('plugin_his', expand('<SID>').'lsp_his')
 " }}}
 " reference: lsp_settings#profile#status()
 function! <SID>chk_lsp_running(bool, echo) abort " {{{
