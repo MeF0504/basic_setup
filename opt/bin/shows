@@ -8,7 +8,12 @@ import json
 from pathlib import Path
 
 
-def get_config():
+def print_verbose(msg, verbose, **kwargs):
+    if verbose:
+        print(msg, **kwargs)
+
+
+def get_config(verbose):
     if 'XDG_CONFIG_DIR' in os.environ:
         xdg_dir = Path(os.environ['XDG_CONFIG_DIR'])
     else:
@@ -16,7 +21,7 @@ def get_config():
 
     conf_file = xdg_dir/'meflib'/'shows_config.json'
     if conf_file.is_file():
-        print('find config: {}'.format(conf_file))
+        print_verbose('find config: {}'.format(conf_file), verbose)
         with open(conf_file, 'r') as f:
             shows_conf = json.load(f)
 
@@ -38,7 +43,7 @@ def get_config():
         else:
             shell = None
     else:
-        print('config file is not found,')
+        print_verbose('config file is not found.', verbose)
         conf = None
         cmd = None
         thr = None
@@ -63,8 +68,8 @@ def get_config():
     return conf, cmd, thr, shell
 
 
-def main(files, simul):
-    conf, cmd, thr, shell = get_config()
+def main(files, verbose, simul):
+    conf, cmd, thr, shell = get_config(verbose)
     if cmd is None:
         return
     images = []
@@ -85,7 +90,7 @@ def main(files, simul):
             cmds = ' '.join(cmd[0]+[images]+cmd[1])
         else:
             cmds = cmd[0]+images+cmd[1]
-        # print(cmds)
+        print_verbose(f'run "{cmds}"', verbose)
         subprocess.call(cmds, shell=shell)
     else:
         for im in images:
@@ -98,7 +103,7 @@ def main(files, simul):
                 cmds = ' '.join(cur_cmd[0]+[im]+cur_cmd[1])
             else:
                 cmds = cur_cmd[0]+[im]+cur_cmd[1]
-            # print(cmds)
+            print_verbose(f'run "{cmds}"', verbose)
             judge = subprocess.call(cmds, shell=shell)
             if judge != 0:
                 print('failed to open: {}'.format(im))
@@ -112,6 +117,8 @@ if __name__ == '__main__':
                         help='number of showing figures')
     parser.add_argument('-s', '--simultaneously', action='store_true',
                         help='open files simultaneously')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='show verbose messages')
 
     args = parser.parse_args()
     if len(args.figs) == 0:
@@ -128,4 +135,4 @@ if __name__ == '__main__':
     if hasattr(args, 'num'):
         files = files[:args.num]
 
-    main(files, args.simultaneously)
+    main(files, args.verbose, args.simultaneously)
