@@ -164,10 +164,10 @@ if !has('patch-8.2.2106')
     autocmd local BufEnter *.toml set filetype=toml
 endif
 
-" terminalの色設定 (vimはoptionで)
+" terminalの色設定
 if has('nvim')
     function! <SID>set_term_col() abort
-        let term_cols = meflib#basic#get_term_color()
+        let term_cols = meflib#terminal#get_term_color()
         let g:terminal_color_0 = term_cols[0]
         let g:terminal_color_1 = term_cols[1]
         let g:terminal_color_2 = term_cols[2]
@@ -186,6 +186,8 @@ if has('nvim')
         let g:terminal_color_15 = term_cols[15]
     endfunction
     autocmd local TermOpen * call <SID>set_term_col()
+elseif has('terminal') && (has('patch-8.0.1685') || v:version>=801)
+    autocmd local TerminalOpen * let g:terminal_ansi_colors = meflib#terminal#get_term_color()
 endif
 
 " 起動時に複数開いていたらtabで開く

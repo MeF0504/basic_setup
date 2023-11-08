@@ -170,11 +170,6 @@ execute 'set runtimepath^='..substitute(s:test_vim_dir, ' ', '\\ ', 'g')
 if has('terminal')
     "terminal-job modeでのwindow移動short cutを変更
     set termwinkey=<c-l>
-    " terminalの色設定 (neovimはautocmdで)
-    if !has('nvim') && (has('patch-8.0.1685') || v:version>=801)
-        " https://qiita.com/yami_beta/items/97480d5e88f0d867176b
-        let g:terminal_ansi_colors = meflib#basic#get_term_color()
-    endif
 endif
 
 " 環境変数

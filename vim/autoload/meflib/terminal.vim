@@ -13,7 +13,7 @@ function! meflib#terminal#comp(arglead, cmdline, cursorpos) abort
         " select option
         return filter(map(copy(s:term_opts), '"-"..v:val'), '!stridx(tolower(v:val), a:arglead)')
     elseif a:cmdline[opt_idx:end_space_idx-1] == '-term'
-        let term_list = meflib#basic#term_list()
+        let term_list = meflib#terminal#term_list()
         let term_names = filter(map(term_list, 'bufname(v:val)'),
                     \ '!stridx(tolower(v:val), a:arglead)')
         return term_names
@@ -103,7 +103,7 @@ function! s:set_term_opt(is_float, name, finish) abort
         call extend(term_opt, {
                     \ 'term_finish': a:finish,
                     \ 'term_name': a:name.'_'.s:term_cnt,
-                    \ 'ansi_colors': meflib#basic#get_term_color(),
+                    \ 'ansi_colors': meflib#terminal#get_term_color(),
                     \ })
         let s:term_cnt += 1
     endif
@@ -273,3 +273,44 @@ function! meflib#terminal#main(mod, ...) abort
     setlocal nonumber
 endfunction
 
+" get term color for
+function! meflib#terminal#get_term_color() abort
+     " black, red, green, yellow, blue, magenta, cyan, white,
+     " bright black, bright red, bright green, bright yellow, bright blue, bright magenta, bright cyan, bright white
+     let colors = {}
+     let colors['default'] = [
+                 \ '#001419', '#dc312e', '#359901', '#bbb402', '#487bc8', '#a94498', '#329691', '#eee8d5',
+                 \ '#002833', '#e12419', '#63d654', '#ebe041', '#0081e8', '#b954d3', '#0dc3cd', '#fdf6e3']
+     let colors['simple'] = [
+                 \ '#000000', '#870000', '#008700', '#878700', '#000087', '#870087', '#008787', '#b2b2b2',
+                 \ '#4c4c4c', '#ff0000', '#00ff00', '#ffff00', '#0000ff', '#ff00ff', '#00ffff', '#ffffff']
+
+     let col_name = meflib#get('term_col_name', 'default')
+     if match(keys(colors), col_name) == -1
+         let col_name = 'default'
+     endif
+     return colors[col_name]
+endfunction
+
+" terminal buffer 一覧
+function! meflib#terminal#term_list() abort
+    if exists('*term_list')
+        let term_list = term_list()
+    else
+        if has('nvim')
+            let st_idx = 6
+            let term_head = 'term://'
+        else
+            let st_idx = 0
+            let term_head = '!'
+        endif
+        let term_list = []
+        for i in range(1, bufnr('$'))
+            let bname = bufname(i)
+            if bname[:st_idx] == term_head
+                let term_list += [i]
+            endif
+        endfor
+    endif
+    return term_list
+endfunction
