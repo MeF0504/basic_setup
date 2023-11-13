@@ -18,6 +18,10 @@ function! meflib#qflist#main() abort
         endif
         call insert(qf_list, item.title)
     endfor
+    if empty(qf_list)
+        echo 'quick fix list is empty.'
+        return
+    endif
     let config = {
                 \ 'relative': 'editor',
                 \ 'line': &lines/3,
