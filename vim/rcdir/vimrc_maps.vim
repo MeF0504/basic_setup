@@ -129,7 +129,9 @@ nnoremap <silent> g<c-]> <Cmd>vertical stjump<CR>
 " preview で開く
 nnoremap <silent> <c-p> <Cmd>execute "ptjump "..expand("<cword>")<CR>
 " ファイル内で検索
-nnoremap <silent> <c-j> <Cmd>Gregrep ex=None dir=opened<CR>
+if exists(":Gregrep") == 2
+    nnoremap <silent> <c-j> <Cmd>Gregrep ex=None dir=opened<CR>
+endif
 
 " \で検索のハイライトを消す
 nnoremap <silent> \ <Cmd>nohlsearch<CR>
