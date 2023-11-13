@@ -271,3 +271,27 @@ function! meflib#basic#special_win(winid)
             \ || (getwinvar(a:winid, '&buftype')=='help')
 endfunction
 " }}}
+ " multi-mapping(?)用 {{{
+ function! meflib#basic#map_util(name) abort
+    let map_cmds = meflib#get('map_cmds', {})
+    if !has_key(map_cmds, a:name)
+        echo 'incorrect map name'
+        return
+    endif
+    let cmds = map_cmds[a:name]
+    if empty(cmds)
+        echo 'no maps'
+        return
+    endif
+    let old_cmdheight = &cmdheight
+    let &cmdheight = len(cmds)+1
+    echo map(deepcopy(cmds),
+                \ {key, val -> key..': '..val})->values()->join("\n").."\n"
+    " let key = input('key: ')
+    let key = getcharstr()
+    let &cmdheight = old_cmdheight
+    if has_key(cmds, key)
+        execute cmds[key]
+    endif
+endfunction
+" }}}

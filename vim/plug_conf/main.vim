@@ -10,30 +10,6 @@ else
     let s:sid = expand('<SID>')
 endif
 
-let s:map_cmds = {}
-function! s:map_util(name) abort " {{{
-    if !has_key(s:map_cmds, a:name)
-        echo 'incorrect map name'
-        return
-    endif
-    let cmds = s:map_cmds[a:name]
-    if empty(cmds)
-        echo 'no maps'
-        return
-    endif
-    let old_cmdheight = &cmdheight
-    let &cmdheight = len(cmds)+1
-    echo map(deepcopy(cmds),
-                \ {key, val -> key..': '..val})->values()->join("\n").."\n"
-    " let key = input('key: ')
-    let key = getcharstr()
-    let &cmdheight = old_cmdheight
-    if has_key(cmds, key)
-        execute cmds[key]
-    endif
-endfunction
-" }}}
-
 if meflib#get('plug_opt', 'denops', 0)
     call meflib#add('unload_plugins', 'skanehira/translate.vim')
 else
@@ -110,9 +86,8 @@ PlugWrapper 'MeF0504/dino.vim', PlugCond(1, {'on': 'Dino'})
 " git log 表示用plugin
 PlugWrapper 'MeF0504/gitewer.vim', PlugCond(1, {'on': 'Gitewer'})
 " {{{ gitewer, git
-let s:map_cmds['git'] = {}
-let s:map_cmds['git']['w'] = "Gitewer status"
-nnoremap <leader>g <Cmd>call <SID>map_util('git')<CR>
+let s:map_cmds_git = {}
+let s:map_cmds_git['w'] = "Gitewer status"
 " }}}
 
 " vim-pets extension
@@ -411,7 +386,9 @@ PlugWrapper 'rhysd/git-messenger.vim', PlugCond(1, {'on': 'GitMessenger'})
 " git messenger {{{
 let g:git_messenger_no_default_mappings = v:true
 let g:git_messenger_floating_win_opts = {'border': 'single'}
-let s:map_cmds['git']['m'] = "GitMessenger"
+let s:map_cmds_git['m'] = "GitMessenger"
+call meflib#set('map_cmds', 'git', s:map_cmds_git)
+nnoremap <leader>g <Cmd>call meflib#basic#map_util('git')<CR>
 " nnoremap <leader>gm <Cmd>GitMessenger<CR>
 autocmd PlugLocal FileType gitmessengerpopup
             \ nnoremap <buffer> q <Cmd>GitMessengerClose<CR>
@@ -433,12 +410,12 @@ let g:bookmark_no_default_key_mappings = 1
 let g:bookmark_auto_save = 0
 let g:bookmark_disable_ctrlp = 1
 let g:bookmark_display_annotation = 0
-let s:map_cmds['Bookmark'] = {
+call meflib#set('map_cmds', 'Bookmark', {
             \ 'm': 'BookmarkToggle',
             \ 'i': 'BookmarkAnnotate',
             \ 'a': 'BookmarkShowAll',
-            \ }
-nnoremap <leader>m <Cmd>call <SID>map_util('Bookmark')<CR>
+            \ })
+nnoremap <leader>m <Cmd>call meflib#basic#map_util('Bookmark')<CR>
 function! s:bookmarks_his() abort
     let [ctermbg, guibg] = meflib#basic#get_hi_info('SignColumn', ['ctermbg', 'guibg'])
     execute printf("highlight default BookmarkSign ctermfg=105 ctermbg=%s guifg=#8787ff guibg=%s", ctermbg, guibg)

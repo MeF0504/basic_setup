@@ -114,4 +114,7 @@ nnoremap <c-x> <Cmd>call meflib#ctrlax#true_false('x')<CR>
 " 関数一覧 {{{
 command! TagFuncAll call meflib#tag_func_all#open()
 " }}}
+" quick fix list {{{
+nnoremap <leader>q <Cmd>call meflib#qflist#main()<CR>
+" }}}
 
