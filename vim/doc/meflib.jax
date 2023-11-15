@@ -375,6 +375,7 @@ MEMO                                                               *meflib-memo*
 
 * python  |meflib-pythonmemo.jax|
 * shell  |meflib-shellmemo.jax|
+* strftime |meflib-strftime.jax|
 * vim ↓  *meflib-vimmemo*
 ##### shortcut comment~
 <c-h> ... backspace <c-m> ... Enter
