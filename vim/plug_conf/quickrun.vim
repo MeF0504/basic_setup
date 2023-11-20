@@ -133,12 +133,9 @@ endfunction
 " https://code.visualstudio.com/docs/editor/variables-reference
 " }}}
 
-call meflib#set('map_cmds', 'Qcmds', {
-            \ 'r': printf("call %squickrun_wrapper()", expand('<SID>')),
-            \ 'f': "call meflib#qflist#main()"
-            \ })
-nnoremap <leader>q <Cmd>call meflib#basic#map_util('Qcmds')<CR>
-" nnoremap <silent> <Leader>q <Cmd>call <SID>quickrun_wrapper()<CR>
+let s:tmp_conf = meflib#get('map_cmds', 'Qcmds', {})
+let s:tmp_conf['r'] = printf("call %squickrun_wrapper()", expand('<SID>'))
+call meflib#set('map_cmds', 'Qcmds', s:tmp_conf)
 
 " job runner of quickrun for Neovim (unofficial)
 PlugWrapper 'lambdalisue/vim-quickrun-neovim-job', PlugCond(has('nvim'))

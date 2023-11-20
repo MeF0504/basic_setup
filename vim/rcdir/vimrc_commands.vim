@@ -115,6 +115,9 @@ nnoremap <c-x> <Cmd>call meflib#ctrlax#true_false('x')<CR>
 command! TagFuncAll call meflib#tag_func_all#open()
 " }}}
 " quick fix list {{{
-nnoremap <leader>q <Cmd>call meflib#qflist#main()<CR>
+call meflib#set('map_cmds', 'Qcmds', {
+            \ 'f': "call meflib#qflist#main()"
+            \ })
+nnoremap <leader>q <Cmd>call meflib#basic#map_util('Qcmds')<CR>
 " }}}
 

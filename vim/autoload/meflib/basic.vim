@@ -274,15 +274,26 @@ endfunction
  " multi-mapping(?)用 {{{
  function! meflib#basic#map_util(name) abort
     let map_cmds = meflib#get('map_cmds', {})
+    if empty(map_cmds)
+        echo 'no maps registered.'
+        return
+    endif
     if !has_key(map_cmds, a:name)
-        echo 'incorrect map name'
+        echo printf('incorrect map name: "%s"', a:name)
         return
     endif
     let cmds = map_cmds[a:name]
     if empty(cmds)
-        echo 'no maps'
+        echo printf('no maps in "%s".', a:name)
         return
     endif
+
+    if len(cmds) == 1
+        let cmd = values(cmds)[0]
+        execute cmd
+        return
+    endif
+
     let old_cmdheight = &cmdheight
     let &cmdheight = len(cmds)+1
     echo map(deepcopy(cmds),
@@ -290,6 +301,7 @@ endfunction
     " let key = input('key: ')
     let key = getcharstr()
     let &cmdheight = old_cmdheight
+    normal! :
     if has_key(cmds, key)
         execute cmds[key]
     endif
