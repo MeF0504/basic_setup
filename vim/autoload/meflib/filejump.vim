@@ -1,5 +1,14 @@
 scriptencoding utf-8
 
+function! s:run_cmd(cmds) abort
+    if has('win32') || has('win64')
+        let exec_cmd = join(a:cmds)
+    else
+        let exec_cmd = a:cmds
+    endif
+    return system(exec_cmd)
+endfunction
+
 " ファイルの存在チェック
 function! meflib#filejump#main() abort
     let line = getline('.')
@@ -37,7 +46,7 @@ function! meflib#filejump#main() abort
         if !empty(cmd)
             let yn = input(printf('"%s": web url. open? (y/[n])', fname))
             if (yn == 'y')
-                call system([cmd, fname])
+                call s:run_cmd([cmd, fname])
             endif
         else
             echo 'command to open web url is not found.'
@@ -54,7 +63,7 @@ function! meflib#filejump#main() abort
     elseif yn ==# 's'
         let cmd = meflib#basic#get_exe_cmd()
         if !empty(cmd)
-            call system([cmd, fname])
+            call s:run_cmd([cmd, fname])
         else
             echo 'command to open the file is not found.'
         endif
