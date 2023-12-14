@@ -176,20 +176,19 @@ endfunction
 command! -buffer -nargs=* -complete=file Mypy call s:mypy(<f-args>)
 " }}}
 
-" matplotlibの設定がみたい
-function! s:get_plt_rcparam(...) abort
-    if a:0 == 0
-        let arg = ''
-    else
-        let arg = a:1
-    endif
+" matplotlibの設定がみたい {{{
+function! s:get_plt_rcparam() abort
+    tabnew matplotlib_rcParam
+    call meflib#basic#set_scratch("rcParams")
+    setlocal modifiable
     python3 << EOF
 import matplotlib.pyplot as plt
 import vim
-arg = vim.eval('arg')
+buf = vim.current.buffer
 for k in plt.rcParams:
-    if arg in k:
-        print(f'{k}:  {plt.rcParams[k]}')
+    buf.append(f'{k}:  {plt.rcParams[k]}')
 EOF
+    setlocal nomodifiable
 endfunction
-command! -buffer -nargs=* GetRcparam call s:get_plt_rcparam(<f-args>)
+command! -buffer GetRcparam call s:get_plt_rcparam()
+" }}}
