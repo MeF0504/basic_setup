@@ -285,6 +285,8 @@ let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
 " mapは無し
 let g:indent_guides_default_mapping = 0
+" indentをguideしないfiletype
+let g:indent_guides_exclude_filetypes = split('help taglist outliner git text') + ['']
 " highlights
 function! <SID>indentguide_his() abort
     if &background == 'dark'
@@ -296,7 +298,6 @@ function! <SID>indentguide_his() abort
     endif
 endfunction
 call meflib#add('plugin_his', s:sid.'indentguide_his')
-let g:indent_guides_exclude_filetypes = split('help taglist git')
 " }}}
 
 " vim 新機能用pluginっぽい
