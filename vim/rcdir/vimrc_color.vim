@@ -38,12 +38,11 @@ function! <SID>my_color_set_evening()
         highlight DiffDelete ctermfg=15 ctermbg=6 guifg=White guibg=DarkCyan
         highlight DiffText ctermfg=15 ctermbg=9 guifg=White guibg=Red
 endfunction
-" ['my_color_set', func_name, colors_name]
+" ['my_color_set', colors_name, func_name]
 call meflib#set('my_color_set', 'evening', s:sid.'my_color_set_evening')
 
 function! <SID>my_color_set()
     " colorscheme specified setings
-    " let colname = substitute(g:colors_name, "-", "_", "g")
     let colname = g:colors_name
     let local_scheme_funcs = meflib#get('my_color_set', {})
     if has_key(local_scheme_funcs, colname)
@@ -133,7 +132,6 @@ function! <SID>my_color_set()
     " }}}
 
     " その他 {{{
-    " highlight ToCkeys ctermfg=10 guifg=Lime
     highlight default link Quote String
     highlight qfLineNr ctermfg=22 ctermbg=252 guifg=#205020 guibg=#d0d0d0
     highlight QuickFixLine ctermfg=242 ctermbg=209 guifg=#505050 guibg=#fea085
@@ -184,18 +182,9 @@ augroup colorLocal
     autocmd!
     autocmd ColorScheme * call <SID>my_color_set()
 
-    " corsor line
-    " autocmd InsertLeave * highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=15
-    " autocmd InsertEnter * highlight CursorLineNr term=Bold cterm=underline ctermfg=17 ctermbg=97
-
     "全角スペース表示
     autocmd BufEnter * match ZenkakuSpace /　/
-    " :h :syn-matchgroup
-    " " と' にも色を付ける (test)
-    " autocmd Syntax * syntax region String matchgroup=Quote start=+\("\|'\)+ skip=+\\\("\|'\)+ end=+\("\|'\)+
-    " autocmd Syntax * syntax region String oneline matchgroup=Quote start="'" skip="\\'" end="'"
-    " autocmd Syntax * syntax region String matchgroup=Quote start="'''" end="'''"
-    " う〜ん，やっぱりやめるかなぁ。最初からあるやつだけ...
+    " " と' に文字と違う色を付ける
     autocmd FileType python ++once highlight link pythonQuotes Quote
     autocmd FileType sh ++once highlight link shQuote Quote
     autocmd FileType zsh ++once highlight link zshStringDelimiter Quote
