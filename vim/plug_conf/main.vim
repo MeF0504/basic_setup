@@ -29,7 +29,7 @@ function! s:untitled_his() abort
         let bc = untitled#get_birthday_color()
         if !empty(bc)
             let [r, g, b] = bc['RGB']
-            if meflib#color#isdark(r/255.0, b/255.0, b/255.0)
+            if meflib#color#isdark(r/255.0, g/255.0, b/255.0)
                 let gfg = "White"
                 let cfg = "15"
             else
