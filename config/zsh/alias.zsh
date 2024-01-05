@@ -8,6 +8,8 @@ alias -g L='| less -R'
 alias -g TE=' 2>&1 | tee '
 alias -g S='| sort'
 
-alias zshhistory="fc -l -n -t '%Y/%m/%d %H:%M:%S' -D -300 | vim -c 'setlocal bt=nofile | setlocal ft=zsh' -"
-alias zshhistory_all="fc -l -n -t '%Y/%m/%d %H:%M:%S' -D 0 | vim -c 'setlocal bt=nofile | setlocal ft=zsh' -"
+local HIST_CMD="fc -l -n -t '%Y/%m/%d=%H:%M:%S' -D"
+local VIM_HIST_CMD="vim -c 'setlocal bt=nofile | setlocal ft=zsh' -"
+alias zshhistory="${HIST_CMD} -300 | ${VIM_HIST_CMD}"
+alias zshhistory_all="echo 'please wait...' && ${HIST_CMD} 0 | ${VIM_HIST_CMD}"
 
