@@ -174,6 +174,8 @@ setopt hist_ignore_dups
 setopt hist_ignore_space
 # 同時に開いたzshで履歴を共有する
 setopt share_history
+# コマンドの開始時刻を書き込む
+setopt extended_history
 
 # 履歴探索
 # <c-p>, <c-n> または<esc-p>, <esc-n> で前後に移動
