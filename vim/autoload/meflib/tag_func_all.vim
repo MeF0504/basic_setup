@@ -27,6 +27,9 @@ function! s:set_tag_info(tfile) abort
             let word = split(line, "\t")[0]
             let sfile = split(line, "\t")[1]
             let idx = match(line, '$/;"')+5
+            if idx < 0+5
+                continue
+            endif
             let kind = line[idx:idx]
             if v:true
                 let lst = match(line, "/^")+2

@@ -21,19 +21,23 @@ def set_tag_info(tfile):
         return
 
     with open(tfile, 'r') as f:
-        for line in f:
+        for i, line in enumerate(f):
             if line.startswith('!'):
                 continue
             word = line.split("\t")[0]
             sfile = Path(line.split("\t")[1])
             ist = line.find('/^')
             iend = line.rfind('$/;"')
+            if iend < 0:
+                continue
             kind = line[iend+5]
+            # print(i, iend, line[iend:], kind)
             lstr = line[ist+2:iend]
             lnum = get_line(sfile, lstr)
-            res_str = "{}|{:d}| {} ({})".format(str(sfile).replace("\\", "\\\\"), lnum, word, kind)
+            sfile_str = str(sfile).replace("\\", "\\\\")
+            res_str = f'{sfile_str}|{lnum}| {word} ({kind})'
             if kind in kinds:
-                vim.command('call add(s:taginfo["{}"], "{}")'.format(kind, res_str))
+                vim.command(f'call add(s:taginfo["{kind}"], "{res_str}")')
             else:
-                vim.command('let s:taginfo["{}"] = ["{}"]'.format(kind, res_str))
+                vim.command(f'let s:taginfo["{kind}"] = ["{res_str}"]')
                 kinds.append(kind)
