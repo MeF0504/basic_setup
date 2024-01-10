@@ -29,7 +29,6 @@ if [[ -z "${SSH_CLIENT}${SSH_CONNECTION}" ]]; then
 else
     MYHOST=${HOST%%.*}
 fi
-
 #}}}
 
 # basic autoload {{{
@@ -58,7 +57,6 @@ autoload -Uz is-at-least
 # zsh_directory_name    Dynamic named directoriesによるディレクトリ名変換
 # とか？ }}}
 autoload -Uz add-zsh-hook
-
 # }}}
 
 # setopt {{{
@@ -128,7 +126,7 @@ zmodload zsh/datetime
 ### bindkey -L で一覧が見れるらしい
 
 # もうこれで慣れてるのでEmacs風key bind
-# (むしろvim風だと自分の環境との違いに発狂思想になるという面もある...)
+# (むしろvim風だと自分の環境との違いに発狂しそうになるという面もある...)
 bindkey -e
 # shift-tabで補完候補の後戻りする
 bindkey "\e[Z" reverse-menu-complete
@@ -155,9 +153,7 @@ if [[ -f $HOME/.zsh/enter.zsh ]]; then  # enter.zshがある場合のみ設定
     zle -N do_enter     # do_enterをwidgetとして登録
     bindkey '^M' do_enter
 fi
-
 # }}}
-
 # }}}
 
 # history関連 {{{
@@ -288,7 +284,6 @@ if [[ -n $ITERM_SESSION_ID ]]; then
     add-zsh-hook preexec iterm2_tab_preexec
 
 fi
-
 # }}}
 
 # {{{ その他設定，関数
@@ -322,7 +317,6 @@ if [ -n "$ZPLUG_HOME" ]; then
     fi
     source $ZPLUG_HOME/init.zsh
 fi
-
 # }}}
 
 ##{{{ load user .zshrc configuration file
