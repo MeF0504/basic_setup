@@ -199,7 +199,8 @@ zshaddhistory()
     local line=${1%%$'\n'}
     [[ ${line} != (l|l[sal])
     # && ${line} != (c|cd)
-    && ! ${line} =~ ".*history"
+    # && ! ${line} =~ ".*history"
+    && ! ${line} == history
     && ! ${line} == clear
     && ! ${line} == logout
     && ! ${line} == :
