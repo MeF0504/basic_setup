@@ -518,8 +518,9 @@ def main_conf(args):
             mine_src = 'tmp/{}rc.mine'.format(shell)
             if mine_src in files:
                 if not Path(files[mine_src]).expanduser().is_file():
-                    mkdir('config/tmp')
-                    with open(mine_src, 'w') as f:
+                    mine_src_path = args.conf_src/mine_src
+                    mkdir(str(mine_src_path.parent))
+                    with open(mine_src_path, 'w') as f:
                         f.write('## PC dependent {}rc\n'.format(shell))
                         f.write('#\n')
                         f.write('\n')
