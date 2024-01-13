@@ -29,7 +29,7 @@ which pip3
 # pip3 install corner         # 相関プロット用ライブラリ？
 # pip3 install pillow         # 画像処理用ライブラリ
 # pip3 install rawpy          # raw画像用ライブラリ
-# pip3 insatll tabulate       # table 作成／表示ライブラリ
+# pip3 install tabulate       # table 作成／表示ライブラリ
 # pip3 install python-magic   # magic (file type判定)用ライブラリ
 # pip3 install opencv-python  # Open CV package for python
 # pip3 install pyinstaller    # python scriptから実行ファイルを作るライブラリ
@@ -50,7 +50,7 @@ echo $GOPATH
 # go get github.com/mattn/docx2md                 # wordをmarkdown化するツール
 # go get github.com/mattn/go-sixel/cmd/gosr       # 端末上に画像を表示するツール
 # cd $tmpdir && git clone https://github.com/skanehira/pst.git && cd pst/ && go install  # 高機能プロセス表示ツール
-# cd $tmpdir && git clone https://github.com/matsuyoshi30/germanium && cd germanium/cmd/germanium/ && go insatll # コードから画像を生成するツール
+# cd $tmpdir && git clone https://github.com/matsuyoshi30/germanium && cd germanium/cmd/germanium/ && go install # コードから画像を生成するツール
 echo
 # }}}
 
@@ -79,7 +79,7 @@ echo
 
 ## other tools {{{
 echo '- other tools gettable by curl'
-INSTALL_DIR=${1:-$HOME/opt/bin}
+INSTALL_DIR=${1:-$HOME/workspace/opt/bin}
 if [ ! -d $INSTALL_DIR ]; then
     echo 'no such install directory: '$INSTALL_DIR
     exit
