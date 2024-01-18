@@ -120,4 +120,7 @@ call meflib#set('map_cmds', 'Qcmds', {
             \ })
 nnoremap <leader>q <Cmd>call meflib#basic#map_util('Qcmds')<CR>
 " }}}
+" ちょっとpython scriptをvimで動かしたいとき {{{
+command! PyTmp call meflib#pytmp#main()
+" }}}
 
