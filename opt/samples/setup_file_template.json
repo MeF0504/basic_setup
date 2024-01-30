@@ -8,13 +8,13 @@
         "lib/local_lib_color.py": "$PREFIX/lib/local_lib_color.py"
     },
    "config": {
-        "posixShellRC": "~/.posixShellRC",
-        "zshrc": "~/.zshrc",
-        "zsh/alias.zsh": "~/.zsh/alias.zsh",
-        "zsh/complete.zsh": "~/.zsh/complete.zsh",
-        "zsh/functions.zsh": "~/.zsh/functions.zsh",
-        "zsh/prompt.zsh": "~/.zsh/prompt.zsh",
-        "gitignore_global": "~/.gitignore_global"
+        "shell/posixShellRC": "~/.posixShellRC",
+        "zsh/zshrc": "~/.zshrc",
+        "zsh/zsh/alias.zsh": "~/.zsh/alias.zsh",
+        "zsh/zsh/complete.zsh": "~/.zsh/complete.zsh",
+        "zsh/zsh/functions.zsh": "~/.zsh/functions.zsh",
+        "zsh/zsh/prompt.zsh": "~/.zsh/prompt.zsh",
+        "git/gitignore_global": "~/.gitignore_global"
     },
     "//comment": "vim is not set here, so copy files based on default setting.",
     "//comment": "if you want to copy specified files contained in vim directory, add\"vim\" key and setting dictionaries.",
