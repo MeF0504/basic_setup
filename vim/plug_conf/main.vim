@@ -91,8 +91,8 @@ let s:map_cmds_git['w'] = "Gitewer status"
 " }}}
 
 " vim-pets extension
-PlugWrapper 'MeF0504/vim-pets-ocean', PlugCond(1, {'on': 'Pets'})
-PlugWrapper 'MeF0504/vim-pets-codes', PlugCond(1, {'on': 'Pets'})
+PlugWrapper 'MeF0504/vim-pets-ocean', PlugCond(1, {'on': ['Pets', 'PetsWithYou']})
+PlugWrapper 'MeF0504/vim-pets-codes', PlugCond(1, {'on': ['Pets', 'PetsWithYou']})
 
 " paste時に履歴から選ぶ
 PlugWrapper 'MeF0504/RegistPaste.vim'
