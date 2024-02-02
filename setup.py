@@ -12,6 +12,14 @@ import urllib.request as urlreq
 from pathlib import Path
 from typing import List
 
+try:
+    from send2trash import send2trash
+except ImportError as e:
+    print(e)
+    is_import_trash = False
+else:
+    is_import_trash = True
+
 sys.path.append(str(Path(__file__).parent/'opt'/'lib'))
 from pymeflib.util import mkdir
 from pymeflib.color import FG256, END
@@ -304,12 +312,20 @@ class CopyClass():
                     if yn != 'n':
                         os.unlink(f)
             else:
-                if self.test:
-                    self.print(f'process check::remove {f}', True)
+                if is_import_trash:
+                    if self.test:
+                        self.print(f'process check::move {f} to Trash', True)
+                    else:
+                        yn = input(f'move {f} to Trash? ([y]/n): ')
+                        if yn != 'n':
+                            send2trash(f)
                 else:
-                    yn = input(f'remove {f}? ([y]/n): ')
-                    if yn != 'n':
-                        os.remove(f)
+                    if self.test:
+                        self.print(f'process check::remove {f}', True)
+                    else:
+                        yn = input(f'remove {f}? ([y]/n): ')
+                        if yn != 'n':
+                            os.remove(f)
 
 
 def print_path(path):
