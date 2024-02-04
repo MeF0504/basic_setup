@@ -21,7 +21,7 @@ else:
     is_import_trash = True
 
 sys.path.append(str(Path(__file__).parent/'opt'/'lib'))
-from pymeflib.util import mkdir
+from pymeflib.util import mkdir, chk_cmd
 from pymeflib.color import FG256, END
 
 uname = platform.system()
@@ -529,6 +529,7 @@ def main_conf(args):
             print('failed to download git-prompt')
             print('error: {}'.format(e))
 
+    # create ~.mine files
     if not args.test:
         for shell in 'bash zsh'.split():
             mine_src = 'tmp/{}rc.mine'.format(shell)
@@ -552,6 +553,20 @@ def main_conf(args):
                     print('{}rc.mine is already exists'.format(shell))
                     files.pop(mine_src)
 
+        # create tigrc.mine
+        if 'git/tigrc' in files:
+            tigrc = Path('~/.tig/tigrc.mine').expanduser()
+            if not tigrc.parent.is_dir():
+                mkdir(tigrc.parent)
+            if not tigrc.is_file():
+                with open(tigrc, 'w') as f:
+                    f.write('# user local tigrc\n')
+                    if chk_cmd('diff-highlight'):
+                        f.write('''
+# diff-highlight を使う
+set diff-highlight = true
+''')
+
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    show_target=args.show_target_files,
                    show_no_update=args.show_no_update_files,
@@ -574,6 +589,7 @@ def main_conf(args):
         cc.clear(str(bashdir), [bashdir/'bashrc.mine',
                                 bashdir/'git-prompt.sh'])
 
+    # create update_setup file
     pyopt = ''
     if args.prefix is not None:
         pyopt += '--prefix "{}"'.format(args.prefix)
