@@ -566,6 +566,7 @@ def main_conf(args):
 # diff-highlight を使う
 set diff-highlight = true
 ''')
+                print('made tigrc.mine')
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    show_target=args.show_target_files,
