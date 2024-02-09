@@ -1,0 +1,82 @@
+#! /usr/bin/env python3
+
+import os
+import argparse
+import re
+from pathlib import Path
+
+
+class LineCounter():
+    def __init__(self, args):
+        self.root = args.root
+        self.verbose = args.verbose
+        self.all = args.all
+        self.ptrn = args.ptrn
+        self.fmt = '{:>6d}: {}'
+
+    def __repr__(self):
+        return
+
+    def vprint(self, string: str, **kwargs) -> None:
+        if self.verbose:
+            print(string, **kwargs)
+
+    def is_target_file(self, path: str) -> bool:
+        if not os.path.isfile(path):
+            self.vprint(f'file {path} not found')
+            return False
+        if self.all:
+            return True
+        elif self.ptrn is not None:
+            if re.match(self.ptrn, path):
+                self.vprint(f'pattern {self.ptrn} match: {path}')
+                return True
+            else:
+                self.vprint(f'pattern {self.ptrn} does not match: {path}')
+                return False
+        else:
+            if os.path.basename(path).startswith('.'):
+                return False
+            for p in Path(path).parents[::-1]:
+                if str(p) == self.root:
+                    continue
+                if str(p).startswith('.') and str(p) != '.':
+                    self.vprint(f'hide file or dir ({p}): {path}')
+                    return False
+            return True
+
+    def main(self) -> None:
+        total_count = 0
+        for cpath, dirs, files in os.walk(self.root):
+            current_count = 0
+            for fy in files:
+                tf = os.path.join(cpath, fy)
+                if self.is_target_file(tf):
+                    try:
+                        with open(tf, 'r') as f:
+                            ln = len(f.readlines())
+                        print(self.fmt.format(ln, tf))
+                        current_count += ln
+                    except Exception as e:
+                        if self.verbose:
+                            errmsg = f' ({e})'
+                        else:
+                            errmsg = ''
+                        print(f'failed to read file{errmsg}: {tf}')
+            print(self.fmt.format(current_count, f'dir total ({cpath})'))
+            total_count += current_count
+        print(self.fmt.format(total_count, 'total'))
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('root', help='root directory', nargs='?', default='.')
+    parser.add_argument('--ptrn', help='file pattern (regular expression)',
+                        type=str, default=None)
+    parser.add_argument('-a', '--all', help='count all files',
+                        action='store_true')
+    parser.add_argument('-v', '--verbose', help='show verbose output',
+                        action='store_true')
+    args = parser.parse_args()
+    lc = LineCounter(args)
+    lc.main()
