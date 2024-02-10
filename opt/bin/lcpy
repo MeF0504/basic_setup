@@ -12,7 +12,7 @@ class LineCounter():
         self.verbose = args.verbose
         self.all = args.all
         self.ptrn = args.ptrn
-        self.fmt = '{:>6d}: {}'
+        self.fmt = '{:>9d}: {}'
 
     def __repr__(self):
         return
