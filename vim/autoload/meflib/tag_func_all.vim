@@ -70,5 +70,6 @@ function! meflib#tag_func_all#open() abort
     endfor
     cgetexpr res
     copen
+    let w:quickfix_title = printf('  tagfuncs ("%s")', kind)
 endfunction
 

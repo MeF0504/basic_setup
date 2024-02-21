@@ -35,10 +35,10 @@ function! meflib#filejump#main() abort
         let idx_r = stridx(line, ':', idx_l)-1
         let lnum = line[idx_l:idx_r]
     elseif isdirectory(fname)
-        " file
+        " directory
         let yn = input(printf('%s: directory. open in new tab? (y/s/[n]): ', fname))
     elseif filereadable(fname)
-        " directory
+        " file
         let yn = input(printf('%s: file. open in new tab? (y/s/[n]): ',fname))
     elseif fname[:6] ==# 'http://' || fname[:7] ==# 'https://'
         " URL
