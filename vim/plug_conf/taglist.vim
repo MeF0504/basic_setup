@@ -60,5 +60,5 @@ function! <SID>Open_taglist() abort
     let g:Tlist_Use_Right_Window = l:tlist_right_old
     " }}}
 endfunction
-nnoremap <silent> <Leader>t <Cmd>call <SID>Open_taglist()<CR>
+" nnoremap <silent> <Leader>t <Cmd>call <SID>Open_taglist()<CR>
 
