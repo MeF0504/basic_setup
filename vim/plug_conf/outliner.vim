@@ -22,7 +22,7 @@ function! s:outliner_hook() abort
                     \ 'line': 0,
                     \},
                 \ 'Plug': {
-                    \ 'pattern': '^Plug ',
+                    \ 'pattern': '^PlugWrapper ',
                     \ 'line': 0,
                     \},
                 \}, 'keep')

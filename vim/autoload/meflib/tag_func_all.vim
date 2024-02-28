@@ -66,10 +66,16 @@ function! meflib#tag_func_all#open() abort
     let kind = input(printf('kinds [%s]? ', join(keys(s:taginfo), ' ')))
     let res = []
     for k in kind
-        let res += s:taginfo[k]
+        if has_key(s:taginfo, k)
+            let res += s:taginfo[k]
+        else
+            echomsg printf(' skip %s: incorrect kind.', k)
+        endif
     endfor
     cgetexpr res
+    let title = printf(' TagFuncAll ("%s")', kind)
+    " :h setqflist-examples
+    call setqflist([], 'a', {'title': title})
     copen
-    let w:quickfix_title = printf('  tagfuncs ("%s")', kind)
 endfunction
 
