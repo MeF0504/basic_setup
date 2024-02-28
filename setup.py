@@ -10,7 +10,8 @@ import json
 import platform
 import urllib.request as urlreq
 from pathlib import Path
-from typing import List
+from typing import List, Optional, Literal, Union
+from dataclasses import dataclass
 
 try:
     from send2trash import send2trash
@@ -44,6 +45,47 @@ colors = {
         "show_files": 2,
         "path": 10,
         }
+
+TypeList = Literal["all", "opt", "config", "vim"]
+
+
+@dataclass
+class Args:
+    """
+    wrapper of argument parser.
+    useful for organizing information of args.
+    """
+    prefix: Optional[Path]
+    vim_prefix: Optional[Path]
+    download: bool
+    link: bool
+    test: bool
+    force: bool
+    type: List[TypeList]
+    setup_file: Optional[str]
+    clear: bool
+    show_target_files: bool
+    show_no_update_files: bool
+    show_all: bool
+
+    fpath: Path
+    conf_home: Path
+    opt_src: Path
+    bin_src: Path
+    lib_src: Path
+    bin_dst: Optional[Path]
+    lib_dst: Optional[Path]
+    conf_src: Path
+    vim_src: Path
+    vim_conf: Path
+    vimrc: Path
+    rc_dst: Path
+    ft_dst: Path
+    plg_dst: Path
+    al_dst: Path
+    doc_dst: Path
+    aft_dst: Path
+    local_conf: Path
 
 
 class CopyClass():
@@ -126,7 +168,7 @@ class CopyClass():
 
         self.print('{}{}{}'.format(fg, comment, end), True)
 
-    def diff(self, index):
+    def diff(self, index: int):
         src = self.src[index]
         dst = self.dst[index]
         # https://it-ojisan.tokyo/python-difflib/#keni_toc_2
@@ -161,7 +203,7 @@ class CopyClass():
         if show:
             print(string)
 
-    def dst_check(self, index):
+    def dst_check(self, index: int):
         src = self.src[index]
         dst = self.dst[index]
         dst2 = self.home_cut(dst)
@@ -205,7 +247,7 @@ class CopyClass():
 
         return exist, islink, cmp
 
-    def diff_check(self, index):
+    def diff_check(self, index: int):
         src = self.src[index]
         is_diff = False
         while True:
@@ -328,17 +370,18 @@ class CopyClass():
                             os.remove(f)
 
 
-def print_path(path):
+def print_path(path: Union[str, Path]):
     fg = FG256(colors['path'])
     end = END
     print('\n{}@ {}{}\n'.format(fg, path, end))
 
 
-def get_files(fpath, args_type, prefix):
-    if fpath is None:
+def get_files(setup_path: Optional[str],
+              args_type: TypeList, prefix: Optional[str]):
+    if setup_path is None:
         return None
 
-    fpath = Path(fpath).expanduser()
+    fpath = Path(setup_path).expanduser()
     if not fpath.exists():
         print("setup_file {} doesn't find. use default settings."
               .format(fpath))
@@ -363,14 +406,14 @@ def get_files(fpath, args_type, prefix):
         return None
 
 
-def set_path(args):
+def set_path(args: Args):
     if 'XDG_CONFIG_HOME' in os.environ:
-        conf_home = os.environ['XDG_CONFIG_HOME']
+        conf_home = Path(os.environ['XDG_CONFIG_HOME'])
     else:
         conf_home = Path('~/.config').expanduser()
     args.conf_home = conf_home
 
-    args.opt_src = Path(args.fpath)/'opt'
+    args.opt_src = args.fpath/'opt'
     args.bin_src = args.opt_src/'bin'
     args.lib_src = args.opt_src/'lib'
     if args.prefix is None:
@@ -380,9 +423,9 @@ def set_path(args):
         args.bin_dst = Path(args.prefix)/'bin'
         args.lib_dst = Path(args.prefix)/'lib'
 
-    args.conf_src = Path(args.fpath)/'config'
+    args.conf_src = args.fpath/'config'
 
-    args.vim_src = Path(args.fpath)/'vim'
+    args.vim_src = args.fpath/'vim'
     if args.vim_prefix is not None:
         args.vim_conf = Path(args.vim_prefix)
         args.vimrc = args.vim_conf/'init.vim'
@@ -410,7 +453,7 @@ def set_path(args):
     args.local_conf = local_conf
 
 
-def set_color(args):
+def set_color(args: Args):
     if args.setup_file is None:
         return
     setfile = Path(args.setup_file)
@@ -424,12 +467,87 @@ def set_color(args):
             color_conf = conf['color']
             for key in colors:
                 if key in color_conf:
-                    if type(color_conf[key]) == int and \
+                    if type(color_conf[key]) is int and \
                        0 <= color_conf[key] < 256:
                         colors[key] = color_conf[key]
 
 
-def main_opt(args):
+def create_update(args: Args):
+    if args.bin_dst is None:
+        return
+    if not args.bin_dst.is_dir():
+        print(f'{args.bin_dst} is not found. update_setup is not created')
+        return
+
+    pyopt = ''
+    if args.prefix is not None:
+        pyopt += '--prefix "{}"'.format(args.prefix)
+    pyopt += ' --type ' + ' '.join(args.type)
+    if args.setup_file is not None:
+        pyopt += ' --setup_file "{}"'.format(args.setup_file)
+    if args.link:
+        pyopt += ' --link'
+    if args.force:
+        pyopt += ' --force'
+    if args.vim_prefix is not None:
+        pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
+    if args.show_all:
+        pyopt += ' --show_all'
+    if args.show_target_files:
+        pyopt += ' --show_target_files'
+    if args.show_no_update_files:
+        pyopt += ' --show_no_update_files'
+    if args.clear:
+        pyopt += ' --clear'
+    with open(args.fpath/'opt/samples/update_setup_sample.py', 'r') as f:
+        update_setup = f.read().format(args.fpath, args.fpath, args.fpath,
+                                       pyopt).replace('\\', '\\\\')
+
+    update_setup_file = args.bin_dst/'update_setup'
+    if update_setup_file.is_file():
+        create_us = False
+        cur_update_setup = []
+        with open(update_setup_file, 'r') as f:
+            cur_update_setup = f.readlines()
+            cur_update_setup = [line.replace('\n', '')
+                                for line in cur_update_setup]
+            # I don't know why but it looks like
+            # empty line is appended.
+            cur_update_setup += ['']
+        if cur_update_setup != update_setup.split('\n'):
+            create_us = True
+            us_diff = difflib.unified_diff(cur_update_setup,
+                                           update_setup.split('\n'),
+                                           fromfile='current script',
+                                           tofile='created script')
+    else:
+        create_us = True
+        us_diff = []
+
+    if create_us:
+        if args.test:
+            print('create update_setup in {}'.format(args.bin_dst))
+            print('---- diff -----')
+            for line in us_diff:
+                print(line.replace('\n', ''))
+            print('---------------')
+        else:
+            print('creating update_setup file in {} ...'.format(args.bin_dst))
+            print('---- diff -----')
+            for line in us_diff:
+                print(line.replace('\n', ''))
+            print('---------------')
+            with open(update_setup_file, 'w') as f:
+                f.write(update_setup)
+            update_setup_file.chmod(0o744)
+            print('done')
+            if uname == 'Windows':
+                # for .qrun_conf.vim
+                mkdir('tmp')
+                shutil.copy(update_setup_file, Path('tmp')/'update_setup')
+
+
+def main_opt(args: Args):
     if args.prefix is None:
         return
     print_path(args.opt_src)
@@ -464,7 +582,7 @@ def main_opt(args):
     # opt は関係ないbin, libもあるのでclearは呼ばない
 
 
-def main_conf(args):
+def main_conf(args: Args):
     print_path(args.conf_src)
 
     files_mac = {
@@ -591,50 +709,10 @@ set diff-highlight = true
                                 bashdir/'git-prompt.sh'])
 
     # create update_setup file
-    pyopt = ''
-    if args.prefix is not None:
-        pyopt += '--prefix "{}"'.format(args.prefix)
-    pyopt += ' --type ' + ' '.join(args.type)
-    if args.setup_file is not None:
-        pyopt += ' --setup_file "{}"'.format(args.setup_file)
-    if args.link:
-        pyopt += ' --link'
-    if args.force:
-        pyopt += ' --force'
-    if args.vim_prefix is not None:
-        pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
-    if args.show_all:
-        pyopt += ' --show_all'
-    if args.show_target_files:
-        pyopt += ' --show_target_files'
-    if args.show_no_update_files:
-        pyopt += ' --show_no_update_files'
-    if args.clear:
-        pyopt += ' --clear'
-    with open(Path(args.fpath)/'opt/samples/update_setup_sample.py', 'r') as f:
-        update_setup = f.read().format(args.fpath, args.fpath, args.fpath,
-                                       pyopt).replace('\\', '\\\\')
-    if args.bin_dst is None:
-        pass
-    elif args.bin_dst.is_dir():
-        if args.test:
-            print('create update_setup in {}'.format(args.bin_dst))
-        else:
-            print('creating update_setup file in {} ...'.format(args.bin_dst))
-            update_setup_file = args.bin_dst/'update_setup'
-            with open(update_setup_file, 'w') as f:
-                f.write(update_setup)
-            update_setup_file.chmod(0o744)
-            print('done')
-            if uname == 'Windows':
-                # for .qrun_conf.vim
-                mkdir('tmp')
-                shutil.copy(update_setup_file, Path('tmp')/'update_setup')
-    else:
-        print(f'{args.bin_dst} is not found. update_setup is not created')
+    create_update(args)
 
 
-def main_vim(args):
+def main_vim(args: Args):
     print_path(args.vim_src)
     mkdir(args.vim_conf/'swp')
 
