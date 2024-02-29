@@ -19,9 +19,10 @@ endfunction
 
 " ctags command {{{
 function! meflib#tools#exec_ctags(...) abort
-    if !executable('ctags')
+    let ctags_cmd = meflib#get('ctags_config', 'command', 'ctags')
+    if !executable(ctags_cmd)
         echohl ErrorMsg
-        echomsg 'ctags is not executable'
+        echomsg printf('%s is not executable', ctags_cmd)
         echohl None
         return
     endif
@@ -41,7 +42,7 @@ function! meflib#tools#exec_ctags(...) abort
         return
     endif
 
-    let ctags_opt = meflib#get('ctags_opt', '')
+    let ctags_opt = meflib#get('ctags_config', 'opt', '')
     let out_file_name = printf('%s/.%s_tags', cwd, &filetype)
     if &filetype == 'cpp'
         let ft = 'c++'
@@ -49,12 +50,12 @@ function! meflib#tools#exec_ctags(...) abort
         let ft = &filetype
     endif
 
-    let ctags_cmd = printf('ctags %s -f "%s" --languages=%s -R "%s"', ctags_opt, out_file_name, ft, cwd)
-    echomsg ctags_cmd
+    let ctags_cmds = printf('%s %s -f "%s" --languages=%s -R "%s"', ctags_cmd, ctags_opt, out_file_name, ft, cwd)
+    echomsg ctags_cmds
     if has('nvim')
-        call jobstart(ctags_cmd)
+        call jobstart(ctags_cmds)
     else
-        call job_start(ctags_cmd)
+        call job_start(ctags_cmds)
     endif
     echomsg 'done!'
 endfunction
