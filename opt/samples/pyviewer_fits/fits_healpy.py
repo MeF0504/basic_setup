@@ -4,15 +4,31 @@ import numpy as np
 import healpy as hp
 import matplotlib.pyplot as plt
 
-from . import args_chk, help_template, get_config
+from . import args_chk, help_template, get_config, add_args_key
+
+
+def add_args(parser):
+    add_args_key(parser)
+    parser.add_argument('--projection', help='specify the projection',
+                        choices=['mollweide', 'gnomonic',
+                                 'cartesian', 'orthographic'],
+                        )
+    parser.add_argument('--norm', help='specify color normalization',
+                        choices=['hist', 'log', 'None'])
+    parser.add_argument('--cl', help='show cl', action='store_true')
+    parser.add_argument('--coord', help='Either one of' +
+                        ' ‘G’, ‘E’ or ‘C’' +
+                        ' to describe the coordinate system of the map, or' +
+                        ' a sequence of 2 of these to rotate the map from' +
+                        ' the first to the second coordinate system.',
+                        nargs='*')
 
 
 def show_help():
     helpmsg = help_template('fits_healpy', 'show the image of fits file' +
                             ' using HealPix.' +
                             ' args.key specifies field.',
-                            sup_k=True,
-                            add_args='add_args_fits')
+                            add_args)
     print(helpmsg)
 
 

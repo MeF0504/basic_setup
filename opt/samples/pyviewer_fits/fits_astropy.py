@@ -4,7 +4,15 @@ from astropy.io import fits
 # astropy requires NumPy!
 import numpy as np
 
-from . import args_chk, show_image_ndarray, help_template
+from . import args_chk, show_image_ndarray, help_template, \
+    add_args_imageviewer, add_args_key
+
+
+def add_args(parser):
+    add_args_imageviewer(parser)
+    add_args_key(parser)
+    parser.add_argument('--log_scale', help='scale color in log.',
+                        action='store_true')
 
 
 def show_help():
@@ -13,8 +21,7 @@ def show_help():
                             ' if no key is specified, show the HDU info.' +
                             ' Note that the values of each pixel are' +
                             ' displayed in log scale.',
-                            sup_iv=True, sup_k=True,
-                            add_args='add_args_fits')
+                            add_args)
     print(helpmsg)
 
 

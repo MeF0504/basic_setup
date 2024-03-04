@@ -11,9 +11,6 @@ Please append following settings.
         "fits_astropy": "fits fit",
         "fits_healpy": ""
     },
-    "config": {
-        "add_args": ["add_args_fits"]
-    },
     "fits_healpy": {
         "projection": "mollweide",
         "norm": "None",
