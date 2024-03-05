@@ -85,14 +85,15 @@ def main(fpath, args):
     else:
         cl = False
 
-    heal_maps = {}
+    heal_maps = hp.read_map(fpath, field=fields)
+    if len(fields) == 1:
+        heal_maps = [heal_maps]
     for i, field in enumerate(fields):
-        heal_maps[field] = hp.read_map(fpath, field=field)
         if norm == 'log':
             # is this correct?
-            heal_map_plot = np.abs(heal_maps[field])
+            heal_map_plot = np.abs(heal_maps[i])
         else:
-            heal_map_plot = heal_maps[field]
+            heal_map_plot = heal_maps[i]
         viewer(heal_map_plot, title=f'{fname} ({field})',
                coord=coord, norm=norm, fig=1, sub=(len(fields), 1, i+1))
     if cl:
@@ -100,7 +101,7 @@ def main(fpath, args):
         for i, field in enumerate(fields):
             ax21 = fig2.add_subplot(len(fields), 1, i+1)
             # LMAX = 1024
-            cl = hp.anafast(heal_maps[field])  # , lmax=LMAX)
+            cl = hp.anafast(heal_maps[i])  # , lmax=LMAX)
             ell = np.arange(len(cl))
             ax21.plot(ell, ell*(ell+1)/(2*np.pi) * cl)
             ax21.set_xlabel(r'$\ell$')
