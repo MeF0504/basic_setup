@@ -17,10 +17,11 @@ def add_args(parser):
 
 def show_help():
     helpmsg = help_template('fits_astropy', 'show the image of fits file.' +
-                            ' args.key specifies an index of HDUList, and' +
+                            ' -k/--key specifies an index of HDU' +
+                            ' (Header Data Unit) list, and' +
                             ' if no key is specified, show the HDU info.' +
                             ' Note that the values of each pixel are' +
-                            ' displayed in log scale.',
+                            ' subtracted by min value.',
                             add_args)
     print(helpmsg)
 
@@ -38,10 +39,16 @@ def main(fpath, args):
         idx = 0
 
     with fits.open(fpath) as hdul:
+        if idx >= len(hdul):
+            print(f'key index {idx} > num of HDU (max: {len(hdul)-1})')
+            return
         data = hdul[idx].data
 
+    if not hasattr(data, 'shape'):
+        print(f'data type may not correct: {type(data)}')
+        return
     if len(data.shape) != 2:
-        print('This function assumes 2D image. this is {}.'.format(data.shape))
+        print(f'This function assumes 2D image. this is {data.shape}.')
         return
     data -= np.nanmin(data)
     data = np.where(data == data, data, 0)
