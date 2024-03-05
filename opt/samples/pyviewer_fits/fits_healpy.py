@@ -39,9 +39,9 @@ def main(fpath, args):
             print('please use "-t fits_astropy -k" to see HDU info.')
             return
         else:
-            field = int(args.key[0])
+            fields = [int(k) for k in args.key]
     else:
-        field = 0
+        fields = [0]
 
     if hasattr(args, 'projection') and args.projection is not None:
         projection = args.projection
@@ -85,16 +85,25 @@ def main(fpath, args):
     else:
         cl = False
 
-    heal_map = hp.read_map(fpath, field=field)
-    viewer(heal_map, title=fname, coord=coord, norm=norm)
+    heal_maps = {}
+    for i, field in enumerate(fields):
+        heal_maps[field] = hp.read_map(fpath, field=field)
+        if norm == 'log':
+            # is this correct?
+            heal_map_plot = np.abs(heal_maps[field])
+        else:
+            heal_map_plot = heal_maps[field]
+        viewer(heal_map_plot, title=f'{fname} ({field})',
+               coord=coord, norm=norm, fig=1, sub=(len(fields), 1, i+1))
     if cl:
-        LMAX = 1024
-        cl = hp.anafast(heal_map, lmax=LMAX)
-        ell = np.arange(len(cl))
         fig2 = plt.figure(figsize=(10, 5))
-        ax21 = fig2.add_subplot(111)
-        ax21.plot(ell, ell*(ell+1)/(2*np.pi) * cl)
-        ax21.set_xlabel(r'$\ell$')
-        ax21.set_ylabel(r'$\frac{\ell(\ell+1)}{2\pi} C_{\ell}$')
-        ax21.set_yscale('log')
+        for i, field in enumerate(fields):
+            ax21 = fig2.add_subplot(len(fields), 1, i+1)
+            # LMAX = 1024
+            cl = hp.anafast(heal_maps[field])  # , lmax=LMAX)
+            ell = np.arange(len(cl))
+            ax21.plot(ell, ell*(ell+1)/(2*np.pi) * cl)
+            ax21.set_xlabel(r'$\ell$')
+            ax21.set_ylabel(r'$\frac{\ell(\ell+1)}{2\pi} C_{\ell}$')
+            ax21.set_yscale('log')
     plt.show()
