@@ -26,6 +26,9 @@ PlugWrapper 'Shougo/ddc-converter_remove_overlap'
 PlugWrapper 'Shougo/ddc-ui-native'
 
 PlugWrapper 'Shougo/ddc.vim'
+
+let g:ddc_tabnine#storage_dir = expand('~/.cache/ddc-tabnine')
+
 function! s:ddc_hook() abort
     echomsg 'ddc setting start'
     " set UI
@@ -66,11 +69,9 @@ function! s:ddc_hook() abort
         \ 'sourceParams', {
             \ 'tabnine': {
                 \ 'maxNumResults': 10,
-                \ 'storageDir': expand('~/.cache/ddc-tabline'),
             \ },
         \ }
     \ )
-    " storageDir doesn't work??
 
     " set filetype-specific options
     call ddc#custom#patch_filetype(['ps1', 'dosbatch', 'autohotkey', 'registry'], {
