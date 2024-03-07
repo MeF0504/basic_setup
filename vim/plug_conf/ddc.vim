@@ -27,7 +27,14 @@ PlugWrapper 'Shougo/ddc-ui-native'
 
 PlugWrapper 'Shougo/ddc.vim'
 
+" {{{ ddc-tabnine setting
+" なんか自動downloadが動かない？
+" これで手動downloadができる
+" https://raw.githubusercontent.com/codota/tabnine-nvim/master/dl_binaries.sh
+let g:ddc_tabnine#disable_auto_install = v:false
+" CLI toolの保存場所を共通化
 let g:ddc_tabnine#storage_dir = expand('~/.cache/ddc-tabnine')
+" }}}
 
 function! s:ddc_hook() abort
     echomsg 'ddc setting start'
@@ -130,7 +137,6 @@ function! s:ddc_hook() abort
     echomsg 'ddc setting finish'
 endfunction
 if meflib#get('plug_opt', 'denops', 0)
-    " autocmd PlugLocal User ddc.vim call s:ddc_hook()
     autocmd PlugLocal InsertEnter * ++once call s:ddc_hook()
 endif
 
