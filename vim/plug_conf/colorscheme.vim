@@ -109,9 +109,6 @@ call meflib#set('my_color_set', 'night-owl', expand('<SID>').'my_color_set_night
 PlugWrapper 'MeF0504/inkpotter.vim'
 " inkpotter {{{
 function! <SID>my_color_set_inkpotter()
-    highlight CursorWord1 ctermbg=235 cterm=None guibg=#262626 gui=NONE
-    highlight Quote ctermfg=183 ctermbg=None guifg=#d7afff guibg=NONE
-
     highlight HiTagImports ctermfg=225 guifg=#f0b7f0
 endfunction
 call meflib#set('my_color_set', 'inkpotter', expand('<SID>').'my_color_set_inkpotter')
