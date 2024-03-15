@@ -252,7 +252,7 @@ PlugWrapper 'itchyny/vim-cursorword'
 " デフォルトのhighlightをoff
 let g:cursorword_highlight = 0
 " 幾つかのfile typeではcursorwordをoff
-autocmd PlugLocal FileType txt,help,markdown,taglist,outliner
+autocmd PlugLocal FileType txt,help,markdown,outliner
             \ let b:cursorword = 0
 " highlights
 function! <SID>cursorword_his() abort
@@ -286,7 +286,7 @@ let g:indent_guides_guide_size = 1
 " mapは無し
 let g:indent_guides_default_mapping = 0
 " indentをguideしないfiletype
-let g:indent_guides_exclude_filetypes = split('help taglist outliner git text') + ['']
+let g:indent_guides_exclude_filetypes = split('help outliner git text') + ['']
 " highlights
 function! <SID>indentguide_his() abort
     if &background == 'dark'
