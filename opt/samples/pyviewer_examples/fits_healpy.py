@@ -105,6 +105,6 @@ def main(fpath, args):
             ell = np.arange(len(cl))
             ax21.plot(ell, ell*(ell+1)/(2*np.pi) * cl)
             ax21.set_xlabel(r'$\ell$')
-            ax21.set_ylabel(r'$\frac{\ell(\ell+1)}{2\pi} C_{\ell}$')
+            ax21.set_ylabel(r'$\ell(\ell+1)/2\pi\ \ C_{\ell}$')
             ax21.set_yscale('log')
     plt.show()
