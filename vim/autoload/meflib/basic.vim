@@ -142,51 +142,42 @@ function! meflib#basic#show_var(var_name='') abort
     endif
 endfunction
 " }}}
-" 関数の引数解析用関数 (key=arg) {{{
-function! meflib#basic#analythis_args_eq(arg) abort
-    let args = split(a:arg, ' ')
-    let ret = {'no_key':""}
-    let last_key = 'no_key'
-    for dic in args
-        let dic_sub = split(dic, "=", 1)
-        if len(dic_sub) < 2
-            " no equal
-            let ret[last_key] .= ' ' . dic_sub[0]
-        else
-            let dic_key = dic_sub[0]
-            let dic_val = join(dic_sub[1:], '=')
-            let ret[dic_key] = dic_val
-            " update key
-            let last_key = dic_key
-        endif
-    endfor
-
-    return ret
-endfunction
-" }}}
 " 関数の引数解析用関数 (-opt arg) {{{
 function! meflib#basic#analythis_args_hyp(args, args_config) abort
     let args = split(a:args, ' ')
     let res = {'no_opt':[]}
-    let i = 0
-    while i < len(args)
+    let opt_max = 0
+    for i in range(len(args))
         let arg = args[i]
         if arg[0] ==# '-' && has_key(a:args_config, arg[1:])
             let opt = arg[1:]
             let opt_num = a:args_config[opt]
-            let res[opt] = args[i+1:i+opt_num]
-            if len(res[opt]) != opt_num
-                echohl ErrorMsg
-                echo "incorrect arguments"
-                echohl None
-                return {}
+            let res[opt] = []
+            if opt_num ==# '*'
+                let opt_max = len(args)
+            else
+                let opt_max = i+1+opt_num
             endif
-            let i += opt_num
+        elseif i < opt_max
+            call add(res[opt], arg)
         else
             call add(res['no_opt'], arg)
         endif
-        let i += 1
-    endwhile
+    endfor
+    for k in keys(res)
+        if k ==# 'no_opt'
+            continue
+        endif
+        if a:args_config[k] ==# '*'
+            continue
+        endif
+        if len(res[k]) != a:args_config[k]
+            echohl ErrorMsg
+            echo "incorrect arguments: " .. k
+            echohl None
+            return {}
+        endif
+    endfor
     return res
 endfunction
 " }}}
