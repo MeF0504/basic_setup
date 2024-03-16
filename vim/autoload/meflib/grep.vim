@@ -41,18 +41,23 @@ function! meflib#grep#main(...)
             let def_dir = top_dir
         endif
     endif
-    let is_word = 0
+    let def_wd = expand('<cword>')
+    let is_word = v:true
+    if meflib#basic#special_win(win_getid())
+        let def_ft = 'None'
+    elseif &buftype == 'terminal'
+        let def_ft = 'None'
+    else
+        let def_ft = '.'..expand('%:e')
+    endif
+    let ex_dirs = meflib#get('exclude_dirs', [])
+    let def_all = v:false
+
     if a:0 == '0'
-        let l:word = expand('<cword>')
-        let is_word = 1
-        if meflib#basic#special_win(win_getid())
-            let l:ft = 'None'
-        elseif &buftype == 'terminal'
-            let l:ft = 'None'
-        else
-            let l:ft = '.' . expand('%:e')
-        endif
+        let l:word = def_wd
+        let l:ft = def_ft
         let l:dir = def_dir
+        let l:all = def_all
     else
         let arg = meflib#basic#analythis_args_eq(a:1)
 
@@ -64,23 +69,21 @@ function! meflib#grep#main(...)
         if has_key(arg, "wd")
             let l:word = arg["wd"]
             if l:word[0]=='<' && l:word[-1:]=='>'
-                let is_word = 1
+                let is_word = v:true
                 let l:word = l:word[1:-2]
+            else
+                let is_word = v:false
             endif
         else
-            let l:word = expand('<cword>')
-            let is_word = 1
+            let l:word = def_wd
         endif
         if has_key(arg, 'ex')
             let l:ft = arg['ex']
-        elseif meflib#basic#special_win(win_getid())
-            let l:ft = 'None'
-        elseif &buftype == 'terminal'
-            let l:ft = 'None'
         else
-            let l:ft = '.' . expand('%:e')
+            let l:ft = def_ft
         endif
-        let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : '.'
+        let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : def_dir
+        let l:all = has_key(arg, "all") ? str2nr(arg["all"]) : def_all
     endif
     let l:word = fnameescape(l:word)
 
@@ -122,7 +125,13 @@ function! meflib#grep#main(...)
             let bra = ''
             let ket = ''
         endif
+        if !l:all
+            execute printf('set wildignore+=%s', join(ex_dirs, ','))
+        endif
         execute printf('vimgrep /%s%s%s/j %s', bra, l:word, ket, files)
+        if !l:all
+            execute printf('set wildignore-=%s', join(ex_dirs, ','))
+        endif
     elseif &grepprg =~ "grep\ -[a-z]*r[a-z]*"
         " cclose
         "wincmd b
@@ -132,11 +141,17 @@ function! meflib#grep#main(...)
             let l:ft = ' --include=\*' . l:ft
         endif
         let wd_opt = is_word ? ' -w ' : ''
+        if l:all
+            let ex_dir_opt = ""
+        else
+            let ex_dir_opt = printf("--exclude-dir={%s}", join(ex_dirs, ','))
+        endif
 
         " execute printf('grep! %s %s "%s" %s', l:ft, wd_opt, l:word, l:dir)
         " いちいちterminalに戻らない様になる
         " https://zenn.dev/skanehira/articles/2020-09-18-vim-cexpr-quickfix
-        let cmd = printf("cgetexpr system('%s %s %s \"%s\" %s')", &grepprg, l:ft, wd_opt, l:word, l:dir)
+        let cmd = printf("cgetexpr system('%s %s %s %s \"%s\" %s')",
+                    \ &grepprg, l:ft, wd_opt, ex_dir_opt, l:word, l:dir)
         " quickfix_title をいい感じにするためにexecute を使う
         execute cmd
         " cwindow -> copen to check if grep is finished.

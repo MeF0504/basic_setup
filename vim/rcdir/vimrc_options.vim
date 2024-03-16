@@ -89,8 +89,8 @@ set tags+=tags;,./tags;
 set foldcolumn=2
 " grep
 if executable('grep')
-    " 外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視, .git dir無視で使う
-    set grepprg=grep\ -nriI\ --exclude-dir\ .git
+    " 外部grepを数字付き,再帰的,大文字小文字区別なし,binary無視で使う
+    set grepprg=grep\ -nriI
 else
     " grepコマンドで内部grep(vimgrep)を使う
     set grepprg=internal

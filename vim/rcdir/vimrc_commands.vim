@@ -6,6 +6,12 @@ augroup cmdLocal
     autocmd!
 augroup END
 
+" {{{ 複数のコマンドで使われる設定
+call meflib#set('exclude_dirs', ['.git', ',svn',
+            \ '.mypy_cache', '.ipynb_checkpoints',
+            \ ])
+" }}}
+
 " map leader にmapされているmapを表示 {{{
 " nnoremap <Leader><Leader> :map mapleader<CR>
 function! <SID>leader_map()
