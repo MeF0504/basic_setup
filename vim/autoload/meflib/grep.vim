@@ -1,20 +1,16 @@
 scriptencoding utf-8
 
+let s:args_config = {'wd': '*', 'ex': 1, 'dir': 1, 'all': 0}
 " 自作grep
 " 補完
 function! meflib#grep#comp(arglead, cmdline, cursorpos) abort
-    let cur_opt = split(a:cmdline, ' ', 1)[-1]
-    if (match(cur_opt, '=') == -1)
-        let opts = ['wd', 'dir', 'ex']
-        return filter(map(opts, 'v:val."="'), '!stridx(v:val, a:arglead) && match(a:cmdline, v:val)==-1')
-    elseif cur_opt =~ 'dir='
-        let arg = split(cur_opt, '=', 1)[1]
-        let files = split(glob(arg..'*'), '\n')
-        if !empty(files)
-            return map(files+['opened'], "'dir='..v:val")
-        else
-            return []
-        endif
+    let opt_idx = strridx(a:cmdline, '-')
+    let end_space_idx = strridx(a:cmdline, ' ')
+    if a:arglead[0] == '-'
+        let not_entered_list = filter(map(copy(keys(s:args_config)), '"-"..v:val'), 'stridx(tolower(a:cmdline), tolower(v:val)) == -1')
+        return filter(not_entered_list, '!stridx(tolower(v:val), a:arglead)')
+    elseif a:cmdline[opt_idx:end_space_idx-1] == '-dir'
+        return getcompletion(a:arglead, "dir") + ['opened']
     else
         return []
     endif
@@ -22,15 +18,17 @@ endfunction
 
 function! <SID>echo_gregrep_help()
     echo "usage..."
-    echo ":GREgrep [wd=word] [dir=dir_path] [ex=extention]"
+    echo ":GREgrep [-wd word] [-dir dir_path] [-ex extention] [-all]"
     echo "wd ... text to search. if a word is put in <>, search it as a word."
     echo "dir ... path to root directory or file for search."
     echo "        if dir=opened, search files in buffer"
     echo "ex ... file extention of target files."
     echo "       if ex=None, search all files."
-    echo "e.g. :GREgrep wd=hoge ex=.vim dir=%:h:h"
-    echo "e.g. :GREgrep wd=fuga ex=None"
-    echo "e.g. :GREgrep wd=<are> dir=opened"
+    echo "all ... search in hidden directories. directories are set by"
+    echo "        'exclude_dirs' in meflib."
+    echo "e.g. :GREgrep -wd hoge -ex .vim -dir %:h:h"
+    echo "e.g. :GREgrep -wd fuga -ex None -all"
+    echo "e.g. :GREgrep -wd <are> -dir opened"
 endfunction
 
 function! meflib#grep#main(...)
@@ -51,15 +49,14 @@ function! meflib#grep#main(...)
         let def_ft = '.'..expand('%:e')
     endif
     let ex_dirs = meflib#get('exclude_dirs', [])
-    let def_all = v:false
 
     if a:0 == '0'
         let l:word = def_wd
         let l:ft = def_ft
         let l:dir = def_dir
-        let l:all = def_all
+        let l:all = v:false
     else
-        let arg = meflib#basic#analythis_args_eq(a:1)
+        let arg = meflib#basic#analythis_args_hyp(a:1, s:args_config)
 
         if !has_key(arg, "wd") && !has_key(arg, "ex") && !has_key(arg, "dir")
             call s:echo_gregrep_help()
@@ -67,7 +64,7 @@ function! meflib#grep#main(...)
         endif
 
         if has_key(arg, "wd")
-            let l:word = arg["wd"]
+            let l:word = join(arg["wd"])
             if l:word[0]=='<' && l:word[-1:]=='>'
                 let is_word = v:true
                 let l:word = l:word[1:-2]
@@ -78,12 +75,12 @@ function! meflib#grep#main(...)
             let l:word = def_wd
         endif
         if has_key(arg, 'ex')
-            let l:ft = arg['ex']
+            let l:ft = arg['ex'][0]
         else
             let l:ft = def_ft
         endif
-        let l:dir = has_key(arg, "dir") ? expand(arg["dir"]) : def_dir
-        let l:all = has_key(arg, "all") ? str2nr(arg["all"]) : def_all
+        let l:dir = has_key(arg, "dir") ? expand(arg["dir"][0]) : def_dir
+        let l:all = has_key(arg, "all")
     endif
     let l:word = fnameescape(l:word)
 
