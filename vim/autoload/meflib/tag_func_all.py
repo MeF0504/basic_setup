@@ -14,8 +14,8 @@ def get_line(sfile, lstr):
     return 0
 
 
-def set_tag_info(tfile):
-    kinds = []
+def set_tag_info(tfile, taginfo):
+    kinds = list(taginfo.keys())
     tfile = Path(tfile)
     if not tfile.is_file():
         return

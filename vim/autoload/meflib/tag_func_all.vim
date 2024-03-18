@@ -53,7 +53,7 @@ function! meflib#tag_func_all#open() abort
     let s:taginfo = {}
     for tfile in tagfiles()
         if has('python3')
-            python3 set_tag_info(vim.eval("tfile"))
+            python3 set_tag_info(vim.eval("tfile"), vim.eval("s:taginfo"))
         else
             call s:set_tag_info(tfile)
         endif
