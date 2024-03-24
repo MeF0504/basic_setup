@@ -52,21 +52,12 @@ let g:popsyntax_match_enable = 1
 " ctagsを使ってhighlightを設定 (mftags 分割 その1)
 PlugWrapper 'MeF0504/highlightag.vim'
 "" highlightag {{{
-if has('nvim')
-    autocmd PlugLocal VimEnter,BufWinEnter *
-    \ if &filetype == 'c' |
-    \ silent call highlightag#run_hitag_job_file() |
-    \ else |
-    \ silent call highlightag#run_hitag_job() |
-    \ endif
-else
-    autocmd PlugLocal Syntax *
-    \ if &filetype == 'c' |
-    \ silent call highlightag#run_hitag_job_file() |
-    \ else |
-    \ silent call highlightag#run_hitag_job() |
-    \ endif
-endif
+autocmd PlugLocal Syntax *
+\ if &filetype == 'c' |
+\ silent call highlightag#run_hitag_job_file() |
+\ else |
+\ silent call highlightag#run_hitag_job() |
+\ endif
 " highlights
 function! <SID>highlightag_his() abort
     if &background == 'dark'
