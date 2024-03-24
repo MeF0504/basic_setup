@@ -571,6 +571,16 @@ def main_opt(args: Args):
                 continue
             if not fname.endswith('pyc'):
                 files[lfy] = args.lib_dst/fname
+        pv_path = chk_cmd('pyviewer', return_path=True)
+        if pv_path is not None:
+            pv_lib = Path(pv_path).parent.parent/'lib/viewers'
+            pv_ex_d = Path('samples/pyviewer_examples')
+            pv_exs = {'fits_astropy.py': 'fits_astropy.py',
+                      'fits_healpy.py': 'fits_healpy.py',
+                      'plotly.py': 'core/image_viewer/plotly.py',
+                      }
+            for pe in pv_exs:
+                files[pv_ex_d/pe] = str(pv_lib/pv_exs[pe])
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    show_target=args.show_target_files,
