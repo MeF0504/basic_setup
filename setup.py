@@ -21,7 +21,7 @@ except ImportError as e:
 else:
     is_import_trash = True
 
-sys.path.append(str(Path(__file__).parent/'opt'/'lib'))
+sys.path.insert(0, str(Path(__file__).parent/'opt/lib'))
 from pymeflib.util import mkdir, chk_cmd
 from pymeflib.color import FG256, END
 
