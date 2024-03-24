@@ -551,6 +551,7 @@ def main_opt(args: Args):
     if args.prefix is None:
         return
     print_path(args.opt_src)
+    spec_files = {'pdf2jpg': ['Darwin']}
 
     files = get_files(args.setup_file, 'opt', args.prefix)
     if files is None:
@@ -558,8 +559,8 @@ def main_opt(args: Args):
         for bfy in args.bin_src.glob('*'):
             if os.access(bfy, os.X_OK):
                 fname = bfy.name
-                if (fname == 'pdf2jpg'):
-                    if (uname == 'Darwin'):
+                if fname in spec_files:
+                    if uname in spec_files[fname]:
                         files[bfy] = args.bin_dst/fname
                 else:
                     files[bfy] = args.bin_dst/fname
