@@ -18,6 +18,7 @@ endfunction
 let s:local_var_dict = {}
 let s:local_var_def_dict = {}
 function! meflib#basic#set_local_var(var_name, args1, args2=v:null) abort
+    call meflib#debug#debug_log(printf('set %s', a:var_name), 'meflib-set')
     if type(a:args2) == type(v:null)
         " args1 = val
         let s:local_var_dict[a:var_name] = a:args1
@@ -34,6 +35,7 @@ function! meflib#basic#set_local_var(var_name, args1, args2=v:null) abort
 endfunction
 
 function! meflib#basic#add_local_var(var_name, var) abort
+    call meflib#debug#debug_log(printf('add %s', a:var_name), 'meflib-add')
     if has_key(s:local_var_dict, a:var_name)
         call add(s:local_var_dict[a:var_name], a:var)
     else
@@ -79,10 +81,15 @@ function! meflib#basic#get_local_var(var_name, args1, args2=v:null) abort
             if has_key(local_var, a:args1)
                 return s:local_var_dict[a:var_name][a:args1]
             else
+                call meflib#debug#debug_log(printf('get def %s, %s', a:var_name, a:args1),
+                            \ 'meflib-get')
                 return a:args2
             endif
         endif
     else
+        if !has_key(s:local_var_def_dict, a:var_name)
+            call meflib#debug#debug_log(printf('get def %s', a:var_name), 'meflib-get')
+        endif
         if type(a:args2) == type(v:null)
             let default = a:args1
             let s:local_var_def_dict[a:var_name] = default
