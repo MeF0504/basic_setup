@@ -5,10 +5,12 @@ export PROMPTTO=1   # default value
 
 function get_ip() {
     local to=${1:-$PROMPTTO}
+    local get_ip_server=${IPSERVER:-"ifconfig.io"}
+    # ifconfig.io, icanhazip.com, inet-ip.info, ipconfig.me, etc.
     if [[ $to -ne -1 ]]; then
         if [[ "$(which timeout &> /dev/null; echo $?)" -eq 0 ]]; then
             # echo "1-${to}" >&2
-            local ip="$( timeout "$to" curl ifconfig.io 2> /dev/null)"
+            local ip="$( timeout "$to" curl $get_ip_server 2> /dev/null)"
         elif [[ "$(which timeout_local &> /dev/null; echo $?)" -eq 0 ]]; then
             # echo "2-${to}" >&2
             local ip="$( timeout_local "$to" 'curl ifconfig.io 2> /dev/null')"
