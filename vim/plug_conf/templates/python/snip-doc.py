@@ -1,5 +1,5 @@
 """
-description.
+{{_cursor_}}description.
 
 Parameters
 ----------
