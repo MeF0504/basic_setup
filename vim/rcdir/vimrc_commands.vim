@@ -7,7 +7,7 @@ augroup cmdLocal
 augroup END
 
 " {{{ 複数のコマンドで使われる設定
-call meflib#set('exclude_dirs', ['.git', ',svn',
+call meflib#set('exclude_dirs', ['.git', '.svn',
             \ '.mypy_cache', '.ipynb_checkpoints', '.pytest_cache',
             \ ])
 " }}}
