@@ -17,8 +17,10 @@ endfunction
 " set, get, add {{{
 let s:local_var_dict = {}
 let s:local_var_def_dict = {}
+let s:local_var_setlog = {}
 function! meflib#basic#set_local_var(var_name, args1, args2=v:null) abort
-    call meflib#debug#debug_log(printf('set %s', a:var_name), 'meflib-set')
+    call meflib#debug#debug_log(printf('set %s @ %s', a:var_name, expand('<sfile>')), 'meflib-set')
+    let s:local_var_setlog[a:var_name] = expand('<sfile>')
     if type(a:args2) == type(v:null)
         " args1 = val
         let s:local_var_dict[a:var_name] = a:args1
@@ -36,6 +38,7 @@ endfunction
 
 function! meflib#basic#add_local_var(var_name, var) abort
     call meflib#debug#debug_log(printf('add %s', a:var_name), 'meflib-add')
+    let s:local_var_setlog[a:var_name] = expand('<sfile>')
     if has_key(s:local_var_dict, a:var_name)
         call add(s:local_var_dict[a:var_name], a:var)
     else
@@ -67,11 +70,8 @@ endfunction
 
 function! meflib#basic#get_local_var(var_name, args1, args2=v:null) abort
     if empty(a:var_name)
-        call s:show_vars(s:local_var_dict)
-        echohl Special
-        echo 'variables used as default'
-        echohl None
-        call s:show_vars(s:local_var_def_dict)
+        echo 'input variable name is empty.'
+        return
     elseif has_key(s:local_var_dict, a:var_name)
         if type(a:args2) == type(v:null)
             return s:local_var_dict[a:var_name]
@@ -110,10 +110,15 @@ function! meflib#basic#var_comp(arglead, cmdline, cursorpos) abort
     return filter(comp_list, '!stridx(v:val, a:arglead)')
 endfunction
 
-function! meflib#basic#show_var(var_name='') abort
+function! meflib#basic#show_var(bang, var_name='') abort
     let var_pat = printf("^%s$", a:var_name)
     if empty(a:var_name)
-        call meflib#basic#get_local_var('', '')
+        call s:show_vars(s:local_var_dict)
+        echohl Special
+        echo 'variables used as default'
+        echohl None
+        call s:show_vars(s:local_var_def_dict)
+        return
     elseif match(keys(s:local_var_dict)+keys(s:local_var_def_dict), var_pat) == -1
         echo "no such key."
         return
@@ -130,6 +135,13 @@ function! meflib#basic#show_var(var_name='') abort
             else
                 echo tmp
             endif
+            if !empty(a:bang)
+                let set_log = s:local_var_setlog[a:var_name]
+            else
+                let set_log = split(s:local_var_setlog[a:var_name], '\.\.')
+                let set_log = set_log[len(set_log)-3]
+            endif
+            echo ' >> LAST SET: '..set_log
         elseif match(keys(s:local_var_def_dict), var_pat) != -1
             echohl Special
             echo "default"

@@ -8,7 +8,7 @@ augroup END
 
 " {{{ 複数のコマンドで使われる設定
 call meflib#set('exclude_dirs', ['.git', ',svn',
-            \ '.mypy_cache', '.ipynb_checkpoints',
+            \ '.mypy_cache', '.ipynb_checkpoints', '.pytest_cache',
             \ ])
 " }}}
 
@@ -92,7 +92,7 @@ command! -nargs=? -complete=customlist,meflib#grep#comp Gregrep call meflib#grep
 command! XPMLoader call meflib#tools#xpm_loader()
 " }}}
 " meflib#set された変数を表示 {{{
-command! -nargs=? -complete=customlist,meflib#basic#var_comp MefShowVar call meflib#basic#show_var(<f-args>)
+command! -bang -nargs=? -complete=customlist,meflib#basic#var_comp MefShowVar call meflib#basic#show_var("<bang>", <f-args>)
 " }}}
 " echo 拡張 {{{
 command! -nargs=+ -complete=customlist,meflib#echo#comp Echo call meflib#echo#main(<f-args>)
