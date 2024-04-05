@@ -147,10 +147,11 @@ function! meflib#grep#main(...)
         " execute printf('grep! %s %s "%s" %s', l:ft, wd_opt, l:word, l:dir)
         " いちいちterminalに戻らない様になる
         " https://zenn.dev/skanehira/articles/2020-09-18-vim-cexpr-quickfix
-        let cmd = printf("cgetexpr system('%s %s %s %s \"%s\" %s')",
-                    \ &grepprg, l:ft, wd_opt, ex_dir_opt, l:word, l:dir)
-        " quickfix_title をいい感じにするためにexecute を使う
-        execute cmd
+        cgetexpr system(printf('%s %s %s %s "%s" %s',
+                    \ &grepprg, l:ft, wd_opt, ex_dir_opt, l:word, l:dir))
+        " set title
+        let title = printf('grep "%s" (%s %s %s %s)', l:word, wd_opt, l:ft, l:dir, ex_dir_opt)
+        call setqflist([], 'a', {'title': title})
         " cwindow -> copen to check if grep is finished.
         copen
     else
