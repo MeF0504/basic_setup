@@ -97,6 +97,9 @@ let g:tabjumper_preview_enable = 'manual'
 let g:tabjumper_preview_width = &columns-20
 " }}}
 
+" 数式確認
+PlugWrapper 'MeF0504/EquationPreview.vim', PlugCond(1, {'on': ['EqPreview', 'EqPreviewRange']})
+
 " neosnippet用のsnipets
 PlugWrapper 'Shougo/neosnippet-snippets'
 
@@ -291,12 +294,8 @@ endfunction
 call meflib#add('plugin_his', s:sid.'indentguide_his')
 " }}}
 
-" vim 新機能用pluginっぽい
-" showcase of new vim functions.
-PlugWrapper 'vim/killersheep', PlugCond(has('patch-8.1.1705'), {'on': 'KillKillKill'})
-
 " toml 用 syntax
-PlugWrapper 'cespare/vim-toml', PlugCond(!has('patch-8.2.2106'), {'for': 'toml'})
+PlugWrapper 'cespare/vim-toml', PlugCond(!has('patch-8.2.3519') && !has('nvim-0.6'), {'for': 'toml'})
 
 " ファイルの一部のsyntax highlightを違うfiletypeにする
 PlugWrapper 'inkarkat/vim-SyntaxRange', PlugCond(1, {'for': ['toml', 'markdown', 'vim']})
