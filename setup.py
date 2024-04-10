@@ -578,6 +578,7 @@ def main_opt(args: Args):
             pv_exs = {'fits_astropy.py': 'fits_astropy.py',
                       'fits_healpy.py': 'fits_healpy.py',
                       'plotly.py': 'core/image_viewer/plotly.py',
+                      'xml.py': 'xml.py',
                       }
             for pe in pv_exs:
                 files[pv_ex_d/pe] = str(pv_lib/pv_exs[pe])
