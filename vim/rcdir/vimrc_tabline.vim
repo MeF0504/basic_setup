@@ -21,8 +21,8 @@ function! s:get_title(tabnr)
     if getbufvar(bufnr, '&filetype') == 'qf'
         let title = "QuickFix"
     endif
-    let title = '[' . title . ']'
-    let title = a:tabnr . ':' . title . mod
+    let winnr = tabpagewinnr(a:tabnr)
+    let title = a:tabnr..'-'..winnr..':'..title..mod
     return title
 endfunction
 
