@@ -1,13 +1,14 @@
 scriptencoding utf-8
+" 自作grep
 
 let s:args_config = {'wd': '*', 'ex': 1, 'dir': 1, 'all': 0}
-" 自作grep
 " 補完
 function! meflib#grep#comp(arglead, cmdline, cursorpos) abort
     let opt_idx = strridx(a:cmdline, '-')
     let end_space_idx = strridx(a:cmdline, ' ')
     if a:arglead[0] == '-'
-        let not_entered_list = filter(map(copy(keys(s:args_config)), '"-"..v:val'), 'stridx(tolower(a:cmdline), tolower(v:val)) == -1')
+        let args_keys = ['wd', 'dir', 'ex', 'all']  " keysだと順番が不定なので
+        let not_entered_list = filter(map(args_keys, '"-"..v:val'), 'stridx(tolower(a:cmdline), tolower(v:val)) == -1')
         return filter(not_entered_list, '!stridx(tolower(v:val), a:arglead)')
     elseif a:cmdline[opt_idx:end_space_idx-1] == '-dir'
         return getcompletion(a:arglead, "dir") + ['opened']
@@ -23,7 +24,7 @@ function! <SID>echo_gregrep_help()
     echo "dir ... path to root directory or file for search."
     echo "        if dir=opened, search files in buffer"
     echo "ex ... file extention of target files."
-    echo "       if ex=None, search all files."
+    echo "       if `-ex None`, search all files."
     echo "all ... search in hidden directories. directories are set by"
     echo "        'exclude_dirs' in meflib."
     echo "e.g. :GREgrep -wd hoge -ex .vim -dir %:h:h"
