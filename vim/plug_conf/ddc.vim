@@ -93,7 +93,7 @@ function! s:ddc_hook() abort
             \ },
         \ }
     \ })
-    call ddc#custom#patch_filetype(['vim', 'toml'], {
+    call ddc#custom#patch_filetype(['vim'], {
         \ 'sources': ['necovim', 'around', 'file'],
         \ 'sourceOptions': {
             \ 'necovim': {
