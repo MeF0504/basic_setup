@@ -12,6 +12,7 @@ import urllib.request as urlreq
 from pathlib import Path
 from typing import List, Optional, Literal, Union
 from dataclasses import dataclass
+import subprocess
 
 try:
     from send2trash import send2trash
@@ -21,7 +22,6 @@ except ImportError as e:
 else:
     is_import_trash = True
 
-sys.path.insert(0, str(Path(__file__).parent/'opt/lib'))
 from pymeflib.util import mkdir, chk_cmd
 from pymeflib.color import FG256, END
 
@@ -658,6 +658,18 @@ def main_conf(args: Args):
         except Exception as e:
             print('failed to download git-prompt')
             print('error: {}'.format(e))
+
+        print('download pymeflib')
+        if chk_cmd('pip3'):
+            cmd = ['pip3']
+        elif chk_cmd('pip'):
+            cmd = ['pip']
+        else:
+            print('pip command not found')
+            cmd = None
+        if cmd is not None:
+            cmd += ['install', 'git+https://github.com/MeF0504/pymeflib']
+            subprocess.run(cmd)
 
     # create ~.mine files
     if not args.test:
