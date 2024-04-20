@@ -33,5 +33,6 @@ _pip_completion()
                    PIP_AUTO_COMPLETE=1 $1 2>/dev/null ) )
 }
 complete -o default -F _pip_completion pip3
+complete -o default -F _pip_completion pip
 # pip bash completion end }}}
 
