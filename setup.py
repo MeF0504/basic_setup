@@ -609,8 +609,10 @@ def main_conf(args: Args):
                 'zsh/zsh': '~/.zsh',
                 'tmp/zshrc.mine': '~/.zsh/zshrc.mine',
                 'shell/posixShellRC': '~/.posixShellRC',
-                'shell/psfuncs/get_zodiac_whgm.sh': args.local_conf/'get_zodiac_whgm.sh',
-                'shell/psfuncs/today_percentage.sh': args.local_conf/'today_percentage.sh',
+                'shell/psfuncs/get_zodiac_whgm.sh':
+                args.local_conf/'get_zodiac_whgm.sh',
+                'shell/psfuncs/today_percentage.sh':
+                args.local_conf/'today_percentage.sh',
                 'bash/bashrc': '~/.bashrc',
                 'bash/bash': '~/.bash',
                 'tmp/bashrc.mine': '~/.bash/bashrc.mine',
@@ -629,12 +631,15 @@ def main_conf(args: Args):
                   'zsh/zsh': '~/.zsh',
                   'tmp/zshrc.mine': '~/.zsh/zshrc.mine',
                   'shell/posixShellRC': '~/.posixShellRC',
-                  'shell/psfuncs/get_zodiac_whgm.sh': args.local_conf/'get_zodiac_whgm.sh',
-                  'shell/psfuncs/today_percentage.sh': args.local_conf/'today_percentage.sh',
+                  'shell/psfuncs/get_zodiac_whgm.sh':
+                  args.local_conf/'get_zodiac_whgm.sh',
+                  'shell/psfuncs/today_percentage.sh':
+                  args.local_conf/'today_percentage.sh',
                   'bash/bashrc': '~/.bashrc',
                   'bash/bash': '~/.bash',
                   'tmp/bashrc.mine': '~/.bash/bashrc.mine',
-                  'matplotlibrc': Path(args.conf_home)/'matplotlib/matplotlibrc',
+                  'matplotlibrc':
+                  Path(args.conf_home)/'matplotlib/matplotlibrc',
                   'git/gitignore_global': '~/.gitignore_global',
                   'screenrc': '~/.screenrc',
                   'git/tigrc':  '~/.tigrc',
@@ -660,7 +665,9 @@ def main_conf(args: Args):
         try:
             bashdir = Path('~/.bash').expanduser()
             mkdir(bashdir)
-            urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh', bashdir/'git-prompt.sh')
+            urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/'
+                               'master/contrib/completion/git-prompt.sh',
+                               bashdir/'git-prompt.sh')
         except Exception as e:
             print('failed to download git-prompt')
             print('error: {}'.format(e))
@@ -747,7 +754,8 @@ def main_vim(args: Args):
     if args.download:
         print('\ndownload vimPlug')
         mkdir(args.al_dst)
-        urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim', args.al_dst/'plug.vim')
+        urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/'
+                           'vim-plug/master/plug.vim', args.al_dst/'plug.vim')
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    show_target=args.show_target_files,
@@ -799,19 +807,24 @@ def main():
     parser.add_argument('--test', help="don't copy, just show command",
                         action='store_true')
     parser.add_argument('-f', '--force',
-                        help="Do not prompt for confirmation before overwriting the destination path",
+                        help='Do not prompt for confirmation before '
+                        'overwriting the destination path',
                         action='store_true')
     parser.add_argument('-t', '--type', nargs='*',
                         help="set the type of copy files.",
                         choices='all opt config vim'.split(), default=['all'])
     parser.add_argument('-s', '--setup_file',
-                        help='specify the copy files by json format setting file. please see "opt/samples/setup_file_template.json" as an example.')
+                        help='specify the copy files by json format '
+                        'setting file. please see '
+                        '"opt/samples/setup_file_template.json"'
+                        ' as an example.')
     parser.add_argument('-c', '--clear', action='store_true',
                         help='clear unused files')
     parser.add_argument('--show_target_files', action='store_true',
                         help='show target_files before copying')
     parser.add_argument('--show_no_update_files', action='store_true',
-                        help='show messages "the file is already copied or linked"')
+                        help='show messages "the file is '
+                        'already copied or linked"')
     parser.add_argument('--show_all', action='store_true',
                         help='show all messages')
     args = parser.parse_args()
