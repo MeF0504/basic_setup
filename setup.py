@@ -29,6 +29,8 @@ except ImportError:
     print('download pymeflib')
     cmd = ['pip3', 'install', 'git+https://github.com/MeF0504/pymeflib']
     subprocess.run(cmd)
+    from pymeflib.util import mkdir, chk_cmd
+    from pymeflib.color import FG256, END
 
 
 uname = platform.system()
