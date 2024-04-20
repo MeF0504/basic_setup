@@ -579,14 +579,15 @@ def main_opt(args: Args):
                 files[lfy] = args.lib_dst/fname
         pv_path = chk_cmd('pyviewer', return_path=True)
         if pv_path is not None:
-            pv_lib = Path(pv_path).parent.parent/'lib/viewers'
+            pv_lib = args.conf_home/'pyviewer'
             pv_ex_d = Path('samples/pyviewer_examples')
-            pv_exs = {'fits_astropy.py': 'fits_astropy.py',
-                      'fits_healpy.py': 'fits_healpy.py',
-                      'plotly.py': 'core/image_viewer/plotly.py',
-                      'xml.py': 'xml.py',
+            pv_exs = {'fits_astropy.py': 'additional_types/fits_astropy.py',
+                      'fits_healpy.py': 'additional_types/fits_healpy.py',
+                      'plotly.py': 'additional_ivs/plotly.py',
+                      'xml.py': 'additional_types/xml.py',
                       }
             for pe in pv_exs:
+                mkdir(str((pv_lib/pv_exs[pe]).parent))
                 files[pv_ex_d/pe] = str(pv_lib/pv_exs[pe])
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,

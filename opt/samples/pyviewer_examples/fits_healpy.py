@@ -4,7 +4,7 @@ import numpy as np
 import healpy as hp
 import matplotlib.pyplot as plt
 
-from . import args_chk, help_template, get_config, add_args_key
+from pyviewer.viewers import args_chk, help_template, get_config, add_args_key
 
 
 def add_args(parser):
