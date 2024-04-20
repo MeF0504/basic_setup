@@ -22,8 +22,14 @@ except ImportError as e:
 else:
     is_import_trash = True
 
-from pymeflib.util import mkdir, chk_cmd
-from pymeflib.color import FG256, END
+try:
+    from pymeflib.util import mkdir, chk_cmd
+    from pymeflib.color import FG256, END
+except ImportError:
+    print('download pymeflib')
+    cmd = ['pip3', 'install', 'git+https://github.com/MeF0504/pymeflib']
+    subprocess.run(cmd)
+
 
 uname = platform.system()
 if uname == 'Windows':
@@ -658,18 +664,6 @@ def main_conf(args: Args):
         except Exception as e:
             print('failed to download git-prompt')
             print('error: {}'.format(e))
-
-        print('download pymeflib')
-        if chk_cmd('pip3'):
-            cmd = ['pip3']
-        elif chk_cmd('pip'):
-            cmd = ['pip']
-        else:
-            print('pip command not found')
-            cmd = None
-        if cmd is not None:
-            cmd += ['install', 'git+https://github.com/MeF0504/pymeflib']
-            subprocess.run(cmd)
 
     # create ~.mine files
     if not args.test:
