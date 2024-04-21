@@ -21,7 +21,19 @@ function! s:get_title(tabnr)
     if getbufvar(bufnr, '&filetype') == 'qf'
         let title = "QuickFix"
     endif
-    let winnr = tabpagewinnr(a:tabnr)
+    let winnr = 0
+    for wn in range(1, tabpagewinnr(a:tabnr, '$'))
+        let buftype = gettabwinvar(a:tabnr, wn, '&buftype')
+        if buftype == 'popup'  " || buftype == 'acwrite'
+            continue
+        endif
+        if has('nvim')
+            if !empty(nvim_win_get_config(win_getid(wn, a:tabnr))['relative'])
+                continue
+            endif
+        endif
+        let winnr += 1
+    endfor
     let title = a:tabnr..'-'..winnr..':'..title..mod
     return title
 endfunction
