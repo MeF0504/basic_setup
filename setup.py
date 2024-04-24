@@ -551,8 +551,12 @@ def create_update(args: Args):
             print('done')
             if uname == 'Windows':
                 # for .qrun_conf.vim
-                mkdir('tmp')
-                shutil.copy(update_setup_file, Path('tmp')/'update_setup')
+                # mkdir('tmp')
+                # shutil.copy(update_setup_file, Path('tmp')/'update_setup')
+                with open(args.fpath/'opt/samples/setup_sample.bat', 'r') as f:
+                    update_bat = f.read().format(pyopt).replace('\\', '\\\\')
+                with open(args.fpath/'setup.bat', 'w') as f:
+                    f.write(update_bat)
 
 
 def main_opt(args: Args):
