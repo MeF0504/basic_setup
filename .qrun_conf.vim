@@ -3,9 +3,9 @@ if yn == 'y'
     if exists(':Terminal') == 2
         if executable('update_setup')
             botright Terminal update_setup --nopull
-        else
+        elseif executable('setup.bat')
             " assume windows
-            botright Terminal python3 tmp\update_setup --nopull
+            botright Terminal setup.bat
         endif
     else
         echo 'Terminal does not exist'

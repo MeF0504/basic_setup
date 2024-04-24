@@ -15,9 +15,9 @@ if errorlevel 1 (
 )
 
 echo;
-git stash
 git fetch
 git merge
-git stash pop
 
 python3 setup.py {}
+
+pause
