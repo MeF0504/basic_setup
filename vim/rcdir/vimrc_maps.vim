@@ -107,7 +107,7 @@ nnoremap gf <c-w>gf
 " 候補が複数ある場合にリストを表示
 " nnoremap <c-]> g<c-]>
 function! s:tag_jump() abort
-    echo 'open in; [t]ab/[s]plit/[v]ertical/cur_win<CR> '
+    echo 'tag jump; [t]ab/[s]plit/[v]ertical/cur_win<CR> '
     let yn = getcharstr()
     if yn == 't'
         return "\<Cmd>tab tjump "..expand('<cword>').."\<CR>"

@@ -197,7 +197,7 @@ function! s:lsp_mapping(map) abort " {{{
     endif
     if a:map == 1
         " <c-]>
-        echo 'open in; [t]ab/[s]plit/[v]ertical/cur_win<CR> '
+        echo 'LSP def; [t]ab/[s]plit/[v]ertical/cur_win<CR> '
         let yn = getcharstr()
         if yn == 't'
             return "\<Cmd>tab LspDefinition\<CR>"
