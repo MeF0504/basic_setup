@@ -20,7 +20,10 @@ let s:local_var_def_dict = {}
 let s:local_var_setlog = {}
 function! meflib#basic#set_local_var(var_name, args1, args2=v:null) abort
     call meflib#debug#debug_log(printf('set %s @ %s', a:var_name, expand('<sfile>')), 'meflib-set')
-    let s:local_var_setlog[a:var_name] = expand('<sfile>')
+    if !has_key(s:local_var_setlog, a:var_name)
+        let s:local_var_setlog[a:var_name] = []
+    endif
+    call add(s:local_var_setlog[a:var_name], expand('<sfile>'))
     if type(a:args2) == type(v:null)
         " args1 = val
         let s:local_var_dict[a:var_name] = a:args1
@@ -38,7 +41,10 @@ endfunction
 
 function! meflib#basic#add_local_var(var_name, var) abort
     call meflib#debug#debug_log(printf('add %s', a:var_name), 'meflib-add')
-    let s:local_var_setlog[a:var_name] = expand('<sfile>')
+    if !has_key(s:local_var_setlog, a:var_name)
+        let s:local_var_setlog[a:var_name] = []
+    endif
+    call add(s:local_var_setlog[a:var_name], expand('<sfile>'))
     if has_key(s:local_var_dict, a:var_name)
         call add(s:local_var_dict[a:var_name], a:var)
     else
@@ -135,13 +141,17 @@ function! meflib#basic#show_var(bang, var_name='') abort
             else
                 echo tmp
             endif
-            if !empty(a:bang)
-                let set_log = s:local_var_setlog[a:var_name]
-            else
-                let set_log = split(s:local_var_setlog[a:var_name], '\.\.')
-                let set_log = set_log[len(set_log)-3]
-            endif
-            echo ' >> LAST SET: '..set_log
+            echo ' >> SET LOG::'
+            for i in range(len(s:local_var_setlog[a:var_name]))
+                let setlog = s:local_var_setlog[a:var_name][i]
+                if !empty(a:bang)
+                    let log = setlog
+                else
+                    let log = split(setlog, '\.\.')
+                    let log = log[len(log)-3]
+                endif
+                echo printf(' %d %s', i, log)
+            endfor
         elseif match(keys(s:local_var_def_dict), var_pat) != -1
             echohl Special
             echo "default"
