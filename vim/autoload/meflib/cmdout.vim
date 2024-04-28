@@ -41,7 +41,7 @@ function! meflib#cmdout#main(...) abort
         if has('nvim')
             let cmd = a:000
         else
-        let cmd = join(a:000)
+            let cmd = join(a:000)
         endif
         let res = systemlist(cmd)
     endif
