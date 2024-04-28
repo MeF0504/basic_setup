@@ -63,7 +63,14 @@ function! meflib#tag_func_all#open() abort
         return
     endif
 
-    let kind = input(printf('kinds [%s]? ', join(keys(s:taginfo), ' ')))
+    let kind = input(printf('kinds [%s] | all? ', join(keys(s:taginfo), ' ')))
+    if empty(kind)
+        normal! :
+        echo "empty cancel"
+        return
+    elseif kind ==# 'all'
+        let kind = join(keys(s:taginfo), '')
+    endif
     let res = []
     for k in kind
         if has_key(s:taginfo, k)
