@@ -68,7 +68,7 @@ command! FileInfo call meflib#fileinfo#main()
 command! -nargs=1 EijiroWeb call meflib#tools#eijiro(<f-args>)
 " }}}
 " ctags command {{{
-command! -nargs=? Ctags call meflib#tools#exec_ctags(<f-args>)
+command! -nargs=? -complete=dir Ctags call meflib#tools#exec_ctags(<f-args>)
 " }}}
 " job status check {{{
 command! JobStatus call meflib#tools#chk_job_status()
