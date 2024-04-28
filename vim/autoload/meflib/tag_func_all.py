@@ -9,6 +9,7 @@ def get_line(sfile, lstr):
         with open(sfile, 'r', encoding='utf-8') as f:
             for i, line in enumerate(f):
                 line = line.replace("\n", "")
+                line = line.replace("\\", "\\\\")
                 if line == lstr:
                     return i+1
     return 0
