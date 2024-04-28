@@ -118,7 +118,7 @@ nnoremap <c-a> <Cmd>call meflib#ctrlax#true_false('a')<CR>
 nnoremap <c-x> <Cmd>call meflib#ctrlax#true_false('x')<CR>
 " }}}
 " 関数一覧 {{{
-command! TagFuncAll call meflib#tag_func_all#open()
+command! -nargs=? -complete=customlist,meflib#tag_func_all#comp TagFuncAll call meflib#tag_func_all#open(<f-args>)
 " }}}
 " quick fix list {{{
 call meflib#set('map_cmds', 'Qcmds', {

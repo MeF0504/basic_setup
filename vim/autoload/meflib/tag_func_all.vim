@@ -49,7 +49,59 @@ function! s:set_tag_info(tfile) abort
     endif
 endfunction
 
-function! meflib#tag_func_all#open() abort
+function! s:show_kinds() abort
+    if empty(&filetype)
+        echo 'filetype is not set'
+        return
+    endif
+    let ctags_cmd = meflib#get('ctags_config', 'command', 'ctags')
+    if !executable(ctags_cmd)
+        echohl ErrorMsg
+        echomsg printf('%s is not executable', ctags_cmd)
+        echohl None
+        return
+    endif
+    if &filetype == 'cpp'
+        let ft = 'c++'
+    else
+        let ft = &filetype
+    endif
+    let cmd = [ctags_cmd, printf('--list-kinds=%s', ft)]
+    if !has('nvim')
+        let cmd = join(cmd, ' ')
+    endif
+    for res in systemlist(cmd)
+        echo res
+    endfor
+endfunction
+
+function! meflib#tag_func_all#comp(arglead, cmdline, cursorpos) abort
+    let opts = ['kinds', 'tagfiles']
+    if len(split(a:cmdline, ' ', 1)) > 2
+        return ['']
+    endif
+    let res = filter(opts, '!stridx(tolower(v:val), a:arglead)')
+    return res
+endfunction
+
+function! meflib#tag_func_all#open(arg='') abort
+    if empty(a:arg)
+        " pass
+    elseif a:arg == 'kinds'
+        call s:show_kinds()
+        return
+    elseif a:arg == 'tagfiles'
+        let idx = 1
+        for tf in tagfiles()
+            echo printf('%d %s', idx, tf)
+            let idx += 1
+        endfor
+        return
+    else
+        echo 'incorrect argument.'
+        return
+    endif
+
     let s:taginfo = {}
     for tfile in tagfiles()
         if has('python3')
