@@ -99,6 +99,17 @@ let g:tabjumper_preview_width = &columns-20
 
 " 数式確認
 PlugWrapper 'MeF0504/EquationPreview.vim', PlugCond(1, {'on': ['EqPreview', 'EqPreviewRange']})
+" EquationPreview {{{
+let g:equationpreview#headers = [
+            \ '\documentclass[a5paper,landscape,uplatex]{article}',
+            \ '\pagestyle{empty}',
+            \ '\usepackage{bxpapersize}',
+            \ '\usepackage{amsmath}',
+            \ '\usepackage{physics}',
+            \ '\usepackage{siunitx}',
+            \ '\usepackage{bm}',
+            \]
+" }}}
 
 " neosnippet用のsnipets
 PlugWrapper 'Shougo/neosnippet-snippets'
