@@ -1,14 +1,6 @@
 
 PlugWrapper 'MeF0504/ColorSchemePreview.vim', PlugCond(1, {'on': 'ColorSchemePreview'})
 
-PlugWrapper 'MeF0504/vim-shiki'
-" shiki {{{
-function! <SID>my_color_set_shiki()
-    highlight Directory ctermfg=34 guifg=#00af00
-endfunction
-call meflib#set('my_color_set', 'shiki', expand('<SID>').'my_color_set_shiki')
-" }}}
-
 PlugWrapper 'altercation/vim-colors-solarized'
 " solarized {{{
 let g:solarized_termcolors=256
@@ -113,8 +105,6 @@ function! <SID>my_color_set_inkpotter()
 endfunction
 call meflib#set('my_color_set', 'inkpotter', expand('<SID>').'my_color_set_inkpotter')
 " }}}
-
-" PlugWrapper 'ulwlu/elly.vim'
 
 PlugWrapper 'chasinglogic/modus-themes-vim'
 " modus {{{
