@@ -62,7 +62,86 @@ class Args:
     """
     wrapper of argument parser.
     useful for organizing information of args.
+
+    Parameters
+    ----------
+    prefix: Optional[Path]
+        value of --prefix option.
+        set the path where files in the "opt" directory are placed.
+    vim_prefix: Optional[Path]
+        value of --vim_prefix option.
+        set the path where files in the "vim" directory are placed.
+    download: bool
+        value of --download option.
+        download some third-party files.
+    link: bool
+        value of --link option.
+        not copy but link files.
+    test: bool
+        value of --test option.
+        test the setup.py file. if true, do not copy/link files,
+        but display messages.
+    force: bool
+        value of --force option.
+        if true, do not ask overwrite or not.
+    type: List[TypeList]
+        value of --type option.
+        set types of copy/link files.
+    setup_file: Optional[str]
+        value of --setup_file option.
+        set the path to the setting file.
+    clear: bool
+        value of --clear option.
+        if true, clear unused files.
+    show_target_files: bool
+        value of --show_target_files option.
+        if true, show target_files before copying.
+    show_no_update_files: bool
+        value of --show_no_update_files option.
+        if true, show messages "the file is already copied or linked".
+    show_all: bool
+        value of --show_all option.
+        if true, show all messages.
+    fpath: Path
+        path to the parent directory of this file.
+    conf_home: Path
+        XDG_CONF_HOME directory.
+    opt_src: Path
+        "opt" directory in this repository.
+    bin_src: Path
+        "bin" directory in the opt directory.
+    lib_src: Path
+        "lib" directory in the opt directory.
+    bin_dst: Optional[Path]
+        directory where files in the bin_src are placed
+    lib_dst: Optional[Path]
+        directory where files in the lib_src are placed
+    conf_src: Path
+        "conf" directory in this repository.
+    vim_src: Path
+        "vim" directory in this repository.
+    vim_conf: Path
+        directory where Vim-related files are placed
+        if vim_prefix is set, vim_conf = vim_prefix.
+    vimrc: Path
+        path to the vimrc or init.vim file.
+    rc_dst: Path
+        directory where files in the vim/rcdir files are placed.
+    ft_dst: Path
+        directory where files in the vim/ftplugin files are placed.
+    plg_dst: Path
+        directory where files in the vim/plug_conf files are placed.
+    al_dst: Path
+        directory where files in the vim/autoload files are placed.
+    doc_dst: Path
+        directory where files in the vim/doc files are placed.
+    aft_dst: Path
+        directory where files in the vim/after files are placed.
+    local_conf: Path
+        directory local conf files are placed.
+        <args.conf_home>/meflib is set.
     """
+
     prefix: Optional[Path]
     vim_prefix: Optional[Path]
     download: bool
