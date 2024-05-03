@@ -3,7 +3,8 @@
 export PROMPTTO=1   # default value
 # functions of ip address and ip-color {{{
 
-function get_ip() {
+function get_ip()
+{
     local to=${1:-$PROMPTTO}
     local get_ip_server=${IPSERVER:-"ifconfig.io"}
     # ifconfig.io, icanhazip.com, inet-ip.info, ipconfig.me, etc.
@@ -76,8 +77,9 @@ function ip_color()
         ip3b=$(( 0x${ipnum[6]} & 0xFF ))
         ip4f=$(( 0x${ipnum[7]} >> 8 ))
         ip4r=$(( 0x${ipnum[7]} & 0xFF ))
-        ip4g=$(( 0x${ipnum[8]} >> 8 ))
-        ip4b=$(( 0x${ipnum[8]} & 0xFF ))
+        ipnum8=$(echo "${ipnum[8]}" | sed -e  "s///g")
+        ip4g=$(( 0x${ipnum8} >> 8 ))
+        ip4b=$(( 0x${ipnum8} & 0xFF ))
         ip1="%F{${ip1f}}\033[48;2;${ip1r};${ip1g};${ip1b}m"
         ip2="%F{${ip2f}}\033[48;2;${ip2r};${ip2g};${ip2b}m"
         ip3="%F{${ip3f}}\033[48;2;${ip3r};${ip3g};${ip3b}m"
