@@ -126,7 +126,7 @@ function! s:qf_title() abort
     let title = get(w:, 'quickfix_title', '')
     if len(title) >= winwidth(0) -17 -5
         " %t, %l/%L
-        let title = title[:-(winwidth(0)-22)]
+        let title = title[:(winwidth(0)-22)]
     endif
     return title
 endfunction
