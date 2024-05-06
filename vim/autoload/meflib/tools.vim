@@ -43,7 +43,7 @@ function! meflib#tools#exec_ctags(...) abort
     endif
 
     let ctags_opt = meflib#get('ctags_config', 'opt', '')
-    let out_file_name = printf('%s/.%s_tags', cwd, &filetype)
+    let out_file_name = printf('%s/.tagdir/%s_tags', cwd, &filetype)
     if &filetype == 'cpp'
         let ft = 'c++'
     else

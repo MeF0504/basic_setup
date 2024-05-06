@@ -183,10 +183,10 @@ endfunction
 " autocmd local VimEnter * ++once call <SID>open_files_tab()
 
 " file type毎のtags file 設定
-autocmd local FileType * execute printf('setlocal tags^=.%s_tags;,./.%s_tags;', &filetype, &filetype)
+autocmd local FileType * execute printf('setlocal tags^=.tagdir/%s_tags;,./.tagdir/%s_tags;', &filetype, &filetype)
 
-" .<ft>_tags をtagsにする
-autocmd local BufEnter .*_tags set filetype=tags
+" <ft>_tags をtagsにする
+autocmd local BufEnter *_tags set filetype=tags
 
 " markdownとgit commit messageでspell on
 autocmd local Filetype markdown,gitcommit setlocal spell
