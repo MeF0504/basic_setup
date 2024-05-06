@@ -660,9 +660,9 @@ def main_opt(args: Args):
                 continue
             if not fname.endswith('pyc'):
                 files[lfy] = args.lib_dst/fname
-        pv_path = chk_cmd('pyviewer', return_path=True)
+        pv_path = chk_cmd('aftviewer', return_path=True)
         if pv_path is not None:
-            pv_lib = args.conf_home/'pyviewer'
+            pv_lib = args.conf_home/'aftviewer'
             pv_ex_d = Path('samples/pyviewer_examples')
             pv_exs = {'fits_astropy.py': 'additional_types/fits_astropy.py',
                       'fits_healpy.py': 'additional_types/fits_healpy.py',

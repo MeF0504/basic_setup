@@ -1,19 +1,19 @@
-# pyviewer extensions
+# aftviewer extensions
 
-An extension for PyViewer to open fits file.
+An extension for aftviewer to open fits file.
 
 * fits_healpy.py  
     open .fits file using astropy  
-    (copy into pyviewer/pyviewerlib/core)
+    (copy into ~/.config/aftviewer/additional_types)
 * fits_healpy.py  
     open .fits file using healpy  
-    (copy into pyviewer/pyviewerlib/core)
+    (copy into ~/.config/aftviewer/additional_types)
 
 A new image viewer.
 
 * plotly.py  
     Image Viewer which opens an image by plotly.  
-    (copy into pyviewer/pyviewerlib/core/image_viewer)
+    (copy into ~/.config/aftviewer/additional_ivs)
 
 
 # Required
