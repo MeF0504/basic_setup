@@ -49,6 +49,10 @@ function! meflib#tools#exec_ctags(...) abort
     else
         let ft = &filetype
     endif
+    let out_dir = fnamemodify(out_file_name, ':h')
+    if !isdirectory(out_dir)
+        call mkdir(out_dir)
+    endif
 
     let ctags_cmds = printf('%s %s -f "%s" --languages=%s -R "%s"', ctags_cmd, ctags_opt, out_file_name, ft, cwd)
     echomsg ctags_cmds
