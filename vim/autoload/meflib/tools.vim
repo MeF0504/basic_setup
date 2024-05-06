@@ -33,7 +33,7 @@ function! meflib#tools#exec_ctags(...) abort
             let cwd = getcwd()
         endif
     else
-        let cwd = a:1
+        let cwd = fnamemodify(a:1, ':p')
     endif
     if !isdirectory(cwd)
         echohl ErrorMsg
