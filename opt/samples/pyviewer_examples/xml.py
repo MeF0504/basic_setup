@@ -5,7 +5,7 @@ from typing import Tuple, List
 from functools import partial
 from logging import getLogger
 
-from pyviewer.viewers import GLOBAL_CONF, Args, ReturnMessage as RM, \
+from aftviewer import GLOBAL_CONF, Args, ReturnMessage as RM, \
     add_args_specification, args_chk, get_col, cprint, print_key, \
     interactive_view, interactive_cui
 from pymeflib.tree2 import show_tree

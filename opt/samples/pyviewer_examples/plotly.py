@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 import plotly.graph_objects as go
 
-from pyviewer.viewers import GLOBAL_CONF
+from aftviewer import GLOBAL_CONF
 
 logger = getLogger(GLOBAL_CONF.logname)
 

@@ -4,7 +4,7 @@ from astropy.io import fits
 # astropy requires NumPy!
 import numpy as np
 
-from pyviewer.viewers import args_chk, show_image_ndarray, help_template, \
+from aftviewer import args_chk, show_image_ndarray, help_template, \
     add_args_imageviewer, add_args_key
 
 
