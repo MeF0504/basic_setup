@@ -51,9 +51,13 @@ function! s:python_help(module) abort " {{{
     execute printf("autocmd PythonLocal WinClosed %d ++once let s:pyhelp_id = -1", s:pyhelp_id)
 endfunction " }}}
 function! s:pyhelp_comp(arglead, cmdline, cursorpos) abort " {{{
+    let freq_used_lib = ['os', 'sys', 'pathlib', 'numpy', 'matplotlib']
     let s:pyhelpdir = []
     let idx = strridx(a:arglead, '.')
-    if idx != -1
+    if idx == -1
+        "search library
+        return filter(freq_used_lib, '!stridx(v:val, a:arglead)')
+    else
         let mod = a:arglead[:idx-1]
         python3 << EOF
 import vim
@@ -71,8 +75,6 @@ else:
 EOF
         let L = len(mod)+1
         return filter(s:pyhelpdir, '!stridx(v:val[L:], a:arglead[L:])')
-    else
-        return []
     endif
 endfunction " }}}
 command! -buffer -nargs=1 -complete=customlist,s:pyhelp_comp PyHelp call s:python_help(<f-args>)
