@@ -46,6 +46,7 @@ function! <SID>my_color_set_PaperColor()
     endif
     highlight! link pythonBuiltin Function
     highlight Quote ctermfg=183 ctermbg=None guifg=#d7afff guibg=NONE
+    highlight CurSearch ctermbg=0 ctermbg=228 guifg=#030303 guibg=#fbfba0
 endfunction
 call meflib#set('my_color_set', 'PaperColor', expand('<SID>').'my_color_set_PaperColor')
 " }}}
