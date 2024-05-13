@@ -664,8 +664,7 @@ def main_opt(args: Args):
         if pv_path is not None:
             pv_lib = args.conf_home/'aftviewer'
             pv_ex_d = Path('samples/pyviewer_examples')
-            pv_exs = {'fits_astropy.py': 'additional_types/fits_astropy.py',
-                      'fits_healpy.py': 'additional_types/fits_healpy.py',
+            pv_exs = {'fits_healpy.py': 'additional_types/fits_healpy.py',
                       'plotly.py': 'additional_ivs/plotly.py',
                       'xml.py': 'additional_types/xml.py',
                       }

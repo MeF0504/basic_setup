@@ -3,9 +3,6 @@
 An extension for aftviewer to open fits file.
 
 * fits_healpy.py  
-    open .fits file using astropy  
-    (copy into ~/.config/aftviewer/additional_types)
-* fits_healpy.py  
     open .fits file using healpy  
     (copy into ~/.config/aftviewer/additional_types)
 
@@ -21,10 +18,6 @@ A new image viewer.
 Please append following settings.
 ``` json
 {
-    "additional_types": {
-        "fits_astropy": "fits fit",
-        "fits_healpy": ""
-    },
     "fits_healpy": {
         "projection": "mollweide",
         "norm": "None",
