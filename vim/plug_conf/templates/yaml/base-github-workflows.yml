@@ -1,0 +1,10 @@
+name: {{_expr_:empty("{{_input_:name}}") ? expand("%:t:r") : "{{_input_:name}}"}}
+run-name: ${{ github.actor }} {{_cursor_}}
+on: push
+jobs:
+  {{_expr_:empty("{{_input_:name}}") ? expand("%:t:r") : "{{_input_:name}}"}}:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        - name: 
+          run: 
