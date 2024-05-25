@@ -65,10 +65,10 @@ class Args:
 
     Parameters
     ----------
-    prefix: Optional[Path]
+    prefix: Optional[str]
         value of --prefix option.
         set the path where files in the "opt" directory are placed.
-    vim_prefix: Optional[Path]
+    vim_prefix: Optional[str]
         value of --vim_prefix option.
         set the path where files in the "vim" directory are placed.
     download: bool
@@ -142,8 +142,8 @@ class Args:
         <args.conf_home>/meflib is set.
     """
 
-    prefix: Optional[Path]
-    vim_prefix: Optional[Path]
+    prefix: Optional[str]
+    vim_prefix: Optional[str]
     download: bool
     link: bool
     test: bool
@@ -772,10 +772,10 @@ def main_conf(args: Args):
                         f.write('#\n')
                         f.write('\n')
                         if args.bin_dst is not None:
-                            f.write('export PATH=\\\n"{}":\\\n$PATH'.format(args.bin_dst))
+                            f.write(f'export PATH=\\\n"{args.bin_dst}":\\\n$PATH')
                             f.write('\n')
                         if args.lib_dst is not None:
-                            f.write('export PYTHONPATH=\\\n"{}"{}\\\n$PYTHONPATH'.format(args.lib_dst, psep))
+                            f.write(f'export PYTHONPATH=\\\n"{args.lib_dst}"{psep}\\\n$PYTHONPATH')
                             f.write('\n')
                         f.write('\n')
                     print('made {}rc.mine'.format(shell))
