@@ -10,7 +10,7 @@ import json
 import platform
 import urllib.request as urlreq
 from pathlib import Path
-from typing import List, Optional, Literal, Union
+from typing import List, Tuple, Optional, Literal, Union
 from dataclasses import dataclass
 import subprocess
 
@@ -237,8 +237,7 @@ class CopyClass():
             return
 
     def copy(self, src: Path, dst: Path):
-        fg = FG256(colors['message'])
-        end = END
+        fg, end = get_color('message')
 
         if self.link:
             if self.test:
@@ -276,11 +275,9 @@ class CopyClass():
         for line in dlines:
             line = line.replace('\n', '')
             if line[0] == '+':
-                col = FG256(colors['diff_plus'])
-                end = END
+                col, end = get_color('diff_plus')
             elif line[0] == '-':
-                col = FG256(colors['diff_minus'])
-                end = END
+                col, end = get_color('diff_minus')
             else:
                 col = ''
                 end = ''
@@ -325,9 +322,8 @@ class CopyClass():
                 # broken link
                 linkpath = dst.parent.joinpath(dst.readlink())
                 os.unlink(dst)
-                self.print('{}{} -> {} is a broken link. unlink.{}'.format(
-                    FG256(colors['error']), dst2,
-                    self.home_cut(linkpath), END), True)
+                fg, end = get_color('error')
+                self.print(f'{fg}{dst2} -> {self.home_cut(linkpath)} is a broken link. unlink.{end}', True)
                 exist = False
                 islink = False
                 cmp = False
@@ -357,8 +353,7 @@ class CopyClass():
                 return False
 
     def show_files(self):
-        fg = FG256(colors['show_files'])
-        end = END
+        fg, end = get_color('show_files')
         self.print('{}target files{}'.format(fg, end), self.show_target)
 
         for i in range(self.len):
@@ -458,8 +453,7 @@ class CopyClass():
 
 
 def print_path(path: Union[str, Path]):
-    fg = FG256(colors['path'])
-    end = END
+    fg, end = get_color('path')
     print('\n{}@ {}{}\n'.format(fg, path, end))
 
 
@@ -557,6 +551,16 @@ def set_color(args: Args):
                     if type(color_conf[key]) is int and \
                        0 <= color_conf[key] < 256:
                         colors[key] = color_conf[key]
+                    elif color_conf[key] is None:
+                        colors[key] = None
+
+
+def get_color(colname: str) -> Tuple[str, str]:
+    assert colname in colors
+    if colors[colname] is None:
+        return '', ''
+    else:
+        return FG256(colors[colname]), END
 
 
 def create_update(args: Args):
