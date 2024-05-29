@@ -130,4 +130,8 @@ nnoremap <leader>q <Cmd>call meflib#basic#map_util('Qcmds')<CR>
 " ちょっとpython scriptをvimで動かしたいとき {{{
 command! PyTmp call meflib#pytmp#main()
 " }}}
+" timer {{{
+command! -nargs=1 Timer call meflib#tools#timer(<args>)
+" }}}
+
 

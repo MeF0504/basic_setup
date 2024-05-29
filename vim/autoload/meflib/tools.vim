@@ -171,3 +171,24 @@ EOL
 endfunction
 " }}}
 
+" timer {{{
+function! meflib#tools#timer(second) abort
+    if !has('timers')
+        echo 'timer is not supported.'
+        return
+    endif
+    let tid = timer_start(a:second*1000, expand('<SID>')..'timer_cb', {'repeat': 1})
+endfunction
+
+function! s:timer_cb(tid) abort
+    while v:true
+        redraw
+        echo 'time has passed (q to exit)'
+        if getcharstr(0) == 'q'
+            break
+        endif
+        sleep 1
+    endwhile
+    echo 'exit'
+endfunction
+" }}}
