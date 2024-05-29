@@ -181,13 +181,12 @@ function! meflib#tools#timer(second) abort
 endfunction
 
 function! s:timer_cb(tid) abort
+    redraw
+    echo 'time has passed (q to exit)'
     while v:true
-        redraw
-        echo 'time has passed (q to exit)'
-        if getcharstr(0) == 'q'
+        if getcharstr() == 'q'
             break
         endif
-        sleep 1
     endwhile
     echo 'exit'
 endfunction
