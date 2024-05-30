@@ -33,6 +33,10 @@ setlocal foldmethod=expr
 execute printf("setlocal foldexpr=%sfoldmethod(v:lnum)", expand("<SID>"))
 normal! zR
 
+" [[, ]]でchapter, sectionを探す
+nnoremap <silent><buffer> [[ m':call search('^\s*\(\\chapter\\|\\\%[sub\%[sub]]section\)\>', "bW")<CR>
+nnoremap <silent><buffer> ]] m':call search('^\s*\(\\chapter\\|\\\%[sub\%[sub]]section\)\>', "W")<CR>
+
 " とりあえずコピー() from https://vim-jp.org/vimdoc-ja/quickfix.html#errorformat-LaTeX
 setlocal makeprg=latex\ \\\\nonstopmode\ \\\\input\\{$*}
 setlocal errorformat=%E!\ LaTeX\ %trror:\ %m,
