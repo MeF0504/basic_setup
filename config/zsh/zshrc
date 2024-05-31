@@ -302,6 +302,8 @@ function chpwd()
         if [ -z "$yn" ] || [ "$yn" = 'y' ]; then
             echo "fetching..."
             git fetch
+            echo
+            git log --graph --oneline HEAD..origin/HEAD
         else
             echo "fetching... canceled"
         fi
