@@ -7,6 +7,8 @@ autocmd texvimlocal BufEnter *.tex setlocal suffixesadd+=.tex
 autocmd texvimlocal BufEnter *.tex setlocal suffixesadd+=.bib
 " tex fileでも<Enter>で改行時に自動コメントアウト
 autocmd texvimlocal BufEnter *.tex setlocal formatoptions+=r
+" crefにもrefのsyntax colorを適用 (from $VIMRUNTIME/syntax/tex.vim)
+autocmd texvimlocal Syntax * syn region texRefZone		matchgroup=texStatement start="\\v\=cref{"		end="}\|%stopzone\>"	contains=@texRefGroup
 
 function! s:replace_words()
     let l = line('.')
