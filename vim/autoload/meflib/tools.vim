@@ -178,16 +178,23 @@ function! meflib#tools#timer(second) abort
         return
     endif
     let tid = timer_start(a:second*1000, expand('<SID>')..'timer_cb', {'repeat': 1})
+    echomsg printf('timer set (%d)', tid)
 endfunction
 
 function! s:timer_cb(tid) abort
     redraw
-    echo 'time has passed (q to exit)'
+    let snooze_time = meflib#get('snooze_time', 60*10)
+    echo 'time has passed (q to exit, s to snooze)'
     while v:true
-        if getcharstr() == 'q'
+        let key = getcharstr()
+        if key == 'q'
+            echo 'exit'
+            break
+        elseif key == 's'
+            call meflib#tools#timer(snooze_time)
+            echo printf('snoozed %d sec', snooze_time)
             break
         endif
     endwhile
-    echo 'exit'
 endfunction
 " }}}
