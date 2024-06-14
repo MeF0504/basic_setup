@@ -11,6 +11,7 @@ call meflib#set('exclude_dirs', ['.git', '.svn',
             \ '.mypy_cache', '.ipynb_checkpoints', '.pytest_cache',
             \ '.tagdir',
             \ ])
+call meflib#set('side_width', min([45, &columns/16*5]))
 " }}}
 
 " map leader にmapされているmapを表示 {{{

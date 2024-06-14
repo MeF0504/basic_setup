@@ -362,6 +362,8 @@ PlugWrapper 'sjl/gundo.vim', PlugCond(1, {'on': 'GundoToggle'})
 " if has('python3') " pythonをcheckするのに時間が掛かっているっぽい
 let g:gundo_prefer_python3 = 1
 " endif
+" width
+let g:gundo_width = meflib#get('side_width', 30)
 nnoremap <silent> <Leader>u <Cmd>GundoToggle<CR>
 " }}}
 

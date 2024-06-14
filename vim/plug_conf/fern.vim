@@ -64,6 +64,8 @@ PlugWrapper 'lambdalisue/fern.vim', PlugCond(1, {'on': 'Fern'})
 "" Fern {{{
 " default keymap off
 let g:fern#disable_default_mappings = 1
+" width
+let g:fern#drawer_width = meflib#get('side_width', 30)
 " 見た目の設定
 let g:fern#renderer#default#root_symbol = '@ '
 let g:fern#renderer#default#collapsed_symbol = '|= '

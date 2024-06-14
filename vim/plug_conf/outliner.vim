@@ -1,5 +1,7 @@
 " 簡易，柔軟 outliner生成器
 PlugWrapper 'MeF0504/outliner.vim', PlugCond(1, {'on': 'OutLiner'})
+let g:outliner_win_conf = get(g:, 'outliner_win_conf', {})
+let g:outliner_win_conf.width = meflib#get('side_width', 30)
 function! s:outliner_hook() abort
     let g:outliner_settings = get(g:, 'outliner_settings', {})
 

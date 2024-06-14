@@ -1,7 +1,7 @@
 scriptencoding utf-8
 
 PlugWrapper 'preservim/tagbar', PlugCond(1, {'on': 'TagbarToggle'})
-let g:tagbar_width = min([45, &columns/16*5])
+let g:tagbar_width = meflib#get('side_width', 30)
 let g:tagbar_autoclose = 0
 let g:tagbar_autofocus = 1
 let g:tagbar_sort = 0
