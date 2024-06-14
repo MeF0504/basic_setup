@@ -56,7 +56,7 @@ let g:fern_git_status#disable_directories = 1
 function! s:fern_git_status_hook() abort
     call fern_git_status#init()
 endfunction
-autocmd PlugLocal User fern-git-status.vim cal s:fern_git_status_hook()
+autocmd PlugLocal User fern-git-status.vim call s:fern_git_status_hook()
 " }}}
 " }}}
 
@@ -123,5 +123,10 @@ function! <SID>fern_his() abort
     endif
 endfunction
 call meflib#add('plugin_his', expand('<SID>').'fern_his')
+
+function! s:fern_hook() abort
+    call add(g:fern#scheme#file#mapping#mappings, 'aftviewer')
+endfunction
+autocmd PlugLocal User fern.vim call s:fern_hook()
 "" }}}
 
