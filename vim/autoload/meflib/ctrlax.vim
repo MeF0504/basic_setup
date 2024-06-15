@@ -32,21 +32,25 @@ endfunction
 
 " <c-a> でtrue/falseも置換したい {{{
 function! meflib#ctrlax#true_false(premap) abort
+    let pre_news = {
+                \ 'true': 'false',
+                \ 'false': 'true',
+                \ 'True': 'False',
+                \ 'False': 'True',
+                \ 'TRUE': 'FALSE',
+                \ 'FALSE': 'TRUE',
+                \ 'sin': 'cos',
+                \ 'cos': 'sin',
+                \ }
     let cword = expand('<cword>')
     let pos = getpos('.')
-    if cword ==# 'true'
-        let new_word = 'false'
-    elseif cword ==# 'false'
-        let new_word = 'true'
-    elseif cword ==# 'True'
-        let new_word = 'False'
-    elseif cword ==# 'False'
-        let new_word = 'True'
-    elseif cword ==# 'TRUE'
-        let new_word = 'FALSE'
-    elseif cword ==# 'FALSE'
-        let new_word = 'TRUE'
-    else
+    let new_word = ''
+    for pre_word in keys(pre_news)
+        if cword ==# pre_word
+            let new_word = pre_news[pre_word]
+        endif
+    endfor
+    if empty(new_word)
         let cnt = v:count1
         if a:premap ==# 'a'
             execute printf("normal! %d\<c-a>", cnt)
