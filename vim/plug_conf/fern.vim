@@ -128,5 +128,6 @@ function! s:fern_hook() abort
     call add(g:fern#scheme#file#mapping#mappings, 'aftviewer')
 endfunction
 autocmd PlugLocal User fern.vim call s:fern_hook()
+autocmd PlugLocal FileType fern setlocal nonumber
 "" }}}
 
