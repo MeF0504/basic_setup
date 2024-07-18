@@ -149,7 +149,8 @@ let &directory = s:vimdir . "swp"
 set nobackup
 set noundofile
 " spell checkする言語
-set spelllang=en_us
+" cjk (Chinese, Japanese, Korean?) で全角文字はチェックされなくなる (:h spell-cjk)
+set spelllang=en_us,cjk
 " spell checkされた単語リストファイル
 if !isdirectory(s:vimdir.'spell')
     call mkdir(s:vimdir.'spell')

@@ -189,7 +189,7 @@ autocmd local FileType * execute printf('setlocal tags^=.tagdir/%s_tags;,./.tagd
 autocmd local BufEnter *_tags set filetype=tags
 
 " markdownとgit commit messageでspell on
-autocmd local Filetype markdown,gitcommit setlocal spell
+autocmd local Filetype markdown,gitcommit,tex setlocal spell
 
 " git status を表示
 if meflib#get('show_git_status', 1)
