@@ -22,8 +22,9 @@ def set_branch():
         branch = None
         return
 
-    branch = (res.stdout.decode()).split()[1]
-    branch = branch.replace('\n', '')
+    for b in (res.stdout.decode()).splitlines():
+        if b.startswith('* '):
+            branch = b[2:]
     vim.command(f'let g:meflib#git_status#branch = "{branch}"')
 
 
