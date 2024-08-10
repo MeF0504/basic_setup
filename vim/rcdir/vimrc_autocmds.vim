@@ -193,7 +193,6 @@ autocmd local Filetype markdown,gitcommit,tex setlocal spell
 
 " git status を表示
 if meflib#get('show_git_status', 1)
-    call meflib#git_status#main()
     autocmd local CursorMoved * call meflib#git_status#clear()
     autocmd local CursorHold * call meflib#git_status#main()
     autocmd local DirChanged global call meflib#git_status#clear() |
