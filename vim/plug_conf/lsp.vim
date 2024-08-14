@@ -267,6 +267,7 @@ function! s:vim_lsp_hook() abort
     nmap <expr> <c-]> <SID>lsp_mapping(1)
     nmap <silent> <expr> <c-j> <SID>lsp_mapping(2)
     nmap <silent> <expr> <c-p> <SID>lsp_mapping(3)
+    nnoremap <leader>d <Cmd>LspDocumentDiagnostics<CR>
     " help file でバグる？
     autocmd PlugLocal FileType help nnoremap <buffer> <c-]> <c-]>
     " }}}
