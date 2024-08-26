@@ -38,6 +38,9 @@ normal! zR
 " [[, ]]でchapter, sectionを探す
 nnoremap <silent><buffer> [[ m':call search('^\s*\(\\chapter\\|\\\%[sub\%[sub]]section\)\>', "bW")<CR>
 nnoremap <silent><buffer> ]] m':call search('^\s*\(\\chapter\\|\\\%[sub\%[sub]]section\)\>', "W")<CR>
+" [m, ]m で\begin, \end を探す
+nnoremap <silent><buffer> [m m':call search('^\s*\(\\begin\)\>', "bW")<CR>
+nnoremap <silent><buffer> ]m m':call search('^\s*\(\\end\)\>', "W")<CR>
 
 " とりあえずコピー() from https://vim-jp.org/vimdoc-ja/quickfix.html#errorformat-LaTeX
 setlocal makeprg=latex\ \\\\nonstopmode\ \\\\input\\{$*}
