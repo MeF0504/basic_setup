@@ -1,0 +1,30 @@
+#! /usr/bin/env python3
+
+import argparse
+import re
+
+
+def main(args):
+    assert args.file is not None or args.stdin is not None, 'no inputs'
+    if args.file is not None:
+        with open(args.file) as f:
+            in_txt = f.read()
+    else:
+        in_txt = ' '.join(args.stdin)
+    n_chara = len(in_txt)
+    # n_words = len(re.split('[ \n\t]+', in_txt))
+    n_words = len(re.split('\s+', in_txt))
+    n_bytes = len(in_txt.encode())
+    print(f'number of characters: {n_chara}')
+    print(f'number of words: {n_words}')
+    print(f'number of bytes: {n_bytes}')
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    exgroup = parser.add_mutually_exclusive_group()
+    exgroup.add_argument('-f', dest='file', help='input file')
+    exgroup.add_argument('-i', dest='stdin',
+                         help='input from standard input', nargs='*')
+    args = parser.parse_args()
+    main(args)
