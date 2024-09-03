@@ -748,16 +748,19 @@ def main_conf(args: Args):
             files = {}
 
     if args.download:
-        print('download git-prompt for bash')
-        try:
-            bashdir = Path('~/.bash').expanduser()
-            mkdir(bashdir)
-            urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/'
-                               'master/contrib/completion/git-prompt.sh',
-                               bashdir/'git-prompt.sh')
-        except Exception as e:
-            print('failed to download git-prompt')
-            print('error: {}'.format(e))
+        if args.test:
+            print('test:: download git-prompt for bash')
+        else:
+            print('download git-prompt for bash')
+            try:
+                bashdir = Path('~/.bash').expanduser()
+                mkdir(bashdir)
+                urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/'
+                                   'master/contrib/completion/git-prompt.sh',
+                                   bashdir/'git-prompt.sh')
+            except Exception as e:
+                print('failed to download git-prompt')
+                print('error: {}'.format(e))
 
     # create ~.mine files
     if not args.test:
@@ -839,10 +842,14 @@ def main_vim(args: Args):
         files[str(args.vim_src/'after')] = args.aft_dst
 
     if args.download:
-        print('\ndownload vimPlug')
-        mkdir(args.al_dst)
-        urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/'
-                           'vim-plug/master/plug.vim', args.al_dst/'plug.vim')
+        if args.test:
+            print('test:: download vimPlug')
+        else:
+            print('\ndownload vimPlug')
+            mkdir(args.al_dst)
+            urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/'
+                               'vim-plug/master/plug.vim',
+                               args.al_dst/'plug.vim')
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    show_target=args.show_target_files,
