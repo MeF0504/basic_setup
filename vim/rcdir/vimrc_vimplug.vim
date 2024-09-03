@@ -9,6 +9,13 @@ else
     endif
 endif
 
+if !filereadable(meflib#basic#get_conf_dir()..'/autoload/plug.vim')
+    echohl ErrorMsg
+    echomsg 'vimPlug is not installed.'
+    echohl None
+    finish
+endif
+
 augroup PlugLocal
     autocmd!
 augroup END
