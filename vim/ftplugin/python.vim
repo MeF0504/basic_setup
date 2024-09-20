@@ -29,7 +29,7 @@ let g:pyindent_continue = shiftwidth()
 " help 確認用コマンド
 " pydocとかいう便利ツールがあるじゃん
 let s:pyhelp_id = -1
-function! s:python_help(module) abort " {{{
+function! s:python_help(module='') abort " {{{
     let pydoc_cmd = meflib#get('pydoc_cmd', 'pydoc3')
     if !executable(pydoc_cmd)
         echohl ErrorMsg
@@ -38,7 +38,12 @@ function! s:python_help(module) abort " {{{
         return
     endif
 
-    let cmd = printf('%s %s', pydoc_cmd, a:module)
+    if empty(a:module)
+        let module = expand('<cfile>')
+    else
+        let module = a:module
+    endif
+    let cmd = printf('%s %s', pydoc_cmd, module)
     let res = systemlist(cmd)
 
     if s:pyhelp_id != -1
@@ -77,7 +82,7 @@ EOF
         return filter(s:pyhelpdir, '!stridx(v:val[L:], a:arglead[L:])')
     endif
 endfunction " }}}
-command! -buffer -nargs=1 -complete=customlist,s:pyhelp_comp PyHelp call s:python_help(<f-args>)
+command! -buffer -nargs=? -complete=customlist,s:pyhelp_comp PyHelp call s:python_help(<f-args>)
 
 let s:hit_str = split('def class if else elif for with while try except', ' ')
 " {{{ 今自分がどの関数/class/for/if内にいるのか表示する
