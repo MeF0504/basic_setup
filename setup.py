@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 import os
 import sys
@@ -10,7 +11,7 @@ import json
 import platform
 import urllib.request as urlreq
 from pathlib import Path
-from typing import List, Tuple, Optional, Literal, Union
+from typing import Literal, Iterator
 from dataclasses import dataclass
 import subprocess
 
@@ -65,10 +66,10 @@ class Args:
 
     Parameters
     ----------
-    prefix: Optional[str]
+    prefix: str or None
         value of --prefix option.
         set the path where files in the "opt" directory are placed.
-    vim_prefix: Optional[str]
+    vim_prefix: str or None
         value of --vim_prefix option.
         set the path where files in the "vim" directory are placed.
     download: bool
@@ -84,10 +85,10 @@ class Args:
     force: bool
         value of --force option.
         if true, do not ask overwrite or not.
-    type: List[TypeList]
+    type: list[TypeList]
         value of --type option.
         set types of copy/link files.
-    setup_file: Optional[str]
+    setup_file: str or None
         value of --setup_file option.
         set the path to the setting file.
     clear: bool
@@ -112,9 +113,9 @@ class Args:
         "bin" directory in the opt directory.
     lib_src: Path
         "lib" directory in the opt directory.
-    bin_dst: Optional[Path]
+    bin_dst: Path or None
         directory where files in the bin_src are placed
-    lib_dst: Optional[Path]
+    lib_dst: Path or None
         directory where files in the lib_src are placed
     conf_src: Path
         "conf" directory in this repository.
@@ -142,14 +143,14 @@ class Args:
         <args.conf_home>/meflib is set.
     """
 
-    prefix: Optional[str]
-    vim_prefix: Optional[str]
+    prefix: str | None
+    vim_prefix: str | None
     download: bool
     link: bool
     test: bool
     force: bool
-    type: List[TypeList]
-    setup_file: Optional[str]
+    type: list[TypeList]
+    setup_file: str | None
     clear: bool
     show_target_files: bool
     show_no_update_files: bool
@@ -160,8 +161,8 @@ class Args:
     opt_src: Path
     bin_src: Path
     lib_src: Path
-    bin_dst: Optional[Path]
-    lib_dst: Optional[Path]
+    bin_dst: Path | None
+    lib_dst: Path | None
     conf_src: Path
     vim_src: Path
     vim_conf: Path
@@ -190,8 +191,8 @@ class CopyClass():
         self.show_no_update = show_no_update or show_all
         self.show_all = show_all
         self.cwd = Path.cwd()
-        self.src: List[Path] = []
-        self.dst: List[Path] = []
+        self.src: list[Path] = []
+        self.dst: list[Path] = []
         self.len = 0
         self.shift = '  '
         self.dshift = '   |'
@@ -202,7 +203,7 @@ class CopyClass():
                 'README',
                 ]
 
-    def stack(self, src_str: str, dst_str: str):
+    def stack(self, src_str: Path | str, dst_str: Path | str):
         src = Path(src_str).expanduser()
         dst = Path(dst_str).expanduser()
         if src.is_file():
@@ -408,7 +409,7 @@ class CopyClass():
                         if self.diff_check(i):
                             self.copy(src, dst)
 
-    def clear(self, root: str, append_files: List[Path] = []):
+    def clear(self, root: str | Path, append_files: list[Path] = []):
         clear_files = []
         dsts = self.dst + append_files
         for f in Path(root).glob('**/*'):
@@ -452,13 +453,13 @@ class CopyClass():
                             os.remove(f)
 
 
-def print_path(path: Union[str, Path]):
+def print_path(path: str | Path):
     fg, end = get_color('path')
     print('\n{}@ {}{}\n'.format(fg, path, end))
 
 
-def get_files(setup_path: Optional[str],
-              args_type: TypeList, prefix: Optional[str]):
+def get_files(setup_path: str | None,
+              args_type: TypeList, prefix: str | None):
     if setup_path is None:
         return None
 
@@ -555,7 +556,7 @@ def set_color(args: Args):
                         colors[key] = None
 
 
-def get_color(colname: str) -> Tuple[str, str]:
+def get_color(colname: str) -> tuple[str, str]:
     assert colname in colors
     if colors[colname] is None:
         return '', ''
@@ -734,7 +735,7 @@ def main_conf(args: Args):
                   'fish/functions': Path(args.conf_home)/'fish/functions',
                 }
 
-    files_win = {}
+    files_win: dict[str, str] = {}
 
     files = get_files(args.setup_file, 'config', args.prefix)
     if files is None:
