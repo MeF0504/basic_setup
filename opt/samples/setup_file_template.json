@@ -1,7 +1,7 @@
 {
     "//comment": "$PREFIX is usable in this file, and this is replaced by directory specified by --prefix option.",
     "opt": {
-        "bin/pytree": "~/opt/bin/pytree"
+        "bin/pytree": "$PREFIX/bin/pytree"
     },
    "config": {
         "shell/posixShellRC": "~/.posixShellRC",
@@ -18,6 +18,8 @@
     "// comment": "The following set the colors used in setup.py.",
     "color": {
         "path": 5
-    }
+    },
+    "// comment": "The following option specify the ignored file names (in this repository).",
+    "ignore files": ["screenrc", "config.fish"]
 }
 

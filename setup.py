@@ -55,6 +55,8 @@ colors = {
         "path": 10,
         }
 
+ignore_files = []
+
 TypeList = Literal["all", "opt", "config", "vim"]
 
 
@@ -366,6 +368,10 @@ class CopyClass():
         for i in range(self.len):
             src = self.src[i]
             dst = self.dst[i]
+            if src.name in ignore_files:
+                self.print(self.shift+f'[ {src.name} ] in ignore files. skip.',
+                           1)
+                continue
             dst_dir = dst.parent
             if self.test:
                 if not dst_dir.is_dir():
@@ -447,8 +453,7 @@ def get_files(setup_path: str | None,
 
     fpath = Path(setup_path).expanduser()
     if not fpath.exists():
-        print("setup_file {} doesn't find. use default settings."
-              .format(fpath))
+        print(f"setup_file {fpath} doesn't find. use default settings.")
         return None
 
     with open(fpath, 'r') as f:
@@ -459,14 +464,13 @@ def get_files(setup_path: str | None,
             dest = set_dict[args_type][src]
             if '$PREFIX' in dest:
                 if prefix is None:
-                    print('prefix is None: skip {}'.format(src))
+                    print(f'prefix is None: skip {src}')
                     continue
                 dest = dest.replace('$PREFIX', prefix)
             res_files[src] = dest
         return res_files
     else:
-        print("{} is not in {}. use default settings."
-              .format(args_type, fpath))
+        print(f'{args_type} is not in {fpath}. use default settings.')
         return None
 
 
@@ -544,6 +548,20 @@ def get_color(colname: str) -> tuple[str, str]:
         return '', ''
     else:
         return FG256(colors[colname]), END
+
+
+def set_ignore_files(args: Args) -> None:
+    if args.setup_file is None:
+        return
+    setfile = Path(args.setup_file)
+    if not setfile.is_file():
+        return
+
+    global ignore_files
+    with open(setfile, 'r') as f:
+        conf = json.load(f)
+        if 'ignore files' in conf:
+            ignore_files = conf['ignore files']
 
 
 def create_update(args: Args):
@@ -900,6 +918,7 @@ def main():
     os.chdir(fpath)
     set_path(args)
     set_color(args)
+    set_ignore_files(args)
 
     if 'all' in args.type:
         main_opt(args)
