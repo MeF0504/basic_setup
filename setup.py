@@ -11,7 +11,7 @@ import json
 import platform
 import urllib.request as urlreq
 from pathlib import Path
-from typing import Literal, Iterator
+from typing import Literal
 from dataclasses import dataclass
 import subprocess
 
@@ -94,15 +94,12 @@ class Args:
     clear: bool
         value of --clear option.
         if true, clear unused files.
-    show_target_files: bool
-        value of --show_target_files option.
-        if true, show target_files before copying.
-    show_no_update_files: bool
-        value of --show_no_update_files option.
-        if true, show messages "the file is already copied or linked".
-    show_all: bool
-        value of --show_all option.
-        if true, show all messages.
+    verbose: int
+        count of --verbose (-v) option.
+        if 0, show minimal information.
+        if 1, show messages "the file is already copied or linked"
+        if 2, show target_files before copying adding to above information.
+        if 3, show all information.
     fpath: Path
         path to the parent directory of this file.
     conf_home: Path
@@ -152,9 +149,7 @@ class Args:
     type: list[TypeList]
     setup_file: str | None
     clear: bool
-    show_target_files: bool
-    show_no_update_files: bool
-    show_all: bool
+    verbose: int
 
     fpath: Path
     conf_home: Path
@@ -181,15 +176,11 @@ class CopyClass():
     init -> stack -> exec
     """
 
-    def __init__(self, link: bool, force: bool, test: bool,
-                 show_target: bool, show_no_update: bool,
-                 show_all: bool):
+    def __init__(self, link: bool, force: bool, test: bool, verbose: int):
         self.link = link
         self.force = force
         self.test = test
-        self.show_target = show_target or show_all
-        self.show_no_update = show_no_update or show_all
-        self.show_all = show_all
+        self.verbose = verbose
         self.cwd = Path.cwd()
         self.src: list[Path] = []
         self.dst: list[Path] = []
@@ -210,8 +201,7 @@ class CopyClass():
             assert dst.is_file() or not dst.exists()
             for il in self.ignore_list:
                 if il in str(src):
-                    self.print('[{}] ignored by [{}]'.format(src, il),
-                               self.show_all)
+                    self.print(f'[{src}] ignored by [{il}]', 3)
                     return
             self.src.append(src)
             self.dst.append(dst)
@@ -224,8 +214,7 @@ class CopyClass():
                     continue
                 for il in self.ignore_list:
                     if il in str(fy):
-                        self.print('[{}] ignored by [{}]'.format(fy, il),
-                                   self.show_all)
+                        self.print(f'[{fy}] ignored by [{il}]', 3)
                         skip = True
                 if skip:
                     continue
@@ -234,7 +223,7 @@ class CopyClass():
                 self.dst.append(cpdir/(fy.name))
                 self.len += 1
         else:
-            self.print("No such file or directory: {}".format(src), True)
+            self.print(f"No such file or directory: {src}", 0)
             return
 
     def copy(self, src: Path, dst: Path):
@@ -253,7 +242,7 @@ class CopyClass():
                 comment = 'copy {} --> {}'.format(src.name, self.home_cut(dst))
                 shutil.copy(src, dst)
 
-        self.print('{}{}{}'.format(fg, comment, end), True)
+        self.print(f'{fg}{comment}{end}', 0)
 
     def diff(self, index: int):
         src = self.src[index]
@@ -282,10 +271,10 @@ class CopyClass():
             else:
                 col = ''
                 end = ''
-            self.print(self.dshift+col+line+end, True)
+            self.print(self.dshift+col+line+end, 0)
 
-    def print(self, string: str, show: bool):
-        if show:
+    def print(self, string: str, showlevel: int):
+        if self.verbose >= showlevel:
             print(string)
 
     def dst_check(self, index: int):
@@ -302,29 +291,25 @@ class CopyClass():
 
         if exist:
             if islink and cmp:
-                self.print(self.shift+'[ {} ] is already linked.'.format(dst2),
-                           self.show_no_update)
+                self.print(self.shift+f'[ {dst2} ] is already linked.', 1)
             elif islink:
-                self.print(self.shift +
-                           '[ {} ] is another link file.'.format(dst2),
-                           self.show_no_update)
+                self.print(self.shift+f'[ {dst2} ] is another link file.', 1)
             elif cmp:
-                self.print(self.shift+'[ {} ] is already copied.'.format(dst2),
-                           self.show_no_update)
+                self.print(self.shift+f'[ {dst2} ] is already copied.', 1)
             else:
                 if self.force:
-                    show_cmt = self.show_all
+                    cmt_level = 3
                 else:
-                    show_cmt = True
-                self.print(self.shift +
-                           '[ {} ] is already existed.'.format(dst2), show_cmt)
+                    cmt_level = 0
+                self.print(self.shift + f'[ {dst2} ] is already existed.',
+                           cmt_level)
         else:
             if islink:
                 # broken link
                 linkpath = dst.parent.joinpath(dst.readlink())
                 os.unlink(dst)
                 fg, end = get_color('error')
-                self.print(f'{fg}{dst2} -> {self.home_cut(linkpath)} is a broken link. unlink.{end}', True)
+                self.print(f'{fg}{dst2} -> {self.home_cut(linkpath)} is a broken link. unlink.{end}', 0)
                 exist = False
                 islink = False
                 cmp = False
@@ -345,27 +330,25 @@ class CopyClass():
             if yn in ['y', 'yes']:
                 return True
             elif yn in ['d', 'diff'] and not is_diff:
-                self.print('', True)
+                self.print('', 0)
                 self.diff(index)
-                self.print('', True)
+                self.print('', 0)
                 is_diff = True
             elif yn in ['n', 'no']:
-                self.print('Do not copy '+src.name, True)
+                self.print('Do not copy '+src.name, 0)
                 return False
 
     def show_files(self):
         fg, end = get_color('show_files')
-        self.print('{}target files{}'.format(fg, end), self.show_target)
+        self.print(f'{fg}target files{end}', 2)
 
         for i in range(self.len):
-            if py_version >= 3009 and \
-               self.src[i].is_relative_to(self.cwd):
+            if py_version >= 3009 and self.src[i].is_relative_to(self.cwd):
                 src = self.src[i].relative_to(self.cwd)
             else:
                 src = self.src[i]
-            self.print('{} => {}'.format(src, self.home_cut(self.dst[i])),
-                       self.show_target)
-        self.print(fg+'=~=~=~=~=~=~=~=~=~='+end, self.show_target)
+            self.print(f'{src} => {self.home_cut(self.dst[i])}', 2)
+        self.print(f'{fg}=~=~=~=~=~=~=~=~=~={end}', 2)
 
     def home_cut(self, path: Path):
         home = Path.home()
@@ -386,8 +369,7 @@ class CopyClass():
             dst_dir = dst.parent
             if self.test:
                 if not dst_dir.is_dir():
-                    self.print('process check:: mkdir {}'.format(dst_dir),
-                               True)
+                    self.print(f'process check:: mkdir {dst_dir}', 0)
             else:
                 mkdir(dst_dir)
 
@@ -401,7 +383,7 @@ class CopyClass():
                         continue
                     elif self.force and not islink:
                         self.print(self.shift+'overwrite the following file;',
-                                   True)
+                                   0)
                         self.copy(src, dst)
                     elif islink:
                         continue
@@ -431,7 +413,7 @@ class CopyClass():
         for f in clear_files:
             if f.is_symlink():
                 if self.test:
-                    self.print(f'process check::unlink {f}', True)
+                    self.print(f'process check::unlink {f}', 0)
                 else:
                     yn = input(f'unlink {f}? ([y]/n): ')
                     if yn != 'n':
@@ -439,14 +421,14 @@ class CopyClass():
             else:
                 if is_import_trash:
                     if self.test:
-                        self.print(f'process check::move {f} to Trash', True)
+                        self.print(f'process check::move {f} to Trash', 0)
                     else:
                         yn = input(f'move {f} to Trash? ([y]/n): ')
                         if yn != 'n':
                             send2trash(f)
                 else:
                     if self.test:
-                        self.print(f'process check::remove {f}', True)
+                        self.print(f'process check::remove {f}', 0)
                     else:
                         yn = input(f'remove {f}? ([y]/n): ')
                         if yn != 'n':
@@ -583,12 +565,8 @@ def create_update(args: Args):
         pyopt += ' --force'
     if args.vim_prefix is not None:
         pyopt += ' --vim_prefix "{}"'.format(args.vim_prefix)
-    if args.show_all:
-        pyopt += ' --show_all'
-    if args.show_target_files:
-        pyopt += ' --show_target_files'
-    if args.show_no_update_files:
-        pyopt += ' --show_no_update_files'
+    if args.verbose > 0:
+        pyopt += ' -'+'v'*args.verbose
     if args.clear:
         pyopt += ' --clear'
     with open(args.fpath/'opt/samples/update_setup_sample.py', 'r') as f:
@@ -678,9 +656,7 @@ def main_opt(args: Args):
                 files[pv_ex_d/pe] = str(pv_lib/pv_exs[pe])
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
-                   show_target=args.show_target_files,
-                   show_no_update=args.show_no_update_files,
-                   show_all=args.show_all)
+                   verbose=args.verbose)
     for fy in sorted(files.keys()):
         cc.stack(args.opt_src.joinpath(fy), files[fy])
     cc.show_files()
@@ -803,9 +779,7 @@ set diff-highlight = true
                 print('made tigrc.mine')
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
-                   show_target=args.show_target_files,
-                   show_no_update=args.show_no_update_files,
-                   show_all=args.show_all)
+                   verbose=args.verbose)
     for fy in sorted(files.keys()):
         fy_dir = Path(files[fy]).expanduser().parent
         if fy_dir.is_dir():
@@ -853,9 +827,7 @@ def main_vim(args: Args):
                                args.al_dst/'plug.vim')
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
-                   show_target=args.show_target_files,
-                   show_no_update=args.show_no_update_files,
-                   show_all=args.show_all)
+                   verbose=args.verbose)
     for fy in sorted(files.keys()):
         cc.stack(args.vim_src.joinpath(fy), files[fy])
     cc.show_files()
@@ -915,13 +887,8 @@ def main():
                         ' as an example.')
     parser.add_argument('-c', '--clear', action='store_true',
                         help='clear unused files')
-    parser.add_argument('--show_target_files', action='store_true',
-                        help='show target_files before copying')
-    parser.add_argument('--show_no_update_files', action='store_true',
-                        help='show messages "the file is '
-                        'already copied or linked"')
-    parser.add_argument('--show_all', action='store_true',
-                        help='show all messages')
+    parser.add_argument('-v', '--verbose', action='count', default=0,
+                        help='show verbose messages')
     args = parser.parse_args()
 
     if not Path(args.prefix).is_dir():
