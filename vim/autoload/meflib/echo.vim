@@ -1,33 +1,25 @@
 
 " main
-function! meflib#echo#main(cmd, args='') abort
+function! meflib#echo#main(cmd, ...) abort
+    let args = join(a:000, ' ')
     if a:cmd ==# 'pand'  " expandを打つのがめんどくさい
-        echo expand(a:args)
+        echo expand(args)
     elseif a:cmd ==# 'env'  " 環境変数を見やすくする
-        if !empty(a:args)
-            call meflib#echo#env(eval(a:args))
+        if a:0 > 0
+            call meflib#echo#env(eval(args))
         endif
     elseif a:cmd ==# 'runtime'  " runtime 確認
         call meflib#echo#runtimepath()
-    elseif a:cmd ==# 'conv10'  " 10進数に変換
-        if !empty(a:args)
-            call meflib#echo#convert(10, a:args)
-        endif
-    elseif a:cmd ==# 'conv8'  " 8進数に変換
-        if !empty(a:args)
-            call meflib#echo#convert(8, a:args)
-        endif
-    elseif a:cmd ==# 'conv16'  " 16進数に変換
-        if !empty(a:args)
-            call meflib#echo#convert(16, a:args)
-        endif
-    elseif a:cmd ==# 'conv2'  " 2進数に変換
-        if !empty(a:args)
-            call meflib#echo#convert(2, a:args)
+    elseif a:cmd ==# 'conv'  " n進数に変換
+        if a:0 > 0
+            let args2 = join(a:000[1:], ' ')
+            if (match(['10', '8', '16', '2'], a:1) != -1) && !empty(args2)
+                call meflib#echo#convert(str2nr(a:1), args2)
+            endif
         endif
     elseif a:cmd ==# 'time'  " 時刻表示
-        if !empty(a:args)
-            call meflib#echo#time(eval(a:args))
+        if a:0 > 0
+            call meflib#echo#time(eval(args))
         endif
     endif
 endfunction
@@ -35,7 +27,7 @@ endfunction
 
 " echo 拡張の補完 {{{
 function! meflib#echo#comp(arglead, cmdline, cursorpos) abort
-    let comp_list = split('pand env runtime conv10 conv8 conv2 conv16 time')
+    let comp_list = split('pand env runtime conv time')
     let cmdlines = split(a:cmdline, ' ')
     if len(cmdlines) == 1
         " :Echo <tab>
@@ -48,6 +40,8 @@ function! meflib#echo#comp(arglead, cmdline, cursorpos) abort
             " :Echo pand <tab>
             if cmdlines[1] == 'time'
                 return [printf('%d', localtime())]
+            elseif cmdlines[1] == 'conv'
+                return ['2', '8', '10', '16']
             endif
         endif
     endif
