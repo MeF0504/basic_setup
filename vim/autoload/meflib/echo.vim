@@ -17,17 +17,20 @@ function! meflib#echo#main(cmd, ...) abort
                 call meflib#echo#convert(str2nr(a:1), args2)
             endif
         endif
-    elseif a:cmd ==# 'time'  " 時刻表示
+    elseif a:cmd ==# 'time'  " time stamp <-> 時刻文字列変換
         if a:0 > 0
             call meflib#echo#time(eval(args))
         endif
+    elseif a:cmd ==# 'color'  " 指定した色を表示
+        if a:0 > 0
+            call meflib#echo#color(args)
+        endif
     endif
 endfunction
-" }}}
 
 " echo 拡張の補完 {{{
 function! meflib#echo#comp(arglead, cmdline, cursorpos) abort
-    let comp_list = split('pand env runtime conv time')
+    let comp_list = split('pand env runtime conv time color')
     let cmdlines = split(a:cmdline, ' ')
     if len(cmdlines) == 1
         " :Echo <tab>
@@ -116,3 +119,38 @@ function! meflib#echo#time(time) abort
     endif
 endfunction
 " }}}
+
+""" r, g, b / #RRGGBB がどんな色かを確認 {{{
+function! meflib#echo#color(color_id) abort
+    let is_gui = has('gui_running') || (has('termguicolors') && &termguicolors)
+    if a:color_id =~# '^#[0-f][0-f][0-f][0-f][0-f][0-f]$'
+        if !is_gui
+            echo "GUI is not supported! Please check 'echo has(\"gui_running\")' and 'set termguicolors'"
+            return
+        endif
+        execute printf('highlight TmpEchoHl gui=None guibg=%s guifg=None', a:color_id)
+    elseif a:color_id =~# '^[0-5],\s*[0-5],\s*[0-5]$'
+        let instr = substitute(a:color_id, '\s', '', 'g')
+        let [r, g, b] = split(instr, ',')
+        let hlterm = meflib#color#get_colorid(
+                    \ str2nr(r), str2nr(g), str2nr(b), is_gui)
+        if is_gui
+            let term = 'gui'
+        else
+            let term = 'cterm'
+        endif
+            execute printf('highlight TmpEchoHl %s=None %sbg=%s %sfg=None',
+                        \ term, term, hlterm, term)
+    else
+        echo 'Incorrect input. Available input are "#RRGGBB" or "r, g, b"'
+        echo '00 <= RR, GG, BB <= ff / 0 <= r, g, b <= 5'
+        return
+    endif
+    echo printf('input: %s |', a:color_id)
+    echohl TmpEchoHl
+    echon '   '
+    echohl None
+    echon '|'
+endfunction
+" }}}
+
