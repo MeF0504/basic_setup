@@ -42,6 +42,34 @@ nnoremap <silent><buffer> ]] m':call search('^\s*\(\\chapter\\|\\\%[sub\%[sub]]s
 nnoremap <silent><buffer> [m m':call search('^\s*\(\\begin\)\>', "bW")<CR>
 nnoremap <silent><buffer> ]m m':call search('^\s*\(\\end\)\>', "W")<CR>
 
+" comment の内部をtexCommentにhighlightする
+let s:cmt_match_id = get(s:, 'cmt_match_id', -1)
+" ↑ ftplugin は読み込みのたびに読まれている？のでgetで初期化
+function! s:hi_cmt() abort
+    if s:cmt_match_id > 0
+        call matchdelete(s:cmt_match_id)
+    endif
+
+    let st = 0
+    let end = 0
+    let cmt_lines = []
+    for i in range(1, line('$'))
+        if getline(i) =~# "^\s*\\\\begin\{comment\}$"
+            let st = i+1
+        endif
+        if getline(i) =~# "^\s*\\\\end\{comment\}$"
+            let end = i-1
+            if st != 0
+                let cmt_lines += range(st, end)
+            endif
+            let st = 0
+            let end = 0
+        endif
+    endfor
+    let s:cmt_match_id = matchaddpos('texComment', cmt_lines, 10, s:cmt_match_id)
+endfunction
+autocmd texvimlocal BufEnter *.tex call s:hi_cmt()
+
 " とりあえずコピー() from https://vim-jp.org/vimdoc-ja/quickfix.html#errorformat-LaTeX
 setlocal makeprg=latex\ \\\\nonstopmode\ \\\\input\\{$*}
 setlocal errorformat=%E!\ LaTeX\ %trror:\ %m,
