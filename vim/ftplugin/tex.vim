@@ -43,11 +43,11 @@ nnoremap <silent><buffer> [m m':call search('^\s*\(\\begin\)\>', "bW")<CR>
 nnoremap <silent><buffer> ]m m':call search('^\s*\(\\end\)\>', "W")<CR>
 
 " comment の内部をtexCommentにhighlightする
-let s:cmt_match_id = get(s:, 'cmt_match_id', -1)
+let w:tex_cmt_match_id = get(w:, 'tex_cmt_match_id', -1)
 " ↑ ftplugin は読み込みのたびに読まれている？のでgetで初期化
 function! s:hi_cmt() abort
-    if s:cmt_match_id > 0
-        call matchdelete(s:cmt_match_id)
+    if w:tex_cmt_match_id > 0
+        call matchdelete(w:tex_cmt_match_id)
     endif
 
     let st = 0
@@ -66,7 +66,7 @@ function! s:hi_cmt() abort
             let end = 0
         endif
     endfor
-    let s:cmt_match_id = matchaddpos('texComment', cmt_lines, 10, s:cmt_match_id)
+    let w:tex_cmt_match_id = matchaddpos('texComment', cmt_lines, 10, w:tex_cmt_match_id)
 endfunction
 autocmd texvimlocal BufEnter *.tex call s:hi_cmt()
 
