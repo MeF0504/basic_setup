@@ -43,9 +43,9 @@ nnoremap <silent><buffer> [m m':call search('^\s*\(\\begin\)\>', "bW")<CR>
 nnoremap <silent><buffer> ]m m':call search('^\s*\(\\end\)\>', "W")<CR>
 
 " comment の内部をtexCommentにhighlightする
-let w:tex_cmt_match_id = get(w:, 'tex_cmt_match_id', -1)
-" ↑ ftplugin は読み込みのたびに読まれている？のでgetで初期化
 function! s:hi_cmt() abort
+    " 多分matchはwindow毎で良いはず...
+    let w:tex_cmt_match_id = get(w:, 'tex_cmt_match_id', -1)
     if w:tex_cmt_match_id > 0
         call matchdelete(w:tex_cmt_match_id)
     endif
