@@ -56,17 +56,19 @@ alias where="command -v"
 # job
 alias j="jobs -l"
 # ls
+# colorfull ls
 case "$(uname)" in
 FreeBSD*|Darwin*)
-    alias ls="ls -G -w"
+    alias ls="ls -G -w -F"
     ;;
 Linux*)
     alias ls="ls --color -F"
     ;;
 esac
+# ls all
 alias la="ls -a"
-alias lf="ls -F"
-alias ll="ls -l"
+# ls long format w/ human-readable
+alias ll="ls -lh"
 # shortcut
 alias l="ls"
 alias c="cd"
@@ -75,7 +77,7 @@ alias cp="cp -i"
 alias mv="mv -i"
 # make directory recursively
 alias mkdir="mkdir -p"
-# change the unit
+# change the unit to human-readable one
 alias du="du -h"
 alias df="df -h"
 # useful options
