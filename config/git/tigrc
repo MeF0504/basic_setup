@@ -42,6 +42,9 @@ set diff-view   = line-number:yes,interval=1 text:yes,commit-title-overflow=no
 # diff-highlight を使う
 # set diff-highlight = true
 
+# main viewでコミットIDを出す
+set main-view = id date author commit-title:graph=yes,refs=yes
+
 # ↓ https://qiita.com/lighttiger2505/items/383e28f093b03188fc6b
 bind main D !sh -c "git difftool %(commit)~ %(commit)"
 
