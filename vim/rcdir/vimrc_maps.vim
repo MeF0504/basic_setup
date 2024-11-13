@@ -116,7 +116,7 @@ function! s:tag_jump() abort
     elseif yn == 'v'
         return "\<Cmd>vertical stjump "..expand('<cword>').."\<CR>"
     elseif yn == "\<CR>"
-        return "g\<c-]>"
+        return "\<Cmd>tjump "..expand('<cword>').."\<CR>"
     else
         echo 'canceled'
         return ''
@@ -125,7 +125,7 @@ endfunction
 " 更に改良，lspと同様に開き方を選択
 nnoremap <expr> <c-]> <SID>tag_jump()
 " 分割で表示
-nnoremap <silent> g<c-]> <Cmd>vertical stjump<CR>
+" nnoremap <silent> g<c-]> <Cmd>vertical stjump<CR>
 " preview で開く
 nnoremap <silent> <c-p> <Cmd>execute "ptjump "..expand("<cword>")<CR>
 " ファイル内で検索
