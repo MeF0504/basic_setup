@@ -1,0 +1,19 @@
+# vim: set filetype=sh:
+
+if [[ -f "${HOME}/.posixShellRC" ]]; then
+    source "$HOME/.posixShellRC"
+else
+    if [[ -t 1 ]]; then
+        echo "[posix shell rc] not found!" >&2
+    fi
+fi
+
+# History setting
+export HISTFILE=~/.bash_history
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+export HISTCONTROL=ignoreboth
+export HISTIGNORE=pwd:history:ls
+
+# Prompt
+export PS1="$ "
