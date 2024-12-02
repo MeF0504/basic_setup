@@ -7,6 +7,8 @@ alias -g G='| grep -i'
 alias -g L='| less -R'
 alias -g TE=' 2>&1 | tee '
 alias -g S='| sort'
+# ファイル探索からVimにつなぐ。xargsの中だとaliasが効かない？
+alias -g V='| xargs -o vim -p'
 
 local HIST_CMD="fc -l -n -t '%Y/%m/%d=%H:%M:%S' -D"
 local VIM_HIST_CMD="vi -c 'setlocal bt=nofile | setlocal ft=zsh | match Comment /^.*  [0-9]\+:[0-9][0-9]  / | normal! G' -"
