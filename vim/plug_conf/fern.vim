@@ -107,7 +107,14 @@ endfunction
 autocmd PlugLocal FileType fern call s:set_fern_map()
 
 " host map
-nnoremap <silent> <leader>n <Cmd>Fern . -drawer -toggle -reveal=%<CR>
+function! s:fern_map() abort
+    if filereadable(expand('%'))
+        Fern . -drawer -toggle -reveal=%
+    else
+        Fern . -drawer -toggle
+    endif
+endfunction
+nnoremap <silent> <leader>n <Cmd>call <SID>fern_map()<CR>
 
 " 色設定
 function! <SID>fern_his() abort
