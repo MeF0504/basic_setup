@@ -1,11 +1,21 @@
 scriptencoding utf-8
 
 ""開いているファイル情報を表示（ざっくり）
-function! meflib#fileinfo#main() abort
-    let file = expand('%')
+function! meflib#fileinfo#main(file=v:null) abort
+    if a:file is v:null
+        let file = expand('%')
+    else
+        let file = a:file
+    endif
     if file == ''
+        echo "file is not set."
         return
     endif
+    if !filereadable(file)
+        echo "file is not readable."
+        return
+    endif
+
     if !has('pythonx')
         if has('win32') || has('win64')
             let s:ls = 'dir '
@@ -73,8 +83,11 @@ if os.path.islink(fname):
 print(res)
 EOL
     endif
-    let words = wordcount()
-    " pythonのprintはmessageに残るので，こっちもechomsgにする
-    echomsg printf('characters: %d, words: %d', words['chars'], words['words'])
+    if a:file is v:null
+        " wordcount はcurrent fileのみなので，指定無しの場合のみ
+        let words = wordcount()
+        " pythonのprintはmessageに残るので，こっちもechomsgにする
+        echomsg printf('characters: %d, words: %d', words['chars'], words['words'])
+    endif
 endfunction
 

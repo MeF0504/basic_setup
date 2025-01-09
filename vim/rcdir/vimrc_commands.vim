@@ -64,7 +64,7 @@ else
 endif
 " }}}
 " 開いているファイル情報を表示（ざっくり）{{{
-command! FileInfo call meflib#fileinfo#main()
+command! -nargs=? -complete=file FileInfo call meflib#fileinfo#main(<f-args>)
 " }}}
 " 辞書（というか英辞郎）で検索 {{{
 command! -nargs=1 EijiroWeb call meflib#tools#eijiro(<f-args>)
