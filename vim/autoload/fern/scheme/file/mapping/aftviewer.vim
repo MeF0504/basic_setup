@@ -13,6 +13,7 @@ endif
 
 function! fern#scheme#file#mapping#aftviewer#init(disable_default_mappings) abort
     nnoremap <buffer><silent> <Plug>(fern-action-aftviewer) <Cmd>call <SID>call('aftviewer')<CR>
+    nnoremap <buffer><silent> <Plug>(fern-action-0) <Cmd>echo "action canceled."<CR>
 endfunction
 
 function! s:call(name, ...) abort
