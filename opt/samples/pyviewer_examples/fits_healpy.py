@@ -8,7 +8,9 @@ from aftviewer import args_chk, help_template, get_config, add_args_key
 
 
 def add_args(parser):
-    add_args_key(parser)
+    add_args_key(parser,
+                 help='Specify the index of field/HDU. To see the details,'
+                 ' please run "aftviewer FILE -t fits -k".')
     parser.add_argument('--projection', help='specify the projection',
                         choices=['mollweide', 'gnomonic',
                                  'cartesian', 'orthographic'],
@@ -25,9 +27,8 @@ def add_args(parser):
 
 
 def show_help():
-    helpmsg = help_template('fits_healpy', 'show the image of fits file' +
-                            ' using HealPix.' +
-                            ' args.key specifies field.',
+    helpmsg = help_template('fits_healpy',
+                            'Show the image of fits file using HealPix.',
                             add_args)
     print(helpmsg)
 
@@ -45,8 +46,8 @@ def main(fpath, args):
 
     if hasattr(args, 'projection') and args.projection is not None:
         projection = args.projection
-    elif get_config('fits_healpy', 'projection') is not None:
-        projection = get_config('fits_healpy', 'projection')
+    elif get_config('projection') is not None:
+        projection = get_config('projection')
     else:
         projection = 'mollweide'
 
@@ -64,8 +65,8 @@ def main(fpath, args):
 
     if hasattr(args, 'norm') and args.norm is not None:
         norm = args.norm
-    elif get_config('fits_healpy', 'norm') is not None:
-        norm = get_config('fits_healpy', 'norm')
+    elif get_config('norm') is not None:
+        norm = get_config('norm')
     else:
         norm = 'None'
     if norm == 'None':
@@ -73,8 +74,8 @@ def main(fpath, args):
 
     if hasattr(args, 'coord') and args.coord is not None:
         coord = args.coord
-    elif get_config('fits_healpy', 'coord') is not None:
-        coord = get_config('fits_healpy', 'coord')
+    elif get_config('coord') is not None:
+        coord = get_config('coord')
     else:
         coord = []
     if len(coord) == 0:
