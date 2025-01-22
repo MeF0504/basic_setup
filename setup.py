@@ -807,21 +807,6 @@ def main():
         bindir = str(Path(us_path).parent)
     create_update(args, bindir)
 
-    return
-
-    if 'all' in args.type:
-        main_opt(args)
-        main_conf(args)
-        main_vim(args)
-    else:
-        for t in args.type:
-            if t == 'opt':
-                main_opt(args)
-            elif t == 'config':
-                main_conf(args)
-            elif t == 'vim':
-                main_vim(args)
-
 
 if __name__ == "__main__":
     main()
