@@ -57,16 +57,6 @@ SFILE = CONF_HOME/'meflib/setting.toml'
 ROOT = Path(__file__).resolve().parent.relative_to(os.getcwd())
 
 COLORS = {}
-# COLORS = {
-#         "message": 11,
-#         "diff_plus": 12,
-#         "diff_minus": 1,
-#         "error": 1,
-#         "show_files": 2,
-#         "path": 10,
-#         }
-
-# ignore_files = []
 
 TypeList = Literal["all", "opt", "config", "vim"]
 
@@ -82,6 +72,10 @@ class Args:
     opt_prefix: str or None
         value of --opt_prefix option.
         set the path where files in the "opt" directory are placed.
+    opt_dynamic: bool
+        If true, set the dynamic flag in opt.
+        If this flag is set, copied files are set dynamically by checking
+        that the file is executable.
     vim_prefix: str or None
         value of --vim_prefix option.
         set the path where files in the "vim" directory are placed.
@@ -112,36 +106,16 @@ class Args:
         if 3, show all information.
     """
 
-    # prefix: str | None
     opt_prefix: str | None
+    opt_dynamic: bool
     vim_prefix: str | None
     download: bool
     link: bool
     test: bool
     force: bool
     type: list[TypeList]
-    # setup_file: str | None
     clear: bool
     verbose: int
-
-    # fpath: Path
-    # conf_home: Path
-    # opt_src: Path
-    # bin_src: Path
-    # lib_src: Path
-    # bin_dst: Path | None
-    # lib_dst: Path | None
-    # conf_src: Path
-    # vim_src: Path
-    # vim_conf: Path
-    # vimrc: Path
-    # rc_dst: Path
-    # ft_dst: Path
-    # plg_dst: Path
-    # al_dst: Path
-    # doc_dst: Path
-    # aft_dst: Path
-    # local_conf: Path
 
 
 class CopyClass():
@@ -161,42 +135,17 @@ class CopyClass():
         self.len = 0
         self.shift = '  '
         self.dshift = '   |'
-        # self.ignore_list = [
-        #         '__pycache__',
-        #         '.git',
-        #         'LICENSE',
-        #         'README',
-        #         ]
 
     def stack(self, src_str: str, dst_str: str):
         src = Path(src_str).expanduser()
         dst = Path(dst_str).expanduser()
         if src.is_file():
             assert dst.is_file() or not dst.exists()
-            # for il in self.ignore_list:
-            #     if il in str(src):
-            #         self.print(f'[{src}] ignored by [{il}]', 3)
-            #         return
             self.src.append(src)
             self.dst.append(dst)
             self.len += 1
         elif src.is_dir():
             self.print_warn(f"{src} is a directory.", 0)
-            # assert dst.is_dir() or not dst.exists()
-            # for fy in src.glob("**/*"):
-            #     skip = False
-            #     if fy.is_dir():
-            #         continue
-            #     for il in self.ignore_list:
-            #         if il in str(fy):
-            #             self.print(f'[{fy}] ignored by [{il}]', 3)
-            #             skip = True
-            #     if skip:
-            #         continue
-            #     cpdir = dst/(fy.parent.relative_to(src))
-            #     self.src.append(fy)
-            #     self.dst.append(cpdir/(fy.name))
-            #     self.len += 1
         else:
             self.print(f"No such file or directory: {src}", 0)
             return
@@ -345,10 +294,6 @@ class CopyClass():
         for i in range(self.len):
             src = self.src[i]
             dst = self.dst[i]
-            # if src.name in ignore_files:
-            #     self.print(self.shift+f'[ {src.name} ] in ignore files. skip.',
-            #                1)
-            #     continue
             dst_dir = dst.parent
             if self.test:
                 if not dst_dir.is_dir():
@@ -421,6 +366,7 @@ class CopyClass():
 def print_warn(msg: str, **kwargs) -> None:
     fg, end = get_color('warning')
     print(f'{fg}{msg}{end}', **kwargs)
+
 
 def print_path(path: str):
     fg, end = get_color('path')
@@ -582,122 +528,12 @@ def create_set(args: Args) -> None:
         f.write(res)
 
 
-def get_files(setup_path: str | None,
-              args_type: TypeList, prefix: str | None):
-    if setup_path is None:
-        return None
-
-    fpath = Path(setup_path).expanduser()
-    if not fpath.exists():
-        print(f"setup_file {fpath} doesn't find. use default settings.")
-        return None
-
-    with open(fpath, 'r') as f:
-        set_dict = json.load(f)
-    if args_type in set_dict:
-        res_files = {}
-        for src in set_dict[args_type]:
-            dest = set_dict[args_type][src]
-            if '$PREFIX' in dest:
-                if prefix is None:
-                    print(f'prefix is None: skip {src}')
-                    continue
-                dest = dest.replace('$PREFIX', prefix)
-            res_files[src] = dest
-        return res_files
-    else:
-        print(f'{args_type} is not in {fpath}. use default settings.')
-        return None
-
-
-def set_path(args: Args):
-    if 'XDG_CONFIG_HOME' in os.environ:
-        conf_home = Path(os.environ['XDG_CONFIG_HOME'])
-    else:
-        conf_home = Path('~/.config').expanduser()
-    args.conf_home = conf_home
-
-    args.opt_src = args.fpath/'opt'
-    args.bin_src = args.opt_src/'bin'
-    args.lib_src = args.opt_src/'lib'
-    if args.prefix is None:
-        args.bin_dst = None
-        args.lib_dst = None
-    else:
-        args.bin_dst = Path(args.prefix)/'bin'
-        args.lib_dst = Path(args.prefix)/'lib'
-
-    args.conf_src = args.fpath/'config'
-
-    args.vim_src = args.fpath/'vim'
-    if args.vim_prefix is not None:
-        args.vim_conf = Path(args.vim_prefix)
-        args.vimrc = args.vim_conf/'init.vim'
-    elif uname == 'Windows':
-        args.vim_conf = Path('~/vimfiles').expanduser()
-        args.vimrc = Path('~/_vimrc').expanduser()
-    else:
-        args.vim_conf = Path(args.conf_home)/'nvim'
-        args.vimrc = args.vim_conf/'init.vim'
-    args.rc_dst = args.vim_conf/'rcdir'
-    args.ft_dst = args.vim_conf/'ftplugin'
-    args.plg_dst = args.vim_conf/'plug_conf'
-    args.al_dst = args.vim_conf/'autoload'
-    args.doc_dst = args.vim_conf/'doc'
-    args.aft_dst = args.vim_conf/'after'
-
-    local_conf = Path(args.conf_home)/'meflib'
-    if not local_conf.exists():
-        try:
-            os.makedirs(local_conf)
-            print('mkdir: {}'.format(local_conf))
-        except Exception as e:
-            print('failed to make conf dir: {}'.format(local_conf))
-            print('error: {}'.format(e))
-    args.local_conf = local_conf
-
-
-def set_color(args: Args):
-    if args.setup_file is None:
-        return
-    setfile = Path(args.setup_file)
-    if not setfile.is_file():
-        return
-
-    global COLORS
-    with open(setfile, 'r') as f:
-        conf = json.load(f)
-        if 'color' in conf:
-            color_conf = conf['color']
-            for key in COLORS:
-                if key in color_conf:
-                    if type(color_conf[key]) is int and \
-                       0 <= color_conf[key] < 256:
-                        COLORS[key] = color_conf[key]
-                    elif color_conf[key] is None:
-                        COLORS[key] = None
-
-
 def get_color(colname: str) -> tuple[str, str]:
     if colname not in COLORS:
         return '', ''
     if COLORS[colname] is None:
         return '', ''
     return FG256(COLORS[colname]), END
-
-
-def set_ignore_files(args: Args) -> None:
-    if args.setup_file is None:
-        return
-    setfile = Path(args.setup_file)
-    if not setfile.is_file():
-        return
-
-    global ignore_files
-    with open(setfile, 'r') as f:
-        conf = json.load(f)
-        if 'ignore files' in conf:
-            ignore_files = conf['ignore files']
 
 
 def create_update(args: Args, bindir: str):
@@ -767,248 +603,6 @@ def create_update(args: Args, bindir: str):
             print('done')
 
 
-def _main_opt(args: Args):
-    if args.prefix is None:
-        return
-    print_path(args.opt_src)
-    spec_files = {'pdf2jpg': ['Darwin']}
-
-    files = get_files(args.setup_file, 'opt', args.prefix)
-    if files is None:
-        files = {}
-        for bfy in args.bin_src.glob('*'):
-            if os.access(bfy, os.X_OK):
-                fname = bfy.name
-                if fname in spec_files:
-                    if uname in spec_files[fname]:
-                        files[bfy] = args.bin_dst/fname
-                else:
-                    files[bfy] = args.bin_dst/fname
-
-        for lfy in args.lib_src.glob('*'):
-            fname = lfy.name
-            if fname == '__pycache__':
-                continue
-            if not fname.endswith('pyc'):
-                files[lfy] = args.lib_dst/fname
-        pv_path = chk_cmd('aftviewer', return_path=True)
-        if pv_path is not None:
-            pv_lib = args.conf_home/'aftviewer'
-            pv_ex_d = Path('samples/pyviewer_examples')
-            pv_exs = {'fits_healpy.py': 'additional_types/fits_healpy.py',
-                      'plotly.py': 'additional_ivs/plotly.py',
-                      'xml.py': 'additional_types/xml.py',
-                      }
-            for pe in pv_exs:
-                mkdir(str((pv_lib/pv_exs[pe]).parent))
-                files[pv_ex_d/pe] = str(pv_lib/pv_exs[pe])
-
-    cc = CopyClass(link=args.link, force=args.force, test=args.test,
-                   verbose=args.verbose)
-    for fy in sorted(files.keys()):
-        cc.stack(args.opt_src.joinpath(fy), files[fy])
-    cc.show_files()
-    cc.exec()
-    # opt は関係ないbin, libもあるのでclearは呼ばない
-
-
-def _main_conf(args: Args):
-    print_path(args.conf_src)
-
-    files_mac = {
-                'zsh/zshrc': '~/.zshrc',
-                'zsh/zlogin': '~/.zlogin',
-                'zsh/zsh': '~/.zsh',
-                'tmp/zshrc.mine': '~/.zsh/zshrc.mine',
-                'shell/posixShellRC': '~/.posixShellRC',
-                'shell/psfuncs/get_zodiac_whgm.sh':
-                args.local_conf/'get_zodiac_whgm.sh',
-                'shell/psfuncs/today_percentage.sh':
-                args.local_conf/'today_percentage.sh',
-                'bash/bashrc': '~/.bashrc',
-                'bash/bash': '~/.bash',
-                'tmp/bashrc.mine': '~/.bash/bashrc.mine',
-                'matplotlibrc': '~/.matplotlib/matplotlibrc',
-                'git/gitignore_global': '~/.gitignore_global',
-                'screenrc': '~/.screenrc',
-                'marp/marp_MeFtheme.css': '~/.marp/marp_MeFtheme.css',
-                'git/tigrc':  '~/.tigrc',
-                'fish/config.fish': Path(args.conf_home)/'fish/config.fish',
-                'fish/functions': Path(args.conf_home)/'fish/functions',
-                }
-
-    files_linux = {
-                  'zsh/zshrc': '~/.zshrc',
-                  'zsh/zlogin': '~/.zlogin',
-                  'zsh/zsh': '~/.zsh',
-                  'tmp/zshrc.mine': '~/.zsh/zshrc.mine',
-                  'shell/posixShellRC': '~/.posixShellRC',
-                  'shell/psfuncs/get_zodiac_whgm.sh':
-                  args.local_conf/'get_zodiac_whgm.sh',
-                  'shell/psfuncs/today_percentage.sh':
-                  args.local_conf/'today_percentage.sh',
-                  'bash/bashrc': '~/.bashrc',
-                  'bash/bash': '~/.bash',
-                  'tmp/bashrc.mine': '~/.bash/bashrc.mine',
-                  'matplotlibrc':
-                  Path(args.conf_home)/'matplotlib/matplotlibrc',
-                  'git/gitignore_global': '~/.gitignore_global',
-                  'screenrc': '~/.screenrc',
-                  'git/tigrc':  '~/.tigrc',
-                  'fish/config.fish': Path(args.conf_home)/'fish/config.fish',
-                  'fish/functions': Path(args.conf_home)/'fish/functions',
-                }
-
-    files_win: dict[str, str] = {}
-
-    files = get_files(args.setup_file, 'config', args.prefix)
-    if files is None:
-        if uname == 'Darwin':
-            files = files_mac
-        elif uname == 'Linux':
-            files = files_linux
-        elif uname == 'Windows':
-            files = files_win
-        else:
-            files = {}
-
-    if args.download:
-        if args.test:
-            print('test:: download git-prompt for bash')
-        else:
-            print('download git-prompt for bash')
-            try:
-                bashdir = Path('~/.bash').expanduser()
-                mkdir(bashdir)
-                urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/'
-                                   'master/contrib/completion/git-prompt.sh',
-                                   bashdir/'git-prompt.sh')
-            except Exception as e:
-                print('failed to download git-prompt')
-                print('error: {}'.format(e))
-
-    # create ~.mine files
-    if not args.test:
-        for shell in 'bash zsh'.split():
-            mine_src = 'tmp/{}rc.mine'.format(shell)
-            if mine_src in files:
-                if not Path(files[mine_src]).expanduser().is_file():
-                    mine_src_path = args.conf_src/mine_src
-                    mkdir(str(mine_src_path.parent))
-                    with open(mine_src_path, 'w') as f:
-                        f.write('## PC dependent {}rc\n'.format(shell))
-                        f.write('#\n')
-                        f.write('\n')
-                        if args.bin_dst is not None:
-                            f.write(f'export PATH=\\\n"{args.bin_dst}":\\\n$PATH')
-                            f.write('\n')
-                        if args.lib_dst is not None:
-                            f.write(f'export PYTHONPATH=\\\n"{args.lib_dst}"{psep}\\\n$PYTHONPATH')
-                            f.write('\n')
-                        f.write('\n')
-                    print('made {}rc.mine'.format(shell))
-                else:
-                    print('{}rc.mine is already exists'.format(shell))
-                    files.pop(mine_src)
-
-        # create tigrc.mine
-        if 'git/tigrc' in files:
-            tigrc = Path('~/.tig/tigrc.mine').expanduser()
-            if not tigrc.parent.is_dir():
-                mkdir(tigrc.parent)
-            if not tigrc.is_file():
-                with open(tigrc, 'w') as f:
-                    f.write('# user local tigrc\n')
-                    if chk_cmd('diff-highlight'):
-                        f.write('''
-# diff-highlight を使う
-set diff-highlight = true
-''')
-                print('made tigrc.mine')
-
-    cc = CopyClass(link=args.link, force=args.force, test=args.test,
-                   verbose=args.verbose)
-    for fy in sorted(files.keys()):
-        fy_dir = Path(files[fy]).expanduser().parent
-        if fy_dir.is_dir():
-            cc.stack(args.conf_src.joinpath(fy), files[fy])
-        else:
-            print('{} does not exist, do not copy {}.'.format(fy_dir, fy))
-    cc.show_files()
-    cc.exec()
-    if args.clear:
-        cc.clear(args.local_conf,
-                 [args.local_conf/'shows_config.json'])
-        zshdir = Path('~/.zsh').expanduser()
-        bashdir = Path('~/.bash').expanduser()
-        cc.clear(str(zshdir), [zshdir/'zshrc.mine',
-                               zshdir/'zlogin.mine', zshdir/'enter.zsh'])
-        cc.clear(str(bashdir), [bashdir/'bashrc.mine',
-                                bashdir/'git-prompt.sh'])
-
-    # create update_setup file
-    create_update(args)
-
-
-def _main_vim(args: Args):
-    print_path(args.vim_src)
-    mkdir(args.vim_conf/'swp')
-
-    files = get_files(args.setup_file, 'vim', args.prefix)
-    if files is None:
-        files = {'vimrc': args.vimrc}
-        files[str(args.vim_src/'rcdir')] = args.rc_dst
-        files[str(args.vim_src/'ftplugin')] = args.ft_dst
-        files[str(args.vim_src/'plug_conf')] = args.plg_dst
-        files[str(args.vim_src/'autoload')] = args.al_dst
-        files[str(args.vim_src/'doc')] = args.doc_dst
-        files[str(args.vim_src/'after')] = args.aft_dst
-
-    if args.download:
-        if args.test:
-            print('test:: download vimPlug')
-        else:
-            print('\ndownload vimPlug')
-            mkdir(args.al_dst)
-            urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/'
-                               'vim-plug/master/plug.vim',
-                               args.al_dst/'plug.vim')
-
-    cc = CopyClass(link=args.link, force=args.force, test=args.test,
-                   verbose=args.verbose)
-    for fy in sorted(files.keys()):
-        cc.stack(args.vim_src.joinpath(fy), files[fy])
-    cc.show_files()
-    cc.exec()
-    if args.clear:
-        cc.clear(str(args.vim_conf/'rcdir'),
-                 [args.rc_dst/'vimrc_mine.post', args.rc_dst/'vimrc_mine.pre'])
-        cc.clear(str(args.vim_conf/'plug_conf'))
-
-    if not uname == 'Windows':
-        src = args.vimrc
-        dst = Path('~/.vimrc').expanduser()
-        if src.is_file() and not dst.is_file():
-            if not args.test:
-                print("link {} -> {}".format(src, dst))
-                try:
-                    os.symlink(src, dst)
-                except Exception as e:
-                    print('failed to link vimrc.')
-                    print('error: {}'.format(e))
-
-        src = args.vim_conf
-        dst = Path('~/.vim').expanduser()
-        if src.is_dir() and not dst.is_dir():
-            if not args.test:
-                print("link {} -> {}".format(src, dst))
-                try:
-                    os.symlink(src, dst)
-                except Exception as e:
-                    print('failed to link vim dir.')
-                    print('error: {}'.format(e))
-
-
 def main_opt(setting: dict[str, Any], args: Args) -> None:
     if 'opt' not in setting:
         print(f'opt is not found in {SFILE}. skip opt.')
@@ -1075,26 +669,6 @@ def main_conf(setting: dict[str, Any], args: Args) -> None:
 #
 ''')
                         print(f'made {shell}rc.mine file.')
-            # mine_src = 'tmp/{}rc.mine'.format(shell)
-            # if mine_src in files:
-            #     if not Path(files[mine_src]).expanduser().is_file():
-            #         mine_src_path = args.conf_src/mine_src
-            #         mkdir(str(mine_src_path.parent))
-            #         with open(mine_src_path, 'w') as f:
-            #             f.write('## PC dependent {}rc\n'.format(shell))
-            #             f.write('#\n')
-            #             f.write('\n')
-            #             if args.bin_dst is not None:
-            #                 f.write(f'export PATH=\\\n"{args.bin_dst}":\\\n$PATH')
-            #                 f.write('\n')
-            #             if args.lib_dst is not None:
-            #                 f.write(f'export PYTHONPATH=\\\n"{args.lib_dst}"{psep}\\\n$PYTHONPATH')
-            #                 f.write('\n')
-            #             f.write('\n')
-            #         print('made {}rc.mine'.format(shell))
-            #     else:
-            #         print('{}rc.mine is already exists'.format(shell))
-            #         files.pop(mine_src)
 
         # create tigrc.mine
         if 'config/git/tigrc' in [f[0] for f in files]:
@@ -1120,14 +694,6 @@ set diff-highlight = true
     if args.clear and 'clear' in conf:
         for cl in conf['clear']:
             cc.clear(cl, conf['clear'][cl])
-        # cc.clear(args.local_conf,
-        #          [args.local_conf/'shows_config.json'])
-        # zshdir = Path('~/.zsh').expanduser()
-        # bashdir = Path('~/.bash').expanduser()
-        # cc.clear(str(zshdir), [zshdir/'zshrc.mine',
-        #                        zshdir/'zlogin.mine', zshdir/'enter.zsh'])
-        # cc.clear(str(bashdir), [bashdir/'bashrc.mine',
-        #                         bashdir/'git-prompt.sh'])
 
 
 def main_vim(setting: dict[str, Any], args: Args) -> None:
@@ -1146,10 +712,11 @@ def main_vim(setting: dict[str, Any], args: Args) -> None:
             print('test:: download vimPlug')
         else:
             print('\ndownload vimPlug')
-            mkdir(args.al_dst)
+            vimal = os.path.expanduser(input("install dir of vimPlug: "))
+            mkdir(vimal)
             urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/'
                                'vim-plug/master/plug.vim',
-                               args.al_dst/'plug.vim')
+                               vimal/'plug.vim')
 
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    verbose=args.verbose)
@@ -1160,10 +727,6 @@ def main_vim(setting: dict[str, Any], args: Args) -> None:
     if args.clear and 'clear' in conf:
         for cl in conf['clear']:
             cc.clear(cl, conf['clear'][cl])
-    # if args.clear:
-    #     cc.clear(str(args.vim_conf/'rcdir'),
-    #              [args.rc_dst/'vimrc_mine.post', args.rc_dst/'vimrc_mine.pre'])
-    #     cc.clear(str(args.vim_conf/'plug_conf'))
 
     if 'vimlink' in conf:
         for src, dst in conf['vimlink']:
@@ -1175,34 +738,10 @@ def main_vim(setting: dict[str, Any], args: Args) -> None:
                     except Exception as e:
                         print(f'failed to link {src}.')
                         print(f'error: {e}')
-    # if not uname == 'Windows':
-    #     src = args.vimrc
-    #     dst = Path('~/.vimrc').expanduser()
-    #     if src.is_file() and not dst.is_file():
-    #         if not args.test:
-    #             print("link {} -> {}".format(src, dst))
-    #             try:
-    #                 os.symlink(src, dst)
-    #             except Exception as e:
-    #                 print('failed to link vimrc.')
-    #                 print('error: {}'.format(e))
-
-    #     src = args.vim_conf
-    #     dst = Path('~/.vim').expanduser()
-    #     if src.is_dir() and not dst.is_dir():
-    #         if not args.test:
-    #             print("link {} -> {}".format(src, dst))
-    #             try:
-    #                 os.symlink(src, dst)
-    #             except Exception as e:
-    #                 print('failed to link vim dir.')
-    #                 print('error: {}'.format(e))
 
 
 def main():
     parser = argparse.ArgumentParser()
-    # parser.add_argument('--prefix', help='install directory',
-    #                     default=Path('~/workspace/opt').expanduser())
     parser.add_argument('--create_settings',
                         help=f'create {SFILE.name} and return.',
                         action='store_true')
@@ -1229,11 +768,6 @@ def main():
     parser.add_argument('-t', '--type', nargs='*',
                         help="set the type of copy files.",
                         choices='all opt config vim'.split(), default=['all'])
-    # parser.add_argument('-s', '--setup_file',
-    #                     help='specify the copy files by json format '
-    #                     'setting file. please see '
-    #                     '"opt/samples/setup_file_template.json"'
-    #                     ' as an example.')
     parser.add_argument('-c', '--clear', action='store_true',
                         help='clear unused files')
     parser.add_argument('-v', '--verbose', action='count', default=0,
@@ -1274,16 +808,6 @@ def main():
     create_update(args, bindir)
 
     return
-    # if not Path(args.prefix).is_dir():
-    #     print("install path {} does not exit".format(args.prefix))
-    #     args.prefix = None
-
-    # fpath = Path(__file__).resolve().parent
-    # args.fpath = fpath
-    # os.chdir(fpath)
-    # set_path(args)
-    # set_color(args)
-    # set_ignore_files(args)
 
     if 'all' in args.type:
         main_opt(args)
