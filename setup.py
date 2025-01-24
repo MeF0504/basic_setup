@@ -801,10 +801,12 @@ def main():
             elif t == 'vim':
                 main_vim(settings, args)
     us_path = chk_cmd('update_setup', return_path=True)
-    if us_path is None:
-        bindir = os.path.expanduser(input('install path of "update_setup": '))
-    else:
+    if us_path is not None:
         bindir = str(Path(us_path).parent)
+    elif 'opt' in settings and 'prefix' in settings['opt']:
+        bindir = os.path.join(settings['opt']['prefix'], 'bin')
+    else:
+        bindir = os.path.expanduser(input('install path of "update_setup": '))
     create_update(args, bindir)
 
 
