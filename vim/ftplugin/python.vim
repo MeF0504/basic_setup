@@ -163,6 +163,30 @@ endif
 " }}}
 
 " mypy quick fix でいけるのでは？ {{{
+function! s:mypy_cb(close, args1, args2) abort
+    if !a:close
+        let ch = a:args1
+        let msg = a:args2
+        " echomsg printf("add %s", msg)
+        call add(s:out, msg)
+    else
+        let ch = a:args2
+        cgetexpr s:out
+        copen
+    endif
+endfunction
+
+function! s:mypy_ncb(jid, data, event) abort
+    " echomsg a:event
+    if a:event == 'stdout'
+        " echomsg printf("add %s", type(a:data))
+        let s:out += a:data
+    elseif a:event == 'exit'
+        cgetexpr s:out
+        copen
+    endif
+endfunction
+
 function! s:mypy(...) abort
     if !executable('mypy')
         echo 'mypy is not executable'
@@ -173,12 +197,20 @@ function! s:mypy(...) abort
     else
         let target_files = a:000
     endif
+    let s:out = []
     let mypy_cmd = ['mypy'] + target_files
-    if !has('nvim')
-        let mypy_cmd = join(mypy_cmd)
+    " echomsg mypy_cmd
+    if has('nvim')
+        let jobid = jobstart(mypy_cmd, {
+                    \ "on_stdout": expand('<SID>').."mypy_ncb",
+                    \ "on_exit": expand('<SID>').."mypy_ncb"
+                    \ })
+    else
+        let jobid = job_start(mypy_cmd, {
+                    \ "out_cb": function("s:mypy_cb", [v:false]),
+                    \ "close_cb": function("s:mypy_cb", [v:true, ""])
+                    \ })
     endif
-    cgetexpr system(mypy_cmd)
-    copen
 endfunction
 command! -buffer -nargs=* -complete=file Mypy call s:mypy(<f-args>)
 " }}}
