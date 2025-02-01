@@ -103,6 +103,8 @@ PlugWrapper 'MeF0504/inkpotter.vim'
 " inkpotter {{{
 function! <SID>my_color_set_inkpotter()
     highlight HiTagImports ctermfg=225 guifg=#f0b7f0
+    highlight DiffText guibg=#682a4f
+    highlight IncSearch guibg=#ddb590
 endfunction
 call meflib#set('my_color_set', 'inkpotter', expand('<SID>').'my_color_set_inkpotter')
 " }}}
