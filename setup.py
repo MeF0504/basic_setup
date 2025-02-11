@@ -137,7 +137,7 @@ class CopyClass():
         self.dshift = '   |'
 
     def stack(self, src_str: str, dst_str: str):
-        src = Path(src_str).expanduser()
+        src = Path(src_str).expanduser().absolute()
         dst = Path(dst_str).expanduser()
         if src.is_file():
             assert dst.is_file() or not dst.exists()
