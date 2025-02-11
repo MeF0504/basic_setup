@@ -14,6 +14,8 @@ def main():
             for ln in f:
                 if ln.startswith('" DOC '):
                     is_doc = True
+                    assert len(ln.replace('\n', '').split(' ')) == 4, \
+                        f"failed to set param: {fy}, {ln}"
                     _, _, doc_type, name = ln.replace('\n', '').split(' ')
                     details = {'type': doc_type, 'name': name, 'cont': []}
                 elif ln.startswith('" DOCEND'):
@@ -27,21 +29,25 @@ def main():
     doc_opt = ""
     for conf in res:
         if conf['type'] == 'COMMANDS':
+            cmd_det = conf['cont'][0]
             sp_num = 80-len(conf['name'])-3
-            doc_cmd += f'{conf["name"]:<{sp_num}s}*:{conf["name"]}*\n'
-            for txt in conf['cont']:
+            doc_cmd += f'{cmd_det:<{sp_num}s}*:{conf["name"]}*\n'
+            for txt in conf['cont'][1:]:
                 doc_cmd += txt+'\n'
+            doc_cmd += '\n'
         elif conf['type'] == 'FUNCTIONS':
             func_det = conf['cont'][0]
             sp_num = 80-len(conf['name'])-2
             doc_func += f'{func_det:<{sp_num}s}*{conf["name"]}*\n'
             for txt in conf['cont'][1:]:
                 doc_func += txt+'\n'
+            doc_func += '\n'
         elif conf['type'] == 'OPTIONS':
             sp_num = 80-len(conf['name'])-2-len('meflib-')
             doc_opt += f'{conf["name"]:<{sp_num}s}*meflib-{conf["name"]}*\n'
             for txt in conf['cont']:
                 doc_opt += txt+'\n'
+            doc_opt += '\n'
 
     doc = f"""
 *meflib.txt*    local library of vim script. 色々あって日本語／英語混在
@@ -68,17 +74,14 @@ local library of vim scripts for Mef0504 (https://github.com/MeF0504)
 COMMANDS                                                       *meflib-commands*
 
 {doc_cmd}
-
 ==============================================================================
 FUNCTIONS                                                     *meflib-functions*
 
 {doc_func}
-
 ==============================================================================
 OPTIONS                                                         *meflib-options*
 
 {doc_opt}
-
 ==============================================================================
 MEMO                                                               *meflib-memo*
 

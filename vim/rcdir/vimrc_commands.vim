@@ -11,7 +11,28 @@ call meflib#set('exclude_dirs', ['.git', '.svn',
             \ '.mypy_cache', '.ipynb_checkpoints', '.pytest_cache',
             \ '.tagdir',
             \ ])
+" DOC OPTIONS exclude_dirs
+" set directories excluding from search.
+" DOCEND
 call meflib#set('side_width', min([45, &columns/16*5]))
+" DOC OPTIONS side_width
+" set width of optional window.
+" DOCEND
+" }}}
+" 要らない？user関数を消す {{{
+function! s:del_comds()
+    let del_commands = meflib#get('del_commands', [])
+    for dc in del_commands
+        if exists(':'.dc) == 2
+            execute 'delcommand '.dc
+        endif
+    endfor
+endfunction
+if v:vim_did_enter
+    call s:del_comds()
+else
+    autocmd cmdLocal VimEnter * ++once call s:del_comds()
+endif
 " }}}
 
 " map leader にmapされているmapを表示 {{{
@@ -23,10 +44,30 @@ nnoremap <silent> <Leader><Leader> <Cmd>call <SID>leader_map()<CR>
 " }}}
 " diff系command {{{
 command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
+" DOC COMMANDS DiffOrig
+" DiffOrig
+" 
+" See |diff-original-file|
+" DOCEND
 command! -nargs=1 -complete=file Diff vertical diffsplit <args>
+" DOC COMMANDS Diff
+" Diff {filename}
+" 
+" Check the difference between current file and {filename}.
+" DOCEND
 "}}}
 " conflict commentを検索 {{{
 command! SearchConf /<<<<<<<\|=======\|>>>>>>>
+" DOC COMMANDS SearchConf
+" SearchConf
+" 
+" Search the conflict strings.
+" Conflict strings are following; >
+" 	<<<<<<<
+" 	=======
+" 	>>>>>>>
+" <
+" DOCEND
 " }}}
 " ipython を呼ぶ用 {{{
 let s:ipythons = {'ipython':'Ipython', 'ipython2':'Ipython2', 'ipython3':'Ipython3'}
@@ -44,24 +85,24 @@ for [s:sh_cmd, s:vim_cmd] in items(s:ipythons)
         endif
     endif
 endfor
+" DOC COMMANDS Ipython
+" Ipython
+"
+" run ipython in new tab.
+" DOCEND
+" DOC COMMANDS Ipython3
+" Ipython3
+"
+" run ipython3 in new tab.
+" DOCEND
 " }}}
 " Spell check {{{
 command! Spell if &spell!=1 | setlocal spell | echo 'spell: on' | else | setlocal nospell | echo 'spell: off' | endif
-" }}}
-" 要らない？user関数を消す {{{
-function! s:del_comds()
-    let del_commands = meflib#get('del_commands', [])
-    for dc in del_commands
-        if exists(':'.dc) == 2
-            execute 'delcommand '.dc
-        endif
-    endfor
-endfunction
-if v:vim_did_enter
-    call s:del_comds()
-else
-    autocmd cmdLocal VimEnter * ++once call s:del_comds()
-endif
+" DOC COMMANDS Spell
+" Spell
+"
+" Toggle 'spell'.
+" DOCEND
 " }}}
 " 開いているファイル情報を表示（ざっくり）{{{
 command! -nargs=? -complete=file FileInfo call meflib#fileinfo#main(<f-args>)
