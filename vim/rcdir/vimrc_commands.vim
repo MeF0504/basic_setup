@@ -134,5 +134,7 @@ command! PyTmp call meflib#pytmp#main()
 " timer {{{
 command! -nargs=1 Timer call meflib#tools#timer(<args>)
 " }}}
-
+" 自作 find {{{
+command! -nargs=? -complete=customlist,meflib#find#comp Find call meflib#find#main(<f-args>)
+" }}}
 

@@ -1,14 +1,19 @@
 scriptencoding utf-8
 " 自作grep
 
-let s:args_config = {'wd': '*', 'ex': 1, 'dir': 1, 'all': 0}
+let s:args_keys = ['wd', 'dir', 'ex', 'all']  " keysだと順番が不定なので
+let s:args_vals = ['*', 1, 1, 0]
+let s:args_config = {}
+for s:i in range(len(s:args_keys))
+    let s:args_config[s:args_keys[s:i]] = s:args_vals[s:i]
+endfor
 " 補完
 function! meflib#grep#comp(arglead, cmdline, cursorpos) abort
     let opt_idx = strridx(a:cmdline, '-')
     let end_space_idx = strridx(a:cmdline, ' ')
     if a:arglead[0] == '-'
-        let args_keys = ['wd', 'dir', 'ex', 'all']  " keysだと順番が不定なので
-        let not_entered_list = filter(map(args_keys, '"-"..v:val'), 'stridx(tolower(a:cmdline), tolower(v:val)) == -1')
+        let not_entered_list = filter(map(copy(s:args_keys), '"-"..v:val'),
+                    \ 'stridx(tolower(a:cmdline), tolower(v:val)) == -1')
         return filter(not_entered_list, '!stridx(tolower(v:val), a:arglead)')
     elseif a:cmdline[opt_idx:end_space_idx-1] == '-dir'
         return getcompletion(a:arglead, "dir") + ['opened']
