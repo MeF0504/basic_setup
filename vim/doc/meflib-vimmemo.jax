@@ -1,0 +1,101 @@
+*meflib-vimmemo.jax* Vim script メモ
+
+==============================================================================
+CONTENTS                                            *meflib-vimmemo-contents*
+
+shortcut		|meflib-vimmemo-shortcut|
+useful command		|meflib-vimmemo-useful_command|
+useful settings		|meflib-vimmemo-useful_settings|
+spell			|meflib-vimmemo-spell|
+other topics		|meflib-vimmemo-other_topics|
+
+==============================================================================
+SHORTCUT                                               *meflib-vimmemo-shortcut*
+
+<c-h> ... backspace <c-m> ... Enter
+<c-i> ... tab <c-j> ... Down
+
+==============================================================================
+USEFUL_COMMAND                                   *meflib-vimmemo-useful_command*
+
+|:set|          ... Show all options that differ from their default value.
+|:set| all      ... Show all but terminal options.
+|:set| termcap  ... Show all terminal options.
+|:map|          ... Show all mapping settings.
+|:highlight|    ... Show all highlight settings.
+|:command|       ... Show all user commands.
+
+==============================================================================
+USEFUL_SETTINGS                                 *meflib-vimmemo-useful_settings*
+
+分割したwindow間で移動を同期 (それぞれのwindowでsetする必要あり)
+'scrollbind'
+terminalでもgui colorを使う
+'termguicolors'
+
+==============================================================================
+SPELL                                                     *meflib-vimmemo-spell*
+
+information; |spell| or https://vim-jp.org/vimdoc-ja/spell.html
+on; `:setlocal spell spelllang=en_us`
+search;
+次を検索 |]s| or |]S|
+前を検索 |[s| or |[S|
+(カーソル下を)正しい(good)単語として登録      |zg| or |:spe|[llgood] {word}
+(カーソル下を)間違った(wrong)単語として登録   |zw| or |:spellw|[rong] {word}
+(カーソル下の?)単語を一覧から削除             |zuw| / |zug| / |:spellu|[ndo] {word}
+
+==============================================================================
+OTHER_TOPICS                                       *meflib-vimmemo-other_topics*
+
+about command args ~
+<f-args>=string, <args>=value
+
+about equation operator ~
+  |==#|, |!=#|, |>#| etc..    ：大文字小文字を区別する
+  |==?|, |!=?|, |>?| etc..    ：大文字小文字を区別しない
+  |=~|, |=~#|, |=~?|          ：正規表現マッチ
+  |!~|, |!~#|, |!~?|          ：正規表現非マッチ
+正規表現については |pattern-overview| or https://vim-jp.org/vimdoc-ja/pattern.html#pattern-overview
+
+about SID ~
+|:scriptnames|          ... List all sourced script names
+:echo expand('<SID>') ... Get the current file SID
+:filter {str} {cmd} ... restrict the output.
+
+about <Cmd> ~
+mapping でcmd modeに移るときは : よりも <Cmd> の方が良さそう
+|map-cmd|
+使用できるのは ver. 8.2 && patch-1978 以降
+
+コマンド補完 ~
+コマンド補完の結果を取得するには
+|getcompletion()|
+これは？入力補完を自作する時用かな
+|complete()|
+
+ID変換 ~
+https://koturn.hatenablog.com/entry/2018/02/14/000000
+1 バッファ番号
+  |bufnr()|
+2 ウィンドウ番号
+  |winnr()|
+3 タブ番号
+  |tabpagenr()|
+4 |window-ID|
+  |win_getid()|
+1 => 2, 3, 4
+  |bufwinnr()|, |tabpagebuflist()|から逆引き, |bufwinid()|
+2 => 1, 3, 4
+  |winbufnr()|, nop, |win_getid()|
+3 => 1, 2, 4
+  |tabpabebuflist()|, |tabpagewinnr()|, |tabpagewinnr()|と|win_getid()|
+4 => 1, 2, 3
+  |winbufnr()|, |win_id2win()|, |win_id2tabwin()|
+
+文字数カウント ~
+g <c-g> (|g_CTRL-G|)
+関数なら|wordcount()|
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:
