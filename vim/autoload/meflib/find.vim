@@ -1,8 +1,8 @@
 scriptencoding utf-8
 " vimからfind
 
-let s:args_keys = ['name', 'dir', 'depth', 'all']  " keysだと順番が不定なので
-let s:args_vals = [1, 1, 1, 0]
+let s:args_keys = ['name', 'dir', 'depth']  " keysだと順番が不定なので
+let s:args_vals = [1, 1, 1]
 let s:args_config = {}
 for s:i in range(len(s:args_keys))
     let s:args_config[s:args_keys[s:i]] = s:args_vals[s:i]

@@ -9,6 +9,8 @@ def main():
     doc_file = base_dir/'doc/meflib_test.jax'
     for fy in base_dir.glob('**/*.vim'):
         # print(fy)
+        if 'templates' in str(fy):
+            continue
         is_doc = False
         with open(fy, 'r') as f:
             for ln in f:
