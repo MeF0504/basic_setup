@@ -172,13 +172,41 @@ endfunction
 " }}}
 
 " timer {{{
+highlight Timer ctermbg=15 ctermfg=0 cterm=Bold guibg=White guifg=Black gui=Bold
 function! meflib#tools#timer(second) abort
     if !has('timers')
         echo 'timer is not supported.'
         return
     endif
     let tid = timer_start(a:second*1000, expand('<SID>')..'timer_cb', {'repeat': 1})
+    let tid2 = timer_start(1000, function(expand('<SID>')..'timer_update', [a:second, localtime()]), {'repeat': -1})
     echomsg printf('timer set (%d)', tid)
+endfunction
+
+let s:t_bufid = -1
+let s:t_winid = -1
+function! s:timer_update(set_time, st_time, timer_id) abort
+    let rem_time = a:set_time-(localtime()-a:st_time)
+    if rem_time < 0
+        call meflib#floating#close(s:t_winid)
+        " let s:t_bufid = -1
+        let s:t_winid = -1
+        call timer_stop(a:timer_id)
+        return
+    endif
+
+    let H = rem_time/3600
+    let M = (rem_time%3600)/60
+    let S = rem_time%60
+    let t_str = printf('%d:%d:%d', H, M, S)
+    let config = {
+                \ 'relative': 'editor',
+                \ 'line': &lines-3,
+                \ 'col': &columns-1,
+                \ 'pos': 'botright',
+                \ 'highlight': 'Timer',
+                \ }
+    let [s:t_bufid, s:t_winid] = meflib#floating#open(s:t_bufid, s:t_winid, [t_str], config)
 endfunction
 
 function! s:timer_cb(tid) abort
