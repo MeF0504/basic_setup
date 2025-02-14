@@ -6,8 +6,7 @@ import argparse
 import shutil
 import filecmp
 import difflib
-import datetime
-import json
+from datetime import datetime
 import platform
 import urllib.request as urlreq
 from pathlib import Path
@@ -72,10 +71,6 @@ class Args:
     opt_prefix: str or None
         value of --opt_prefix option.
         set the path where files in the "opt" directory are placed.
-    opt_dynamic: bool
-        If true, set the dynamic flag in opt.
-        If this flag is set, copied files are set dynamically by checking
-        that the file is executable.
     vim_prefix: str or None
         value of --vim_prefix option.
         set the path where files in the "vim" directory are placed.
@@ -107,7 +102,6 @@ class Args:
     """
 
     opt_prefix: str | None
-    opt_dynamic: bool
     vim_prefix: str | None
     download: bool
     link: bool
@@ -172,8 +166,8 @@ class CopyClass():
         src = self.src[index]
         dst = self.dst[index]
         # https://it-ojisan.tokyo/python-difflib/#keni_toc_2
-        src_dt = datetime.datetime.fromtimestamp(src.stat().st_mtime)
-        dst_dt = datetime.datetime.fromtimestamp(dst.stat().st_mtime)
+        src_dt = datetime.fromtimestamp(src.stat().st_mtime)
+        dst_dt = datetime.fromtimestamp(dst.stat().st_mtime)
         with open(src, 'r', encoding='utf-8') as f:
             src_str = f.readlines()
         with open(dst, 'r', encoding='utf-8') as f:
@@ -368,9 +362,11 @@ def print_warn(msg: str, **kwargs) -> None:
     print(f'{fg}{msg}{end}', **kwargs)
 
 
-def print_path(path: str):
+def print_title(path: str):
     fg, end = get_color('path')
-    print(f'\n{fg}@ {path}{end}\n')
+    tsize = shutil.get_terminal_size()
+    enum = int((tsize.columns-len(path)-4)/2)
+    print(f'\n{fg}{"="*enum} {path} {"="*enum}{end}\n')
 
 
 def get_opt_files(prefix: str) -> list[list[str]]:
@@ -402,14 +398,11 @@ def create_set(args: Args) -> None:
     if args.opt_prefix is None:
         print('--opt_prefix is not set. Skip to create opt section.')
     else:
-        if args.opt_dynamic:
-            res += 'dyn = true\n'
-            res += f'prefix = "{args.opt_prefix}"\n'
-        else:
-            res += 'files = [\n'
-            for src, dst in get_opt_files(args.opt_prefix):
-                res += f'    ["{src}", "{dst}"],\n'
-            res += ']\n'
+        res += f'prefix = "{args.opt_prefix}"\n'
+        res += 'files = [\n'
+        for src, dst in get_opt_files(args.opt_prefix):
+            res += f'    ["{src}", "{dst}"],\n'
+        res += ']\n'
     res += '\n'
 
     # config
@@ -472,6 +465,7 @@ def create_set(args: Args) -> None:
     if args.vim_prefix is None:
         print('--vim_prefix is not set. Skip to create vim section.')
     else:
+        res += f'prefix = "{args.vim_prefix}"\n'
         prefix = Path(args.vim_prefix)
         res += 'files = [\n'
         res += f'    ["{ROOT/"vim/vimrc"}", "{prefix/"init.vim"}"],\n'
@@ -524,14 +518,15 @@ def create_set(args: Args) -> None:
     res += '\n'
 
     # print(res)
-    with open(SFILE, 'w') as f:
-        f.write(res)
+    return res
 
 
 def get_color(colname: str) -> tuple[str, str]:
     if colname not in COLORS:
         return '', ''
     if COLORS[colname] is None:
+        return '', ''
+    if COLORS[colname] < 0:  # none/null is not supported in toml
         return '', ''
     return FG256(COLORS[colname]), END
 
@@ -608,18 +603,11 @@ def main_opt(setting: dict[str, Any], args: Args) -> None:
         print(f'opt is not found in {SFILE}. skip opt.')
         return
     conf = setting['opt']
-    print_path('opt')
-    if 'dyn' in conf and conf['dyn']:
-        if 'prefix' not in conf:
-            fg, end = get_color('warning')
-            print(f'{fg}dynamic is set but prefix is not set.{end}')
-            return
-        files = get_opt_files(conf['prefix'])
-    elif 'files' in conf:
-        files = conf['files']
-    else:
+    print_title('opt')
+    if 'files' not in conf:
         print_warn('"files" not found in opt.')
         return
+    files = conf['files']
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    verbose=args.verbose)
     for src, dst in files:
@@ -634,7 +622,7 @@ def main_conf(setting: dict[str, Any], args: Args) -> None:
         print(f'config is not found in {SFILE}. skip conf.')
         return
     conf = setting['config']
-    print_path('config')
+    print_title('config')
     if 'files' not in conf:
         print_warn('"files" not found in conf.')
         return
@@ -701,7 +689,7 @@ def main_vim(setting: dict[str, Any], args: Args) -> None:
         print(f'vim is not found in {SFILE}. skip vim.')
         return
     conf = setting['vim']
-    print_path('vim')
+    print_title('vim')
     if 'files' not in conf:
         print_warn('"files" not found in conf.')
         return
@@ -752,9 +740,6 @@ def main():
     parser.add_argument('--vim_prefix', help=f'**option for {SFILE.name}.**'
                         ' Vim configuration directory.',
                         default=None)
-    parser.add_argument('--opt_dynamic', help=f'**option for {SFILE.name}.**'
-                        ' If set, set copying files in "opt" dynamically.',
-                        action='store_true')
     parser.add_argument('--download', help='download some files (from git)',
                         action='store_true')
     parser.add_argument('--link', help="link files instead of copy",
@@ -776,17 +761,47 @@ def main():
 
     if not SFILE.is_file():
         print(f'{SFILE} is not found. create it and return.')
-        create_set(args)
+        res = create_set(args)
+        with open(SFILE, 'w') as f:
+            f.write(res)
+        print(f'{SFILE} is created. Please check it.')
         return
     elif args.create_settings:
         shutil.copy(SFILE, SFILE.parent/'setting_old.toml')
-        create_set(args)
+        res = create_set(args)
+        with open(SFILE, 'w') as f:
+            f.write(res)
+        print(f'{SFILE} is created. Please check it.')
         return
 
     with open(SFILE, 'rb') as f:
         settings = tomllib.load(f)
     if 'color' in settings:
         COLORS.update(settings['color'])
+
+    if args.verbose >= 1:
+        if 'opt' in settings and 'prefix' in settings['opt']:
+            args.opt_prefix = settings['opt']['prefix']
+        if 'vim' in settings and 'prefix' in settings['vim']:
+            args.vim_prefix = settings['vim']['prefix']
+        with open(SFILE, 'r') as f:
+            pri = [s.rstrip() for s in f.readlines()]
+        new = create_set(args).split('\n')
+        dlines = difflib.unified_diff(pri, new, n=1,
+                                      fromfile=str(SFILE),
+                                      tofile='new',
+                                      )
+        print_title('setting updates?')
+        for line in dlines:
+            line = line.replace('\n', '')
+            if line[0] == '+':
+                col, end = get_color('diff_plus')
+            elif line[0] == '-':
+                col, end = get_color('diff_minus')
+            else:
+                col = ''
+                end = ''
+            print(f'{col}{line}{end}')
 
     if 'all' in args.type:
         main_opt(settings, args)
