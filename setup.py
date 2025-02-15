@@ -518,6 +518,8 @@ def create_set(args: Args) -> None:
     res += '\n'
 
     # print(res)
+    res = res.replace('\\ ', ' ')
+    res = res.replace('\\', '\\\\')
     return res
 
 
