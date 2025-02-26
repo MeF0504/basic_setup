@@ -649,7 +649,7 @@ def main_conf(setting: dict[str, Any], args: Args) -> None:
     if not args.test:
         for shell in 'bash zsh'.split():
             if f'config/{shell}/{shell}rc' in [f[0] for f in files]:
-                mine_file = Path(f'~/.{shell}rc.mine').expanduser()
+                mine_file = Path(f'~/.{shell}/{shell}rc.mine').expanduser()
                 if mine_file.is_file():
                     print(f'{shell}rc.mine already exists.')
                 else:
