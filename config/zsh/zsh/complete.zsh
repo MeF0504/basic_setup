@@ -55,6 +55,7 @@ function _copy_util_comp()
 compdef _copy_util_comp copy_util.py
 # }}}
 
+# {{{ pip
 # https://pip.pypa.io/en/stable/user_guide/#command-completion
 
 # pip zsh completion start
@@ -72,4 +73,5 @@ else
   compdef __pip -P 'pip[0-9.]#'
 fi
 # pip zsh completion end
+# }}}
 
