@@ -34,4 +34,8 @@ Host dummy
     RequestTTY no
 ## keep connecting?
     TCPKeepAlive yes
+## Add? set? acceptable algorithms in server?
+    HostKeyAlgorithms ssh-rsa
+## Add? set? acceptable algorithms at client?
+    PubkeyAcceptedKeyTypes ssh-rsa
 
