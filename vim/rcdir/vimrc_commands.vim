@@ -325,4 +325,12 @@ command! -nargs=? -complete=customlist,meflib#find#comp Find call meflib#find#ma
 " 		specified depth.
 " DOCEND
 " }}}
+" 日本語（マルチバイト文字）を探索 {{{
+command! SearchJa /\v[^\x01-\x7E]+
+" DOC COMMANDS SearchJa
+" SearchJa
+" 
+" Search multibyte words.
+" DOCEND
+" }}}
 
