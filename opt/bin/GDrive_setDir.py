@@ -32,7 +32,7 @@ def main():
         return
 
     dirs = ['WallPaper',
-            'SmartphonePaper',
+            'WallPaper/SmartphonePaper',
             'Images',
             'Movies',
             '資料',
