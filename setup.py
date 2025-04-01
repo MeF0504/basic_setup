@@ -475,7 +475,10 @@ def create_settings(args: Args):
         if nvim:
             vim_def = os.path.expanduser('~/.config/nvim')
         else:
-            vim_def = os.path.expanduser('~/.vim')
+            if UNAME == 'Windows':
+                vim_def = os.path.expanduser('~/vimfiles')
+            else:
+                vim_def = os.path.expanduser('~/.vim')
         vim_dir = input('Vim configuration directory\n'
                         f'(empty => {vim_def}): ')
         if len(vim_dir) == 0:
@@ -706,8 +709,12 @@ def get_vim_list(setting: dict[str, Any]) -> list[list[str]]:
         res.append([f'{ROOT/"vim/vimrc"}',
                     f'{CONF_HOME/"nvim/init.vim"}'])
     else:
-        res.append([f'{ROOT/"vim/vimrc"}',
-                    f'{home/".vimrc"}'])
+        if UNAME == 'Windows':
+            res.append([f'{ROOT/"vim/vimrc"}',
+                        f'{home/"_vimrc"}'])
+        else:
+            res.append([f'{ROOT/"vim/vimrc"}',
+                        f'{home/".vimrc"}'])
     vimdst = Path(setting['vim']['dir'])
     for fy in (ROOT/'vim').glob('*/**/*'):
         if fy.name in ignore_list:
@@ -750,18 +757,24 @@ def main_vim(setting: dict[str, Any], args: Args) -> None:
         cc.clear(f'{vimdst/"plug_conf"}', [])
 
     home = Path.home()
-    if setting['vim']['link']:
+    if setting['vim']['nvim'] and setting['vim']['link']:
         if args.test:
             print('test:: link ~/.vim and ~/.vimrc')
         else:
             print('link ~/.vim and ~/.vimrc')
+            if UNAME == 'Windows':
+                vimdir = home/'vimfiles'
+                vimrc = home/'_vimrc'
+            else:
+                vimdir = home/'.vim'
+                vimrc = home/'.vimrc'
             try:
-                if not (home/'.vim').exists():
-                    os.symlink(setting['vim']['dir'], home/'.vim')
-                if not (home/'.vimrc').exists():
-                    os.symlink(setting['vim']['dir']/'init.vim', home/'.vimrc')
+                if not vimdir.exists():
+                    os.symlink(setting['vim']['dir'], vimdir)
+                if not vimrc.exists():
+                    os.symlink(setting['vim']['dir']/'init.vim', vimrc)
             except Exception as e:
-                print('failed to link ~/.vimrc')
+                print(f'failed to link {vimdir} or {vimrc}.')
                 print(f'error: {e}')
 
 
