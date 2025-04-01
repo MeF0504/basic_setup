@@ -487,6 +487,8 @@ def create_settings(args: Args):
                 dic['vim']['link'] = True
             else:
                 dic['vim']['link'] = False
+        else:
+            dic['vim']['link'] = False
     if 'all' in args.type or 'config' in args.type:
         dic['config'] = {}
         if chk_cmd('zsh'):
