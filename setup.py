@@ -783,6 +783,7 @@ def main():
     args = parser.parse_args()
 
     if not SFILE.is_file():
+        mkdir(SFILE.parent)
         create_settings(args)
     with open(SFILE, 'r') as f:
         setting = json.load(f)
