@@ -13,6 +13,8 @@ from pathlib import Path
 from typing import Literal, Any
 from dataclasses import dataclass
 import subprocess
+import json
+import pprint
 _py_version = sys.version_info.major*1000 + sys.version_info.minor
 if _py_version < 3006:
     print('Version >= 3.6 required')
@@ -53,6 +55,8 @@ if 'XDG_CONFIG_HOME' in os.environ:
 else:
     CONF_HOME = Path('~/.config').expanduser()
 SFILE = CONF_HOME/'meflib/setting.toml'
+SFILE = CONF_HOME/'meflib/setting.json'
+IGFILE = CONF_HOME/'meflib/ignorelist'
 ROOT = Path(__file__).resolve().parent.relative_to(os.getcwd())
 
 COLORS = {}
@@ -362,11 +366,11 @@ def print_warn(msg: str, **kwargs) -> None:
     print(f'{fg}{msg}{end}', **kwargs)
 
 
-def print_title(path: str):
+def print_title(title: str):
     fg, end = get_color('path')
     tsize = shutil.get_terminal_size()
-    enum = int((tsize.columns-len(path)-4)/2)
-    print(f'\n{fg}{"="*enum} {path} {"="*enum}{end}\n')
+    enum = int((tsize.columns-len(title)-4)/2)
+    print(f'\n{fg}{"="*enum} {title} {"="*enum}{end}\n')
 
 
 def get_opt_files(prefix: str) -> list[list[str]]:
@@ -600,16 +604,94 @@ def create_update(args: Args, bindir: str):
             print('done')
 
 
-def main_opt(setting: dict[str, Any], args: Args) -> None:
+def create_settings(args: Args):
+    dic = {}
+    if 'all' in args.type or 'opt' in args.type:
+        dic['opt'] = {}
+        opt_def = os.path.expanduser('~/workspace/opt')
+        opt_dir = input('install directory of files in "opt"\n'
+                        f'(empty => {opt_def}): ')
+        if len(opt_dir) == 0:
+            opt_dir = opt_def
+        dic['opt']['dir'] = opt_dir
+    if 'all' in args.type or 'vim' in args.type:
+        dic['vim'] = {}
+        if chk_cmd('nvim'):
+            nvim = True
+        else:
+            nvim = False
+        dic['vim']['nvim'] = nvim
+        if nvim:
+            vim_def = os.path.expanduser('~/.config/nvim')
+        else:
+            vim_def = os.path.expanduser('~/.vim')
+        vim_dir = input('Vim configuration directory\n'
+                        f'(empty => {vim_def}): ')
+        if len(vim_dir) == 0:
+            vim_dir = vim_def
+        dic['vim']['dir'] = vim_dir
+        if nvim:
+            yn = input('link to vimrc and ~/.vim? ([y]/n): ')
+            if yn != 'n':
+                dic['vim']['link'] = True
+            else:
+                dic['vim']['link'] = False
+    if 'all' in args.type or 'config' in args.type:
+        dic['config'] = {}
+        if chk_cmd('zsh'):
+            dic['config']['zsh'] = True
+        else:
+            dic['config']['zsh'] = False
+        if chk_cmd('fish'):
+            dic['config']['fish'] = True
+        else:
+            dic['config']['fish'] = False
+    jset = json.dumps(dic)
+    jset = jset.replace('{', '{\n    ')
+    jset = jset.replace('},', '},\n    ')
+    with open(SFILE, 'w') as f:
+        f.write(jset)
+
+
+def get_ignore_list() -> list[str]:
+    if not IGFILE.is_file():
+        return []
+    with open(IGFILE, 'r') as f:
+        lines = f.readlines()
+    lines = [line.replace('\n', '') for line in lines]
+    return lines
+
+
+def get_opt_list(setting: dict[str, Any]) -> list[list[str]]:
     if 'opt' not in setting:
         print(f'opt is not found in {SFILE}. skip opt.')
-        return
-    conf = setting['opt']
+        return []
+    res = []
+    ignore_list = get_ignore_list()
+    for fy in (ROOT/'opt/bin').glob('*'):
+        if fy.name in ignore_list:
+            continue
+        if fy.is_file() and os.access(fy, os.X_OK):
+            dst = Path(setting['opt']['dir'])/'bin'/fy.name
+            res.append([f'{fy}', f'{dst}'])
+    for fy in (ROOT/'opt/lib').glob('*'):
+        if fy.is_file():
+            dst = Path(setting['opt']['dir'])/'lib'/fy.name
+            res.append([f'{fy}', f'{dst}'])
+    return res
+
+
+def main_opt(setting: dict[str, Any], args: Args) -> None:
+    # if 'opt' not in setting:
+    #     print(f'opt is not found in {SFILE}. skip opt.')
+    #     return
+    # conf = setting['opt']
     print_title('opt')
-    if 'files' not in conf:
-        print_warn('"files" not found in opt.')
-        return
-    files = conf['files']
+    # if 'files' not in conf:
+    #     print_warn('"files" not found in opt.')
+    #     return
+    # files = conf['files']
+    files = get_opt_list(setting)
     cc = CopyClass(link=args.link, force=args.force, test=args.test,
                    verbose=args.verbose)
     for src, dst in files:
@@ -619,17 +701,92 @@ def main_opt(setting: dict[str, Any], args: Args) -> None:
     # opt は関係ないbin, libもあるのでclearは呼ばない
 
 
-def main_conf(setting: dict[str, Any], args: Args) -> None:
+def get_conf_list(setting: dict[str, Any]) -> list[list[str]]:
     if 'config' not in setting:
-        print(f'config is not found in {SFILE}. skip conf.')
-        return
-    conf = setting['config']
-    print_title('config')
-    if 'files' not in conf:
-        print_warn('"files" not found in conf.')
-        return
-    files = conf['files']
+        print(f'config is not found in {SFILE}. skip config.')
+        return []
+    res = []
+    ignore_list = get_ignore_list()
+    home = Path.home()
+    # unix shell
+    r = ROOT/'config/shell'
+    for fy in r.glob('**/*'):
+        if fy.name in ignore_list:
+            continue
+        elif fy.name == 'posixShellRC':
+            res.append([f'{fy}', f'{home/".posixShellRC"}'])
+        else:
+            if fy.is_file():
+                dst = CONF_HOME/'meflib'/fy.name
+                res.append([f'{fy}', f'{dst}'])
+    # bash
+    r = ROOT/'config/bash'
+    for fy in r.glob('**/*'):
+        if fy.name in ignore_list:
+            continue
+        elif fy.name == 'plain_rc':
+            continue
+        elif fy.name == 'bashrc':
+            res.append([f'{fy}', f'{home/".bashrc"}'])
+        else:
+            if fy.is_file():
+                dst = (home/'.bash')/fy.name
+                res.append([f'{fy}', f'{dst}'])
+    # zsh
+    if setting['config']['zsh']:
+        r = ROOT/'config/zsh'
+        for fy in r.glob('**/*'):
+            if fy.name in ignore_list:
+                continue
+            elif fy.name == 'zshrc':
+                res.append([f'{fy}', f'{home/".zshrc"}'])
+            elif fy.name == 'zlogin':
+                res.append([f'{fy}', f'{home/".zlogin"}'])
+            else:
+                if fy.is_file():
+                    dst = (home/'.zsh')/fy.name
+                    res.append([f'{fy}', f'{dst}'])
+    # fish
+    if setting['config']['fish']:
+        r = ROOT/'config/fish'
+        for fy in r.glob('**/*'):
+            if fy.name in ignore_list:
+                continue
+            elif fy.name == 'config.fish':
+                res.append([f'{fy}', f'{home/".config/fish/config.fish"}'])
+            else:
+                if fy.is_file():
+                    dst = (home/'.config/fish')/fy.relative_to(r)
+                    res.append([f'{fy}', f'{dst}'])
+    # git
+    res.append([f'{ROOT/"config/git/gitignore_global"}',
+               f'{home/".gitignore_global"}'])
+    res.append([f'{ROOT/"config/git/tigrc"}',
+               f'{home/".tigrc"}'])
+    # other
+    res.append([f'{ROOT/"config/screenrc"}',
+               f'{home/".screenrc"}'])
+    if uname == 'Darwin':
+        res.append([f'{ROOT/"config/matplotlibrc"}',
+                   f'{home/".matplotlib/matplotlibrc"}'])
+    else:
+        res.append([f'{ROOT/"config/matplotlibrc"}',
+                   f'{CONF_HOME/"matplotlib/matplotlibrc"}'])
+    return res
 
+
+def main_conf(setting: dict[str, Any], args: Args) -> None:
+    # if 'config' not in setting:
+    #     print(f'config is not found in {SFILE}. skip conf.')
+    #     return
+    # conf = setting['config']
+    print_title('config')
+    # if 'files' not in conf:
+    #     print_warn('"files" not found in conf.')
+    #     return
+    # files = conf['files']
+
+    files = get_conf_list(setting)
     if args.download:
         if args.test:
             print('test:: download git-prompt for bash')
@@ -681,22 +838,63 @@ set diff-highlight = true
         cc.stack(src, dst)
     cc.show_files()
     cc.exec()
-    if args.clear and 'clear' in conf:
-        for cl in conf['clear']:
-            cc.clear(cl, conf['clear'][cl])
+    if args.clear:
+        home = Path.home()
+        cc.clear(f'{CONF_HOME}/"meflib"',
+                 [f'{CONF_HOME/"meflib/setting.json"}',
+                  ])
+        cc.clear(f'{home/".bash"}',
+                 [f'{home/".bash/bashrc.mine"}',
+                  f'{home/".bash/git-prompt.sh"}',
+                  ])
+        if not setting['config']['zsh']:
+            cc.clear(f'{home/".zsh"}',
+                     [f'{home/".zsh/zshrc.mine"}',
+                      f'{home/".zsh/zlogin.mine"}',
+                      f'{home/".zsh/enter.zsh"}',
+                      ])
+    # if args.clear and 'clear' in conf:
+    #     for cl in conf['clear']:
+    #         cc.clear(cl, conf['clear'][cl])
+
+
+def get_vim_list(setting: dict[str, Any]) -> list[list[str]]:
+    if 'vim' not in setting:
+        print(f'vim is not found in {SFILE}. skip vim.')
+        return []
+    res = []
+    home = Path.home()
+    ignore_list = get_ignore_list()
+    if setting['vim']['nvim']:
+        res.append([f'{ROOT/"vim/vimrc"}',
+                    f'{CONF_HOME/"nvim/init.vim"}'])
+    else:
+        res.append([f'{ROOT/"vim/vimrc"}',
+                    f'{home/".vimrc"}'])
+    vimdst = Path(setting['vim']['dir'])
+    for fy in (ROOT/'vim').glob('*/**/*'):
+        if fy.name in ignore_list:
+            continue
+        if fy.name == 'doc.py':
+            continue
+        if fy.is_file():
+            dst = vimdst/fy.relative_to(ROOT/"vim")
+            res.append([f'{fy}', f'{dst}'])
+    return res
 
 
 def main_vim(setting: dict[str, Any], args: Args) -> None:
-    if 'vim' not in setting:
-        print(f'vim is not found in {SFILE}. skip vim.')
-        return
-    conf = setting['vim']
+    # if 'vim' not in setting:
+    #     print(f'vim is not found in {SFILE}. skip vim.')
+    #     return
+    # conf = setting['vim']
     print_title('vim')
-    if 'files' not in conf:
-        print_warn('"files" not found in conf.')
-        return
-    files = conf['files']
+    # if 'files' not in conf:
+    #     print_warn('"files" not found in conf.')
+    #     return
+    # files = conf['files']
 
+    files = get_vim_list(setting)
     if args.download:
         if args.test:
             print('test:: download vimPlug')
@@ -714,34 +912,55 @@ def main_vim(setting: dict[str, Any], args: Args) -> None:
         cc.stack(src, dst)
     cc.show_files()
     cc.exec()
-    if args.clear and 'clear' in conf:
-        for cl in conf['clear']:
-            cc.clear(cl, conf['clear'][cl])
+    if args.clear:
+        vimdst = Path(setting['vim']['dir'])
+        cc.clear(f'{vimdst/"rcdir"}',
+                 [f'{vimdst/"rcdir/vimrc_mine.pre"}',
+                  f'{vimdst/"rcdir/vimrc_mine.post"}',
+                  ])
+        cc.clear(f'{vimdst/"plug_conf"}', [])
+    # if args.clear and 'clear' in conf:
+    #     for cl in conf['clear']:
+    #         cc.clear(cl, conf['clear'][cl])
 
-    if 'vimlink' in conf:
-        for src, dst in conf['vimlink']:
-            if not Path(dst).exists():
-                if not args.test:
-                    print(f'link {src} -> {dst}.')
-                    try:
-                        os.symlink(src, dst)
-                    except Exception as e:
-                        print(f'failed to link {src}.')
-                        print(f'error: {e}')
+    home = Path.home()
+    if setting['vim']['link']:
+        if args.test:
+            print('test:: link ~/.vim and ~/.vimrc')
+        else:
+            print('link ~/.vim and ~/.vimrc')
+            try:
+                if not (home/'.vim').exists():
+                    os.symlink(setting['vim']['dir'], home/'.vim')
+                if not (home/'.vimrc').exists():
+                    os.symlink(setting['vim']['dir']/'init.vim', home/'.vimrc')
+            except Exception as e:
+                print('failed to link ~/.vimrc')
+                print(f'error: {e}')
+    # if 'vimlink' in conf:
+    #     for src, dst in conf['vimlink']:
+    #         if not Path(dst).exists():
+    #             if not args.test:
+    #                 print(f'link {src} -> {dst}.')
+    #                 try:
+    #                     os.symlink(src, dst)
+    #                 except Exception as e:
+    #                     print(f'failed to link {src}.')
+    #                     print(f'error: {e}')
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--create_settings',
-                        help=f'create {SFILE.name} and return.',
-                        action='store_true')
-    parser.add_argument('--opt_prefix',
-                        help=f'**option for {SFILE.name}.**'
-                        ' install directory of files in "opt".',
-                        default=None)
-    parser.add_argument('--vim_prefix', help=f'**option for {SFILE.name}.**'
-                        ' Vim configuration directory.',
-                        default=None)
+    # parser.add_argument('--create_settings',
+    #                     help=f'create {SFILE.name} and return.',
+    #                     action='store_true')
+    # parser.add_argument('--opt_prefix',
+    #                     help=f'**option for {SFILE.name}.**'
+    #                     ' install directory of files in "opt".',
+    #                     default=None)
+    # parser.add_argument('--vim_prefix', help=f'**option for {SFILE.name}.**'
+    #                     ' Vim configuration directory.',
+    #                     default=None)
     parser.add_argument('--download', help='download some files (from git)',
                         action='store_true')
     parser.add_argument('--link', help="link files instead of copy",
@@ -761,69 +980,81 @@ def main():
                         help='show verbose messages')
     args = parser.parse_args()
 
+    # if not SFILE.is_file():
+    #     print(f'{SFILE} is not found. create it and return.')
+    #     res = create_set(args)
+    #     with open(SFILE, 'w') as f:
+    #         f.write(res)
+    #     print(f'{SFILE} is created. Please check it.')
+    #     return
+    # elif args.create_settings:
+    #     shutil.copy(SFILE, SFILE.parent/'setting_old.toml')
+    #     res = create_set(args)
+    #     with open(SFILE, 'w') as f:
+    #         f.write(res)
+    #     print(f'{SFILE} is created. Please check it.')
+    #     return
+
+    # with open(SFILE, 'rb') as f:
+    #     settings = tomllib.load(f)
+    # if 'color' in settings:
+    #     COLORS.update(settings['color'])
+
+    # if args.verbose >= 1:
+    #     if 'opt' in settings and 'prefix' in settings['opt']:
+    #         args.opt_prefix = settings['opt']['prefix']
+    #     if 'vim' in settings and 'prefix' in settings['vim']:
+    #         args.vim_prefix = settings['vim']['prefix']
+    #     with open(SFILE, 'r') as f:
+    #         pri = [s.rstrip() for s in f.readlines()]
+    #     new = create_set(args).split('\n')
+    #     dlines = difflib.unified_diff(pri, new, n=1,
+    #                                   fromfile=str(SFILE),
+    #                                   tofile='new',
+    #                                   )
+    #     print_title('setting updates?')
+    #     for line in dlines:
+    #         line = line.replace('\n', '')
+    #         if line[0] == '+':
+    #             col, end = get_color('diff_plus')
+    #         elif line[0] == '-':
+    #             col, end = get_color('diff_minus')
+    #         else:
+    #             col = ''
+    #             end = ''
+    #         print(f'{col}{line}{end}')
     if not SFILE.is_file():
-        print(f'{SFILE} is not found. create it and return.')
-        res = create_set(args)
-        with open(SFILE, 'w') as f:
-            f.write(res)
-        print(f'{SFILE} is created. Please check it.')
-        return
-    elif args.create_settings:
-        shutil.copy(SFILE, SFILE.parent/'setting_old.toml')
-        res = create_set(args)
-        with open(SFILE, 'w') as f:
-            f.write(res)
-        print(f'{SFILE} is created. Please check it.')
-        return
-
-    with open(SFILE, 'rb') as f:
-        settings = tomllib.load(f)
-    if 'color' in settings:
-        COLORS.update(settings['color'])
-
-    if args.verbose >= 1:
-        if 'opt' in settings and 'prefix' in settings['opt']:
-            args.opt_prefix = settings['opt']['prefix']
-        if 'vim' in settings and 'prefix' in settings['vim']:
-            args.vim_prefix = settings['vim']['prefix']
-        with open(SFILE, 'r') as f:
-            pri = [s.rstrip() for s in f.readlines()]
-        new = create_set(args).split('\n')
-        dlines = difflib.unified_diff(pri, new, n=1,
-                                      fromfile=str(SFILE),
-                                      tofile='new',
-                                      )
-        print_title('setting updates?')
-        for line in dlines:
-            line = line.replace('\n', '')
-            if line[0] == '+':
-                col, end = get_color('diff_plus')
-            elif line[0] == '-':
-                col, end = get_color('diff_minus')
-            else:
-                col = ''
-                end = ''
-            print(f'{col}{line}{end}')
+        create_settings(args)
+    with open(SFILE, 'r') as f:
+        setting = json.load(f)
+    # pprint.pprint(get_opt_list(setting))
+    # print('\n')
+    # pprint.pprint(get_conf_list(setting))
+    # print('\n')
+    # pprint.pprint(get_vim_list(setting))
+    # print('\n')
+    # return
 
     if 'all' in args.type:
-        main_opt(settings, args)
-        main_conf(settings, args)
-        main_vim(settings, args)
+        main_opt(setting, args)
+        main_conf(setting, args)
+        main_vim(setting, args)
     else:
         for t in args.type:
             if t == 'opt':
-                main_opt(settings, args)
+                main_opt(setting, args)
             elif t == 'config':
-                main_conf(settings, args)
+                main_conf(setting, args)
             elif t == 'vim':
-                main_vim(settings, args)
+                main_vim(setting, args)
     us_path = chk_cmd('update_setup', return_path=True)
     if us_path is not None:
         bindir = str(Path(us_path).parent)
-    elif 'opt' in settings and 'prefix' in settings['opt']:
-        bindir = os.path.join(settings['opt']['prefix'], 'bin')
+    elif 'opt' in setting and 'dir' in setting['opt']:
+        bindir = os.path.join(setting['opt']['dir'], 'bin')
     else:
         bindir = os.path.expanduser(input('install path of "update_setup": '))
+    print_title('create update')
     create_update(args, bindir)
 
 
