@@ -12,7 +12,6 @@ import urllib.request as urlreq
 from pathlib import Path
 from typing import Literal, Any
 from dataclasses import dataclass
-import subprocess
 import json
 _py_version = sys.version_info.major*1000 + sys.version_info.minor
 if _py_version < 3006:
@@ -27,22 +26,8 @@ except ImportError as e:
 else:
     _is_import_trash = True
 
-try:
-    from pymeflib.util import mkdir, chk_cmd
-    from pymeflib.color import FG256, END
-except ImportError:
-    print('download pymeflib')
-    cmd = ['pip3', 'install', 'git+https://github.com/MeF0504/pymeflib']
-    subprocess.run(cmd)
-    from pymeflib.util import mkdir, chk_cmd
-    from pymeflib.color import FG256, END
 
-
-uname = platform.system()
-if uname == 'Windows':
-    psep = ';'
-else:
-    psep = ':'
+UNAME = platform.system()
 
 if 'XDG_CONFIG_HOME' in os.environ:
     CONF_HOME = Path(os.environ['XDG_CONFIG_HOME'])
@@ -360,20 +345,47 @@ def print_warn(msg: str, **kwargs) -> None:
 
 
 def print_title(title: str):
-    fg, end = get_color('path')
+    fg, end = get_color('title')
     tsize = shutil.get_terminal_size()
     enum = int((tsize.columns-len(title)-4)/2)
     print(f'\n{fg}{"="*enum} {title} {"="*enum}{end}\n')
 
 
 def get_color(colname: str) -> tuple[str, str]:
-    if colname not in COLORS:
+    if colname == 'title':
+        return '\033[42m', '\033[0m'
+    elif colname == 'diff_plus':
+        return '\033[34m', '\033[0m'
+    elif colname == 'diff_minus':
+        return '\033[31m', '\033[0m'
+    elif colname == 'show_files':
+        return '\033[45m', '\033[0m'
+    elif colname == 'error':
+        return '\033[31m', '\033[0m'
+    elif colname == 'warning':
+        return '\033[33m', '\033[0m'
+    else:
         return '', ''
-    if COLORS[colname] is None:
-        return '', ''
-    if COLORS[colname] < 0:  # none/null is not supported in toml
-        return '', ''
-    return FG256(COLORS[colname]), END
+
+
+def mkdir(path: str | Path):
+    ppath = Path(path)
+    if not ppath.is_dir():
+        ppath.mkdir(parents=True)
+
+
+def chk_cmd(cmd: str) -> bool:
+    if os.path.isfile(cmd) and os.access(cmd, os.X_OK):
+        return True
+    if 'PATH' not in os.environ:
+        return False
+    if UNAME == 'Windows':
+        cmd = f'{cmd}.exe'
+    for path in os.environ['PATH'].split(os.pathsep):
+        cmd_path = Path(path)/cmd
+        if cmd_path.is_file and os.access(cmd_path, os.X_OK):
+            return True
+    return False
 
 
 def create_update(args: Args, bindir: str):
@@ -434,7 +446,7 @@ def create_update(args: Args, bindir: str):
             with open(update_setup_file, 'w') as f:
                 f.write(update_setup)
             update_setup_file.chmod(0o744)
-            if uname == 'Windows':
+            if UNAME == 'Windows':
                 print('create setup.bat')
                 with open(ROOT/'opt/samples/setup_sample.bat', 'r') as f:
                     update_bat = f.read().format(pyopt).replace('\\', '\\\\')
@@ -597,7 +609,7 @@ def get_conf_list(setting: dict[str, Any]) -> list[list[str]]:
     # other
     res.append([f'{ROOT/"config/screenrc"}',
                f'{home/".screenrc"}'])
-    if uname == 'Darwin':
+    if UNAME == 'Darwin':
         res.append([f'{ROOT/"config/matplotlibrc"}',
                    f'{home/".matplotlib/matplotlibrc"}'])
     else:
@@ -611,12 +623,13 @@ def main_conf(setting: dict[str, Any], args: Args) -> None:
 
     files = get_conf_list(setting)
     if args.download:
+        home = Path.home()
         if args.test:
             print('test:: download git-prompt for bash')
         else:
             print('download git-prompt for bash')
             try:
-                bashdir = Path('~/.bash').expanduser()
+                bashdir = home/'.bash'
                 mkdir(bashdir)
                 urlreq.urlretrieve('https://raw.githubusercontent.com/git/git/'
                                    'master/contrib/completion/git-prompt.sh',
@@ -663,7 +676,7 @@ set diff-highlight = true
     cc.exec()
     if args.clear:
         home = Path.home()
-        cc.clear(f'{CONF_HOME}/"meflib"',
+        cc.clear(f'{CONF_HOME/"meflib"}',
                  [f'{CONF_HOME/"meflib/setting.json"}',
                   ])
         cc.clear(f'{home/".bash"}',
@@ -769,6 +782,11 @@ def main():
                         help='show verbose messages')
     args = parser.parse_args()
 
+    if not SFILE.is_file():
+        create_settings(args)
+    with open(SFILE, 'r') as f:
+        setting = json.load(f)
+
     if 'all' in args.type:
         main_opt(setting, args)
         main_conf(setting, args)
@@ -781,15 +799,10 @@ def main():
                 main_conf(setting, args)
             elif t == 'vim':
                 main_vim(setting, args)
-    us_path = chk_cmd('update_setup', return_path=True)
-    if us_path is not None:
-        bindir = str(Path(us_path).parent)
-    elif 'opt' in setting and 'dir' in setting['opt']:
+    if 'opt' in setting and 'dir' in setting['opt']:
         bindir = os.path.join(setting['opt']['dir'], 'bin')
-    else:
-        bindir = os.path.expanduser(input('install path of "update_setup": '))
-    print_title('create update')
-    create_update(args, bindir)
+        print_title('create update')
+        create_update(args, bindir)
 
 
 if __name__ == "__main__":
