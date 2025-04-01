@@ -729,7 +729,7 @@ def main_vim(setting: dict[str, Any], args: Args) -> None:
             print('test:: download vimPlug')
         else:
             print('\ndownload vimPlug')
-            vimal = os.path.expanduser(input("install dir of vimPlug: "))
+            vimal = Path(input("install dir of vimPlug: ")).expanduser()
             mkdir(vimal)
             urlreq.urlretrieve('https://raw.githubusercontent.com/junegunn/'
                                'vim-plug/master/plug.vim',
