@@ -648,6 +648,8 @@ def main_conf(setting: dict[str, Any], args: Args) -> None:
                 if mine_file.is_file():
                     print(f'{shell}rc.mine already exists.')
                 else:
+                    if not mine_file.parent.is_dir():
+                        mine_file.parent.mkdir(parents=True)
                     with open(mine_file, 'w') as f:
                         f.write(f'''
 ## PC dependent {shell}rc
