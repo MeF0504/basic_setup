@@ -353,13 +353,13 @@ def print_title(title: str):
 
 def get_color(colname: str) -> tuple[str, str]:
     if colname == 'title':
-        return '\033[42m', '\033[0m'
+        return '\033[30;42m', '\033[0m'
     elif colname == 'diff_plus':
         return '\033[34m', '\033[0m'
     elif colname == 'diff_minus':
         return '\033[31m', '\033[0m'
     elif colname == 'show_files':
-        return '\033[45m', '\033[0m'
+        return '\033[30;45m', '\033[0m'
     elif colname == 'error':
         return '\033[31m', '\033[0m'
     elif colname == 'warning':
