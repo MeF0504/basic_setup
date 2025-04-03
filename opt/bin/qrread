@@ -1,0 +1,22 @@
+#! /usr/bin/env python3
+
+import argparse
+
+import cv2
+
+
+def main(args):
+    img = cv2.imread(args.image)
+    qcd = cv2.QRCodeDetector()
+    retval, info, points, straight_qrcode = qcd.detectAndDecodeMulti(img)
+    if not retval:
+        print('No QR code found')
+        return
+    print(f'result: "{info}"')
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('image', type=str, help='Path to the image file')
+    args = parser.parse_args()
+    main(args)
