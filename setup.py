@@ -462,6 +462,8 @@ def create_settings(args: Args):
         opt_def = os.path.expanduser('~/workspace/opt')
         opt_dir = input('install directory of files in "opt"\n'
                         f'(empty => {opt_def}): ')
+        opt_dir = os.path.expanduser(opt_dir)
+        opt_dir = os.path.expandvars(opt_dir)
         if len(opt_dir) == 0:
             opt_dir = opt_def
         dic['opt']['dir'] = opt_dir
@@ -481,6 +483,8 @@ def create_settings(args: Args):
                 vim_def = os.path.expanduser('~/.vim')
         vim_dir = input('Vim configuration directory\n'
                         f'(empty => {vim_def}): ')
+        vim_dir = os.path.expanduser(vim_dir)
+        vim_dir = os.path.expandvars(vim_dir)
         if len(vim_dir) == 0:
             vim_dir = vim_def
         dic['vim']['dir'] = vim_dir
