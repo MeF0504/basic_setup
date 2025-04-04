@@ -14,12 +14,12 @@ def print_verbose(msg, verbose, **kwargs):
 
 
 def get_config(verbose):
-    if 'XDG_CONFIG_DIR' in os.environ:
-        xdg_dir = Path(os.environ['XDG_CONFIG_DIR'])
+    if 'XDG_CONFIG_HOME' in os.environ:
+        xdg_dir = Path(os.environ['XDG_CONFIG_HOME'])
     else:
         xdg_dir = Path('~/.config').expanduser()
 
-    conf_file = xdg_dir/'meflib'/'shows_config.json'
+    conf_file = xdg_dir/'meflib/shows_config.json'
     if conf_file.is_file():
         print_verbose('find config: {}'.format(conf_file), verbose)
         with open(conf_file, 'r') as f:
