@@ -708,7 +708,7 @@ set diff-highlight = true
         cc.clear(f'{CONF_HOME/"meflib"}',
                  [f'{CONF_HOME/"meflib/setting.json"}',
                   f'{CONF_HOME/"meflib/ignorelist"}',
-                  f'{CONF_HOME/"meflib/shows_config.json"}',
+                  f'{CONF_HOME/"meflib/user.toml"}',
                   ])
         cc.clear(f'{home/".bash"}',
                  [f'{home/".bash/bashrc.mine"}',
