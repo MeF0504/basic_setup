@@ -13,10 +13,6 @@ if not (len(sys.argv) >= 2 and sys.argv[1] == '--nopull'):
     stat = subprocess.run(['git', 'pull'])
     if stat.returncode != 0:
         exit()
-    print('submodule update...')
-    stat = subprocess.run(['git', 'submodule', 'update'])
-    if stat.returncode != 0:
-        exit()
 
 if input('update? (y/[n]) ') == 'y':
     stat = subprocess.run('python3 setup.py {}', shell=True)
