@@ -457,15 +457,23 @@ def create_update(args: Args, bindir: str):
 
 def create_settings(args: Args):
     dic = {}
+    home_def = str(Path.home())
+    home_dir = input('home directory\n'
+                     f'(empty => {home_def}): ')
+    if len(home_dir) == 0:
+        home_dir = home_def
+    home_dir = os.path.expanduser(home_dir)
+    home_dir = os.path.expandvars(home_dir)
+    dic['home'] = home_dir
     if 'all' in args.type or 'opt' in args.type:
         dic['opt'] = {}
         opt_def = os.path.expanduser('~/workspace/opt')
         opt_dir = input('install directory of files in "opt"\n'
                         f'(empty => {opt_def}): ')
-        opt_dir = os.path.expanduser(opt_dir)
-        opt_dir = os.path.expandvars(opt_dir)
         if len(opt_dir) == 0:
             opt_dir = opt_def
+        opt_dir = os.path.expanduser(opt_dir)
+        opt_dir = os.path.expandvars(opt_dir)
         dic['opt']['dir'] = opt_dir
     if 'all' in args.type or 'vim' in args.type:
         dic['vim'] = {}
@@ -483,10 +491,10 @@ def create_settings(args: Args):
                 vim_def = os.path.expanduser('~/.vim')
         vim_dir = input('Vim configuration directory\n'
                         f'(empty => {vim_def}): ')
-        vim_dir = os.path.expanduser(vim_dir)
-        vim_dir = os.path.expandvars(vim_dir)
         if len(vim_dir) == 0:
             vim_dir = vim_def
+        vim_dir = os.path.expanduser(vim_dir)
+        vim_dir = os.path.expandvars(vim_dir)
         dic['vim']['dir'] = vim_dir
         if nvim:
             yn = input('link to vimrc and ~/.vim? ([y]/n): ')
@@ -522,6 +530,13 @@ def get_ignore_list() -> list[str]:
     return lines
 
 
+def is_ignore(ignore_list: list[str], path: Path) -> bool:
+    for ig in ignore_list:
+        if ig in str(path):
+            return True
+    return False
+
+
 def get_opt_list(setting: dict[str, Any]) -> list[list[str]]:
     if 'opt' not in setting:
         print(f'opt is not found in {SFILE}. skip opt.')
@@ -529,7 +544,7 @@ def get_opt_list(setting: dict[str, Any]) -> list[list[str]]:
     res = []
     ignore_list = get_ignore_list()
     for fy in (ROOT/'opt/bin').glob('*'):
-        if fy.name in ignore_list:
+        if is_ignore(ignore_list, fy):
             continue
         if fy.is_file() and os.access(fy, os.X_OK):
             dst = Path(setting['opt']['dir'])/'bin'/fy.name
@@ -559,11 +574,11 @@ def get_conf_list(setting: dict[str, Any]) -> list[list[str]]:
         return []
     res = []
     ignore_list = get_ignore_list()
-    home = Path.home()
+    home = Path(setting['home'])
     # unix shell
     r = ROOT/'config/shell'
     for fy in r.glob('**/*'):
-        if fy.name in ignore_list:
+        if is_ignore(ignore_list, fy):
             continue
         elif fy.name == 'posixShellRC':
             res.append([f'{fy}', f'{home/".posixShellRC"}'])
@@ -574,7 +589,7 @@ def get_conf_list(setting: dict[str, Any]) -> list[list[str]]:
     # bash
     r = ROOT/'config/bash'
     for fy in r.glob('**/*'):
-        if fy.name in ignore_list:
+        if is_ignore(ignore_list, fy):
             continue
         elif fy.name == 'plain_rc':
             continue
@@ -588,7 +603,7 @@ def get_conf_list(setting: dict[str, Any]) -> list[list[str]]:
     if setting['config']['zsh']:
         r = ROOT/'config/zsh'
         for fy in r.glob('**/*'):
-            if fy.name in ignore_list:
+            if is_ignore(ignore_list, fy):
                 continue
             elif fy.name == 'zshrc':
                 res.append([f'{fy}', f'{home/".zshrc"}'])
@@ -602,7 +617,7 @@ def get_conf_list(setting: dict[str, Any]) -> list[list[str]]:
     if setting['config']['fish']:
         r = ROOT/'config/fish'
         for fy in r.glob('**/*'):
-            if fy.name in ignore_list:
+            if is_ignore(ignore_list, fy):
                 continue
             elif fy.name == 'config.fish':
                 res.append([f'{fy}', f'{home/".config/fish/config.fish"}'])
@@ -610,20 +625,23 @@ def get_conf_list(setting: dict[str, Any]) -> list[list[str]]:
                 if fy.is_file():
                     dst = (home/'.config/fish')/fy.relative_to(r)
                     res.append([f'{fy}', f'{dst}'])
-    # git
-    res.append([f'{ROOT/"config/git/gitignore_global"}',
-               f'{home/".gitignore_global"}'])
-    res.append([f'{ROOT/"config/git/tigrc"}',
-               f'{home/".tigrc"}'])
     # other
-    res.append([f'{ROOT/"config/screenrc"}',
-               f'{home/".screenrc"}'])
+    files = [
+            [ROOT/"config/git/gitignore_global", home/".gitignore_global"],
+            [ROOT/"config/git/tigrc", home/".tigrc"],
+            [ROOT/"config/screenrc", home/".screenrc"]
+            ]
     if UNAME == 'Darwin':
-        res.append([f'{ROOT/"config/matplotlibrc"}',
-                   f'{home/".matplotlib/matplotlibrc"}'])
+        files.append([ROOT/"config/matplotlibrc",
+                      home/".matplotlib/matplotlibrc"])
     else:
-        res.append([f'{ROOT/"config/matplotlibrc"}',
-                   f'{CONF_HOME/"matplotlib/matplotlibrc"}'])
+        files.append([ROOT/"config/matplotlibrc",
+                      CONF_HOME/"matplotlib/matplotlibrc"])
+    for src, dst in files:
+        if is_ignore(ignore_list, src):
+            continue
+        if src.is_file():
+            res.append([f'{src}', f'{dst}'])
     return res
 
 
@@ -632,7 +650,7 @@ def main_conf(setting: dict[str, Any], args: Args) -> None:
 
     files = get_conf_list(setting)
     if args.download:
-        home = Path.home()
+        home = Path(setting['home'])
         if args.test:
             print('test:: download git-prompt for bash')
         else:
@@ -686,9 +704,10 @@ set diff-highlight = true
     cc.show_files()
     cc.exec()
     if args.clear:
-        home = Path.home()
+        home = Path(setting['home'])
         cc.clear(f'{CONF_HOME/"meflib"}',
                  [f'{CONF_HOME/"meflib/setting.json"}',
+                  f'{CONF_HOME/"meflib/ignorelist"}',
                   ])
         cc.clear(f'{home/".bash"}',
                  [f'{home/".bash/bashrc.mine"}',
@@ -707,7 +726,7 @@ def get_vim_list(setting: dict[str, Any]) -> list[list[str]]:
         print(f'vim is not found in {SFILE}. skip vim.')
         return []
     res = []
-    home = Path.home()
+    home = Path(setting['home'])
     ignore_list = get_ignore_list()
     if setting['vim']['nvim']:
         res.append([f'{ROOT/"vim/vimrc"}',
@@ -721,7 +740,7 @@ def get_vim_list(setting: dict[str, Any]) -> list[list[str]]:
                         f'{home/".vimrc"}'])
     vimdst = Path(setting['vim']['dir'])
     for fy in (ROOT/'vim').glob('*/**/*'):
-        if fy.name in ignore_list:
+        if is_ignore(ignore_list, fy):
             continue
         if fy.name == 'doc.py':
             continue
