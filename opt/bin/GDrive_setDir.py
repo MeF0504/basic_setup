@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+import os
 import sys
 from pathlib import Path
 _py_version = sys.version_info.major*1000 + sys.version_info.minor
@@ -14,14 +15,19 @@ else:
 
 
 def main():
-    config_file = Path('~/.config/meflib/user.toml').expanduser()
+    if 'XDG_CONFIG_HOME' in os.environ:
+        xdg_dir = Path(os.environ['XDG_CONFIG_HOME'])
+    else:
+        xdg_dir = Path('~/.config').expanduser()
+
+    config_file = xdg_dir/'meflib/user.toml'
     if not config_file.is_file():
         print('setting file is not found.')
         return
 
     with open(config_file, 'rb') as f:
         settings = tomllib.load(f)
-    Gdir = Path(settings['Gdir'])
+    Gdir = Path(settings['GDrive_setDir']['Gdir'])
     if not Gdir.is_dir():
         print('Google Drive dir is not found.')
         return
