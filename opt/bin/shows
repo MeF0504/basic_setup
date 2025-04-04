@@ -29,7 +29,7 @@ def get_config(verbose):
     conf_file = xdg_dir/'meflib/user.toml'
     if conf_file.is_file():
         print_verbose('find config: {}'.format(conf_file), verbose)
-        with open(conf_file, 'r') as f:
+        with open(conf_file, 'rb') as f:
             setting = tomllib.load(f)
             if 'shows' in setting:
                 shows_conf = setting['shows']
