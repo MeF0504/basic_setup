@@ -1,0 +1,14 @@
+[GDrive_setDir]
+Gdir = "/home/user/GoogleDrive"
+[shows]
+shell = false
+threshold = 3
+# linux sample↓
+cmd = [["xdg-open"], ["&"]]
+[shows.conf]
+png = [["display"],  ["&"]]
+jpg = []  # if empty, use common command.
+# mac sample↓
+jpeg = [["open"], []]
+miff = [["open"], []]
+pdf = [["open", "-a", "Preview"], []]
