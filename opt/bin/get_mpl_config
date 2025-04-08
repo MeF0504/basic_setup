@@ -14,7 +14,7 @@ conf_list = {
         'color': [['sort', 'select from red/blue/green/all']],
         'font': [['ext', 'extension (def: ttf)'],
                  ['dir', 'directory of fonts'],
-                 ['fig', 'display fonts by figure ([y]/n)']],
+                 ['fig', 'display fonts by figure (y/[n])']],
         'colormap': [['show', 'show color maps in figure (y/[n])'],
                      ['names', 'list shown color map names separated by space or if empty all are shown']],
         }
@@ -28,11 +28,11 @@ def cvrt_rgb(col_str):
 
 
 def bg_full(r, g, b):
-    return '\x1b[48;2;{:d};{:d};{:d}m'.format(r, g, b)
+    return f'\x1b[48;2;{r:d};{g:d};{b:d}m'
 
 
 def fg_full(r, g, b):
-    return '\x1b[38;2;{:d};{:d};{:d}m'.format(r, g, b)
+    return f'\x1b[38;2;{r:d};{g:d};{b:d}m'
 
 
 def clear():
@@ -44,7 +44,7 @@ def sort_col(cols, sort):
     names = np.array(list(cols.keys()), dtype=str)
     col_nums = []
     for name in names:
-        if type(cols[name]) == str:
+        if type(cols[name]) is str:
             r, g, b = cvrt_rgb(cols[name])
         else:
             r, g, b = cols[name]
@@ -73,7 +73,7 @@ def get_color(opt):
         names = cols.keys()
 
     for name in names:
-        if type(cols[name]) == str:
+        if type(cols[name]) is str:
             r, g, b = cvrt_rgb(cols[name])
         else:
             r, g, b = cols[name]
@@ -87,7 +87,7 @@ def get_color(opt):
                 r, g, b,
             ))
         except Exception:
-            print('{}: failed to set color. {}'.format(name, cols[name]))
+            print(f'{name}: failed to set color. {cols[name]}')
 
 
 def get_font(opts):
@@ -103,11 +103,11 @@ def get_font(opts):
 
     if opts['fig'] == 'y':
         font_names = []
-        for font in fonts:
+        for font in sorted(fonts):
             try:
                 font_name = fm.FontProperties(fname=font).get_name()
             except RuntimeError:
-                print('fail to add font: {}'.format(font))
+                print(f'fail to add font: {font}')
             else:
                 if font_name not in font_names:
                     font_names.append(font_name)
@@ -137,18 +137,22 @@ def get_font(opts):
 
     else:
         res = {}
-        for ft in fonts:
-            ft = Path(ft)
-            f_dir = str(ft.parent)
+        for font in fonts:
+            try:
+                font_name = fm.FontProperties(fname=font).get_name()
+            except RuntimeError:
+                font_name = '???'
+            font = Path(font)
+            f_dir = str(font.parent)
             if f_dir in res:
-                res[f_dir].append(ft.name)
+                res[f_dir].append([font_name, font.name])
             else:
-                res[f_dir] = [ft.name]
+                res[f_dir] = [[font_name, font.name]]
 
         for f_dir in sorted(res.keys()):
-            print('@ {}'.format(f_dir))
-            for font in sorted(res[f_dir]):
-                print(font)
+            print(f'@ {f_dir}')
+            for font_name, font in sorted(res[f_dir]):
+                print(f'{font_name} ({font})')
             print()
 
 
