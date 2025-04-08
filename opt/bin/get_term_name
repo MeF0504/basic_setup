@@ -9,6 +9,10 @@ elif [[ -n "${TERMINOLOGY}" ]]; then
     echo 'Terminology'
 elif [[ -n "${WT_SESSION}" ]]; then
     echo 'Windows_Terminal'
+elif [[ -n "${WAVETERM}" ]]; then
+    echo 'WaveTerm'
 elif [[ -n "${TERM_PROGRAM}" ]]; then
     echo "${TERM_PROGRAM}"
+else
+    echo 'Unknown terminal'
 fi
