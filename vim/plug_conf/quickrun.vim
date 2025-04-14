@@ -34,7 +34,10 @@ function! s:quickrun_hook() abort
                 \ }
 
     " markdown
-    if has('mac')
+    if executable('wsh')
+        let s:cmd = 'wsh'
+        let s:exe = '%c view %s'
+    elseif has('mac')
         let s:cmd = 'open'
         let s:exe = '%c %s -a Google\ Chrome'
     elseif has('win32') || has('win64')
