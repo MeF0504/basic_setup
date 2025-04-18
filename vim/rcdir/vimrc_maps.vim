@@ -12,7 +12,7 @@ function! s:close(key) abort
         return
     endif
     if a:key ==# 'ZZ'
-        xit
+        exit
     elseif a:key ==# 'ZQ'
         quit!
     endif
