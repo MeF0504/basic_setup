@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import os
+import sys
 import argparse
 import re
 from pathlib import Path
@@ -70,7 +71,8 @@ class LineCounter():
                             errmsg = f' ({e})'
                         else:
                             errmsg = ''
-                        print(f'failed to read file{errmsg}: {tf}')
+                        print(f'failed to read file{errmsg}: {tf}',
+                              file=sys.stderr)
             print(self.fmt.format(current_count, f'dir total ({cpath})'))
             total_count += current_count
         print(self.fmt.format(total_count, 'total'))
