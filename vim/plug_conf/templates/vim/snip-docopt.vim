@@ -1,4 +1,4 @@
-" DOC COMMANDS {{_cursor_}}
+" DOC OPTIONS {{_cursor_}}
 " 
 " DOCEND
 
