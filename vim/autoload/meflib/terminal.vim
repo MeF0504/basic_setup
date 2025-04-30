@@ -190,7 +190,7 @@ function! meflib#terminal#main(mod, ...) abort
     else
         let opts = a:1
     endif
-    let opts = meflib#basic#analythis_args_hyp(opts, args_config)
+    let opts = meflib#basic#analysis_args_hyp(opts, args_config)
     if empty(opts)
         return
     endif

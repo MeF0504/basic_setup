@@ -143,6 +143,15 @@ function! s:convert_config(config, str_list) abort
     return v_config
 endfunction
 
+" DOC FUNCTIONS meflib#floating#open()
+" meflib#floating#open({bufid}, {popid}, {str_list}, {config})
+" 
+" Wrapper function to create and open floating/popup window.
+" For initialization, set {bufid}=-1 and {winid}=-1.
+" This function return the list of {bufid} and {winid}.
+" To update the strings of the window, you recall this function with
+" these returned values.
+" DOCEND
 function! meflib#floating#open(bufid, popid, str_list, config) abort
     let bufid = -1
     let popid = -1
@@ -220,6 +229,12 @@ function! meflib#floating#open(bufid, popid, str_list, config) abort
     return [bufid, popid]
 endfunction
 
+" DOC FUNCTIONS meflib#floating#close()
+" meflib#floating#close({popids})
+" 
+" Wrapper function to close floating/popup window.
+" {popids} is able to set both the id of the popup window or list of ids.
+" DOCEND
 function! meflib#floating#close(popids) abort
     if type(a:popids) != type([])
         let popids = [a:popids]
@@ -242,11 +257,23 @@ function! meflib#floating#close(popids) abort
     endfor
 endfunction
 
+" DOC FUNCTIONS meflib#floating#close_all()
+" meflib#floating#close_all()
+" 
+" Close all floating/popup windows opened by |meflib#floating#open()|.
+" DOCEND
 function! meflib#floating#close_all() abort
     call meflib#floating#close(s:pop_ids)
     let s:pop_ids = []
 endfunction
 
+" DOC FUNCTIONS meflib#floating#select()
+" meflib#floating#select({str_list}, {config}, {callback})
+" 
+" Wrapper function to create and open floating/popup select menu. This works
+" almost same as |popup_menu| of vim.
+" {config} is same as |meflib#floating#open()|.
+" DOCEND
 let s:select_bid = -1
 function! meflib#floating#select(str_list, config, callback) abort
     if has('popupwin')

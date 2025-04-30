@@ -5,6 +5,14 @@ let s:w_r = 0.299 " <- 1.0
 let s:w_g = 0.587 " <- 2.0
 let s:w_b = 0.114 " <- 1.0
 let s:thsd = 0.42
+" DOC FUNCTIONS meflib#color#isdark()
+" meflib#color#isdark({r}, {g}, {b}, {thsd}=v:null, {verbose}=v:false)
+" 
+" return 1 if the color is dark.
+" {r}, {g}, {b} are values of red, green and yellow, in range 0.0 to 1.0.
+" {thsd} is threshold value, default is 0.42.
+" if {verbose} is 1, print the calculated value and threshold.
+" DOCEND
 function! meflib#color#isdark(r, g, b, thsd=v:null, verbose=v:false)
     " 0 <= r, g, b <= 1
     if a:thsd is v:null
@@ -20,6 +28,12 @@ function! meflib#color#isdark(r, g, b, thsd=v:null, verbose=v:false)
     return cond
 endfunction
 
+" DOC FUNCTIONS meflib#color#get_colorid()
+" meflib#color#get_colorid({r}, {g}, {b}, {gui}=v:null)
+" 
+" return color id of {r}, {g}, {b} in range 0 to 5.
+" color id is '#RRGGBB' if {gui} is 1, otherwise 16 to 231.
+" DOCEND
 function! meflib#color#get_colorid(r, g, b, gui)
     " 0 <= r, g, b <= 5
     if a:gui
@@ -32,6 +46,13 @@ function! meflib#color#get_colorid(r, g, b, gui)
     endif
 endfunction
 
+" DOC FUNCTIONS meflib#color#get_today_rgb()
+" meflib#color#get_today_rgb()
+" 
+" return [month, day, dow, r, g, b]
+" month, day, and dow are month, day, and day of week of today.
+" r, g, b are color id of today in range if 0 to 5.
+" DOCEND
 function! meflib#color#get_today_rgb() abort
     let month = str2nr(strftime("%m"))
     let day = str2nr(strftime("%d"))
@@ -42,6 +63,12 @@ function! meflib#color#get_today_rgb() abort
     return [month, day, dow, r, g, b]
 endfunction
 
+" DOC FUNCTIONS meflib#color#cho_isdark()
+" meflib#color#cho_isdark({thsd}=v:null)
+" 
+" Check {thsd} is suitable or not.
+" If {thsd} is not given, use default value.
+" DOCEND
 function! meflib#color#chk_isdark(thsd=v:null) abort
     if has('gui_running') || &termguicolors
         let gui = 1
@@ -76,6 +103,11 @@ function! meflib#color#chk_isdark(thsd=v:null) abort
     echo ''
 endfunction
 
+" DOC FUNCTIONS meflib#color#ShowStatusLineBG()
+" meflib#color#ShowStatusLineBG()
+" 
+" Show today's status line background color.
+" DOCEND
 function! meflib#color#ShowStatusLineBG() abort
     let [month, day, dow, stl_br, stl_bg, stl_bb] = meflib#color#get_today_rgb()
     let birthday = meflib#get('birthday', [0,0])

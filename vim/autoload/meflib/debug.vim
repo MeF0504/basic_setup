@@ -2,6 +2,11 @@
 scriptencoding utf-8
 
 let s:debug_log_file = ""
+" DOC FUNCTIONS meflib#debug#set_debug()
+" meflib#debug#set_debug({filename})
+" 
+" Set file name to write debug message.
+" DOCEND
 function! meflib#debug#set_debug(filename)
     " set file name to write debug message
     let s:debug_log_file = a:filename
@@ -9,6 +14,12 @@ function! meflib#debug#set_debug(filename)
 endfunction
 
 " debug 用
+" DOC FUNCTIONS meflib#debug#debug_log()
+" meflib#debug#debug_log({dbgmsg}, {tag})
+" 
+" Write debug message {dbgmsg} to debug log file with {tag}.
+" If {dbgmsg} is empty, write the file name.
+" DOCEND
 function! meflib#debug#debug_log(dbgmsg, tag) abort
     " dbgmsg: debug message,
     " tag:    tag string (used to idnetify type of debug message),

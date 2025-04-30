@@ -4,6 +4,11 @@ scriptencoding utf-8
 " get vim config directory {{{
 " <sfile> は関数外で呼ぶ
 let s:vimdir = expand('<sfile>:h:h:h')..'/'
+" DOC FUNCTIONS meflib#basic#get_conf_dir()
+" meflib#basic#get_conf_dir()
+" 
+" Return the user local configuration directory.
+" DOCEND
 function! meflib#basic#get_conf_dir() abort
     if has('nvim')
         let vimdir = stdpath('config')..'/'
@@ -172,7 +177,23 @@ function! meflib#basic#show_var(bang, var_name='') abort
 endfunction
 " }}}
 " 関数の引数解析用関数 (-opt arg) {{{
-function! meflib#basic#analythis_args_hyp(args, args_config) abort
+" DOC FUNCTIONS meflib#basic#analysis_args_hyp()
+" meflib#basic#analysis_args_hyp({args}, {args_config})
+"
+" A function to analyze the arguments of a command.
+" This function analyze the arguments like >
+" 	:Command -key1 val2 -key2 val2
+" <
+" {args} is the string of argument of the command, that is gotten by |<f-args>|.
+" {config} is used to set the number of arguments as following. >
+" 	let config = {'key1': 1, 'key2': 3}
+" <
+" Return value is the |dict| keys are key1, key2, ... and item of each key is
+" |list| of values. "no_opt" key is also returned, which contains arguments with
+" no key.
+"
+" DOCEND
+function! meflib#basic#analysis_args_hyp(args, args_config) abort
     let args = split(a:args, ' ')
     let res = {'no_opt':[]}
     let opt_max = 0
@@ -211,6 +232,12 @@ function! meflib#basic#analythis_args_hyp(args, args_config) abort
 endfunction
 " }}}
 " search top directory of this project {{{
+" DOC FUNCTIONS meflib#basic#get_top_dir()
+" meflib#basic#get_top_dir({cwd})
+" 
+" Return the project-top directory relative to the {cwd}.
+" "project-top directory" means the directory containing .git/.svn directory.
+" DOCEND
 function! meflib#basic#get_top_dir(cwd) abort
     let cwd = fnamemodify(a:cwd, ':p')
     for repo_dir in ['.git', 'svn']
@@ -223,6 +250,14 @@ function! meflib#basic#get_top_dir(cwd) abort
 endfunction
 " }}}
 " get command to execute default application in each OS. {{{
+" DOC FUNCTIONS meflib#basic#get_exe_cmd()
+" meflib#basic#get_exe_cmd(...)
+" 
+" If called with no arguments, return system commands;
+" "start" for Windows, "open" for macOS, and "xdg-open" for Linux.
+" If {command} is specified, return the command path
+" if {command} is executable. Otherwise return empty string.
+" DOCEND
 function! meflib#basic#get_exe_cmd(...) abort
     if a:0 == 0
         if has('mac')
@@ -248,6 +283,17 @@ function! meflib#basic#get_exe_cmd(...) abort
 endfunction
 " }}}
 " get highlight setting {{{
+" DOC FUNCTIONS meflib#basic#get_hi_info()
+" meflib#basic#get_hi_info({group_name}, {keys})
+" 
+" Return the highlight setting of {group_name}. {keys} is a string or list of
+" strings to return the setting. e.g. >
+" 	echo meflib#basic#get_hi_info('Comment', 'gui')
+" 	" ['italic']
+" 	echo meflib#basic#get_hi_info('Number', ['ctermfg', 'guifg'])
+" 	" ['9', 'Red']
+" <
+" DOCEND
 function! meflib#basic#get_hi_info(group_name, keys) abort
     let hi = execute(printf('highlight %s', a:group_name))->split(' ')
     if type(a:keys) == type([])
@@ -268,6 +314,11 @@ function! meflib#basic#get_hi_info(group_name, keys) abort
 endfunction
 " }}}
 " scratch buffer {{{
+" DOC FUNCTIONS meflib#basic#set_scratch()
+" meflib#basic#set_scratch({text})
+" 
+" Set the current buffer as a scratch buffer, and then put {text} in it.
+" DOCEND
 function! meflib#basic#set_scratch(text) abort
     setlocal noswapfile
     setlocal nobackup
@@ -283,6 +334,11 @@ function! meflib#basic#set_scratch(text) abort
 endfunction
 " }}}
 " 特殊window判断 {{{
+" DOC FUNCTIONS meflib#basic#special_win()
+" meflib#basic#special_win({winid})
+" 
+" Return 1 if the window of {winid} is a special window.
+" DOCEND
 function! meflib#basic#special_win(winid)
     return
             \ getwinvar(a:winid, '&previewwindow')
@@ -292,6 +348,11 @@ function! meflib#basic#special_win(winid)
 endfunction
 " }}}
  " multi-mapping(?)用 {{{
+ " DOC FUNCTIONS meflib#basic#map_util()
+ " meflib#basic#map_util({name})
+ " 
+ " Execute the mapping of {name} registered in |meflib-map_cmds|.
+ " DOCEND
  function! meflib#basic#map_util(name) abort
     let map_cmds = meflib#get('map_cmds', {})
     if empty(map_cmds)

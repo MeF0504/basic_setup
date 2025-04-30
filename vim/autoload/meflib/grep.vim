@@ -62,7 +62,7 @@ function! meflib#grep#main(...)
         let l:dir = def_dir
         let l:all = v:false
     else
-        let arg = meflib#basic#analythis_args_hyp(a:1, s:args_config)
+        let arg = meflib#basic#analysis_args_hyp(a:1, s:args_config)
 
         if !has_key(arg, "wd") && !has_key(arg, "ex") && !has_key(arg, "dir")
             call s:echo_gregrep_help()

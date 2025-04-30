@@ -36,9 +36,10 @@ function! meflib#find#main(args) abort
             let def_dir = top_dir
         endif
     endif
-    let arg = meflib#basic#analythis_args_hyp(a:args, s:args_config)
+    let arg = meflib#basic#analysis_args_hyp(a:args, s:args_config)
     if !has_key(arg, 'name')
-        echoerr "file name is not specified."
+        " echoerr "file name is not specified."
+        echo "usage: :Find -name <file name> [-dir <directory>] [-depth <depth>]"
         return
     endif
     if has_key(arg, 'dir')

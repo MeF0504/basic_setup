@@ -109,7 +109,8 @@ command! -nargs=? -complete=file FileInfo call meflib#fileinfo#main(<f-args>)
 " DOC COMMANDS FileInfo
 " FileInfo [file]
 "
-" Show the information of current file.
+" Show the information of the [file].
+" If [file] is not specified, show the information of the current file.
 " Python support is required.
 " DOCEND
 " }}}
@@ -209,9 +210,10 @@ command! XPMLoader call meflib#tools#xpm_loader()
 " meflib#set された変数を表示 {{{
 command! -bang -nargs=? -complete=customlist,meflib#basic#var_comp MefShowVar call meflib#basic#show_var("<bang>", <f-args>)
 " DOC COMMANDS MefShowVar
-" MefShowVar
+" MefShowVar [var]
 " 
 " Show all local variables. See |meflib-options|.
+" If {var} is specified, show the details of {var}.
 " DOCEND
 " }}}
 " echo 拡張 {{{
