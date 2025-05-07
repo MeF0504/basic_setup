@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import argparse
+from collections.abc import Sequence
 
 import cv2
 
@@ -12,7 +13,13 @@ def main(args):
     if not retval:
         print('No QR code found')
         return
-    print(f'result: "{info}"')
+    else:
+        if isinstance(info, Sequence):
+            print('result:')
+            for i in info:
+                print(f'  "{i}"')
+        else:
+            print(f'result: "{info}"')
 
 
 if __name__ == '__main__':
