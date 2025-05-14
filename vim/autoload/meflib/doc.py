@@ -34,20 +34,32 @@ def main():
         if conf['type'] == 'COMMANDS':
             cmd_det = conf['cont'][0]
             sp_num = 80-len(conf['name'])-3
-            doc_cmd += f'{cmd_det:<{sp_num}s}*:{conf["name"]}*\n'
+            if sp_num > len(cmd_det):
+                doc_cmd += f'{cmd_det:<{sp_num}s}*:{conf["name"]}*\n'
+            else:
+                doc_cmd += " "*sp_num+"*:"+conf['name']+'*\n'
+                doc_cmd += cmd_det+'\n'
             for txt in conf['cont'][1:]:
                 doc_cmd += txt+'\n'
             doc_cmd += '\n'
         elif conf['type'] == 'FUNCTIONS':
             func_det = conf['cont'][0]
             sp_num = 80-len(conf['name'])-2
-            doc_func += f'{func_det:<{sp_num}s}*{conf["name"]}*\n'
+            if sp_num > len(func_det):
+                doc_func += f'{func_det:<{sp_num}s}*{conf["name"]}*\n'
+            else:
+                doc_func += " "*sp_num+"*"+conf['name']+'*\n'
+                doc_func += func_det+'\n'
             for txt in conf['cont'][1:]:
                 doc_func += txt+'\n'
             doc_func += '\n'
         elif conf['type'] == 'OPTIONS':
             sp_num = 80-len(conf['name'])-2-len('meflib-')
-            doc_opt += f'{conf["name"]:<{sp_num}s}*meflib-{conf["name"]}*\n'
+            if sp_num > len(conf['name']):
+                doc_opt += f'{conf["name"]:<{sp_num}s}*meflib-{conf["name"]}*\n'
+            else:
+                doc_opt += " "*sp_num+"*meflib-"+conf['name']+'*\n'
+                doc_opt += conf['name']+'\n'
             for txt in conf['cont']:
                 doc_opt += txt+'\n'
             doc_opt += '\n'

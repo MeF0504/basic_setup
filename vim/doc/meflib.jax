@@ -214,7 +214,8 @@ meflib#basic#get_conf_dir()                        *meflib#basic#get_conf_dir()*
 
 Return the user local configuration directory.
 
-meflib#basic#analysis_args_hyp({args}, {args_config})*meflib#basic#analysis_args_hyp()*
+                                              *meflib#basic#analysis_args_hyp()*
+meflib#basic#analysis_args_hyp({args}, {args_config})
 
 A function to analyze the arguments of a command.
 This function analyze the arguments like >
@@ -263,14 +264,16 @@ meflib#basic#map_util({name})                          *meflib#basic#map_util()*
 
 Execute the mapping of {name} registered in |meflib-map_cmds|.
 
-meflib#color#isdark({r}, {g}, {b}, {thsd}=v:null, {verbose}=v:false)*meflib#color#isdark()*
+                                                         *meflib#color#isdark()*
+meflib#color#isdark({r}, {g}, {b}, {thsd}=v:null, {verbose}=v:false)
 
 return 1 if the color is dark.
 {r}, {g}, {b} are values of red, green and yellow, in range 0.0 to 1.0.
 {thsd} is threshold value, default is 0.42.
 if {verbose} is 1, print the calculated value and threshold.
 
-meflib#color#get_colorid({r}, {g}, {b}, {gui}=v:null)*meflib#color#get_colorid()*
+                                                    *meflib#color#get_colorid()*
+meflib#color#get_colorid({r}, {g}, {b}, {gui}=v:null)
 
 return color id of {r}, {g}, {b} in range 0 to 5.
 color id is '#RRGGBB' if {gui} is 1, otherwise 16 to 231.
@@ -290,7 +293,8 @@ meflib#color#ShowStatusLineBG()                *meflib#color#ShowStatusLineBG()*
 
 Show today's status line background color.
 
-meflib#floating#open({bufid}, {popid}, {str_list}, {config})*meflib#floating#open()*
+                                                        *meflib#floating#open()*
+meflib#floating#open({bufid}, {popid}, {str_list}, {config})
 
 Wrapper function to create and open floating/popup window.
 For initialization, set {bufid}=-1 and {winid}=-1.
@@ -307,7 +311,8 @@ meflib#floating#close_all()                        *meflib#floating#close_all()*
 
 Close all floating/popup windows opened by |meflib#floating#open()|.
 
-meflib#floating#select({str_list}, {config}, {callback})*meflib#floating#select()*
+                                                      *meflib#floating#select()*
+meflib#floating#select({str_list}, {config}, {callback})
 
 Wrapper function to create and open floating/popup select menu. This works
 almost same as |popup_menu| of vim.
