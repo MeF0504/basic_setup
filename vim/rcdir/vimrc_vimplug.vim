@@ -50,6 +50,13 @@ command! -nargs=+ PlugWrapper call s:plug_wrapper(<args>)
 " }}}
 
 " condition check of loading plugins. {{{
+" DOC OPTIONS unload_plugins
+" plugins to be unloaded.
+" DOCEND
+" DOC OPTIONS plug_opt
+" Variable for plugins.
+" Basically used to decide whether to load plugins or not.
+" DOCEND
 if exists('*searchcount') && exists('*popup_create')
     call meflib#add('unload_plugins', 'osyo-manga/vim-anzu')
 else
@@ -163,6 +170,9 @@ command -nargs=1 -complete=customlist,s:load_comp PlugLoad call plug#load(<f-arg
 
 " https://zenn.dev/kawarimidoll/articles/8172a4c29a6653
 " 遅延読み込み
+" DOC OPTIONS lazy_plugins
+" plugins to be loaded by lazy loading.
+" DOCEND
 function! s:lazy_load(timer) abort
     let lazy_plugins = meflib#get('lazy_plugins', [])
     if !empty(lazy_plugins)
@@ -172,6 +182,9 @@ endfunction
 call timer_start(100, function("s:lazy_load"))
 
 " InsertEnter で読み込み
+" DOC OPTIONS insert_plugins
+" plugins to be loaded by InsertEnter autocmd.
+" DOCEND
 function! s:insert_load() abort
     let insert_plugins = meflib#get('insert_plugins', [])
     if !empty(insert_plugins)

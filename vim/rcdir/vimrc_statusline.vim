@@ -167,11 +167,13 @@ endif
 " パスを除くファイル名 修正フラグ 読込専用 ヘルプ preview_window
 let s:st_off = "%#StatusLine_OFF#<%t>%#StatusLineNC# %m%{&readonly?'[RO]':''}%h%w"
 
-""" the variable to administer statusline
-" '_': basic statusline
-" 'off': statusline for off window
-" 'qf': statusline for quickfix window
-" other(num): statusline for short window. num=max width for this statusline
+" DOC OPTIONS statusline
+" the variable to administer statusline
+" 	'_': basic statusline
+" 	'off': statusline for off window
+" 	'qf': statusline for quickfix window
+" 	other(num): statusline for short window. num=max width for this statusline
+" DOCEND
 call meflib#set('statusline', {
             \ '_':   s:st_mode.s:st_filename1.s:st_right.s:st_ft.s:st_ff1.s:st_turn.s:st_ln1,
             \ 'qf': '%t%{'..s:sid..'qf_title()}'..s:st_right..s:st_ln2,

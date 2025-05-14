@@ -2,6 +2,16 @@
 scriptencoding utf-8
 "" vim color settings
 
+" DOC OPTIONS my_color_set
+" function to be called for each color scheme.
+" DOCEND
+" DOC OPTIONS plugin_his
+" functions to be called when highlight is set.
+" DOCEND
+" DOC OPTIONS colorscheme
+" colorscheme name to be set. default is 'evening'.
+" DOCEND
+
 " Anywhere SID.
 function! s:SID_PREFIX() " tentative
   return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')

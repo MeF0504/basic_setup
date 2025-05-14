@@ -108,9 +108,12 @@ endfunction
 " 
 " Show today's status line background color.
 " DOCEND
+" DOC OPTIONS birthday
+" Birthday in [month, day] format. default is [0, 0].
+" DOCEND
 function! meflib#color#ShowStatusLineBG() abort
     let [month, day, dow, stl_br, stl_bg, stl_bb] = meflib#color#get_today_rgb()
-    let birthday = meflib#get('birthday', [0,0])
+    let birthday = meflib#get('birthday', [0, 0])
     if (month == birthday[0]) && (day == birthday[1])
         echo 'birthday!!'
         return

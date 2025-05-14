@@ -19,6 +19,11 @@ endfunction
 
 " ctags command {{{
 function! meflib#tools#exec_ctags(...) abort
+    " DOC OPTIONS ctags_config
+    " Command and options to be used in Ctags.
+    " 	'command': Command. default is 'ctags'.
+    " 	'opt': Options. default is ''.
+    " DOCEND
     let ctags_cmd = meflib#get('ctags_config', 'command', 'ctags')
     if !executable(ctags_cmd)
         echohl ErrorMsg
@@ -211,6 +216,9 @@ endfunction
 
 function! s:timer_cb(tid) abort
     redraw
+    " DOC OPTIONS snooze_time
+    " Snooze time in seconds. default is 600 sec.
+    " DOCEND
     let snooze_time = meflib#get('snooze_time', 60*10)
     echo 'time has passed (q to exit, s to snooze)'
     while v:true

@@ -1,5 +1,11 @@
 " コード実行plugin
 PlugWrapper 'thinca/vim-quickrun', PlugCond(1, {'on': 'QuickRun'})
+" DOC OPTIONS qrun_finished
+" Flag to check if qrun is finished or not.
+" DOCEND
+" DOC OPTIONS quickrun_nvimterm
+" whether to use terminal runner in nvim or not.
+" DOCEND
 let s:quickrun_status = "%#StatusLine_CHK#%{quickrun#is_running()?'>...':''}%#StatusLine#"
 let s:def_st = meflib#get('def_statusline', '')
 let g:quickrun_no_default_key_mappings = 1

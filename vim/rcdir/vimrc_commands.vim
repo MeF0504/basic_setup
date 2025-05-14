@@ -6,6 +6,10 @@ augroup cmdLocal
     autocmd!
 augroup END
 
+" DOC OPTIONS map_cmds
+" dictionary for setting variable commands for one key.
+" DOCEND
+
 " {{{ 複数のコマンドで使われる設定
 call meflib#set('exclude_dirs', ['.git', '.svn',
             \ '.mypy_cache', '.ipynb_checkpoints', '.pytest_cache',
@@ -20,6 +24,9 @@ call meflib#set('side_width', min([45, &columns/16*5]))
 " DOCEND
 " }}}
 " 要らない？user関数を消す {{{
+" DOC OPTIONS del_commands
+" commands to be deleted before opening Vim.
+" DOCEND
 function! s:del_comds()
     let del_commands = meflib#get('del_commands', [])
     for dc in del_commands

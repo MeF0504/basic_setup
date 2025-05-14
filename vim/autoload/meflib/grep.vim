@@ -39,6 +39,9 @@ endfunction
 
 function! meflib#grep#main(...)
     let def_dir = '.'
+    " DOC OPTIONS get_top_dir
+    " Flag to use meflib#basic#get_top_dir function in Gregrep and Find commands.
+    " DOCEND
     if meflib#get('get_top_dir', 0) == 1
         let top_dir = meflib#basic#get_top_dir(expand('%:h'))
         if !empty(top_dir)

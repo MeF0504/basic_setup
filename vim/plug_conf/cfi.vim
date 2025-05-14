@@ -11,7 +11,10 @@ call meflib#add('plugin_his', expand('<SID>').'cfi_his')
 let s:cfi_bufid = -1
 let s:cfi_popid = -1
 function! <SID>Show_cfi()
-    if meflib#basic#get_local_var('cfi_on', 0) == 0
+    " DOC OPTIONS cfi_on
+    " If set to 1, show current function name on the window.
+    " DOCEND
+    if meflib#get('cfi_on', 0) == 0
         call meflib#floating#close(s:cfi_popid)
         let s:cfi_popid = -1
         return

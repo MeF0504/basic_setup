@@ -197,6 +197,9 @@ endif
 set statusline=%f%m%r%h%w%<%=%y\ %l/%L\ [%p%%]
 if exists('*meflib#set')
     call meflib#set('def_statusline', &statusline)
+    " DOC OPTIONS def_statusline
+    " default statusline
+    " DOCEND
 endif
 
 " tex flavor

@@ -6,7 +6,7 @@ from pathlib import Path
 def main():
     res = []
     base_dir = Path(__file__).parent.parent.parent
-    doc_file = base_dir/'doc/meflib_test.jax'
+    doc_file = base_dir/'doc/meflib.jax'
     for fy in base_dir.glob('**/*.vim'):
         # print(fy)
         if 'templates' in str(fy):
@@ -14,17 +14,18 @@ def main():
         is_doc = False
         with open(fy, 'r') as f:
             for ln in f:
+                ln = ln.strip()
                 if ln.startswith('" DOC '):
                     is_doc = True
-                    assert len(ln.replace('\n', '').split(' ')) == 4, \
+                    assert len(ln.split(' ')) == 4, \
                         f"failed to set param: {fy}, {ln}"
-                    _, _, doc_type, name = ln.replace('\n', '').split(' ')
+                    _, _, doc_type, name = ln.split(' ')
                     details = {'type': doc_type, 'name': name, 'cont': []}
                 elif ln.startswith('" DOCEND'):
                     is_doc = False
                     res.append(details)
                 elif is_doc:
-                    details['cont'].append(ln[2:-1])
+                    details['cont'].append(ln[2:])
     # print(res)
     doc_cmd = ""
     doc_func = ""
@@ -51,8 +52,7 @@ def main():
                 doc_opt += txt+'\n'
             doc_opt += '\n'
 
-    doc = f"""
-*meflib.txt*    local library of vim script. 色々あって日本語／英語混在
+    doc = f"""*meflib.txt*    local library of vim script. 色々あって日本語／英語混在
 both Japanese and English
 vimは1行目にマルチバイトがあるかどうかでエンコーディングを判別するらしい
 |E670| *meflib.jax*
@@ -102,7 +102,6 @@ vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:
     print(doc)
     with open(doc_file, 'w') as f:
         f.write(doc)
-
 
 
 if __name__ == '__main__':

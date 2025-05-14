@@ -113,6 +113,9 @@ endif
 "See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
 
 " Insertを抜けるときに日本語入力をoff {{{
+" DOC OPTIONS auto_ime_off
+" If set to 1, turn off IME or Japanese input when leaving insert mode.
+" DOCEND
 if !exists('$SSH_CONNECTION') && meflib#get('auto_ime_off', 0)==1   " ※ssh先ではhostのを変えるので意味なし
     if has('win32') || has('win64')
         autocmd local InsertLeave * set iminsert=0
@@ -139,6 +142,12 @@ endif
 " }}}
 
 " 最後に閉じたtab, windowを保存しておく
+" DOC OPTIONS last_file_win
+" file name and tab number of last closed window.
+" DOCEND
+" DOC OPTIONS last_file_tab
+" file name and tab number of last closed tab.
+" DOCEND
 autocmd local WinLeave * call meflib#set('last_file_win',
             \ [expand("%:p"), tabpagenr()])
 autocmd local TabClosed * call meflib#set('last_file_tab',
@@ -192,6 +201,9 @@ autocmd local BufEnter *_tags set filetype=tags
 autocmd local Filetype markdown,gitcommit,tex setlocal spell
 
 " git status を表示
+" DOC OPTIONS show_git_status
+" Flag to show git status on the window.
+" DOCEND
 if meflib#get('show_git_status', 1) && has('python3')  " git_status use Python.
     autocmd local CursorMoved * call meflib#git_status#clear()
     autocmd local CursorHold * call meflib#git_status#main()

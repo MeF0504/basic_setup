@@ -114,6 +114,9 @@ endfunction
 
 function! s:open_term_win(opts)
     " term_startでgit for windowsのbashを実行する
+    " DOC OPTIONS win_term_cmd
+    " List of command and options to be used in Terminal in Windows OS.
+    " DOCEND
     let cmd = a:opts
     if empty(cmd)
         let cmd = meflib#get('win_term_cmd', ['bash.exe', '-l'])
@@ -195,6 +198,9 @@ function! meflib#terminal#main(mod, ...) abort
         return
     endif
 
+    " DOC OPTIONS term_default
+    " Default command modifier for terminal.
+    " DOCEND
     if empty(a:mod)
         let win_opt = meflib#get('term_default', 'tab')
     else
@@ -316,6 +322,9 @@ function! meflib#terminal#term_list() abort
 endfunction
 
 " terminalの色設定
+" DOC OPTIONS term_col_name
+" terminal color name.
+" DOCEND
 function! meflib#terminal#set_term_color(col_name=v:null) abort
     if a:col_name != v:null
         call meflib#set('term_col_name', a:col_name)

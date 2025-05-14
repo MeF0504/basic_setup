@@ -57,6 +57,12 @@ function! s:get_cwd_path()
     let ret = printf(' @%s%s', hname, ret)
     return [printf('%s%s%s', '%=%#TabLineDir#', ret, '%#TabLineFill#'), len(ret)]
 endfunction
+" DOC OPTIONS show_cwd_tab
+" Flag to show current working directory in tabline.
+" DOCEND
+" DOC OPTIONS tabline_footer
+" Function to set string in tabline footer.
+" DOCEND
 if meflib#get('show_cwd_tab', 1)
     call meflib#add('tabline_footer', expand('<SID>')..'get_cwd_path')
 endif

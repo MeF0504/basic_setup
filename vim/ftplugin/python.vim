@@ -30,6 +30,10 @@ let g:pyindent_continue = shiftwidth()
 " pydocとかいう便利ツールがあるじゃん
 let s:pyhelp_id = -1
 function! s:python_help(module='') abort " {{{
+    " DOC OPTIONS pydoc_cmd
+    " Command to be used in PyHelp.
+    " default is 'pydoc3'.
+    " DOCEND
     let pydoc_cmd = meflib#get('pydoc_cmd', 'pydoc3')
     if !executable(pydoc_cmd)
         echohl ErrorMsg

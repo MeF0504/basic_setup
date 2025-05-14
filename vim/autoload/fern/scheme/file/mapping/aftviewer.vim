@@ -1,4 +1,9 @@
 
+" DOC OPTIONS fern_aft_conf
+" Command and options to be used when AFTViewer is called in Fern.
+" 	'cmd': Command. default is 'aftviewer'.
+" 	'type_conf': Options for each file type.
+" DOCEND
 let s:fern_aft_conf = meflib#get('fern_aft_conf', {})
 if !has_key(s:fern_aft_conf, 'cmd')
     let s:fern_aft_conf['cmd'] = 'aftviewer'
