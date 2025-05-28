@@ -609,6 +609,8 @@ def get_conf_list(setting: dict[str, Any]) -> list[list[str]]:
                 res.append([f'{fy}', f'{home/".zshrc"}'])
             elif fy.name == 'zlogin':
                 res.append([f'{fy}', f'{home/".zlogin"}'])
+            elif fy.name == 'zlogout':
+                res.append([f'{fy}', f'{home/".zlogout"}'])
             else:
                 if fy.is_file():
                     dst = (home/'.zsh')/fy.name

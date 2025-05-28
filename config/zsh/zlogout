@@ -1,0 +1,5 @@
+if which wsh > /dev/null 2>&1; then
+    if [[ "$SHLVL" -eq 1 ]]; then
+        wsh deleteblock
+    fi
+fi
