@@ -1,5 +1,6 @@
 if which wsh > /dev/null 2>&1; then
-    if [[ "$SHLVL" -eq 1 ]]; then
+    if [[ -z "$SSH_CONNECTION" && "$SHLVL" -eq 1 ]]; then
+        # exit the wsh block if it is the local shell
         wsh deleteblock
     fi
 fi
