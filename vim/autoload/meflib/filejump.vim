@@ -1,11 +1,7 @@
 scriptencoding utf-8
 
 function! s:run_cmd(cmds) abort
-    if has('win32') || has('win64')
-        let exec_cmd = join(a:cmds)
-    else
-        let exec_cmd = a:cmds
-    endif
+    let exec_cmd = join(a:cmds)
     return system(exec_cmd)
 endfunction
 
