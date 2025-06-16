@@ -337,6 +337,8 @@ endfunction
 
 function! s:syntax_range_md() abort
     call SyntaxRange#Include('^\s*```\s*vim', '```', 'vim', '')
+    call SyntaxRange#Include('^\s*```\s*shell', '```', 'sh', '')
+    call SyntaxRange#Include('^\s*```\s*python', '```', 'python', '')
 endfunction
 
 function! s:syntax_range_vim() abort
