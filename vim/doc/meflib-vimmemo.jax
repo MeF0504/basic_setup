@@ -7,6 +7,7 @@ shortcut		|meflib-vimmemo-shortcut|
 useful command		|meflib-vimmemo-useful_command|
 useful settings		|meflib-vimmemo-useful_settings|
 spell			|meflib-vimmemo-spell|
+substitute		|meflib-vimmemo-substitute|
 other topics		|meflib-vimmemo-other_topics|
 
 ==============================================================================
@@ -46,11 +47,29 @@ search;
 (カーソル下の?)単語を一覧から削除             |zuw| / |zug| / |:spellu|[ndo] {word}
 
 ==============================================================================
+SUBSTITUTE                                           *meflib-vimmemo-substitute*
+
+基本
+`:s/pattern/replacement/` で行内の最初のpatternをreplacementに置換。
+`:s/pattern/replacement/g` で行内の全てのpatternを置換。
+`:s/pattern/replacement/gc` なら置換前に確認。
+選択モードで `:s/pattern/replacement/` とすると選択範囲内のpatternを置換。
+
+使える特殊文字は |s/\&| とかを参照
+例えば，
+>>
+ :%s/,\(\S\)/, \1/gc
+<
+とかすると，任意の,の後ろにスペースが無い場合にスペースを入れることができる。
+
+==============================================================================
 OTHER_TOPICS                                       *meflib-vimmemo-other_topics*
 
+                                               *meflib-vimmeo-other_topics-args*
 about command args ~
 <f-args>=string, <args>=value
 
+                                                 *meflib-vimmeo-other_topics-eq*
 about equation operator ~
   |==#|, |!=#|, |>#| etc..    ：大文字小文字を区別する
   |==?|, |!=?|, |>?| etc..    ：大文字小文字を区別しない
@@ -58,22 +77,26 @@ about equation operator ~
   |!~|, |!~#|, |!~?|          ：正規表現非マッチ
 正規表現については |pattern-overview| or https://vim-jp.org/vimdoc-ja/pattern.html#pattern-overview
 
+                                                *meflib-vimmeo-other_topics-sid*
 about SID ~
 |:scriptnames|          ... List all sourced script names
 :echo expand('<SID>') ... Get the current file SID
 :filter {str} {cmd} ... restrict the output.
 
+                                                *meflib-vimmeo-other_topics-cmd*
 about <Cmd> ~
 mapping でcmd modeに移るときは : よりも <Cmd> の方が良さそう
 |map-cmd|
 使用できるのは ver. 8.2 && patch-1978 以降
 
+                                                *meflib-vimmeo-other_topics-cmp*
 コマンド補完 ~
 コマンド補完の結果を取得するには
 |getcompletion()|
 これは？入力補完を自作する時用かな
 |complete()|
 
+                                                 *meflib-vimmeo-other_topics-id*
 ID変換 ~
 https://koturn.hatenablog.com/entry/2018/02/14/000000
 1 バッファ番号
@@ -93,6 +116,7 @@ https://koturn.hatenablog.com/entry/2018/02/14/000000
 4 => 1, 2, 3
   |winbufnr()|, |win_id2win()|, |win_id2tabwin()|
 
+                                            *meflib-vimmeo-other_topics-wordcnt*
 文字数カウント ~
 g <c-g> (|g_CTRL-G|)
 関数なら|wordcount()|
