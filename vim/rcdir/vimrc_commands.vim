@@ -14,6 +14,7 @@ augroup END
 call meflib#set('exclude_dirs', ['.git', '.svn',
             \ '.mypy_cache', '.ipynb_checkpoints', '.pytest_cache',
             \ '.tagdir',
+            \ '.venv',
             \ ])
 " DOC OPTIONS exclude_dirs
 " set directories excluding from search.
