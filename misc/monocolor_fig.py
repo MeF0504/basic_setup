@@ -29,7 +29,7 @@ def main():
         ax11.spines['bottom'].set_visible(False)
         ax11.spines['right'].set_visible(False)
         ax11.spines['left'].set_visible(False)
-        fig1.savefig(outdir/f'{name}.png')
+        fig1.savefig(outdir/f'mono_{name}.png')
     plt.close()
 
 
