@@ -39,7 +39,7 @@ function ip_color()
         ret=$ret"%F{15}%K{16}i%f%k"
         ret=$ret"%F{15}%K{16}s%f%k"
         ret=$ret"%F{15}%K{16}s%f%k"
-        ret=$ret" "
+        # ret=$ret" "
         echo "$ret"
         return 0
     fi
@@ -101,7 +101,7 @@ function ip_color()
     ret=$ret"${ip2}${ch1}%f%k"
     ret=$ret"${ip3}${ch2}%f%k"
     ret=$ret"${ip4}${ch3}%f%k"
-    ret=$ret" "
+    # ret=$ret" "
     echo "$ret"
     # }}}
 }
@@ -182,29 +182,29 @@ set_prompt() {
             # count files/directories
             local _PS_COUNTFILE='($(ls -U1 | wc -l | sed -e "s/ //g"))'
             # exec time
-            local _PS_EXTIME=' $(ret_cmd_exec_time)'
+            local _PS_EXTIME='$(ret_cmd_exec_time)'
             # new line
             local _PS_NEWLINE=$'\n'
             if [ -n "${SSH_CLIENT}${SSH_CONNECTION}" ]; then
                 # host name in ssh server
-                local _PS_HOST="%F{14}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%f%k "
+                local _PS_HOST="@%F{14}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%f%k "
             fi
             # time
             local _PS_TIME="%F{42}%D{%H:%M}%f%k"
             # user name (bold username non-bold)
-            local _PS_USER=" %F{160}%B%n%b%f%k"
+            local _PS_USER="%F{160}%B%n%b%f%k"
             # background job number (shown if num>=1)
             # also refer ↓
             # https://stackoverflow.com/questions/10194094/zsh-prompt-checking-if-there-are-any-background-jobs
             local _PS_BGJOB="%(1j. %K{5}(J:%j)%f%k.)"
             # change the color to magenta if the previous command was failed.
             # https://blog.8-p.info/2009/01/red-prompt
-            local _PS_END=" %(?.>>.%F{125}>>%f%k) "
+            local _PS_END="%(?.>>.%F{125}>>%f%k) "
         fi
         # ip_color
         local _PS_IPCOLOR='$(ip_color $_GLOBAL_IP)'
 
-        export PROMPT="${_PS_IPCOLOR}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}${_PS_EXTIME}${_PS_NEWLINE}${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_END}"
+        export PROMPT="${_PS_IPCOLOR} ${_PS_PATH}${_PS_COUNTFILE} ${_PS_EXTIME} ${_PS_NEWLINE}${_PS_TIME} ${_PS_HOST}${_PS_USER}${_PS_BGJOB} ${_PS_END}"
 
         PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
 
