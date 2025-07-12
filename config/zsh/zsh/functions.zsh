@@ -19,3 +19,15 @@ function git_grep() {
     fi
 }
 
+if which wsh &>/dev/null; then
+    # open a html file using wsh web.
+    function wsh-web() {
+        if [ -z "$1" ]; then
+            echo "open a html file using wsh web."
+            echo "Usage: wsh-web <file>"
+            return 1
+        fi
+        wsh web open "file://${PWD}/$1"
+    }
+else
+fi
