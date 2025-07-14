@@ -13,6 +13,7 @@ if !has_key(s:fern_aft_conf, 'type_conf')
                 \ 'ipynb': '-iv None -v',
                 \ 'tgz': '-c',
                 \ 'zip': '-c',
+                \ 'db': '-c',
                 \ }
 endif
 
