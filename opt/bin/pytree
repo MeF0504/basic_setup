@@ -28,7 +28,7 @@ def get_pattern_from_file(exfiles):
     for exfile in exfiles:
         exfile = Path(exfile)
         if not exfile.is_file():
-            print('exfile {} is not readable'.format(exfile))
+            print(f'exfile {exfile} is not readable')
             continue
 
         with open(exfile, 'r') as f:
@@ -131,10 +131,9 @@ def get_file_info(verbose, fpath):
     elif filesize > 1024:
         filesize /= 1024
         prefix = 'k'
-    size = '({:.1f} {}B)'.format(filesize, prefix)
+    size = f'({filesize:.1f} {prefix}B)'
 
-    return col,\
-        '{}\t{} {} {} {}'.format(END, access, size, timestamp, realpath)
+    return col, f'{END}\t{access} {size} {timestamp} {realpath}'
 
 
 def main(args):
@@ -145,8 +144,11 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('root', help='root directory', nargs='?', default='.')
-    parser.add_argument('-a', dest='all', help='do not ignore entries starting with .', action='store_true')
-    parser.add_argument('-v', '--verbose', help='show the verbose.', action='store_true')
+    parser.add_argument('-a', dest='all',
+                        help='do not ignore entries starting with .',
+                        action='store_true')
+    parser.add_argument('-v', '--verbose', help='show the verbose.',
+                        action='store_true')
     parser.add_argument('-maxdepth', help='specify the level of directory. If set 0, show all directories.', type=int, default=0)
     parser.add_argument('-exclude', help='specify excluding patterns using regular expression.', type=str)
     parser.add_argument('-exfiles', help='specify excluding patterns from pattern files written in shell-style wildcards, like gitignore.', type=str, nargs='*')
