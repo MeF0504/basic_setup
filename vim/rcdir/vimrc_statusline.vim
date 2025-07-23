@@ -22,11 +22,12 @@ let s:per_line = 5
 " file format 設定 {{{
 function! <SID>get_fileformat(short) abort
     let ff = &fileformat
-    if !(line('.')%s:per_line==1)
+    if line('.')%s:per_line != 1
         if !a:short && meflib#get('plug_opt', 'nerdfont', 0)
             let fa = {'unix': 0xf17c, 'mac': 0xf179, 'dos': 0xf17a}
             if has_key(fa, ff)
-                return printf('%s ', nr2char(fa[ff]))
+                " 何故か最初に2個spaceが必要？
+                return printf('  %s ', nr2char(fa[ff]))
             endif
         endif
         return ''
@@ -58,7 +59,7 @@ function! s:get_filetype() abort
             return ''
         elseif meflib#get('plug_opt', 'nerdfont', 0)
             try
-                return printf('%s ', nerdfont#find())
+                return printf(' %s ', nerdfont#find())
             endtry
         endif
         return ''
@@ -111,7 +112,7 @@ endfunction
 
 " file name を適当な長さに調整 {{{
 function! s:get_rel_filename(status) abort
-    let width = winwidth(0)-7-(2+2+len(line('.')..line('$')..col('.')))-5
+    let width = winwidth(0)-7-(3+3+len(line('.')..line('$')..col('.')))-5
     " mode, line&col, line percentage
     if meflib#get('plug_opt', 'nerdfont', 0)
         let width = width-2-2
