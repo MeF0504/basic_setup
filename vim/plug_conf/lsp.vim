@@ -30,9 +30,9 @@ if meflib#get('plug_opt', 'nerdfont', 0)
     let g:lsp_diagnostics_signs_error = {'text': nr2char(0xfb8a)}
     let g:lsp_diagnostics_signs_hint = {'text': nr2char(0xf12a)}
     let s:lsp_status_icon = {
-                \ 'running': nr2char(0xf633)..' ',
+                \ 'running': nr2char(0xf05d)..' ',
                 \ 'unknown server': nr2char(0xf059)..' ',
-                \ 'exited': nr2char(0xf705)..' ',
+                \ 'exited': nr2char(0xf0a48)..' ',
                 \ 'starting': nr2char(0xf01b)..' ',
                 \ 'failed': nr2char(0xf46e)..' ',
                 \ 'not running': nr2char(0xf057)..' ',
