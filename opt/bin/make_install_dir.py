@@ -3,6 +3,7 @@
 import os
 import shutil
 import argparse
+from argparse import ArgumentDefaultsHelpFormatter
 from pathlib import Path
 
 try:
@@ -44,8 +45,9 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='create a directory to install a software and move old directory.')
-    parser.add_argument('target', help='target name of directory, or "list" shows current directories.')
+    parser = argparse.ArgumentParser(description='create a directory to install a software and move old directory.',
+                                     formatter_class=ArgumentDefaultsHelpFormatter)
+    parser.add_argument('target', help='target name of directory, or "list" shows current directories in the `root_dir`.')
     parser.add_argument('--root_dir', help='root directory',
                         default=os.path.expanduser('~/workspace/softwares'))
     args = parser.parse_args()
