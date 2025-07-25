@@ -24,6 +24,14 @@ let g:lsp_peek_alignment = 'top'
 let g:lsp_signature_help_enabled = 0
 " cとかjsでcode actionを無効化
 let g:lsp_document_code_action_signs_enabled = 0
+" clangdで設定を読むようにする
+if executable('clangd')
+    let g:lsp_setting = {
+                \ 'clangd': {
+                    \ 'cmd': ['clangd', '--enable-config'],
+                    \ },
+                \ }
+endif
 " Nerd font ならwarningとかも変えようか
 if meflib#get('plug_opt', 'nerdfont', 0)
     let g:lsp_diagnostics_signs_warning = {'text': nr2char(0xf071)}
