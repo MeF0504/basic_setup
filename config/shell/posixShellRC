@@ -299,7 +299,7 @@ echoenv() # {{{
     echo -ne "${*//:/\\n}"
     echo ''
 } # }}}
-mkcd()
+mkcd()  # {{{
 {
     if [[ ! -d "$1" ]]; then
         echo mkdir "$1"
@@ -307,6 +307,31 @@ mkcd()
     fi
     \cd "$1"
 }
+# }}}
+vimfiles() # {{{
+{
+    if [[ -z "$1" ]] || [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
+        echo "Open files in Vim resulting from a command"
+        echo "e.g. vimfiles \"grep -rl 'hoge' dir\""
+        echo "     vimfiles \"find dir -name '*.txt'\""
+        return 1
+    fi
+    local files=()
+    local cmd_res=$(eval "$1" 2>&1)
+    for file in "$cmd_res"; do
+        if [[ -f "$file" ]]; then
+            files+=("$file")
+        else
+            echo "File not found: $file"
+        fi
+    done
+    if (( ${#files[@]} > 0 )); then
+        vim_wrapper "${files[@]}"
+    fi
+}
+# }}}
+# }}}
+# {{{ source additional scripts
 _chk_and_source "$HOME/.config/meflib/get_zodiac_whgm.sh"
 _chk_and_source "$HOME/.config/meflib/today_percentage.sh"
 # }}}
