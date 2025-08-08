@@ -797,8 +797,12 @@ def main_vim(setting: dict[str, Any], args: Args) -> None:
             try:
                 if not vimdir.exists():
                     os.symlink(setting['vim']['dir'], vimdir)
+                else:
+                    print(cc.shift+'vim directory already exists.')
                 if not vimrc.exists():
                     os.symlink(setting['vim']['dir']/'init.vim', vimrc)
+                else:
+                    print(cc.shift+'vimrc already exists.')
             except Exception as e:
                 print(f'failed to link {vimdir} or {vimrc}.')
                 print(f'error: {e}')
