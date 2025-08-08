@@ -32,10 +32,16 @@ def main():
         print('Google Drive dir is not found.')
         return
 
-    dname = sys.argv[1]
-    if len(dname) == 0:
+    if '-h' in sys.argv or '--help' in sys.argv:
+        print('Usage: GDrive_setDir.py <dirname>')
+        print('Create directories in Google Drive.')
+        print('dirname: name of the directory to create')
+        print(f'Gdir: {Gdir}')
+        return
+    if len(sys.argv) < 2:
         print('name is not set.')
         return
+    dname = sys.argv[1]
 
     dirs = ['WallPaper',
             'WallPaper/SmartphonePaper',
