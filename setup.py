@@ -631,7 +631,8 @@ def get_conf_list(setting: dict[str, Any]) -> list[list[str]]:
     files = [
             [ROOT/"config/git/gitignore_global", home/".gitignore_global"],
             [ROOT/"config/git/tigrc", home/".tigrc"],
-            [ROOT/"config/screenrc", home/".screenrc"]
+            [ROOT/"config/screenrc", home/".screenrc"],
+            [ROOT/"config/editorconfig", home/".editorconfig"],
             ]
     if UNAME == 'Darwin':
         files.append([ROOT/"config/matplotlibrc",

@@ -47,6 +47,8 @@ call s:source_file('rcdir/vimrc_options.vim')
 call s:source_file('rcdir/vimrc_maps.vim')
 " simple commands and short functions
 call s:source_file('rcdir/vimrc_commands.vim')
+" packadd-ing plugins
+call s:source_file('rcdir/vimrc_pack.vim')
 " auto command settings
 call s:source_file('rcdir/vimrc_autocmds.vim')
 " status line setting
