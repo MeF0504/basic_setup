@@ -9,7 +9,23 @@ def print_err(msg: str) -> None:
     print(f'\033[31m{msg}\033[0m', file=sys.stderr)
 
 
-def main(args):
+def remote(args: argparse.Namespace) -> None:
+    import requests
+    for pack in args.packages:
+        url = f'https://pypi.org/pypi/{pack}/json'
+        data_json = requests.get(url).json()
+        name = data_json['info']['name']
+        ver = data_json['info']['version']
+        print(f'- {name} ({ver})')
+        deps = data_json['info']['requires_dist']
+        if deps is not None:
+            for dep in deps:
+                if 'extra' in dep and not args.extra:
+                    continue
+                print(f'    |_ {dep}')
+
+
+def local(args: argparse.Namespace) -> None:
     all_packs = {dst.metadata['Name']: dst
                  for dst in metadata.distributions()}
     if args.all:
@@ -45,6 +61,13 @@ def main(args):
                                 print(f'    | |_ {req2}')
 
 
+def main(args: argparse.Namespace) -> None:
+    if args.remote:
+        remote(args)
+    else:
+        local(args)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('packages', nargs='*', help='shown packages')
@@ -54,5 +77,8 @@ if __name__ == '__main__':
                         help='show the dependencies recursively.')
     parser.add_argument('-e', '--extra', action='store_true',
                         help='show extra requirements')
+    parser.add_argument('--remote', action='store_true',
+                        help='access PyPI to get the package information.'
+                        ' "--all" and "-r" options are ignored in this mode.')
     args = parser.parse_args()
     main(args)
