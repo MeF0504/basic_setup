@@ -470,3 +470,14 @@ if meflib#get('plug_opt', 'copilot', 0)
     let g:copilot_no_tab_map = v:true
 endif
 " }}}
+
+" リモートだろうとyankした内容をsystemのclipboardに送る
+PlugWrapper 'ojroques/vim-oscyank', {'branch': 'main'}
+" {{{
+nmap <leader>y <Plug>OSCYankOperator
+nmap <leader>yy <leader>y_
+vmap <leader>y <Plug>OSCYankVisual
+let g:oscyank_max_length = 0 " maximum length of a selection, 0 for unlimited length
+let g:oscyank_silent = 0 " disable message on successful copy
+let g:oscyank_trim = 0 " trim surrounding whitespaces before copy
+" }}}
