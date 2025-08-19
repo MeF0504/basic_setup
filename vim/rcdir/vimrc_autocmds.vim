@@ -109,9 +109,6 @@ if has('nvim')
 endif
 " }}}
 
-"autocmd local Filetype qf setlocal stl=%t%{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%l/%L\ %P
-"See $VIMRUNTIME/ftplugin/qf.vim to change quickfix window statusline
-
 " Insertを抜けるときに日本語入力をoff {{{
 " DOC OPTIONS auto_ime_off
 " If set to 1, turn off IME or Japanese input when leaving insert mode.
@@ -141,7 +138,7 @@ if !exists('$SSH_CONNECTION') && meflib#get('auto_ime_off', 0)==1   " ※ssh先�
 endif
 " }}}
 
-" 最後に閉じたtab, windowを保存しておく
+" 最後に閉じたtab, windowを保存しておく {{{
 " DOC OPTIONS last_file_win
 " file name and tab number of last closed window.
 " DOCEND
@@ -152,28 +149,15 @@ autocmd local WinLeave * call meflib#set('last_file_win',
             \ [expand("%:p"), tabpagenr()])
 autocmd local TabClosed * call meflib#set('last_file_tab',
             \ meflib#get('last_file_win', ['', '$']))
-function! s:open_last_tab() abort
-    let [tfile, tnum] = meflib#get('last_file_tab', ['', '$'])
-    if empty(tfile)
-        return
-    endif
-    if tnum =~ '[0-9]\+'
-        let tnum -= 1
-        if tnum > tabpagenr('$')
-            let tnum = '$'
-        endif
-    endif
-    execute printf('%stabnew %s', tnum, tfile)
-endfunction
-command! LastTab call <SID>open_last_tab()
-command! LastWin execute "vsplit " . meflib#get('last_file_win', '')[0]
+" }}}
 
+" toml fileのfiletypeをtomlにする {{{
 if !has('patch-8.2.2106')
-    " toml fileのfiletypeをtomlにする
     autocmd local BufEnter *.toml set filetype=toml
 endif
+" }}}
 
-" 起動時に複数開いていたらtabで開く
+" 起動時に複数開いていたらtabで開く {{{
 function! <SID>open_files_tab() abort
     if bufnr('$') == 1
         return
@@ -190,6 +174,7 @@ endfunction
 
 " 色々と誤作動（というか余分なtab）が起きるっぽい
 " autocmd local VimEnter * ++once call <SID>open_files_tab()
+" }}}
 
 " file type毎のtags file 設定
 autocmd local FileType * execute printf('setlocal tags^=.tagdir/%s_tags;,./.tagdir/%s_tags;', &filetype, &filetype)
@@ -200,7 +185,7 @@ autocmd local BufEnter *_tags set filetype=tags
 " markdownとgit commit messageでspell on
 autocmd local Filetype markdown,gitcommit,tex setlocal spell
 
-" git status を表示
+" git status を表示 {{{
 " DOC OPTIONS show_git_status
 " Flag to show git status on the window.
 " DOCEND
@@ -211,11 +196,13 @@ if meflib#get('show_git_status', 1) && has('python3')  " git_status use Python.
                 \ call meflib#git_status#update_info() |
                 \ call meflib#git_status#main()
 endif
+" }}}
 
-" command line window
+" command line window {{{
 function! s:set_cmdwin() abort
     startinsert
 endfunction
 " これもmapしない分には消しておく
 " autocmd local CmdWinEnter * call s:set_cmdwin()
+" }}}
 

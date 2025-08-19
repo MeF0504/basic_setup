@@ -343,4 +343,30 @@ command! SearchJa /\v[^\x01-\x7E]+
 " Search multibyte words.
 " DOCEND
 " }}}
-
+" 最後に閉じたタブ，ウィンドウを開く {{{
+" " DOC COMMANDS LastTab
+" LastTab
+" 
+" Open a buffer of tab last closed.
+" DOCEND
+" " DOC COMMANDS LastWin
+" LastWin
+" 
+" Open a buffer of window last closed.
+" DOCEND
+function! s:open_last_tab() abort
+    let [tfile, tnum] = meflib#get('last_file_tab', ['', '$'])
+    if empty(tfile)
+        return
+    endif
+    if tnum =~ '[0-9]\+'
+        let tnum -= 1
+        if tnum > tabpagenr('$')
+            let tnum = '$'
+        endif
+    endif
+    execute printf('%stabnew %s', tnum, tfile)
+endfunction
+command! LastTab call <SID>open_last_tab()
+command! LastWin execute "vsplit " . meflib#get('last_file_win', '')[0]
+" }}}
