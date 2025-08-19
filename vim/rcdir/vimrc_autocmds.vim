@@ -206,3 +206,15 @@ endfunction
 " autocmd local CmdWinEnter * call s:set_cmdwin()
 " }}}
 
+" c/c++ でinclude dir を探してpathに追加する {{{
+function! s:find_include_dir() abort
+    let dir = expand('%:p:h')
+    let dirs = finddir('include', l:dir . ';', -1)
+    if !empty(dirs)
+        for d in dirs
+            execute printf('setlocal path+=%s', escape(d, ' '))
+        endfor
+    endif
+endfunction
+autocmd local FileType c,cpp call s:find_include_dir()
+" }}}
