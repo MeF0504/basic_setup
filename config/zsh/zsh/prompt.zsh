@@ -202,7 +202,7 @@ set_prompt() {
             local _PS_END="%(?.>>.%F{125}>>%f%k) "
         fi
         # ip_color
-        local _PS_IPCOLOR='$(ip_color $_GLOBAL_IP)'
+        local _PS_IPCOLOR='$(ip_color $_GLOBAL_IP 2>/dev/null)'
 
         export PROMPT="${_PS_IPCOLOR} ${_PS_PATH}${_PS_COUNTFILE} ${_PS_EXTIME} ${_PS_NEWLINE}${_PS_TIME} ${_PS_HOST}${_PS_USER}${_PS_BGJOB} ${_PS_END}"
 
