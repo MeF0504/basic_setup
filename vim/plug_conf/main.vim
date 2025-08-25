@@ -214,7 +214,22 @@ PlugWrapper 'roxma/vim-hug-neovim-rpc', PlugCond(!has('nvim'))
 
 " visual modeで選択した範囲をgcでコメントアウトしてくれるplugin
 PlugWrapper 'tpope/vim-commentary'
+" {{{
 call meflib#add('del_commands', 'Commentary')
+" DOC OPTIONS local_comment
+" set b:commentary_format for some file extensions.
+" DOCEND
+call meflib#set('local_comment', 'mac', '# %s')
+function! s:set_cs() abort
+    " commentstring だとftpluginで上書きされがちなのでb:commentary_formatを使う
+    let cs = meflib#get('local_comment', {})
+    let ext = expand('%:e')
+    if has_key(cs, ext)
+        let b:commentary_format = cs[ext]
+    endif
+endfunction
+autocmd local BufEnter * call s:set_cs()
+" }}}
 
 " 検索のhit数をpopupで表示するplugin
 PlugWrapper 'obcat/vim-hitspop'
