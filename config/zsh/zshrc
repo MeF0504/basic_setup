@@ -312,8 +312,16 @@ function chpwd()
         # .venvがある場合は仮想環境を有効化する
         # VSCode の場合は未確認
         if [[ -f .venv/bin/activate ]]; then
+            if which deactivate > /dev/null 2>&1; then
+                echo "deactivate current venv"
+                deactivate
+            fi
             source .venv/bin/activate
         elif [[ -f .venv/Scripts/activate ]]; then
+            if which deactivate > /dev/null 2>&1; then
+                echo "deactivate current venv"
+                deactivate
+            fi
             source .venv/Scripts/activate
         fi
     fi
