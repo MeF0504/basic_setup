@@ -63,21 +63,28 @@ function ip_color()
         ip4="%F{$ip4f}%K{$ip4b}"
     elif [[ $ip == *:* ]]; then     # IPv6
         eval "ipnum=(${ip//:/ })"
-        ip1f=$(( 0x${ipnum[1]} >> 8 ))
-        ip1r=$(( 0x${ipnum[1]} & 0xFF ))
-        ip1g=$(( 0x${ipnum[2]} >> 8 ))
-        ip1b=$(( 0x${ipnum[2]} & 0xFF ))
-        ip2f=$(( 0x${ipnum[3]} >> 8 ))
-        ip2r=$(( 0x${ipnum[3]} & 0xFF ))
-        ip2g=$(( 0x${ipnum[4]} >> 8 ))
-        ip2b=$(( 0x${ipnum[4]} & 0xFF ))
-        ip3f=$(( 0x${ipnum[5]} >> 8 ))
-        ip3r=$(( 0x${ipnum[5]} & 0xFF ))
-        ip3g=$(( 0x${ipnum[6]} >> 8 ))
-        ip3b=$(( 0x${ipnum[6]} & 0xFF ))
-        ip4f=$(( 0x${ipnum[7]} >> 8 ))
-        ip4r=$(( 0x${ipnum[7]} & 0xFF ))
+        ipnum1=$(echo "${ipnum[1]}" | sed -e  "s///g")
+        ipnum2=$(echo "${ipnum[2]}" | sed -e  "s///g")
+        ipnum3=$(echo "${ipnum[3]}" | sed -e  "s///g")
+        ipnum4=$(echo "${ipnum[4]}" | sed -e  "s///g")
+        ipnum5=$(echo "${ipnum[5]}" | sed -e  "s///g")
+        ipnum6=$(echo "${ipnum[6]}" | sed -e  "s///g")
+        ipnum7=$(echo "${ipnum[7]}" | sed -e  "s///g")
         ipnum8=$(echo "${ipnum[8]}" | sed -e  "s///g")
+        ip1f=$(( 0x${ipnum1} >> 8 ))
+        ip1r=$(( 0x${ipnum1} & 0xFF ))
+        ip1g=$(( 0x${ipnum2} >> 8 ))
+        ip1b=$(( 0x${ipnum2} & 0xFF ))
+        ip2f=$(( 0x${ipnum3} >> 8 ))
+        ip2r=$(( 0x${ipnum3} & 0xFF ))
+        ip2g=$(( 0x${ipnum4} >> 8 ))
+        ip2b=$(( 0x${ipnum4} & 0xFF ))
+        ip3f=$(( 0x${ipnum5} >> 8 ))
+        ip3r=$(( 0x${ipnum5} & 0xFF ))
+        ip3g=$(( 0x${ipnum6} >> 8 ))
+        ip3b=$(( 0x${ipnum6} & 0xFF ))
+        ip4f=$(( 0x${ipnum7} >> 8 ))
+        ip4r=$(( 0x${ipnum7} & 0xFF ))
         ip4g=$(( 0x${ipnum8} >> 8 ))
         ip4b=$(( 0x${ipnum8} & 0xFF ))
         ip1="%F{${ip1f}}\033[48;2;${ip1r};${ip1g};${ip1b}m"
