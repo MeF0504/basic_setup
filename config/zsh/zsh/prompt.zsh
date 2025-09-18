@@ -49,53 +49,53 @@ function ip_color()
     # https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit
     if [[ $ip == *.* ]]; then   # IPv4
         eval "ipnum=(${ip//./ })"
-        ip1f=15
-        ip1b=${ipnum[1]}
-        ip2f=15
-        ip2b=${ipnum[2]}
-        ip3f=15
-        ip3b=${ipnum[3]}
-        ip4f=15
-        ip4b=${ipnum[4]}
-        ip1="%F{$ip1f}%K{$ip1b}"
-        ip2="%F{$ip2f}%K{$ip2b}"
-        ip3="%F{$ip3f}%K{$ip3b}"
-        ip4="%F{$ip4f}%K{$ip4b}"
+        local ip1f=15
+        local ip1b=${ipnum[1]}
+        local ip2f=15
+        local ip2b=${ipnum[2]}
+        local ip3f=15
+        local ip3b=${ipnum[3]}
+        local ip4f=15
+        local ip4b=${ipnum[4]}
+        local ip1="%F{$ip1f}%K{$ip1b}"
+        local ip2="%F{$ip2f}%K{$ip2b}"
+        local ip3="%F{$ip3f}%K{$ip3b}"
+        local ip4="%F{$ip4f}%K{$ip4b}"
     elif [[ $ip == *:* ]]; then     # IPv6
-        eval "ipnum=(${ip//:/ })"
-        ipnum1=$(echo "${ipnum[1]}" | sed -e  "s///g")
-        ipnum2=$(echo "${ipnum[2]}" | sed -e  "s///g")
-        ipnum3=$(echo "${ipnum[3]}" | sed -e  "s///g")
-        ipnum4=$(echo "${ipnum[4]}" | sed -e  "s///g")
-        ipnum5=$(echo "${ipnum[5]}" | sed -e  "s///g")
-        ipnum6=$(echo "${ipnum[6]}" | sed -e  "s///g")
-        ipnum7=$(echo "${ipnum[7]}" | sed -e  "s///g")
-        ipnum8=$(echo "${ipnum[8]}" | sed -e  "s///g")
-        ip1f=$(( 0x${ipnum1} >> 8 ))
-        ip1r=$(( 0x${ipnum1} & 0xFF ))
-        ip1g=$(( 0x${ipnum2} >> 8 ))
-        ip1b=$(( 0x${ipnum2} & 0xFF ))
-        ip2f=$(( 0x${ipnum3} >> 8 ))
-        ip2r=$(( 0x${ipnum3} & 0xFF ))
-        ip2g=$(( 0x${ipnum4} >> 8 ))
-        ip2b=$(( 0x${ipnum4} & 0xFF ))
-        ip3f=$(( 0x${ipnum5} >> 8 ))
-        ip3r=$(( 0x${ipnum5} & 0xFF ))
-        ip3g=$(( 0x${ipnum6} >> 8 ))
-        ip3b=$(( 0x${ipnum6} & 0xFF ))
-        ip4f=$(( 0x${ipnum7} >> 8 ))
-        ip4r=$(( 0x${ipnum7} & 0xFF ))
-        ip4g=$(( 0x${ipnum8} >> 8 ))
-        ip4b=$(( 0x${ipnum8} & 0xFF ))
-        ip1="%F{${ip1f}}\033[48;2;${ip1r};${ip1g};${ip1b}m"
-        ip2="%F{${ip2f}}\033[48;2;${ip2r};${ip2g};${ip2b}m"
-        ip3="%F{${ip3f}}\033[48;2;${ip3r};${ip3g};${ip3b}m"
-        ip4="%F{${ip4f}}\033[48;2;${ip4r};${ip4g};${ip4b}m"
+        eval "local ipnum=(${ip//:/ })"
+        local ipnum1=$(echo "${ipnum[1]}" | sed -e  "s///g")
+        local ipnum2=$(echo "${ipnum[2]}" | sed -e  "s///g")
+        local ipnum3=$(echo "${ipnum[3]}" | sed -e  "s///g")
+        local ipnum4=$(echo "${ipnum[4]}" | sed -e  "s///g")
+        local ipnum5=$(echo "${ipnum[5]}" | sed -e  "s///g")
+        local ipnum6=$(echo "${ipnum[6]}" | sed -e  "s///g")
+        local ipnum7=$(echo "${ipnum[7]}" | sed -e  "s///g")
+        local ipnum8=$(echo "${ipnum[8]}" | sed -e  "s///g")
+        local ip1K=$(( 0x${ipnum1} >> 8 ))
+        local ip2K=$(( 0x${ipnum1} & 0xFF ))
+        local ip3K=$(( 0x${ipnum2} >> 8 ))
+        local ip4K=$(( 0x${ipnum2} & 0xFF ))
+        local ip1r=$(( 0x${ipnum3} >> 8 ))
+        local ip1g=$(( 0x${ipnum3} & 0xFF ))
+        local ip1b=$(( 0x${ipnum4} >> 8 ))
+        local ip2r=$(( 0x${ipnum4} & 0xFF ))
+        local ip2g=$(( 0x${ipnum5} >> 8 ))
+        local ip2b=$(( 0x${ipnum5} & 0xFF ))
+        local ip3r=$(( 0x${ipnum6} >> 8 ))
+        local ip3g=$(( 0x${ipnum6} & 0xFF ))
+        local ip3b=$(( 0x${ipnum7} >> 8 ))
+        local ip4r=$(( 0x${ipnum7} & 0xFF ))
+        local ip4g=$(( 0x${ipnum8} >> 8 ))
+        local ip4b=$(( 0x${ipnum8} & 0xFF ))
+        local ip1="\033[38;2;${ip1r};${ip1g};${ip1b}m%K{${ip1K}}"
+        local ip2="\033[38;2;${ip2r};${ip2g};${ip2b}m%K{${ip2K}}"
+        local ip3="\033[38;2;${ip3r};${ip3g};${ip3b}m%K{${ip3K}}"
+        local ip4="\033[38;2;${ip4r};${ip4g};${ip4b}m%K{${ip4K}}"
     else
-        ip1="%F{15}%K{0}"
-        ip2="%F{15}%K{0}"
-        ip3="%F{15}%K{0}"
-        ip4="%F{15}%K{0}"
+        local ip1="%F{15}%K{0}"
+        local ip2="%F{15}%K{0}"
+        local ip3="%F{15}%K{0}"
+        local ip4="%F{15}%K{0}"
     fi
 
     local ch0=${SHELL_INFO:0:1}
