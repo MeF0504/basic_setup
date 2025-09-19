@@ -4,3 +4,6 @@ if which wsh > /dev/null 2>&1; then
         wsh deleteblock
     fi
 fi
+
+[ -f $HOME/.zsh/zlogout.mine ] && source $HOME/.zsh/zlogout.mine
+
