@@ -43,12 +43,12 @@ fi
 export _USE_VIM=""
 
 # DISPLAYがない場合は設定したほうが良いの？
-if [[ -z "$DISPLAY" || "$DISPLAY" = "needs-to-be-defined" ]]; then
-    if [[ -t 0 ]]; then
-        echo 'set DISPLAY'
-    fi
-    export DISPLAY=localhost:0.0
-fi
+# if [[ -z "$DISPLAY" || "$DISPLAY" = "needs-to-be-defined" ]]; then
+#     if [[ -t 0 ]]; then
+#         echo 'set DISPLAY'
+#     fi
+#     export DISPLAY=localhost:0.0
+# fi
 #}}}
 ##{{{ Alias configuration
 # search command
