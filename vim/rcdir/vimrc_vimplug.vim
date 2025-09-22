@@ -9,16 +9,17 @@ else
     endif
 endif
 
-if !filereadable(meflib#basic#get_conf_dir()..'/autoload/plug.vim')
-    echohl ErrorMsg
-    echomsg 'vimPlug is not installed.'
-    echohl None
-    finish
-endif
-
 augroup PlugLocal
     autocmd!
 augroup END
+
+if !filereadable(meflib#basic#get_conf_dir()..'/autoload/plug.vim')
+    autocmd PlugLocal VimEnter * ++once
+                \ echohl ErrorMsg |
+                \ echomsg 'vimPlug is not installed.' |
+                \ echohl None
+    finish
+endif
 
 " extensions of Plug command {{{
 " https://github.com/junegunn/vim-plug/wiki/tips
