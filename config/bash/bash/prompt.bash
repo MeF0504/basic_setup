@@ -83,24 +83,24 @@ cal_time()
     fi
     time=$((${__POST_TIME}-${__PRI_TIME}))
     if [[ ${time} -lt 10 ]]; then
-        echo ""
+        __EXTIME=""
     elif [[ ${time} -lt 60 ]]; then
-        echo " ${time}s"
+        __EXTIME="${time}s"
     elif [[ ${time} -lt 3600 ]]; then
         min=$((${time}/60))
         sec=$((${time}%60))
-        echo " ${min}m ${sec}s"
+        __EXTIME=" ${min}m ${sec}s"
     elif [[ ${time} -lt 86400 ]]; then
         hour=$((${time}/3600))
         min=$(((${time}%3600)/60))
         sec=$((${time}%60))
-        echo " ${hour}h ${min}m ${sec}s"
+        __EXTIME=" ${hour}h ${min}m ${sec}s"
     else
         day=$((${time}/86400))
         hour=$(((${time}%86400)/3600))
         min=$(((${time}%3600)/60))
         sec=$((${time}%60))
-        echo " ${day}d ${hour}h ${min}m ${sec}s"
+        __EXTIME=" ${day}d ${hour}h ${min}m ${sec}s"
     fi
 }
 
@@ -109,9 +109,10 @@ set_prompt()
 {
     set_weekly_color
     __POST_TIME=$(date "+%s")
-    export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}$(cal_time)\n${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_GIT}${_PS_END}"
+    cal_time
     __PRI_TIME=${__POST_TIME}
 }
 set_prompt
+export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}"'$__EXTIME'"\n${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_GIT}${_PS_END}"
 
 export PROMPT_COMMAND="set_prompt"
