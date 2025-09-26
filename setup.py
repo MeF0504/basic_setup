@@ -721,6 +721,7 @@ set diff-highlight = true
             cc.clear(f'{home/".zsh"}',
                      [f'{home/".zsh/zshrc.mine"}',
                       f'{home/".zsh/zlogin.mine"}',
+                      f'{home/".zsh/zlogout.mine"}',
                       f'{home/".zsh/enter.zsh"}',
                       ])
 
