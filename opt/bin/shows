@@ -5,7 +5,6 @@ import sys
 import subprocess
 import glob
 import argparse
-import json
 from pathlib import Path
 _py_version = sys.version_info.major*1000 + sys.version_info.minor
 if _py_version < 3011:
@@ -97,7 +96,7 @@ def main(files, verbose, simul):
 
     if simul:
         if shell:
-            images = ' '.join(map(lambda x: x.replace(' ', '\ '), images))
+            images = ' '.join(map(lambda x: x.replace(' ', '\\ '), images))
             cmds = ' '.join(cmd[0]+[images]+cmd[1])
         else:
             cmds = cmd[0]+images+cmd[1]
@@ -110,7 +109,7 @@ def main(files, verbose, simul):
             if len(cur_cmd) != 2:
                 cur_cmd = cmd
             if shell:
-                im = im.replace(' ', '\ ')
+                im = im.replace(' ', '\\ ')
                 cmds = ' '.join(cur_cmd[0]+[im]+cur_cmd[1])
             else:
                 cmds = cur_cmd[0]+[im]+cur_cmd[1]
