@@ -234,3 +234,27 @@ function! s:timer_cb(tid) abort
     endwhile
 endfunction
 " }}}
+
+" ipython を呼ぶ用 {{{
+let s:ipy_ac = 1
+function! meflib#tools#ipython(mod, cmd) abort
+    let local_cmd = glob(meflib#basic#get_top_dir(expand('%:h')).."/.venv*/bin/"..a:cmd)
+    if executable(local_cmd)
+        let sh_cmd = local_cmd
+    elseif executable(a:cmd)
+        let sh_cmd = a:cmd
+    endif
+    echomsg printf('command: %s', sh_cmd)
+    if has('nvim')
+        if s:ipy_ac
+            autocmd cmdLocal TermOpen *ipython* startinsert
+            let s:ipy_ac = 0
+        endif
+        execute printf('botright %s new', a:mod)
+        setlocal nonumber
+        execute printf('terminal %s', sh_cmd)
+    else
+        execute printf('botright %s terminal %s', a:mod, sh_cmd)
+    endif
+endfunction
+" }}}

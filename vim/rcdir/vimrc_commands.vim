@@ -78,21 +78,6 @@ command! SearchConf /<<<<<<<\|=======\|>>>>>>>
 " DOCEND
 " }}}
 " ipython を呼ぶ用 {{{
-let s:ipythons = {'ipython':'Ipython', 'ipython2':'Ipython2', 'ipython3':'Ipython3'}
-let s:ipy_ac = 1
-for [s:sh_cmd, s:vim_cmd] in items(s:ipythons)
-    if executable(s:sh_cmd)
-        if has('nvim')
-            execute printf('command! %s botright <mods> new | setlocal nonumber | terminal %s', s:vim_cmd, s:sh_cmd)
-            if s:ipy_ac
-                autocmd cmdLocal TermOpen *ipython* startinsert
-                let s:ipy_ac = 0
-            endif
-        else
-            execute printf('command! %s botright <mods> terminal %s', s:vim_cmd, s:sh_cmd)
-        endif
-    endif
-endfor
 " DOC COMMANDS Ipython
 " Ipython
 "
@@ -103,6 +88,8 @@ endfor
 "
 " run ipython3 in new tab.
 " DOCEND
+command! Ipython3 call meflib#tools#ipython(<q-mods>, 'ipython3')
+command! Ipython call meflib#tools#ipython(<q-mods>, 'ipython')
 " }}}
 " Spell check {{{
 command! Spell if &spell!=1 | setlocal spell | echo 'spell: on' | else | setlocal nospell | echo 'spell: off' | endif
