@@ -317,14 +317,17 @@ vimfiles() # {{{
         return 1
     fi
     local files=()
-    local cmd_res=$(eval "$1" 2>&1)
-    for file in "$cmd_res"; do
+    local cmd_res=$(eval "$1" 2>&1 | tr '\n' ' ')
+    eval "local cmd_list=(${cmd_res})"
+    for file in $cmd_list; do
         if [[ -f "$file" ]]; then
+            echo "Open $file"
             files+=("$file")
         else
             echo "File not found: $file"
         fi
     done
+    sleep 1
     if (( ${#files[@]} > 0 )); then
         vim_wrapper "${files[@]}"
     fi
