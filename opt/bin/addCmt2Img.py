@@ -2,6 +2,8 @@
 
 import argparse
 from pathlib import Path
+import warnings
+import shutil
 
 import pyexiv2
 
@@ -11,11 +13,18 @@ def main(args):
     if not infile.is_file():
         print(f'file {infile} does not exist.')
         return
+    infile2 = infile.with_stem(infile.stem+'_2')
+    shutil.copy2(infile, infile2)
 
-    img = pyexiv2.Image(infile)
-    meta = img.read_exif()
-    for k, v in meta.items():
-        print(k, v)
+    with pyexiv2.Image(str(infile2)) as img:
+        meta = img.read_exif()
+        pri_cmt = meta['Exif.Photo.UserComment']
+        if len(pri_cmt) != 0:
+            warnings.warn('Previous comments exist. Overwritten.')
+            warnings.warn(pri_cmt)
+        meta['Exif.Photo.UserComment'] = args.comment
+        img.modify_exif(meta)
+        print('Added!')
 
 
 if __name__ == '__main__':
