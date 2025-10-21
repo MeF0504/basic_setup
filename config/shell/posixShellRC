@@ -116,6 +116,12 @@ if [ "$(uname)" = "Darwin" ]; then
 elif [ "$(uname)" = "Linux" ]; then
     : # do nothing now.
 fi
+if [[ -n $ITERM_SESSION_ID ]]; then
+    if which peco > /dev/null 2>&1; then
+        # https://kakakakakku.hatenablog.com/entry/2018/11/03/135615
+        # https://github.com/peco/peco
+        alias itermp='echo -ne "\033]1337;SetProfile=$(peco ~/.iterm2_profiles)\a"'
+fi
 #}}}
 ##{{{ terminal configuration
 
