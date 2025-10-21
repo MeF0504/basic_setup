@@ -121,6 +121,7 @@ if [[ -n $ITERM_SESSION_ID ]]; then
         # https://kakakakakku.hatenablog.com/entry/2018/11/03/135615
         # https://github.com/peco/peco
         alias itermp='echo -ne "\033]1337;SetProfile=$(peco ~/.iterm2_profiles)\a"'
+    fi
 fi
 #}}}
 ##{{{ terminal configuration
