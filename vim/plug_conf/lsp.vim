@@ -276,6 +276,7 @@ function! s:vim_lsp_hook() abort
     nmap <silent> <expr> <c-j> <SID>lsp_mapping(2)
     nmap <silent> <expr> <c-p> <SID>lsp_mapping(3)
     nnoremap <leader>d <Cmd>LspDocumentDiagnostics<CR>
+    call meflib#map_util#desc('n', 'd', 'LspDocumentDiagnostics')
     " help file でバグる？
     autocmd PlugLocal FileType help nnoremap <buffer> <c-]> <c-]>
     " }}}

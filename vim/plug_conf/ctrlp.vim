@@ -3,6 +3,7 @@ PlugWrapper 'ctrlpvim/ctrlp.vim', PlugCond(1, {'on': 'CtrlP'})
 "nnoremap <leader>s :<C-U>CtrlP<CR>
 let g:ctrlp_map = '<leader>s'
 nnoremap <leader>s <Cmd>CtrlP<CR>
+call meflib#map_util#desc('n', 's', 'ファイル探索 (CtrlP)')
 let g:ctrlp_by_filename = 0
 let g:ctrlp_match_window = 'order:ttb,min:1,max:7,results:15'
 let g:ctrlp_switch_buffer = 'e'

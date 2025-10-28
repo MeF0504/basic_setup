@@ -140,6 +140,7 @@ function! <SID>chk_current_position_python() abort
 endfunction
 " MatchupWhereAmI は python だと動かないっぽいので自作を復元
 nnoremap <buffer> <leader>c <Cmd>call <SID>chk_current_position_python()<CR>
+call meflib#map_util#desc('n', 'c', '現在地を表示 (Python)')
 " }}}
 
 " match-upはpython 非対応らしいので，自作 {{{

@@ -62,4 +62,5 @@ function! s:print_current_pos()
     call meflib#floating#select(res, config, function(expand('<SID>')..'pcp_cb', [adjs]))
 endfunction
 nnoremap <leader>c <Cmd>call <SID>print_current_pos()<CR>
+call meflib#map_util#desc('n', 'c', '現在地を表示')
 

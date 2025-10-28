@@ -201,6 +201,11 @@ meflib#add({var_name}, {var})                                     *meflib#add()*
 
 Add {value} to |list| of {var_name}. If {var_name} does not exist, make the list.
 
+meflib#filejump#main()                                  *meflib#filejump#main()*
+
+Check the file under the cursor exists or not.
+If it starts with "http[s]", this function try to open it in the web browser.
+
 meflib#debug#set_debug({filename})                    *meflib#debug#set_debug()*
 
 Set file name to write debug message.
@@ -209,6 +214,14 @@ meflib#debug#debug_log({dbgmsg}, {tag})               *meflib#debug#debug_log()*
 
 Write debug message {dbgmsg} to debug log file with {tag}.
 If {dbgmsg} is empty, write the file name.
+
+meflib#map_util#show_maps()                        *meflib#map_util#show_maps()*
+
+how the list of "mapleader"-linked maps.
+
+meflib#map_util#multimap({name})                    *meflib#map_util#multimap()*
+
+Execute the mapping of {name} registered in |meflib-map_cmds|.
 
 meflib#basic#get_conf_dir()                        *meflib#basic#get_conf_dir()*
 
@@ -259,10 +272,6 @@ Set the current buffer as a scratch buffer, and then put {text} in it.
 meflib#basic#special_win({winid})                   *meflib#basic#special_win()*
 
 Return 1 if the window of {winid} is a special window.
-
-meflib#basic#map_util({name})                          *meflib#basic#map_util()*
-
-Execute the mapping of {name} registered in |meflib-map_cmds|.
 
                                                          *meflib#color#isdark()*
 meflib#color#isdark({r}, {g}, {b}, {thsd}=v:null, {verbose}=v:false)
@@ -318,11 +327,6 @@ Wrapper function to create and open floating/popup select menu. This works
 almost same as |popup_menu| of vim.
 {config} is same as |meflib#floating#open()|.
 
-meflib#filejump#main()                                  *meflib#filejump#main()*
-
-Check the file under the cursor exists or not.
-If it starts with "http[s]", this function try to open it in the web browser.
-
 
 ==============================================================================
 OPTIONS                                                         *meflib-options*
@@ -330,6 +334,9 @@ OPTIONS                                                         *meflib-options*
 pydoc_cmd                                                     *meflib-pydoc_cmd*
 Command to be used in PyHelp.
 default is 'pydoc3'.
+
+local_comment                                             *meflib-local_comment*
+set b:commentary_format for some file extensions.
 
 cfi_on                                                           *meflib-cfi_on*
 If set to 1, show current function name on the window.
@@ -339,34 +346,6 @@ Flag to check if qrun is finished or not.
 
 quickrun_nvimterm                                     *meflib-quickrun_nvimterm*
 whether to use terminal runner in nvim or not.
-
-get_top_dir                                                 *meflib-get_top_dir*
-Flag to use meflib#basic#get_top_dir function in Gregrep and Find commands.
-
-ctags_config                                               *meflib-ctags_config*
-Command and options to be used in Ctags.
-	'command': Command. default is 'ctags'.
-	'opt': Options. default is ''.
-
-snooze_time                                                 *meflib-snooze_time*
-Snooze time in seconds. default is 600 sec.
-
-win_term_cmd                                               *meflib-win_term_cmd*
-List of command and options to be used in Terminal in Windows OS.
-
-term_default                                               *meflib-term_default*
-Default command modifier for terminal.
-
-term_col_name                                             *meflib-term_col_name*
-terminal color name.
-
-birthday                                                       *meflib-birthday*
-Birthday in [month, day] format. default is [0, 0].
-
-fern_aft_conf                                             *meflib-fern_aft_conf*
-Command and options to be used when AFTViewer is called in Fern.
-	'cmd': Command. default is 'aftviewer'.
-	'type_conf': Options for each file type.
 
 show_cwd_tab                                               *meflib-show_cwd_tab*
 Flag to show current working directory in tabline.
@@ -429,6 +408,37 @@ file name and tab number of last closed tab.
 
 show_git_status                                         *meflib-show_git_status*
 Flag to show git status on the window.
+
+get_top_dir                                                 *meflib-get_top_dir*
+Flag to use meflib#basic#get_top_dir function in Gregrep and Find commands.
+
+ctags_config                                               *meflib-ctags_config*
+Command and options to be used in Ctags.
+	'command': Command. default is 'ctags'.
+	'opt': Options. default is ''.
+
+snooze_time                                                 *meflib-snooze_time*
+Snooze time in seconds. default is 600 sec.
+
+win_term_cmd                                               *meflib-win_term_cmd*
+List of command and options to be used in Terminal in Windows OS.
+
+term_default                                               *meflib-term_default*
+Default command modifier for terminal.
+
+term_col_name                                             *meflib-term_col_name*
+terminal color name.
+
+term_col_name                                             *meflib-term_col_name*
+terminal color name.
+
+birthday                                                       *meflib-birthday*
+Birthday in [month, day] format. default is [0, 0].
+
+fern_aft_conf                                             *meflib-fern_aft_conf*
+Command and options to be used when AFTViewer is called in Fern.
+	'cmd': Command. default is 'aftviewer'.
+	'type_conf': Options for each file type.
 
 
 ==============================================================================

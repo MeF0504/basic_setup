@@ -115,6 +115,7 @@ function! s:fern_map() abort
     endif
 endfunction
 nnoremap <silent> <leader>n <Cmd>call <SID>fern_map()<CR>
+call meflib#map_util#desc('n', 'n', 'ファイラー')
 
 " 色設定
 function! <SID>fern_his() abort

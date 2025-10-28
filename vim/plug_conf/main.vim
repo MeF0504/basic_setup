@@ -92,6 +92,7 @@ PlugWrapper 'MeF0504/RegistPaste.vim'
 PlugWrapper 'MeF0504/vim-TabJumper', PlugCond(1, {'on': 'TabJump'})
 " TabJumper {{{
 nnoremap <leader>l <Cmd>TabJump<CR>
+call meflib#map_util#desc('n', 'l', 'タブ一覧を表示')
 tnoremap <c-l><c-l> <Cmd>TabJump<CR>
 let g:tabjumper_preview_enable = 'manual'
 let g:tabjumper_preview_width = &columns-20
@@ -382,6 +383,7 @@ let g:gundo_prefer_python3 = 1
 " width
 let g:gundo_width = meflib#get('side_width', 30)
 nnoremap <silent> <Leader>u <Cmd>GundoToggle<CR>
+call meflib#map_util#desc('n', 'u', 'ファイルの変更履歴を表示')
 " }}}
 
 " カーソルの下の文字とかをhighlight
@@ -409,8 +411,9 @@ let g:git_messenger_no_default_mappings = v:true
 let g:git_messenger_floating_win_opts = {'border': 'single'}
 let s:map_cmds_git['m'] = "GitMessenger"
 call meflib#set('map_cmds', 'git', s:map_cmds_git)
-nnoremap <leader>g <Cmd>call meflib#basic#map_util('git')<CR>
+nnoremap <leader>g <Cmd>call meflib#map_util#multimap('git')<CR>
 " nnoremap <leader>gm <Cmd>GitMessenger<CR>
+call meflib#map_util#desc('n', 'g', 'Git関連')
 autocmd PlugLocal FileType gitmessengerpopup
             \ nnoremap <buffer> q <Cmd>GitMessengerClose<CR>
 " }}}
@@ -436,7 +439,8 @@ call meflib#set('map_cmds', 'Bookmark', {
             \ 'i': 'BookmarkAnnotate',
             \ 'a': 'BookmarkShowAll',
             \ })
-nnoremap <leader>m <Cmd>call meflib#basic#map_util('Bookmark')<CR>
+nnoremap <leader>m <Cmd>call meflib#map_util#multimap('Bookmark')<CR>
+call meflib#map_util#desc('n', 'm', 'Bookmark用')
 function! s:bookmarks_his() abort
     let [ctermbg, guibg] = meflib#basic#get_hi_info('SignColumn', ['ctermbg', 'guibg'])
     execute printf("highlight default BookmarkSign ctermfg=105 ctermbg=%s guifg=#8787ff guibg=%s", ctermbg, guibg)
@@ -452,12 +456,14 @@ let g:sonictemplate_vim_template_dir = meflib#basic#get_conf_dir()..'plug_conf/t
 let g:sonictemplate_key = "\<c-q>\<c-q>"
 let g:sonictemplate_intelligent_key = "\<c-q>\<c-a>"
 nmap <leader>a :<C-u>Template 
+call meflib#map_util#desc('n', 'a', 'Templateを起動')
 " }}}
 
 " window のresize, 移動用plugin
 PlugWrapper 'simeji/winresizer', PlugCond(1, {'on': 'WinResizerStartResize'})
 " {{{
 nnoremap <leader>w <Cmd>WinResizerStartResize<CR>
+call meflib#map_util#desc('n', 'w', 'Resize window')
 let g:winresizer_finish_with_escape = 0
 let g:winresizer_start_key = '<leader>w'
 let g:winresizer_vert_resize = 5
@@ -490,8 +496,11 @@ endif
 PlugWrapper 'ojroques/vim-oscyank', {'branch': 'main'}
 " {{{
 nmap <leader>y <Plug>OSCYankOperator
+call meflib#map_util#desc('n', 'y', 'Remote Yank')
 nmap <leader>yy <leader>y_
+call meflib#map_util#desc('n', 'yy', 'Remote Yank（行）')
 vmap <leader>y <Plug>OSCYankVisual
+call meflib#map_util#desc('v', 'y', 'Remote Yank (Visual mode)')
 let g:oscyank_max_length = 0 " maximum length of a selection, 0 for unlimited length
 let g:oscyank_silent = 0 " disable message on successful copy
 let g:oscyank_trim = 0 " trim surrounding whitespaces before copy

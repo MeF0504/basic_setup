@@ -27,3 +27,4 @@ function! s:tagbar_toggle() abort
     TagbarToggle
 endfunction
 nnoremap <silent> <Leader>t <Cmd>call <SID>tagbar_toggle()<CR>
+call meflib#map_util#desc('n', 't', '関数／変数など一覧')

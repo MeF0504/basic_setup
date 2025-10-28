@@ -101,4 +101,5 @@ function! s:outliner_hook() abort
 endfunction
 autocmd PlugLocal User outliner.vim call s:outliner_hook()
 nnoremap <silent> <Leader>o <Cmd>OutLiner<CR>
+call meflib#map_util#desc('n', 'o', 'アウトラインを表示')
 

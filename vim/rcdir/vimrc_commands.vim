@@ -45,10 +45,7 @@ endif
 
 " map leader にmapされているmapを表示 {{{
 " nnoremap <Leader><Leader> :map mapleader<CR>
-function! <SID>leader_map()
-    map <Leader>
-endfunction
-nnoremap <silent> <Leader><Leader> <Cmd>call <SID>leader_map()<CR>
+nnoremap <silent> <Leader><Leader> <Cmd>call meflib#map_util#show_maps()<CR>
 " }}}
 " diff系command {{{
 command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
@@ -157,6 +154,7 @@ command! -nargs=? -complete=customlist,meflib#terminal#comp  Terminal call mefli
 " }}}
 " ファイルの存在チェック {{{
 nnoremap <leader>f <Cmd>call meflib#filejump#main()<CR>
+call meflib#map_util#desc('n', 'f', 'ファイルの存在をチェックしてジャンプ')
 " DOC FUNCTIONS meflib#filejump#main()
 " meflib#filejump#main()
 " 
@@ -288,7 +286,8 @@ command! -nargs=? -complete=customlist,meflib#tag_func_all#comp TagFuncAll call 
 call meflib#set('map_cmds', 'Qcmds', {
             \ 'f': "call meflib#qflist#main()"
             \ })
-nnoremap <leader>q <Cmd>call meflib#basic#map_util('Qcmds')<CR>
+nnoremap <leader>q <Cmd>call meflib#map_util#multimap('Qcmds')<CR>
+call meflib#map_util#desc('n', 'q', 'f: quick fixのリストを表示')
 " }}}
 " ちょっとpython scriptをvimで動かしたいとき {{{
 command! PyTmp call meflib#pytmp#main()
