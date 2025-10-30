@@ -33,9 +33,15 @@ function! meflib#filejump#main() abort
     elseif isdirectory(fname)
         " directory
         let yn = input(printf('%s: directory. open in new tab? (y/s/[n]): ', fname))
+        if match(['y', 's'], yn) == -1
+            let yn = 'n'
+        endif
     elseif filereadable(fname)
         " file
-        let yn = input(printf('%s: file. open in new tab? (y/s/[n]): ',fname))
+        let yn = input(printf('%s: file. open in new tab? (y/s/a/[n]): ', fname))
+        if match(['y', 's', 'a'], yn) == -1
+            let yn = 'n'
+        endif
     elseif fname[:6] ==# 'http://' || fname[:7] ==# 'https://'
         " URL
         let cmd = meflib#basic#get_exe_cmd()
@@ -62,6 +68,12 @@ function! meflib#filejump#main() abort
             call s:run_cmd([cmd, fname])
         else
             echo 'command to open the file is not found.'
+        endif
+    elseif yn ==# 'a'
+        if executable('aftviewer')
+            execute printf('Terminal aftviewer %s -c', fname)
+        else
+            echo 'aftviewer command is not found.'
         endif
     endif
 endfunction
