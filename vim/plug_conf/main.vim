@@ -486,9 +486,12 @@ PlugWrapper 'github/copilot.vim', PlugCond(meflib#get('plug_opt', 'copilot', 0))
 " {{{
 " To use copilot, you need to set up your GitHub account => `:Copilot setup`
 if meflib#get('plug_opt', 'copilot', 0)
+    " tabだとddcと被るので<c-t>にする
     " :h copilot-i_<Tab>
     imap <silent><script><expr> <C-T> copilot#Accept("\<CR>")
     let g:copilot_no_tab_map = v:true
+    " デフォルトだとoffにしておく
+    autocmd PlugLocal VimEnter * Copilot disable
 endif
 " }}}
 
