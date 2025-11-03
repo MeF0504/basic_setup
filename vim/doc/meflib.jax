@@ -350,6 +350,9 @@ default is 'pydoc3'.
 local_comment                                             *meflib-local_comment*
 set b:commentary_format for some file extensions.
 
+copilot_auto_disable                               *meflib-copilot_auto_disable*
+disable copilot when Vim enter.
+
 cfi_on                                                           *meflib-cfi_on*
 If set to 1, show current function name on the window.
 

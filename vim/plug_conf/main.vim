@@ -491,7 +491,12 @@ if meflib#get('plug_opt', 'copilot', 0)
     imap <silent><script><expr> <C-T> copilot#Accept("\<CR>")
     let g:copilot_no_tab_map = v:true
     " デフォルトだとoffにしておく
-    autocmd PlugLocal VimEnter * Copilot disable
+    if meflib#get('copilot_auto_disable', v:false)
+        " DOC OPTIONS copilot_auto_disable
+        " disable copilot when Vim enter.
+        " DOCEND
+        autocmd PlugLocal VimEnter * Copilot disable
+    endif
 endif
 " }}}
 
