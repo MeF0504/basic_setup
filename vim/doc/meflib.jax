@@ -180,6 +180,14 @@ SearchJa                                                             *:SearchJa*
 
 Search multibyte words.
 
+LastTab                                                               *:LastTab*
+
+Open a buffer of tab last closed.
+
+LastWin                                                               *:LastWin*
+
+Open a buffer of window last closed.
+
 
 ==============================================================================
 FUNCTIONS                                                     *meflib-functions*
@@ -214,6 +222,10 @@ meflib#debug#debug_log({dbgmsg}, {tag})               *meflib#debug#debug_log()*
 
 Write debug message {dbgmsg} to debug log file with {tag}.
 If {dbgmsg} is empty, write the file name.
+
+meflib#map_util#desc(mode, key, description)            *meflib#map_util#desc()*
+
+dd the description of "mapleader"-linked maps.
 
 meflib#map_util#show_maps()                        *meflib#map_util#show_maps()*
 
@@ -425,9 +437,6 @@ List of command and options to be used in Terminal in Windows OS.
 
 term_default                                               *meflib-term_default*
 Default command modifier for terminal.
-
-term_col_name                                             *meflib-term_col_name*
-terminal color name.
 
 term_col_name                                             *meflib-term_col_name*
 terminal color name.

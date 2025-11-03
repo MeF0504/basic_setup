@@ -13,10 +13,11 @@ def main():
             continue
         is_doc = False
         with open(fy, 'r') as f:
-            for ln in f:
+            for i, ln in enumerate(f):
                 ln = ln.strip()
                 if ln.startswith('" DOC '):
                     is_doc = True
+                    # print(f'{fy}; {i}; {ln}')
                     assert len(ln.split(' ')) == 4, \
                         f"failed to set param: {fy}, {ln}"
                     _, _, doc_type, name = ln.split(' ')
@@ -24,6 +25,7 @@ def main():
                 elif ln.startswith('" DOCEND'):
                     is_doc = False
                     res.append(details)
+                    # print(f'added {fy}; {i}; {details}')
                 elif is_doc:
                     details['cont'].append(ln[2:])
     # print(res)

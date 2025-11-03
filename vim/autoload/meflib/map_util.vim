@@ -3,7 +3,7 @@ scriptencoding utf-8
 let s:map_desc = {}
 
 " map の説明追加
-" " DOC FUNCTIONS meflib#map_util#desc()
+" DOC FUNCTIONS meflib#map_util#desc()
 " meflib#map_util#desc(mode, key, description)
 " 
 "Add the description of "mapleader"-linked maps.

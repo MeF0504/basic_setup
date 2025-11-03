@@ -330,12 +330,12 @@ command! SearchJa /\v[^\x01-\x7E]+
 " DOCEND
 " }}}
 " 最後に閉じたタブ，ウィンドウを開く {{{
-" " DOC COMMANDS LastTab
+" DOC COMMANDS LastTab
 " LastTab
 " 
 " Open a buffer of tab last closed.
 " DOCEND
-" " DOC COMMANDS LastWin
+" DOC COMMANDS LastWin
 " LastWin
 " 
 " Open a buffer of window last closed.
