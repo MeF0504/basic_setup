@@ -53,7 +53,7 @@ let g:popsyntax_match_enable = 1
 PlugWrapper 'MeF0504/highlightag.vim'
 "" highlightag {{{
 autocmd PlugLocal Syntax *
-\ if &filetype == 'c' |
+\ if match(['c', 'cpp'], &filetype) != -1 |
 \ silent call highlightag#run_hitag_job_file() |
 \ else |
 \ silent call highlightag#run_hitag_job() |
