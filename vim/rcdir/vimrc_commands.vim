@@ -356,3 +356,8 @@ endfunction
 command! LastTab call <SID>open_last_tab()
 command! LastWin execute "vsplit " . meflib#get('last_file_win', '')[0]
 " }}}
+" {{{ neovim のrelease pageを開く
+if has('nvim')
+    command NVimUpdate call system([meflib#basic#get_exe_cmd(), 'https://github.com/neovim/neovim/releases/'])
+endif
+" }}}
