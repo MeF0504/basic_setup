@@ -424,6 +424,9 @@ file name and tab number of last closed tab.
 show_git_status                                         *meflib-show_git_status*
 Flag to show git status on the window.
 
+enter_err_msg                                             *meflib-enter_err_msg*
+Error messages shown after Vim entered.
+
 get_top_dir                                                 *meflib-get_top_dir*
 Flag to use meflib#basic#get_top_dir function in Gregrep and Find commands.
 

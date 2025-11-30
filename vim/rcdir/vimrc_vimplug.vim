@@ -14,10 +14,7 @@ augroup PlugLocal
 augroup END
 
 if !filereadable(meflib#basic#get_conf_dir()..'/autoload/plug.vim')
-    autocmd PlugLocal VimEnter * ++once
-                \ echohl ErrorMsg |
-                \ echomsg 'vimPlug is not installed.' |
-                \ echohl None
+    call meflib#add('enter_err_msg', 'vimPlug is not installed.')
     finish
 endif
 

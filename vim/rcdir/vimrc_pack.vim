@@ -12,9 +12,10 @@ function! s:packadd_plugin(plugin_name, bang) abort
         let cmd = 'packadd ' . a:plugin_name
     endif
     try
+        " throw "E919 test"
         execute cmd
     catch /E919/
-        echomsg "@ vimrc_pack: " .. a:plugin_name .. ' not found.'
+        call meflib#add('enter_err_msg', "@ vimrc_pack: " .. a:plugin_name .. ' not found.')
     endtry
 endfunction
 " editorconfig {{{

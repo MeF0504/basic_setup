@@ -218,3 +218,18 @@ function! s:find_include_dir() abort
 endfunction
 autocmd local FileType c,cpp call s:find_include_dir()
 " }}}
+
+" 起動後にerror message をまとめて表示 {{{
+function! s:display_err_msgs() abort
+    " DOC OPTIONS enter_err_msg
+    " Error messages shown after Vim entered.
+    " DOCEND
+    let msgs = meflib#get('enter_err_msg', [])
+    for msg in msgs
+        echohl ErrorMsg
+        echomsg msg
+        echohl None
+    endfor
+endfunction
+autocmd local VimEnter * ++once call s:display_err_msgs()
+" }}}
