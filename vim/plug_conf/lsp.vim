@@ -322,4 +322,8 @@ autocmd PlugLocal User vim-lsp call s:vim_lsp_hook()
 " vim-lspの設定用plugin
 PlugWrapper 'mattn/vim-lsp-settings', PlugCond(0, {})
 call meflib#add('lazy_plugins', 'vim-lsp-settings')
+" なんか公式でもlazy loadができる様になっているけど，
+" 管理が面倒になりそうなのでoff
+" https://github.com/mattn/vim-lsp-settings/commit/928fe58f1ddeafdbfa35c4cb4ecba24389d03f2a
+let g:lsp_settings_lazyload = 0
 
