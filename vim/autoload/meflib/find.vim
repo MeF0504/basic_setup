@@ -23,7 +23,15 @@ function! meflib#find#comp(arglead, cmdline, cursorpos) abort
 endfunction
 
 function! s:find_cb(files, wid, res) abort
-    if a:res > 0
+    if a:res == 1
+        let output = []
+        for tmp in a:files[1:]
+            let info = strftime('%Y/%m/%d_%H-%M-%S', getftime(tmp))
+            call add(output, printf('%s|1| %s', tmp, info))
+        endfor
+        cgetexpr output
+        copen
+    elseif a:res > 1
         execute "tabnew "..a:files[a:res-1]
     endif
 endfunction
@@ -75,6 +83,7 @@ function! meflib#find#main(args) abort
         echo 'no matched file is found.'
         return
     endif
+    call extend(res, ['open as quickfix'], 0)
     let config = {
                 \ 'relative': 'editor',
                 \ 'line': &lines/3,
