@@ -119,16 +119,22 @@ function! meflib#color#ShowStatusLineBG() abort
         return
     endif
     let is_gui = has('gui_running') || (has('termguicolors') && &termguicolors)
+    let d_val = (stl_br*s:w_r+stl_bg*s:w_g+stl_bb*s:w_b)/(s:w_r+s:w_g+s:w_b)
     let echo_str  = 'red:'.stl_br
     let echo_str .= ' green:'.stl_bg
     let echo_str .= ' blue:'.stl_bb
     let echo_str .= ' => bg:'.meflib#color#get_colorid(stl_br, stl_bg, stl_bb, is_gui)
-    let echo_str .= '   is_dark:'
-    let echo_str .= printf('(%d*%.1f+%d*%.1f+%d*%.1f)/(%.1f+%.1f+%.1f)',
+    let echo_str .= '   dark:'
+    if d_val < s:thsd*5
+        let echo_str .= 'true'
+    else
+        let echo_str .= 'false'
+    endif
+    let echo_str .= printf(' ((%d*%.1f+%d*%.1f+%d*%.1f)/(%.1f+%.1f+%.1f)',
                 \ stl_br, s:w_r, stl_bg, s:w_g, stl_bb, s:w_b,
                 \ s:w_r, s:w_g, s:w_b)
-    let echo_str .= printf(' = %.3f', (stl_br*s:w_r+stl_bg*s:w_g+stl_bb*s:w_b)/(s:w_r+s:w_g+s:w_b))
-    let echo_str .= printf(' < %.3f', s:thsd*5)
+    let echo_str .= printf(' = %.3f', d_val)
+    let echo_str .= printf(' < %.3f)', s:thsd*5)
     echo echo_str
 endfunction
 
