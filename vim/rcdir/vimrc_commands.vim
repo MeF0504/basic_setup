@@ -361,8 +361,8 @@ if has('nvim')
     command NVimUpdate call system([meflib#basic#get_exe_cmd(), 'https://github.com/neovim/neovim/releases/'])
 endif
 " }}}
-" {{{ Neovimのterminal上から元のNeovimでファイルを開く用
-function! NvimDrop(bufnr, arglist) abort
+" {{{ vimのterminal上から元のvimでファイルを開く用
+function! Tapi_Drop(bufnr, arglist) abort
     let cwd = a:arglist[0]
     let filepath = a:arglist[1]
     if isabsolutepath(filepath)
