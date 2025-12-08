@@ -361,3 +361,23 @@ if has('nvim')
     command NVimUpdate call system([meflib#basic#get_exe_cmd(), 'https://github.com/neovim/neovim/releases/'])
 endif
 " }}}
+" {{{ Neovimのterminal上から元のNeovimでファイルを開く用
+function! NvimDrop(bufnr, arglist) abort
+    let cwd = a:arglist[0]
+    let filepath = a:arglist[1]
+    if isabsolutepath(filepath)
+        " 絶対パスでない時は絶対パスに変換する
+        let filepath = fnamemodify(cwd, ':p') . filepath
+    endif
+
+    " ファイルがすでに開かれていればそのウインドウに移動する
+    let opencmd = 'drop'
+    if bufwinnr(bufnr(filepath)) == -1
+        " ↑ なんかこれが機能していない？まあ困らないけど...
+        " ファイルがすでに開かれている場合でなければ新規タブで開く
+        let opencmd = 'tabnew'
+    endif
+    execute opencmd fnameescape(filepath)
+    return ''
+endfunction
+" }}}

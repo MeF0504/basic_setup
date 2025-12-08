@@ -265,9 +265,13 @@ vim_wrapper() # {{{
     if [[ -n "${VIM_TERMINAL}" ]]; then
         # vim上からshellを操作してvimで開く
         # :h terminal-api
-        # Neovimには無いらしい
         fp=$(cd $(dirname $1) && pwd)/$(basename $1)
         echo -ne "\e]51;[\"drop\", \"${fp}\", {}]\x07"
+        return
+    elif [[ -n "${NVIM}" ]]; then
+        # Neovim でもできるらしい
+        # https://zenn.dev/vim_jp/articles/drop-from-terminal-neovim
+        nvim -u NONE --server $NVIM --headless --remote-expr "NvimDrop(0, ['$(pwd)', '$1'])"
         return
     elif [[ -x $(which "$_USE_VIM" 2> /dev/null) ]]; then
         local use_vim=$_USE_VIM
