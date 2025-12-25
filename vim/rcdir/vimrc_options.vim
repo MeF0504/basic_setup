@@ -118,6 +118,8 @@ if has('win32') || has('win64')
 endif
 " CursorHoldの時間
 set updatetime=4000 " (default)
+" 一度に開くタブの最大数
+set tabpagemax=20
 " 月1回helptags を実行
 function! s:exec_helptag(tid) abort
     let htagfs = glob(s:vimdir..'doc/tags*', 0, 1)
