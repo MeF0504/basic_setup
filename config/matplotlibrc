@@ -14,6 +14,11 @@ backend             : tkagg
 ## required?: $ pip3 install PyQt5
 ## maybe following are also required:  PyQt5-sip QtAwesome qtconsole QtPy
 ## backend          : Qt5Agg
+## WebAgg-related settings
+# backend          : webagg
+# webagg.open_in_browser : False
+## If all backends don't work...
+# backend agg
 
 ### LINES
 lines.markersize    : 4     ## markersize, in points
