@@ -513,3 +513,10 @@ let g:oscyank_max_length = 0 " maximum length of a selection, 0 for unlimited le
 let g:oscyank_silent = 0 " disable message on successful copy
 let g:oscyank_trim = 0 " trim surrounding whitespaces before copy
 " }}}
+
+" 倉庫番
+PlugWrapper 'vim-scripts/sokoban.vim', PlugCond(1, {'on': ['Sokoban', 'SokobanH', 'SokobanV']})
+let g:SokobanLevelDirectory = meflib#basic#get_conf_dir()..'plugged/sokoban.vim/'
+
+" Mine Sweeper
+PlugWrapper 'mmisono/viminesweeper', PlugCond(1, {'on': 'MineSweeper'})
