@@ -381,3 +381,15 @@ function! Tapi_Drop(bufnr, arglist) abort
     return ''
 endfunction
 " }}}
+" クリップボードに文字をコピー {{{
+function! s:yank_clipboard(text) abort
+    if match(&clipboard, 'unnamedplus') != 0
+        let @+ = a:text
+    elseif match(&clipboard, 'unnamed') != 0
+        let @* = a:text
+    else
+        echo "clipboard is not supported."
+    endif
+endfunction
+command! -nargs=1 -complete=file Clip call s:yank_clipboard(<args>)
+" }}}
