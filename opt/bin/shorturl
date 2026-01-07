@@ -1,0 +1,14 @@
+#! /bin/bash
+
+# https://note.com/text_sakura/n/n8789e29458da
+
+case "$(uname)" in
+    Darwin*)
+        open "https://www.google.com/search?tbm=ilp&q=${1}"
+        ;;
+    Linux*)
+        xdg-open "https://www.google.com/search?tbm=ilp&q=${1}"
+        ;;
+    *)
+        echo "open https://www.google.com/search?tbm=ilp&q=${1}"
+esac
