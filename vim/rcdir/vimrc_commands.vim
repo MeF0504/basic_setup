@@ -365,7 +365,7 @@ endif
 function! Tapi_Drop(bufnr, arglist) abort
     let cwd = a:arglist[0]
     let filepath = a:arglist[1]
-    if isabsolutepath(filepath)
+    if !isabsolutepath(filepath)
         " 絶対パスでない時は絶対パスに変換する
         let filepath = fnamemodify(cwd, ':p') . filepath
     endif
