@@ -300,10 +300,11 @@ function chpwd()
     if [[ -e .git && "$TERM_PROGRAM" != "vscode" ]]; then
         read "yn?execute fetch? ([y]/n) "
         if [ -z "$yn" ] || [ "$yn" = 'y' ]; then
+            local branch=$(git branch --contains | cut -d " " -f 2)
             echo "fetching..."
             git fetch
             echo
-            git log --graph --oneline --all HEAD..origin/HEAD \
+            git log --graph --oneline ${branch}..origin/${branch} \
                 --date=format:"%Y/%m/%d" \
                 --pretty=format:"%C(yellow)%h%Creset %C(green)%ad%Creset%C(auto)%d%Creset %s"
         else
