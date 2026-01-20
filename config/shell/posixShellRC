@@ -69,6 +69,8 @@ esac
 alias la="ls -a"
 # ls long format w/ human-readable
 alias ll="ls -lh"
+# ls reversed modified time sort
+alias lt="ls -rtlh"
 # shortcut
 alias l="ls"
 alias c="cd"
@@ -83,6 +85,8 @@ alias df="df -h"
 # useful options
 alias su="su -l"
 alias grep="grep --color --exclude-dir=.git"
+# reload shell [https://qiita.com/takaesu_ug/items/c4de582c6f85a42817d8]
+alias reload="exec ${SHELL} -l"
 # move files to trash.
 alias del="mv_Trash.py"
 ## if use terminology [https://www.enlightenment.org/about-terminology.md]
@@ -107,7 +111,6 @@ if [ -n "${VIM}" ]; then
     alias vim="echo 'already opened vim.'"
 fi
 # others
-alias global_ip="curl ifconfig.io 2> /dev/null"
 alias iv='for iv in {4..1}; do; echo -n ${iv}..\ ;sleep 1;done; echo; vim_wrapper '
 # OS specified aliases
 if [ "$(uname)" = "Darwin" ]; then
@@ -116,6 +119,7 @@ if [ "$(uname)" = "Darwin" ]; then
 elif [ "$(uname)" = "Linux" ]; then
     : # do nothing now.
 fi
+# change iTerm profile
 if [[ -n $ITERM_SESSION_ID ]]; then
     if which peco > /dev/null 2>&1; then
         # https://kakakakakku.hatenablog.com/entry/2018/11/03/135615
