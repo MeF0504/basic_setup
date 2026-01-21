@@ -26,7 +26,13 @@ function! meflib#map_util#show_maps()
         if m['lhs'] =~ leader
             let desc = get(s:map_desc, m['mode']..'-'..m['lhs'][len(leader):], '')
             if empty(desc)
-                let desc = m['rhs']
+                if has_key(m, 'desc')
+                    let desc = m['desc']
+                elseif has_key(m, 'rhs')
+                    let desc = m['rhs']
+                else
+                    let desc = '??? no descriptions'
+                endif
             endif
             echo printf('%s %s: %s', m.mode, m.lhs, desc)
         endif
