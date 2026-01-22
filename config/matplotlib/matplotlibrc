@@ -17,7 +17,7 @@
 # backend          : Qt5Agg
 ## WebAgg-related settings
 # backend          : webagg
-# webagg.open_in_browser : False
+webagg.open_in_browser : False
 ## If all backends don't work...
 # backend agg
 
