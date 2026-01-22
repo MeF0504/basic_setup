@@ -514,11 +514,8 @@ def create_settings(args: Args):
             dic['config']['fish'] = True
         else:
             dic['config']['fish'] = False
-    jset = json.dumps(dic)
-    jset = jset.replace('{', '{\n    ')
-    jset = jset.replace('},', '},\n    ')
     with open(SFILE, 'w') as f:
-        f.write(jset)
+        json.dump(dic, f, indent='    ')
 
 
 def get_ignore_list() -> list[str]:
