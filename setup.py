@@ -524,6 +524,7 @@ def get_ignore_list() -> list[str]:
     with open(IGFILE, 'r') as f:
         lines = f.readlines()
     lines = [line.replace('\n', '') for line in lines]
+    lines = [line for line in lines if len(line) > 0]
     return lines
 
 
