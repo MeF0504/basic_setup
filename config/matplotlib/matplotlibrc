@@ -9,11 +9,12 @@
 ### MATPLOTLIBRC FORMAT
 
 ### BACKEND
-backend             : tkagg
+## 環境毎のデフォルトは環境変数 MPLBACKEND で設定すると良さそう
+# backend             : tkagg
 ## If TkAgg doesn't work, or show only white display, try Qt5Agg.
 ## required?: $ pip3 install PyQt5
 ## maybe following are also required:  PyQt5-sip QtAwesome qtconsole QtPy
-## backend          : Qt5Agg
+# backend          : Qt5Agg
 ## WebAgg-related settings
 # backend          : webagg
 # webagg.open_in_browser : False
@@ -36,3 +37,6 @@ legend.frameon      : True  # whether or not to draw a frame around legend
 legend.framealpha   : 0.3   # opacity of of legend frame
 legend.loc          : best
 
+## load env-local config from script:
+## check the dir: matplotlib.get_configdir()
+## load the config: plt.style.use(path)

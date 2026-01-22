@@ -635,10 +635,10 @@ def get_conf_list(setting: dict[str, Any]) -> list[list[str]]:
             [ROOT/"config/editorconfig", home/".editorconfig"],
             ]
     if UNAME == 'Darwin':
-        files.append([ROOT/"config/matplotlibrc",
+        files.append([ROOT/"config/matplotlib/matplotlibrc",
                       home/".matplotlib/matplotlibrc"])
     else:
-        files.append([ROOT/"config/matplotlibrc",
+        files.append([ROOT/"config/matplotlib/matplotlibrc",
                       CONF_HOME/"matplotlib/matplotlibrc"])
     for src, dst in files:
         if is_ignore(ignore_list, src):
