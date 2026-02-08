@@ -23,3 +23,5 @@ git clone --recursive git@github.com:MeF0504/basic_setup.git
 
 Run `python3 setup.py -h` for more details.
 
+### Optional Install
+`pip install -r config/requirements.txt`

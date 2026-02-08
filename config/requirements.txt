@@ -1,0 +1,4 @@
+Send2Trash
+ipython
+numpy
+matplotlib
