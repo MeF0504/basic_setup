@@ -2,3 +2,4 @@ Send2Trash
 ipython
 numpy
 matplotlib
+PyQt5
