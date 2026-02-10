@@ -10,8 +10,5 @@ alias -g S='| sort'
 # ファイル探索からVimにつなぐ。xargsの中だとaliasが効かない？
 alias -g V='| xargs -o vim -p'
 
-local HIST_CMD="fc -l -n -t '%Y/%m/%d=%H:%M:%S' -D"
-local VIM_HIST_CMD="vi -c 'setlocal bt=nofile | setlocal ft=zsh | match Comment /^.*  [0-9]\+:[0-9][0-9]  / | normal! G' -"
-alias zshhistory="${HIST_CMD} -300 | ${VIM_HIST_CMD}"
-alias zshhistory_all="echo 'please wait...' && ${HIST_CMD} 0 | ${VIM_HIST_CMD}"
+alias zshhistory="source ${HOME}/.zsh/zshhistory.zsh"
 
