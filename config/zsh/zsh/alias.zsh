@@ -10,5 +10,3 @@ alias -g S='| sort'
 # ファイル探索からVimにつなぐ。xargsの中だとaliasが効かない？
 alias -g V='| xargs -o vim -p'
 
-alias zshhistory="source ${HOME}/.zsh/zshhistory.zsh"
-
