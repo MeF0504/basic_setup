@@ -1,8 +1,8 @@
 scriptencoding utf-8
 " 自作grep
 
-let s:args_keys = ['wd', 'dir', 'ex', 'all']  " keysだと順番が不定なので
-let s:args_vals = ['*', 1, 1, 0]
+let s:args_keys = ['wd', 'dir', 'ex', 'all', 'ne']  " keysだと順番が不定なので
+let s:args_vals = ['*', 1, 1, 0, 0]
 let s:args_config = {}
 for s:i in range(len(s:args_keys))
     let s:args_config[s:args_keys[s:i]] = s:args_vals[s:i]
@@ -24,7 +24,7 @@ endfunction
 
 function! <SID>echo_gregrep_help()
     echo "usage..."
-    echo ":GREgrep [-wd word] [-dir dir_path] [-ex extention] [-all]"
+    echo ":GREgrep [-wd word] [-dir dir_path] [-ex extention] [-all] [-ne]"
     echo "wd ... text to search. if a word is put in <>, search it as a word."
     echo "dir ... path to root directory or file for search."
     echo "        if dir=opened, search files in buffer"
@@ -32,8 +32,9 @@ function! <SID>echo_gregrep_help()
     echo "       if `-ex None`, search all files."
     echo "all ... search in hidden directories. directories are set by"
     echo "        'exclude_dirs' in meflib."
+    echo "ne ... no escape. if this option is set, the search word is not escaped."
     echo "e.g. :GREgrep -wd hoge -ex .vim -dir %:h:h"
-    echo "e.g. :GREgrep -wd fuga -ex None -all"
+    echo "e.g. :GREgrep -wd fuga -ex None -all -ne"
     echo "e.g. :GREgrep -wd <are> -dir opened"
 endfunction
 
@@ -64,6 +65,7 @@ function! meflib#grep#main(...)
         let l:ft = def_ft
         let l:dir = def_dir
         let l:all = v:false
+        let l:ne = v:false
     else
         let arg = meflib#basic#analysis_args_hyp(a:1, s:args_config)
 
@@ -90,8 +92,11 @@ function! meflib#grep#main(...)
         endif
         let l:dir = has_key(arg, "dir") ? expand(arg["dir"][0]) : def_dir
         let l:all = has_key(arg, "all")
+        let l:ne = has_key(arg, "ne")
     endif
-    let l:word = fnameescape(l:word)
+    if !l:ne
+        let l:word = fnameescape(l:word)
+    endif
 
     let is_opened = 0
     if l:dir == 'opened'
