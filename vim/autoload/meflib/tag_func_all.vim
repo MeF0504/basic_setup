@@ -84,7 +84,17 @@ function! meflib#tag_func_all#comp(arglead, cmdline, cursorpos) abort
     return res
 endfunction
 
-function! meflib#tag_func_all#open(arg='') abort
+function! meflib#tag_func_all#open(use_py, arg='') abort
+    if a:use_py
+        let use_py = v:true
+    elseif a:use_py == v:null
+        let use_py = has('python3')
+    elseif !a:use_py
+        let use_py = v:false
+    else
+        echo 'incorrect use_py?'
+        let use_py = has('python3')
+    endif
     if empty(a:arg)
         " pass
     elseif a:arg == 'kinds'
@@ -104,7 +114,7 @@ function! meflib#tag_func_all#open(arg='') abort
 
     let s:taginfo = {}
     for tfile in tagfiles()
-        if has('python3')
+        if use_py
             python3 set_tag_info(vim.eval("tfile"), vim.eval("s:taginfo"))
         else
             call s:set_tag_info(tfile)

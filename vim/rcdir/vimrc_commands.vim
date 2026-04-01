@@ -268,7 +268,9 @@ nnoremap <c-a> <Cmd>call meflib#ctrlax#true_false('a')<CR>
 nnoremap <c-x> <Cmd>call meflib#ctrlax#true_false('x')<CR>
 " }}}
 " 関数一覧 {{{
-command! -nargs=? -complete=customlist,meflib#tag_func_all#comp TagFuncAll call meflib#tag_func_all#open(<f-args>)
+command! -nargs=? -complete=customlist,meflib#tag_func_all#comp TagFuncAll call meflib#tag_func_all#open(v:null, <f-args>)
+command! -nargs=? -complete=customlist,meflib#tag_func_all#comp TagFuncAllv call meflib#tag_func_all#open(v:false, <f-args>)
+command! -nargs=? -complete=customlist,meflib#tag_func_all#comp TagFuncAllp call meflib#tag_func_all#open(v:true, <f-args>)
 " DOC COMMANDS TagFuncAll
 " TagFuncAll [option]
 " 
@@ -280,6 +282,18 @@ command! -nargs=? -complete=customlist,meflib#tag_func_all#comp TagFuncAll call 
 " 		show all kinds available from this file type.
 " 	tagfiles
 " 		show tag files used in this command.
+" DOCEND
+" DOC COMMANDS TagFuncAllv
+" TagFuncAllv [option]
+" 
+" Call TagFuncAll command without python support.
+" See |TagFuncAll|
+" DOCEND
+" DOC COMMANDS TagFuncAllp
+" TagFuncAllp [option]
+" 
+" Call TagFuncAll command with python support.
+" See |TagFuncAll|
 " DOCEND
 " }}}
 " quick fix list {{{
