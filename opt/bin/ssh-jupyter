@@ -1,0 +1,27 @@
+#! /usr/bin/env python3
+
+import argparse
+import subprocess
+
+
+def main(args):
+    cmds = ['ssh']
+    cmds += ['-L', f'{args.port}:{args.target}:{args.port}']
+    cmds += [args.host]
+    cmds += ['source', '.zshrc', '&&']
+    cmds += args.cmds
+    cmds += ['notebook', '--port', f'{args.port}', '--no-browser']
+    subprocess.run(cmds)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('host', help='Host name')
+    parser.add_argument('-p', '--port', help='Port number',
+                        type=int, default=8888)
+    parser.add_argument('-t', '--target', help='Target address',
+                        default='localhost')
+    parser.add_argument('-c', '--cmds', nargs='*', default=['jupyter'],
+                        help='Commands run at the server.')
+    args = parser.parse_args()
+    main(args)
