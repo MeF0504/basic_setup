@@ -120,6 +120,7 @@ endif
 set updatetime=4000 " (default)
 " 一度に開くタブの最大数
 set tabpagemax=20
+
 " 月1回helptags を実行
 function! s:exec_helptag(tid) abort
     let htagfs = glob(s:vimdir..'doc/tags*', 0, 1)
@@ -138,6 +139,23 @@ function! s:exec_helptag(tid) abort
 endfunction
 if isdirectory(s:vimdir..'doc')
     call timer_start(1000*3, expand('<SID>')..'exec_helptag')
+endif
+
+" pop-up menuを半透明にする [0-100(%)] 注: VimとNeovimで逆
+if &termguicolors
+    " gui colorなら良さそう
+    if has('nvim-0.4.0')
+        set pumblend=25
+    elseif exists('&pumopt')
+        set pumopt=opacity:70
+    endif
+else
+    " ctermだと不透明にする
+    if has('nvim-0.4.0')
+        set pumblend=0
+    elseif exists('&pumopt')
+        set pumopt=opacity:100
+    endif
 endif
 
 " directory 設定系
@@ -179,16 +197,6 @@ endif
 
 " neovim specified config
 if has('nvim')
-    if has('nvim-0.4.0')
-        " pop-up menuを半透明にする [0-100(%)]
-        if &termguicolors
-            " gui colorなら良さそう
-            set pumblend=18
-        else
-            " ctermだと見づらいので0
-            set pumblend=0
-        endif
-    endif
     if has('nvim-0.2.0')
         " 置換をinteractiveに行う
         set inccommand=split
