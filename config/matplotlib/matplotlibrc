@@ -18,6 +18,7 @@
 ## WebAgg-related settings
 # backend          : webagg
 webagg.open_in_browser : False
+webagg.port         : 18988
 ## If all backends don't work...
 # backend agg
 
