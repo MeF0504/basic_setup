@@ -133,6 +133,47 @@ function! s:qf_title() abort
 endfunction
 " }}}
 
+" Clickでカレンダーと時間を出したい {{{
+" :h stl-%[FuncName]
+function! ST_ClickFunc(info)
+    " echomsg a:info
+    " DOC OPTIONS clock_wtime
+    " time [sec] to show the statusline-clock
+    " DOCEND
+    let rep = meflib#get('clock_wtime', 10)+1  " +1 ... stop判定で最後が捨てられる気がする
+    if a:info.button ==# 'l' && a:info.nclicks == 1
+        let tid = timer_start(1000, s:sid..'timer_win', {'repeat': rep})
+    endif
+    return 0
+endfunction
+
+let s:st_clock_bid = -1
+let s:st_clock_wid = -1
+function! s:timer_win(timer_id) abort
+    let info = timer_info(a:timer_id)[0]
+    if info.repeat <= 0
+        call meflib#floating#close([s:st_clock_wid])
+        let s:st_clock_wid = -1
+        return
+    endif
+    if executable('cal')
+        let res = systemlist(['cal'])
+    else
+        let res = []
+    endif
+    let res += [strftime('%y/%m/%d %H:%M:%S')]
+    let config = {
+                \ 'relative': 'editor',
+                \ 'line': &lines-4,
+                \ 'col': &columns-1,
+                \ 'pos': 'botright',
+                \ 'highlight': 'StatusLine_Clock',
+                \ 'border': [],
+                \ }
+    let [s:st_clock_bid, s:st_clock_wid] = meflib#floating#open(s:st_clock_bid, s:st_clock_wid, res, config)
+endfunction
+" }}}
+
 " 修正フラグ 読込専用 ヘルプ preview_window
 let s:st_status = "%#StatusLine_ST#%M%R%H%W%#StatusLine#"
 " ファイル名&file status (短縮表示なら)
@@ -153,9 +194,9 @@ let s:st_ft = "%#StatusLine_FT#%{"..s:sid.."get_filetype()}"
 " file format
 let s:st_ff1 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(0)}"
 let s:st_ff2 = "%#StatusLine_FF#%{"..s:sid.."get_fileformat(1)}"
-" 今の行/全体の行-今の列 [%表示]
-let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v %#StatusLine#[%p%%]"
-" winwidthが60より短い時は列と%はなし
+" 今の行/全体の行-今の列
+let s:st_ln1 = "%#StatusLine_LN# %l/%L-%v"
+" winwidthが60より短い時は列はなし
 let s:st_ln2 = "%#StatusLine_LN# %l/%L"
 " 可能ならstatus lineにmodeを表示
 if has('patch-8.2.2854') || has('nvim-0.5.0')
@@ -163,6 +204,12 @@ if has('patch-8.2.2854') || has('nvim-0.5.0')
     set noshowmode
 else
     let s:st_mode = ' '
+endif
+" [%表示]
+let s:st_per = ' %#StatusLine#[%p%%]'
+if has('statusline_click')  " has('patch-9.2.0328')
+    " let s:st_per = printf('%%[%sClickFunc]', s:sid)..s:st_per..'%[]'
+    let s:st_per = '%[ST_ClickFunc]'..s:st_per..'%[]'
 endif
 
 " パスを除くファイル名 修正フラグ 読込専用 ヘルプ preview_window
@@ -176,7 +223,7 @@ let s:st_off = "%#StatusLine_OFF#<%t>%#StatusLineNC# %m%{&readonly?'[RO]':''}%h%
 " 	other(num): statusline for short window. num=max width for this statusline
 " DOCEND
 call meflib#set('statusline', {
-            \ '_':   s:st_mode.s:st_filename1.s:st_right.s:st_ft.s:st_ff1.s:st_turn.s:st_ln1,
+            \ '_':   s:st_mode.s:st_filename1.s:st_right.s:st_ft.s:st_ff1.s:st_turn.s:st_ln1.s:st_per,
             \ 'qf': '%t%{'..s:sid..'qf_title()}'..s:st_right..s:st_ln2,
             \ 'off': s:st_off,
             \ '60':  s:st_mode.s:st_filename2.s:st_right.s:st_ft.s:st_ff2.s:st_turn.s:st_ln2,

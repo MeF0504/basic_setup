@@ -119,6 +119,7 @@ function! <SID>my_color_set()
         highlight StatusLine_LN cterm=bold ctermfg=253 ctermbg=29 gui=Bold guifg=#dadada guibg=#00875f
         highlight StatusLine_CHK cterm=bold ctermfg=233 ctermbg=190 gui=Bold guifg=#121212 guibg=#d7ff00
         highlight StatusLine_OFF cterm=Underline ctermfg=254 ctermbg=232 gui=Underline guifg=#eaeaea guibg=#080808
+        highlight StatusLine_Clock ctermbg=136 ctermfg=253 guibg=#7e7000 guifg=#f0f0f0
     else
         highlight StatusLine_ST cterm=None ctermfg=29 ctermbg=253 gui=NONE guifg=#008050 guibg=#dddddd
         highlight StatusLine_FT cterm=bold ctermfg=236 ctermbg=68 gui=Bold guifg=#303030 guibg=#73a9ff
