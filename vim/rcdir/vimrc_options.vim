@@ -70,6 +70,9 @@ set scrolloff=2
 " http://boscono.hatenablog.com/entry/2013/11/17/230740
 set wildmenu
 set wildmode=longest,full
+if has('patch-9.0.2020') " ? https://github.com/vim/vim/commit/2bbd0d30eebdea66c0da3895e83d999ed6ad83fb
+    set wildoptions=pum
+endif
 " 折りたたみ
 set foldenable
 set foldmethod=marker
