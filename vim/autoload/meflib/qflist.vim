@@ -26,7 +26,7 @@ function! meflib#qflist#main() abort
                 \ 'relative': 'editor',
                 \ 'line': &lines/3,
                 \ 'col': &columns-2,
-                \ 'nv_border': 'single',
+                \ 'borderchars': 'single',
                 \ }
     call meflib#floating#select(qf_list, config,
                 \function(expand('<SID>')..'open_qf_cb', [len(qf_list)]))

@@ -36,7 +36,7 @@ function! s:convert_config(config, str_list) abort
     " padding
     " border
     " borderhighlight
-    " borderchars
+    " borderchars => border
     " scrollbar
     " scrollbarhighlight
     " thumbhighlight
@@ -83,6 +83,22 @@ function! s:convert_config(config, str_list) abort
                 echohl ErrorMsg
                 echo "incorrect setting of relative: ".a:config.relative
                 echohl None
+            endif
+        endif
+        if has_key(a:config, 'borderchars')
+            " :h 'winborder' in nvim
+            if a:config['borderchars'] == 'none'
+                if !has_key(a:config, 'border')
+                    let v_config['border'] = [0, 0, 0, 0]
+                    unlet v_config['borderchars']
+                endif
+            endif
+            if type(a:config['borderchars']) == type('') &&
+                        \ match(['bold', 'double', 'rounded',
+                        \ 'shadow', 'single', 'solid'],
+                        \ a:config['borderchars']) != -1
+                echomsg "string is not set to borderchars in Vim..."
+                unlet v_config['borderchars']
             endif
         endif
     elseif has('nvim')
@@ -136,8 +152,8 @@ function! s:convert_config(config, str_list) abort
             endif
             let v_config['anchor'] = anc
         endif
-        if has_key(a:config, 'nv_border')
-            let v_config['border'] = a:config['nv_border']
+        if has_key(a:config, 'borderchars')
+            let v_config['border'] = a:config['borderchars']
         endif
     endif
     return v_config

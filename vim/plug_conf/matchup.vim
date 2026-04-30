@@ -56,7 +56,7 @@ function! s:print_current_pos()
                 \ 'line': &lines-&cmdheight-1,
                 \ 'col': &numberwidth+&signcolumn+2,
                 \ 'pos': 'botleft',
-                \ 'nv_border': 'single',
+                \ 'borderchars': 'single',
                 \ }
 
     call meflib#floating#select(res, config, function(expand('<SID>')..'pcp_cb', [adjs]))

@@ -133,7 +133,7 @@ function! <SID>chk_current_position_python() abort
                 \ 'line': &lines-&cmdheight-1,
                 \ 'col': &numberwidth+&signcolumn+2,
                 \ 'pos': 'botleft',
-                \ 'nv_border': 'single',
+                \ 'borderchars': 'single',
                 \ }
 
     call meflib#floating#select(res, config, function(expand('<SID>')..'ccpp_cb', [res]))

@@ -54,7 +54,7 @@ function! meflib#openbuffer#main(mod, bang) abort
                 \ 'relative': 'editor',
                 \ 'line': &lines/3,
                 \ 'col': &columns/3,
-                \ 'nv_border': 'single',
+                \ 'borderchars': 'single',
                 \ }
     call meflib#floating#select(s:bufs, config,
                 \ function(expand('<SID>')..'open_buffer_cb', [a:mod, a:bang]))

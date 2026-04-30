@@ -88,7 +88,7 @@ function! meflib#find#main(args) abort
                 \ 'relative': 'editor',
                 \ 'line': &lines/3,
                 \ 'col': &columns/3,
-                \ 'nv_border': 'single',
+                \ 'borderchars': 'single',
                 \ }
     call meflib#floating#select(res, config,
                 \ function(expand('<SID>')..'find_cb', [res]))

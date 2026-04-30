@@ -143,7 +143,7 @@ function! s:open_term_float(opts) abort
                 \ 'maxwidth': &columns-10,
                 \ 'win_enter': 1,
                 \ 'border': [],
-                \ 'nv_border': "rounded",
+                \ 'borderchars': "rounded",
                 \ 'minwidth': &columns-10,
                 \ 'minheight': &lines/2-&cmdheight,
                 \ }
