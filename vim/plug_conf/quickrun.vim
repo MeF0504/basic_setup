@@ -22,7 +22,7 @@ function! s:quickrun_hook() abort
         \ 'runner/terminal/opener' : 'botright new',
         \ 'hook/time/enable'        : 1,
         \ 'hook/time/dest'        : "buffer",
-        \ 'outputter/buffer/opener': 'tabnew',
+        \ 'outputter/buffer/opener': 'topleft new',
         \ },
         \ 'keep')
     if has('terminal')
