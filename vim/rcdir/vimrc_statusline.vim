@@ -135,25 +135,36 @@ endfunction
 
 " Clickでカレンダーと時間を出したい {{{
 " :h stl-%[FuncName]
+let s:st_clock_on = v:false
 function! ST_ClickFunc(info)
     " echomsg a:info
+    if s:st_clock_on
+        let s:st_clock_cnt = 0
+        return
+    endif
     " DOC OPTIONS clock_wtime
     " time [sec] to show the statusline-clock
     " DOCEND
-    let rep = meflib#get('clock_wtime', 10)+1  " +1 ... stop判定で最後が捨てられる気がする
+    let rep = meflib#get('clock_wtime', 10)
     if a:info.button ==# 'l' && a:info.nclicks == 1
-        let tid = timer_start(1000, s:sid..'timer_win', {'repeat': rep})
+        let tid = timer_start(1000,
+                    \ function(s:sid..'timer_win', [rep]), {'repeat': -1})
     endif
+    let s:st_clock_on = v:true
     return 0
 endfunction
 
 let s:st_clock_bid = -1
 let s:st_clock_wid = -1
-function! s:timer_win(timer_id) abort
-    let info = timer_info(a:timer_id)[0]
-    if info.repeat <= 0
+let s:st_clock_cnt = 0
+function! s:timer_win(rep, timer_id) abort
+    let s:st_clock_cnt += 1
+    if s:st_clock_cnt > a:rep
+        call timer_stop(a:timer_id)
         call meflib#floating#close([s:st_clock_wid])
         let s:st_clock_wid = -1
+        let s:st_clock_cnt = 0
+        let s:st_clock_on = v:false
         return
     endif
     if executable('cal')
