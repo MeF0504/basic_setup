@@ -39,13 +39,8 @@ set showcmd
 " バックスペースのノーマルモード、(改行、)オートインデントへの有効化
 set backspace=start,indent
 " set backspace=start,eol,indent
-if !exists('$SSH_CONNECTION')   " localのときのみ
-    " 全モードでのマウスの有効化
-    set mouse=a
-else
-    " 挿入モードでのマウスの有効化
-    set mouse=i
-endif
+" 全モードでのマウスの有効化
+set mouse=a
 " 大文字、小文字を区別しない
 set ignorecase
 " 検索文字に大文字があると区別する
