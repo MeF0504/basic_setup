@@ -1,0 +1,1 @@
+# vim: set tabstop={{_cursor_}}
