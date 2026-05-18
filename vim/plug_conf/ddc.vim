@@ -3,13 +3,14 @@ if !meflib#get('plug_opt', 'denops', 0)
     call meflib#add('unload_plugins', 'Shougo/ddc.vim')
     call meflib#add('unload_plugins', 'Shougo/ddc-around')
     call meflib#add('unload_plugins', 'LumaKernel/ddc-file')
-    call meflib#add('unload_plugins', 'LumaKernel/ddc-tabnine')
     call meflib#add('unload_plugins', 'shun/ddc-vim-lsp')
     call meflib#add('unload_plugins', 'Shougo/ddc-matcher_head')
     call meflib#add('unload_plugins', 'Shougo/ddc-sorter_rank')
     call meflib#add('unload_plugins', 'Shougo/ddc-converter_remove_overlap')
     call meflib#add('unload_plugins', 'Shougo/ddc-ui-native')
 endif
+" tabnine はcopilotあるし，一旦offにするか...
+call meflib#add('unload_plugins', 'LumaKernel/ddc-tabnine')
 " plugins for ddc.vim
 " source
 PlugWrapper 'Shougo/ddc-around'
