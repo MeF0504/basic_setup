@@ -3,3 +3,4 @@ ipython
 numpy
 matplotlib
 PyQt5
+chardet
