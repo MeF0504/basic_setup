@@ -26,7 +26,7 @@ function! s:convert_config(config, str_list) abort
     " minwidth => --
     " firstline
     " hidden
-    " tabpage
+    " tabpage (<= relative): editorならtabpage=-1
     " title
     " wrap
     " drag
@@ -78,7 +78,7 @@ function! s:convert_config(config, str_list) abort
                 let v_config.line = a:config.line+hshift-1
                 let v_config.col = a:config.col+wshift-1
             elseif a:config.relative == 'editor'
-                " need to do nothing.
+                let v_config.tabpage = -1
             else
                 echohl ErrorMsg
                 echo "incorrect setting of relative: ".a:config.relative
