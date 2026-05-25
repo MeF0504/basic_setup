@@ -4,3 +4,4 @@ numpy
 matplotlib
 PyQt5
 chardet
+python-lsp-server[all]
