@@ -22,7 +22,7 @@ endif
 PlugWrapper 'MeF0504/sl.vim', PlugCond(1, {'on': 'SL'})
 
 " Project Sekai inspired plugin
-PlugWrapper 'MeF0504/untitled.vim'
+PlugWrapper 'MeF0504/untitled.vim', PlugCond(1, {'on': 'Untitled'})
 " untitled {{{
 function! s:untitled_his() abort
     try
@@ -40,7 +40,7 @@ function! s:untitled_his() abort
         endif
     endtry
 endfunction
-call meflib#add('plugin_his', s:sid.'untitled_his')
+" call meflib#add('plugin_his', s:sid.'untitled_his')
 " }}}
 
 " Syntax 情報をpopupで表示
