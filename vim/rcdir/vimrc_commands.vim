@@ -392,6 +392,8 @@ function! Tapi_Drop(bufnr, arglist) abort
         let opencmd = 'tabnew'
     endif
     execute opencmd fnameescape(filepath)
+    " ↓ ファイルパスを解決？
+    cd .
     return ''
 endfunction
 " }}}
