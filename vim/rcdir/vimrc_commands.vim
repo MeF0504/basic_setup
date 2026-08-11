@@ -409,3 +409,6 @@ function! s:yank_clipboard(text) abort
 endfunction
 command! -nargs=1 -complete=file Clip call s:yank_clipboard(<args>)
 " }}}
+" Vim上に画像を表示 {{{
+command! -nargs=1 -complete=file ShowImage call meflib#image#main(<f-args>)
+" }}}
