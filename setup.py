@@ -706,11 +706,14 @@ set diff-highlight = true
     cc.exec()
     if args.clear:
         home = Path(setting['home'])
-        cc.clear(f'{CONF_HOME/"meflib"}',
-                 [f'{CONF_HOME/"meflib/setting.json"}',
-                  f'{CONF_HOME/"meflib/ignorelist"}',
-                  f'{CONF_HOME/"meflib/user.toml"}',
-                  ])
+        add_files = [f'{CONF_HOME/"meflib/setting.json"}',
+                     f'{CONF_HOME/"meflib/ignorelist"}',
+                     f'{CONF_HOME/"meflib/user.toml"}',
+                     f'{CONF_HOME/"meflib/"}',
+                     ]
+        you_files = (CONF_HOME/'meflib/youtube').glob('*')
+        add_files += [str(fy) for fy in you_files]
+        cc.clear(f'{CONF_HOME/"meflib"}', add_files)
         cc.clear(f'{home/".bash"}',
                  [f'{home/".bash/bashrc.mine"}',
                   f'{home/".bash/git-prompt.sh"}',
