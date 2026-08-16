@@ -6,3 +6,5 @@ PyQt5
 chardet
 python-lsp-server[all]
 pynvim
+# google-api-python-client
+# google-auth-oauthlib

@@ -118,13 +118,18 @@ def update() -> bool:
         pickle.dump(details, f)
 
     print(f'data saved at {TMPDATA}, total length={len(details)}.')
+    return True
 
 
 def main(args):
+    ret = True
     if args.update:
-        update()
+        ret = update()
     elif not TMPDATA.exists():
-        update()
+        ret = update()
+    if not ret:
+        print('failed to update data.')
+        return
 
     with open(TMPDATA, 'rb') as f:
         data = pickle.load(f)
