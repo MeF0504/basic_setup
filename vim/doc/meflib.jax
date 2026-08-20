@@ -198,6 +198,14 @@ LastWin                                                               *:LastWin*
 
 Open a buffer of window last closed.
 
+NVimUpdate                                                         *:NVimUpdate*
+
+open the release page of Neovim (Neovim only).
+
+ShowImage file                                                      *:ShowImage*
+
+Show the specified image file. '+image' is required.
+
 
 ==============================================================================
 FUNCTIONS                                                     *meflib-functions*

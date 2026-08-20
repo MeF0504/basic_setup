@@ -371,6 +371,11 @@ command! LastTab call <SID>open_last_tab()
 command! LastWin execute "vsplit " . meflib#get('last_file_win', '')[0]
 " }}}
 " {{{ neovim のrelease pageを開く
+" DOC COMMANDS NVimUpdate
+" NVimUpdate
+" 
+" open the release page of Neovim (Neovim only).
+" DOCEND
 if has('nvim')
     command NVimUpdate call system([meflib#basic#get_exe_cmd(), 'https://github.com/neovim/neovim/releases/'])
 endif
@@ -410,5 +415,10 @@ endfunction
 command! -nargs=1 -complete=file Clip call s:yank_clipboard(<args>)
 " }}}
 " Vim上に画像を表示 {{{
+" DOC COMMANDS ShowImage
+" ShowImage file
+"
+" Show the specified image file. '+image' is required.
+" DOCEND
 command! -nargs=1 -complete=file ShowImage call meflib#image#main(<f-args>)
 " }}}
