@@ -13,7 +13,7 @@ import numpy as np
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient import discovery
 
-TMPDATA = Path('~/.config/meflib/youtube/data.pkl').expanduser()
+CONFDIR = Path('~/.config/meflib/youtube').expanduser()
 SCOPES = ["https://www.googleapis.com/auth/youtube.readonly"]
 
 
@@ -51,22 +51,12 @@ def conv_sec(time_str: str) -> tuple[int]:
     return hour, minute, sec
 
 
-def update() -> bool:
-    TMPDATA.parent.mkdir(exist_ok=True)
-    conf_file = TMPDATA.parent/'config.json'
-    if not conf_file.is_file():
-        print('config file is not found.')
-        return False
-
-    with open(conf_file, 'rb') as f:
-        conf = json.load(f)
-
+def update(cs_file: str, playid: str,
+           data_path: Path) -> bool:
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
     api_service_name = "youtube"
     api_version = "v3"
-    cs_file = conf['client_secrets']
-    playid = conf['playlistId']
 
     flow = InstalledAppFlow.from_client_secrets_file(cs_file, SCOPES)
     # credentials = flow.run_console()
@@ -114,24 +104,38 @@ def update() -> bool:
             if False:
                 pprint(item)
                 input('>>> Enter to continue')
-    with open(TMPDATA, 'wb') as f:
+    with open(data_path, 'wb') as f:
         pickle.dump(details, f)
 
-    print(f'data saved at {TMPDATA}, total length={len(details)}.')
+    print(f'data saved at {data_path}, total length={len(details)}.')
     return True
 
 
 def main(args):
+    CONFDIR.mkdir(exist_ok=True)
+    conf_file = CONFDIR/'config.json'
+    if not conf_file.is_file():
+        print('config file is not found.')
+        return
+
+    with open(conf_file, 'rb') as f:
+        conf = json.load(f)
+    cs_file = conf['client_secrets']
+    if args.playlistId is None:
+        pid = conf['playlistId']
+    else:
+        pid = args.playlistId
+    data_path = CONFDIR/f'data-{pid}.pkl'
     ret = True
     if args.update:
-        ret = update()
-    elif not TMPDATA.exists():
-        ret = update()
+        ret = update(cs_file, pid, data_path)
+    elif not data_path.exists():
+        ret = update(cs_file, pid, data_path)
     if not ret:
         print('failed to update data.')
         return
 
-    with open(TMPDATA, 'rb') as f:
+    with open(data_path, 'rb') as f:
         data = pickle.load(f)
 
     video_ids = []
@@ -177,7 +181,9 @@ if __name__ == '__main__':
                         default='duration')
     parser.add_argument('--update', help='update the youtube list data.',
                         action='store_true')
-    parser.add_argument('-v', '--reverse', help='display in descending order.',
+    parser.add_argument('-r', '--reverse', help='display in descending order.',
                         action='store_true')
+    parser.add_argument('-p', '--playlistId', default=None,
+                        help='specify the playlistId to show.')
     args = parser.parse_args()
     main(args)
