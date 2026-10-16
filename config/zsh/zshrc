@@ -133,6 +133,10 @@ bindkey "\e[Z" reverse-menu-complete
 # ctrl-b,f で前後の単語に移動
 bindkey "^b" backward-word
 bindkey "^f" forward-word
+# ctrl-, で前のコマンドの前の引数を入れる。ctrl-. (insert-last-word) の後に使う
+autoload -Uz copy-earlier-word
+zle -N copy-earlier-word
+bindkey '^[,' copy-earlier-word
 # Enter key bind
 # key bind:: https://qiita.com/yuku_t/items/e58cbecf13407446bd50
 # Enter key bind:: https://qiita.com/yut-kt/items/267ce4648b801c1c1bca
