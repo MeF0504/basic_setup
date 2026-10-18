@@ -5,5 +5,10 @@ if which wsh > /dev/null 2>&1; then
     fi
 fi
 
+# backup hist file.
+if which backup_hist.py > /dev/null 2>&1; then
+    backup_hist.py
+fi
+
 [ -f $HOME/.zsh/zlogout.mine ] && source $HOME/.zsh/zlogout.mine
 

@@ -163,7 +163,7 @@ fi
 # history関連 {{{
 
 # history 保存ファイル
-HISTFILE=${HOME}/.zsh_history
+export HISTFILE=${HOME}/.zsh_history
 # メモリに保存される (検索できる) 履歴数
 HISTSIZE=50000
 # ファイルに保存される履歴数
