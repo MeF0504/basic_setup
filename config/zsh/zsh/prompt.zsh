@@ -196,6 +196,16 @@ set_prompt() {
                 # host name in ssh server
                 local _PS_HOST="@%F{14}$(echo ${MYHOST} | tr '[a-z]' '[A-Z]')%f%k "
             fi
+            # virtual terminal
+            if [ -n "${STY}" ]; then
+                # screen
+                local _PS_VIR="%F{11}SC%f%k "
+            elif [ -n "${TMUX}" ]; then
+                # tmux
+                local _PS_VIR="%F{11}TM%f%k "
+            else
+                local _PS_VIR=""
+            fi
             # time
             local _PS_TIME="%F{42}%D{%H:%M}%f%k"
             # user name (bold username non-bold)
@@ -211,7 +221,7 @@ set_prompt() {
         # ip_color
         local _PS_IPCOLOR='$(ip_color $_GLOBAL_IP 2>/dev/null)'
 
-        export PROMPT="${_PS_IPCOLOR} ${_PS_PATH}${_PS_COUNTFILE} ${_PS_EXTIME} ${_PS_NEWLINE}${_PS_TIME} ${_PS_HOST}${_PS_USER}${_PS_BGJOB} ${_PS_END}"
+        export PROMPT="${_PS_IPCOLOR} ${_PS_PATH}${_PS_COUNTFILE} ${_PS_EXTIME} ${_PS_NEWLINE}${_PS_TIME} ${_PS_HOST}${_PS_VIR}${_PS_USER}${_PS_BGJOB} ${_PS_END}"
 
         PROMPT2="%{${fg[red]}%}%_%%%{${reset_color}%} "
 

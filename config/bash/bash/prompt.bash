@@ -10,6 +10,16 @@ fi
 _PS_COUNTFILE='(`ls -U1 | wc -l | sed -e "s/ //g"`)'
 # time
 _PS_TIME='\[\e[92m\]\D{%H:%M}\[\e[0m\]'
+# virtual terminal
+if [[ -n "${STY}" ]]; then
+    # screen
+    _PS_VIR=' \[\e[93m\]SC\[\e[0m\]'
+elif [[ -n "${TMUX}" ]]; then
+    # tmux
+    _PS_VIR=' \[\e[93m\]TM\[\e[0m\]'
+else
+    _PS_VIR=''
+fi
 # user name (bold)
 _PS_USER=' \[\e[1m\e[31m\]\u\[\e[0m\]'
 # background job number
@@ -113,6 +123,6 @@ set_prompt()
     __PRI_TIME=${__POST_TIME}
 }
 set_prompt
-export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}"'$__EXTIME'"\n${_PS_TIME}${_PS_USER}${_PS_BGJOB}${_PS_GIT}${_PS_END}"
+export PS1="${_PS_SHINFO}${_PS_HOST}${_PS_PATH}${_PS_COUNTFILE}"'$__EXTIME'"\n${_PS_TIME}${_PS_VIR}${_PS_USER}${_PS_BGJOB}${_PS_GIT}${_PS_END}"
 
 export PROMPT_COMMAND="set_prompt"
