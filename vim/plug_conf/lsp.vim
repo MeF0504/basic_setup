@@ -35,7 +35,7 @@ endif
 " Nerd font ならwarningとかも変えようか
 if meflib#get('plug_opt', 'nerdfont', 0)
     let g:lsp_diagnostics_signs_warning = {'text': nr2char(0xf071)}
-    let g:lsp_diagnostics_signs_error = {'text': nr2char(0xf068c)}
+    let g:lsp_diagnostics_signs_error = {'text': nr2char(0xf00d)}
     let g:lsp_diagnostics_signs_hint = {'text': nr2char(0xf12a)}
     let s:lsp_status_icon = {
                 \ 'running': nr2char(0xf05d)..' ',
