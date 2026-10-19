@@ -24,8 +24,11 @@ def main(verbose):
 
     tdy = datetime.today()
     hist_back_pre = glob.glob(histfile+'.*')
-    hist_back_pre = sorted(hist_back_pre)
-    histtime_pre = datetime.fromtimestamp(os.path.getctime(hist_back_pre[-1]))
+    if len(hist_back_pre) == 0:
+        histtime_pre = datetime(1970, 1, 1)
+    else:
+        hist_back_pre = sorted(hist_back_pre)
+        histtime_pre = datetime.fromtimestamp(os.path.getctime(hist_back_pre[-1]))
     if tdy-histtime_pre > timedelta(days=14):
         hist_back = histfile+tdy.strftime('.%Y%m%d')
         shutil.copy(histfile, hist_back)
