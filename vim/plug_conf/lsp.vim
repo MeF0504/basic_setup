@@ -40,7 +40,7 @@ if meflib#get('plug_opt', 'nerdfont', 0)
     let s:lsp_status_icon = {
                 \ 'running': nr2char(0xf05d)..' ',
                 \ 'unknown server': nr2char(0xf059)..' ',
-                \ 'exited': nr2char(0xf0a48)..' ',
+                \ 'exited': nr2char(0xf08b)..' ',
                 \ 'starting': nr2char(0xf01b)..' ',
                 \ 'failed': nr2char(0xf46e)..' ',
                 \ 'not running': nr2char(0xf057)..' ',
