@@ -15,7 +15,7 @@ except ImportError:
 
 def convert_image(path: str, height: str | None):
     # なんかvim.eval で渡された整数はstrになっちゃう？
-    name = op.splitext(op.basename(path))[0]
+    # name = op.splitext(op.basename(path))[0]
     with Image.open(path) as img:
         w, h = img.size
         if height is not None and h != int(height):
@@ -32,3 +32,17 @@ def convert_image(path: str, height: str | None):
         vim.command(f'let meflib#image#w = {w}')
         # vim.command('echomsg "meflib#image#data"')
         # vim.command('echomsg meflib#image#w')
+
+
+def get_image_info(path: str, in_height: str | None):
+    # 同上
+    with Image.open(path) as img:
+        w, h = img.size
+        if in_height is None:
+            height = h
+            width = w
+        else:
+            height = int(in_height)
+            width = int(height*w/h)
+    vim.command(f'let meflib#image#h = {height}')
+    vim.command(f'let meflib#image#w = {width}')
