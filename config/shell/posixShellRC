@@ -429,5 +429,6 @@ vimfiles() # {{{
 _chk_and_source "$HOME/.config/meflib/get_zodiac_whgm.sh"
 _chk_and_source "$HOME/.config/meflib/today_percentage.sh"
 _chk_and_source "$HOME/.config/meflib/load_venv.sh"
+_chk_and_source "$HOME/.config/meflib/auto_fetch.sh"
 # }}}
 
