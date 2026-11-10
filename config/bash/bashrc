@@ -64,11 +64,15 @@ autocd()
     builtin cd "$@" || return
     # auto fetch
     if [ -d "${PWD}/.git" ]; then
-        read -p "execute fetch? ([y]/n) " -r yn
-        if [ -z "$yn" ] || [ "$yn" = 'y' ]; then
-            auto_fetch
+        if [ -z $(check_fetch) ]; then
+            read -p "execute fetch? ([y]/n) " -r yn
+            if [ -z "$yn" ] || [ "$yn" = 'y' ]; then
+                auto_fetch
+            else
+                echo "fetching... canceled"
+            fi
         else
-            echo "fetching... canceled"
+            echo "skip fetching"
         fi
     fi
     load_venv

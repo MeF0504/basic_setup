@@ -1,11 +1,14 @@
-auto_fetch()
+check_fetch()
 {
     for DIR in $(echo ${FETCH_SKIP:-""}); do
         if [[ $(basename "$PWD") = $DIR ]]; then
-            echo "skip fetching"
-            return
+            echo 1
         fi
     done
+}
+
+auto_fetch()
+{
     local branch=$(git branch --contains | cut -d " " -f 2)
     echo "fetching..."
     git fetch
